@@ -9,13 +9,19 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.GridView;
 import android.widget.Toast;
 
 import com.sstechcanada.todo.R;
+import com.sstechcanada.todo.adapters.GridViewAdapter;
+import com.sstechcanada.todo.custom_views.GridItemView;
 import com.sstechcanada.todo.data.TodoListContract;
 import com.sstechcanada.todo.databinding.ActivityAddOrEditTaskBinding;
 import com.sstechcanada.todo.models.TodoTask;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class AddOrEditTaskActivity extends AppCompatActivity {
@@ -24,6 +30,13 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
     private int mTaskId = -1;
     private String mAddOrEdit;
 
+    //Grid View
+    private GridView gridView;
+    private ArrayList<String> selectedStrings;
+    private static final String[] numbers = new String[]{
+            "A", "B", "C", "D", "E", "F", "G"};
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +44,31 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         long dueDate;
         int taskCompleted;
+
+        //Grid View Start
+        gridView = findViewById(R.id.grid_view);
+        selectedStrings = new ArrayList<>();
+        final GridViewAdapter adapter = new GridViewAdapter(numbers, this);
+        gridView.setAdapter(adapter);
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                int selectedIndex = adapter.selectedPositions.indexOf(position);
+                if (selectedIndex > -1) {
+                    adapter.selectedPositions.remove(selectedIndex);
+                    ((GridItemView) v).display(false);
+                    selectedStrings.remove((String) parent.getItemAtPosition(position));
+                } else {
+                    adapter.selectedPositions.add(position);
+                    ((GridItemView) v).display(true);
+                    selectedStrings.add((String) parent.getItemAtPosition(position));
+                }
+            }
+        });
+
+        //Grid View End
+
 
         if (savedInstanceState == null) {
             Bundle bundle = getIntent().getExtras();

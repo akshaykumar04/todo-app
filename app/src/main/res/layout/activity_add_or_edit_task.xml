@@ -97,17 +97,17 @@
         </RadioGroup>
 
         <Button
-                android:text="@string/add_task"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/btn_add_or_update_task"
-                android:background="@color/colorAccent"
-                android:textColor="@android:color/white"
-                android:onClick="addOrUpdateTask"
-                android:layout_margin="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+            android:id="@+id/btn_add_or_update_task"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="@color/colorAccent"
+            android:onClick="addOrUpdateTask"
+            android:text="@string/add_task"
+            android:textColor="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
                 style="@style/AddEditTaskRadioButtonLabels"
@@ -116,12 +116,26 @@
                 app:layout_constraintBottom_toBottomOf="@+id/dp_due_date"/>
 
         <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="Task completed"
-                app:layout_constraintTop_toBottomOf="@+id/tv_completion_label"
-                android:id="@+id/cb_task_completed"/>
+            android:id="@+id/cb_task_completed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Task completed"
+            app:layout_constraintTop_toBottomOf="@+id/tv_completion_label"
+            tools:layout_editor_absoluteX="16dp" />
+
+        <GridView
+            android:id="@+id/grid_view"
+            android:layout_width="0dp"
+            android:layout_height="128dp"
+            android:layout_marginBottom="103dp"
+            android:numColumns="3"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.666"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
 
     </android.support.constraint.ConstraintLayout>
 </layout>
