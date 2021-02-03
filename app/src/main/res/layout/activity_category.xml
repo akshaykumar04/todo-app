@@ -16,7 +16,7 @@
 
 
     <Button
-        android:id="@+id/buttonAddArtist"
+        android:id="@+id/buttonAddCategory"
         android:layout_width="match_parent"
         android:layout_below="@id/editTextName"
         android:layout_height="wrap_content"
@@ -30,11 +30,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:textSize="24sp"
-        android:layout_below="@id/buttonAddArtist"
+        android:layout_below="@id/buttonAddCategory"
         android:text="Categories" />
 
     <ListView
-        android:id="@+id/listViewArtists"
+        android:id="@+id/listViewCategory"
         android:layout_width="match_parent"
         android:layout_marginTop="20dp"
         android:layout_height="wrap_content"

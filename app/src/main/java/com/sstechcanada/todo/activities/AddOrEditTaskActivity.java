@@ -17,12 +17,9 @@ import com.google.android.material.chip.ChipGroup;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.data.TodoListContract;
 import com.sstechcanada.todo.databinding.ActivityAddOrEditTaskBinding;
-import com.sstechcanada.todo.models.Artist;
 import com.sstechcanada.todo.models.TodoTask;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 public class AddOrEditTaskActivity extends AppCompatActivity {
     private static final String TAG = AddOrEditTaskActivity.class.getSimpleName();
