@@ -1,14 +1,6 @@
 package com.sstechcanada.todo.activities;
 
-import com.sstechcanada.todo.R;
-import com.sstechcanada.todo.adapters.TodoListAdapter;
-import com.sstechcanada.todo.broadcast_receivers.DailyAlarmReceiver;
-import com.sstechcanada.todo.data.TodoListContract;
-import com.sstechcanada.todo.data.TodoListProvider;
-import com.sstechcanada.todo.databinding.ActivityTodoListBinding;
-import com.sstechcanada.todo.models.TodoTask;
-import com.sstechcanada.todo.utils.NotificationUtils;
-
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -18,25 +10,35 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import androidx.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.annotation.NonNull;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.CursorLoader;
-import androidx.loader.content.Loader;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.PreferenceManager;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
+import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.sstechcanada.todo.R;
+import com.sstechcanada.todo.adapters.TodoListAdapter;
+import com.sstechcanada.todo.broadcast_receivers.DailyAlarmReceiver;
+import com.sstechcanada.todo.data.TodoListContract;
+import com.sstechcanada.todo.data.TodoListProvider;
+import com.sstechcanada.todo.databinding.ActivityTodoListBinding;
+import com.sstechcanada.todo.models.TodoTask;
+import com.sstechcanada.todo.utils.NotificationUtils;
 
 public class TodoListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
         TodoListAdapter.TodoListAdapterOnClickHandler,
@@ -90,6 +92,7 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
         return true;
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();

@@ -9,9 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.Light">
-        <activity android:name=".activities.CategoryActivity"></activity>
+        <activity android:name=".activities.TodoListActivity"></activity>
         <activity
-            android:name=".activities.TodoListActivity"
+            android:name=".activities.AddCategoryActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
