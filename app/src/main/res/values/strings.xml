@@ -28,6 +28,7 @@
     <string name="update_task">Update Task</string>
     <string name="describe_your_task">Describe your task</string>
     <string name="description_cannot_be_empty">Task description cannot be empty.</string>
+    <string name="category_menu_item">Category</string>
 
     <!--for onSaveInstanceState in AddOrEditTodoActivity-->
     <string name="task_description_key" translatable="false">task description</string>

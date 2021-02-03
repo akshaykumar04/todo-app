@@ -4,6 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.sstechcanada.todo.activities.TodoListActivity">
     <item
+        android:id="@+id/category"
+        android:orderInCategory="300"
+        android:title="@string/category_menu_item"
+        app:showAsAction="never" />
+
+    <item
             android:id="@+id/action_settings"
             android:orderInCategory="100"
             android:title="@string/action_settings"
