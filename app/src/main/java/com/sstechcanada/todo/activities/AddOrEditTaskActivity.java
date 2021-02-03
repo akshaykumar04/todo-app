@@ -3,26 +3,33 @@ package com.sstechcanada.todo.activities;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipDrawable;
+import com.google.android.material.chip.ChipGroup;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.data.TodoListContract;
 import com.sstechcanada.todo.databinding.ActivityAddOrEditTaskBinding;
+import com.sstechcanada.todo.models.Artist;
 import com.sstechcanada.todo.models.TodoTask;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class AddOrEditTaskActivity extends AppCompatActivity {
     private static final String TAG = AddOrEditTaskActivity.class.getSimpleName();
     private ActivityAddOrEditTaskBinding mBinding;
     private int mTaskId = -1;
     private String mAddOrEdit;
+    private ChipGroup chipGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +38,28 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         long dueDate;
         int taskCompleted;
+
+
+
+
+        chipGroup = findViewById(R.id.chipGroup);
+        for (int  i=0; i<15;  i++){
+            Chip chip = new Chip(this);
+            ChipDrawable drawable = ChipDrawable.createFromAttributes(this, null, 0, R.style.Widget_MaterialComponents_Chip_Choice);
+            chip.setChipDrawable(drawable);
+            chip.setText("Categories");
+            chipGroup.getChildCount();
+            chip.getChipStartPadding();
+            chip.getChipEndPadding();
+            chipGroup.addView(chip);
+
+
+
+
+        }
+
+
+
 
         if (savedInstanceState == null) {
             Bundle bundle = getIntent().getExtras();
@@ -87,7 +116,10 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         } else {
             mBinding.btnAddOrUpdateTask.setText(R.string.update_task);
         }
+
+
     }
+
 
     private void selectPriorityRadioButton(int priority) {
         switch (priority) {
@@ -166,6 +198,8 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         }
     }
 
+
+
     private void insertOrUpdate(TodoTask todoTask) {
         // I used to have this functionality in TodoListActivity's onActivityResult method, but
         // then I couldn't reach it when editing a task directly from the App Widget
@@ -184,5 +218,14 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
             Uri uri = TodoListContract.TodoListEntry.CONTENT_URI.buildUpon().appendPath(id).build();
             getContentResolver().update(uri, contentValues, "_id=?", new String[]{id});
         }
+    }
+
+    private void addChip(String pItem, ChipGroup pChipGroup) {
+        Chip lChip = new Chip(this);
+        lChip.setText(pItem);
+        lChip.setTextColor(getResources().getColor(R.color.colorAccent));
+        lChip.setChipBackgroundColor(getResources().getColorStateList(R.color.design_default_color_primary));
+
+        pChipGroup.addView(lChip, pChipGroup.getChildCount() - 1);
     }
 }

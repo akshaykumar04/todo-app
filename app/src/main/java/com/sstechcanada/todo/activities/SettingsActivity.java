@@ -3,7 +3,7 @@ package com.sstechcanada.todo.activities;
 import com.sstechcanada.todo.R;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class SettingsActivity extends AppCompatActivity {
 
