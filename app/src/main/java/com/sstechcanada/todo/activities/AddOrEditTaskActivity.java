@@ -3,6 +3,8 @@ package com.sstechcanada.todo.activities;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,15 +19,23 @@ import android.widget.Toast;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
 import com.google.android.material.chip.ChipGroup;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sstechcanada.todo.R;
+import com.sstechcanada.todo.adapters.CategoryAdapter;
 import com.sstechcanada.todo.adapters.GridViewAdapter;
 import com.sstechcanada.todo.custom_views.GridItemView;
 import com.sstechcanada.todo.data.TodoListContract;
 import com.sstechcanada.todo.databinding.ActivityAddOrEditTaskBinding;
+import com.sstechcanada.todo.models.Category;
 import com.sstechcanada.todo.models.TodoTask;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class AddOrEditTaskActivity extends AppCompatActivity {
     private static final String TAG = AddOrEditTaskActivity.class.getSimpleName();
@@ -35,11 +45,12 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
 //    private ChipGroup chipGroup;
     //Grid View
     private GridView gridView;
+    private GridViewAdapter adapter;
     private ArrayList<String> selectedStrings;
-    private static final String[] numbers = new String[]{
-            "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K",
-            "L", "M", "N", "O", "P", "Q", "R", "S", "T",
-            "U", "V", "W", "X", "Y", "Z"};
+    private static String[] numbers = new String[20];
+    //Category
+    List<Category> categories;
+    DatabaseReference databaseCategories;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,13 +59,45 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         long dueDate;
         int taskCompleted;
-
-        //Grid View Start
         gridView = findViewById(R.id.grid_view);
 
+        //Category and Grid View---
+        databaseCategories = FirebaseDatabase.getInstance().getReference("categories");
+        categories = new ArrayList<>();
         selectedStrings = new ArrayList<>();
-        final GridViewAdapter adapter = new GridViewAdapter(numbers, AddOrEditTaskActivity.this);
-        gridView.setAdapter(adapter);
+        databaseCategories.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                //clearing the previous category list
+                categories.clear();
+
+                //iterating through all the nodes
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    Category category = postSnapshot.getValue(Category.class);
+                    categories.add(category);
+                }
+
+                adapter = new GridViewAdapter(categories, AddOrEditTaskActivity.this);
+                gridView.setAdapter(adapter);
+//                //creating adapter
+//                CategoryAdapter categotyAdapter = new CategoryAdapter(AddCategoryActivity.this, categories);
+//                //attaching adapter to the listview
+//                listViewCategory.setAdapter(categotyAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        // --Category End
+
+        //Grid View Start
+//        gridView = findViewById(R.id.grid_view);
+//        selectedStrings = new ArrayList<>();
+//        final GridViewAdapter adapter = new GridViewAdapter(categories, AddOrEditTaskActivity.this);
+//        gridView.setAdapter(adapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -71,6 +114,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
                 }
             }
         });
+
         //Grid View End
 
 
@@ -255,4 +299,11 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
 //
 //        pChipGroup.addView(lChip, pChipGroup.getChildCount() - 1);
 //    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //attaching value event listener
+
+    }
 }
