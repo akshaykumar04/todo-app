@@ -25,7 +25,7 @@
                 style="@style/AddEditTaskRadioButtonLabels"
                 android:layout_marginTop="24dp"
                 android:text="@string/priority"
-            android:visibility="gone"
+
                 android:id="@+id/tv_priority_label"
                 app:layout_constraintTop_toBottomOf="@+id/et_task_description"/>
 
@@ -38,21 +38,21 @@
             <RadioButton
                     style="@style/AddEditTaskRadioButtons"
                     android:layout_weight="1"
-                android:visibility="gone"
+
                     android:id="@+id/rb_high_priority"
                     android:text="@string/high"/>
 
             <RadioButton
                     style="@style/AddEditTaskRadioButtons"
                     android:layout_weight="1"
-                android:visibility="gone"
+
                     android:id="@+id/rb_medium_priority"
                     android:text="@string/medium"/>
 
             <RadioButton
                     style="@style/AddEditTaskRadioButtons"
                     android:layout_weight="1"
-                android:visibility="gone"
+
                     android:id="@+id/rb_low_priority"
                     android:text="@string/low"/>
 
@@ -62,7 +62,7 @@
                 style="@style/AddEditTaskRadioButtonLabels"
                 android:layout_marginTop="24dp"
                 android:text="@string/due_date"
-            android:visibility="gone"
+
                 android:id="@+id/tv_due_date_label"
                 app:layout_constraintTop_toBottomOf="@+id/rg_priority"/>
 
@@ -75,7 +75,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/tv_due_date_label"
                     android:layout_marginTop="16dp"
                     android:paddingBottom="6dp"
-            android:visibility="gone"
+
                     app:layout_constraintEnd_toEndOf="parent"/>
 
         <RadioGroup
@@ -88,13 +88,13 @@
             <RadioButton
                     style="@style/AddEditTaskRadioButtons"
                     android:id="@+id/rb_no_due_date"
-                android:visibility="gone"
+
                     android:text="@string/none"/>
 
             <RadioButton
                     style="@style/AddEditTaskRadioButtons"
                     android:id="@+id/rb_select_due_date"
-                android:visibility="gone"
+
                     android:text="@string/select_date"/>
 
             <RadioButton
@@ -121,7 +121,7 @@
         <TextView
                 style="@style/AddEditTaskRadioButtonLabels"
                 android:text="@string/completion"
-            android:visibility="gone"
+
                 android:id="@+id/tv_completion_label"
                 app:layout_constraintBottom_toBottomOf="@+id/dp_due_date"/>
 
@@ -129,7 +129,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-            android:visibility="gone"
+
                 android:text="Task completed"
                 app:layout_constraintTop_toBottomOf="@+id/tv_completion_label"
                 android:id="@+id/cb_task_completed"/>
@@ -149,6 +149,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/rg_priority"
             app:layout_constraintVertical_bias="0.138" />
+
+        <GridView
+            android:id="@+id/grid_view"
+            android:layout_width="match_parent"
+            android:layout_height="169dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.887"
+            android:numColumns="3"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

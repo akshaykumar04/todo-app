@@ -9,15 +9,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.Light">
-        <activity android:name=".activities.TodoListActivity"></activity>
-        <activity
-            android:name=".activities.AddCategoryActivity"
-            android:launchMode="singleTop">
+        <activity android:name=".activities.TodoListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.AddCategoryActivity"
+            android:launchMode="singleTop">
+
         </activity>
         <activity
             android:name=".activities.SettingsActivity"
@@ -32,6 +34,7 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.sstechcanada.todo.activities.TodoListActivity" />
+
         </activity>
 
         <provider

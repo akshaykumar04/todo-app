@@ -9,16 +9,22 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.GridView;
 import android.widget.Toast;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
 import com.google.android.material.chip.ChipGroup;
 import com.sstechcanada.todo.R;
+import com.sstechcanada.todo.adapters.GridViewAdapter;
+import com.sstechcanada.todo.custom_views.GridItemView;
 import com.sstechcanada.todo.data.TodoListContract;
 import com.sstechcanada.todo.databinding.ActivityAddOrEditTaskBinding;
 import com.sstechcanada.todo.models.TodoTask;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class AddOrEditTaskActivity extends AppCompatActivity {
@@ -26,7 +32,14 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
     private ActivityAddOrEditTaskBinding mBinding;
     private int mTaskId = -1;
     private String mAddOrEdit;
-    private ChipGroup chipGroup;
+//    private ChipGroup chipGroup;
+    //Grid View
+    private GridView gridView;
+    private ArrayList<String> selectedStrings;
+    private static final String[] numbers = new String[]{
+            "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K",
+            "L", "M", "N", "O", "P", "Q", "R", "S", "T",
+            "U", "V", "W", "X", "Y", "Z"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,27 +49,44 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         long dueDate;
         int taskCompleted;
 
+        //Grid View Start
+        gridView = findViewById(R.id.grid_view);
+
+        selectedStrings = new ArrayList<>();
+        final GridViewAdapter adapter = new GridViewAdapter(numbers, AddOrEditTaskActivity.this);
+        gridView.setAdapter(adapter);
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                int selectedIndex = adapter.selectedPositions.indexOf(position);
+                if (selectedIndex > -1) {
+                    adapter.selectedPositions.remove(selectedIndex);
+                    ((GridItemView) v).display(false);
+                    selectedStrings.remove((String) parent.getItemAtPosition(position));
+                } else {
+                    adapter.selectedPositions.add(position);
+                    ((GridItemView) v).display(true);
+                    selectedStrings.add((String) parent.getItemAtPosition(position));
+                }
+            }
+        });
+        //Grid View End
 
 
 
-        chipGroup = findViewById(R.id.chipGroup);
-        for (int  i=0; i<15;  i++){
-            Chip chip = new Chip(this);
-            ChipDrawable drawable = ChipDrawable.createFromAttributes(this, null, 0, R.style.Widget_MaterialComponents_Chip_Choice);
-            chip.setChipDrawable(drawable);
-            chip.setText("Categories");
-            chipGroup.getChildCount();
-            chip.getChipStartPadding();
-            chip.getChipEndPadding();
-            chipGroup.addView(chip);
-
-
-
-
-        }
-
-
-
+//        chipGroup = findViewById(R.id.chipGroup);
+//        for (int  i=0; i<15;  i++){
+//            Chip chip = new Chip(this);
+//            ChipDrawable drawable = ChipDrawable.createFromAttributes(this, null, 0, R.style.Widget_MaterialComponents_Chip_Choice);
+//            chip.setChipDrawable(drawable);
+//            chip.setText("Categories");
+//            chipGroup.getChildCount();
+//            chip.getChipStartPadding();
+//            chip.getChipEndPadding();
+//            chipGroup.addView(chip);
+//
+//        }
 
         if (savedInstanceState == null) {
             Bundle bundle = getIntent().getExtras();
@@ -217,12 +247,12 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         }
     }
 
-    private void addChip(String pItem, ChipGroup pChipGroup) {
-        Chip lChip = new Chip(this);
-        lChip.setText(pItem);
-        lChip.setTextColor(getResources().getColor(R.color.colorAccent));
-        lChip.setChipBackgroundColor(getResources().getColorStateList(R.color.design_default_color_primary));
-
-        pChipGroup.addView(lChip, pChipGroup.getChildCount() - 1);
-    }
+//    private void addChip(String pItem, ChipGroup pChipGroup) {
+//        Chip lChip = new Chip(this);
+//        lChip.setText(pItem);
+//        lChip.setTextColor(getResources().getColor(R.color.colorAccent));
+//        lChip.setChipBackgroundColor(getResources().getColorStateList(R.color.design_default_color_primary));
+//
+//        pChipGroup.addView(lChip, pChipGroup.getChildCount() - 1);
+//    }
 }
