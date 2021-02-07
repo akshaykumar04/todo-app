@@ -58,5 +58,6 @@
     <string name="medium_priority_task_orange_star">Orange star for medium priority task</string>
     <string name="low_priority_task_yellow_star">Yellow star for low priority task</string>
     <string name="completed_task_grey_star">Grey star for completed task</string>
+    <string name="Categories">Categories</string>
 
 </resources>
