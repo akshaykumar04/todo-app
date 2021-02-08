@@ -2,31 +2,30 @@ package com.sstechcanada.todo.activities;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
-
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipDrawable;
-import com.google.android.material.chip.ChipGroup;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.databinding.DataBindingUtil;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sstechcanada.todo.R;
-import com.sstechcanada.todo.adapters.CategoryAdapter;
 import com.sstechcanada.todo.adapters.GridViewAdapter;
 import com.sstechcanada.todo.custom_views.GridItemView;
 import com.sstechcanada.todo.data.TodoListContract;
@@ -40,19 +39,16 @@ import java.util.List;
 
 public class AddOrEditTaskActivity extends AppCompatActivity {
     private static final String TAG = AddOrEditTaskActivity.class.getSimpleName();
-    private ActivityAddOrEditTaskBinding mBinding;
-    private int mTaskId = -1;
-    private String mAddOrEdit;
-    //    private ChipGroup chipGroup;
-    //Grid View
-    private GridView gridView;
-    private GridViewAdapter adapter;
-    private ArrayList<String> selectedStrings;
     private static String[] numbers = new String[20];
-    //Category
     List<Category> categories;
     DatabaseReference databaseCategories;
     CardView addCategories;
+    private ActivityAddOrEditTaskBinding mBinding;
+    private int mTaskId = -1;
+    private String mAddOrEdit;
+    private GridView gridView;
+    private GridViewAdapter adapter;
+    private ArrayList<String> selectedStrings;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -61,90 +57,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         long dueDate;
         int taskCompleted;
-        gridView = findViewById(R.id.grid_view);
 
-        //Category and Grid View---
-        databaseCategories = FirebaseDatabase.getInstance().getReference("categories");
-        categories = new ArrayList<>();
-        selectedStrings = new ArrayList<>();
-        databaseCategories.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                //clearing the previous category list
-                categories.clear();
-
-                //iterating through all the nodes
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    Category category = postSnapshot.getValue(Category.class);
-                    categories.add(category);
-                }
-
-                adapter = new GridViewAdapter(categories, AddOrEditTaskActivity.this);
-                gridView.setAdapter(adapter);
-//                //creating adapter
-//                CategoryAdapter categotyAdapter = new CategoryAdapter(AddCategoryActivity.this, categories);
-//                //attaching adapter to the listview
-//                listViewCategory.setAdapter(categotyAdapter);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-        // --Category End
-
-//        Grid View Start
-//        gridView = findViewById(R.id.grid_view);
-//        selectedStrings = new ArrayList<>();
-//        final GridViewAdapter adapter = new GridViewAdapter(categories, AddOrEditTaskActivity.this);
-//        gridView.setAdapter(adapter);
-
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                int selectedIndex = adapter.selectedPositions.indexOf(position);
-                if (selectedIndex > -1) {
-                    adapter.selectedPositions.remove(selectedIndex);
-                    ((GridItemView) v).display(false);
-                    selectedStrings.remove((String) parent.getItemAtPosition(position));
-                } else {
-                    adapter.selectedPositions.add(position);
-                    ((GridItemView) v).display(true);
-                    selectedStrings.add((String) parent.getItemAtPosition(position));
-                }
-
-                Toast.makeText(AddOrEditTaskActivity.this, selectedStrings.toString(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        addCategories = findViewById(R.id.addCategories);
-        addCategories.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(AddOrEditTaskActivity.this,
-                        SelectCategoriesDailog.class);
-                startActivity(intent);
-            }
-        });
-
-        //Grid View End
-
-
-
-//        chipGroup = findViewById(R.id.chipGroup);
-//        for (int  i=0; i<15;  i++){
-//            Chip chip = new Chip(this);
-//            ChipDrawable drawable = ChipDrawable.createFromAttributes(this, null, 0, R.style.Widget_MaterialComponents_Chip_Choice);
-//            chip.setChipDrawable(drawable);
-//            chip.setText("Categories");
-//            chipGroup.getChildCount();
-//            chip.getChipStartPadding();
-//            chip.getChipEndPadding();
-//            chipGroup.addView(chip);
-//
-//        }
 
         if (savedInstanceState == null) {
             Bundle bundle = getIntent().getExtras();
@@ -201,6 +114,34 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         } else {
             mBinding.btnAddOrUpdateTask.setText(R.string.update_task);
         }
+
+        addCategories = findViewById(R.id.addCategories);
+        addCategories.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                Intent intent = new Intent(AddOrEditTaskActivity.this,
+//                        SelectCategoriesDailog.class);
+//                startActivity(intent);
+
+                selectCategoriesAlert();
+            }
+        });
+
+        //Grid View End
+
+
+//        chipGroup = findViewById(R.id.chipGroup);
+//        for (int  i=0; i<15;  i++){
+//            Chip chip = new Chip(this);
+//            ChipDrawable drawable = ChipDrawable.createFromAttributes(this, null, 0, R.style.Widget_MaterialComponents_Chip_Choice);
+//            chip.setChipDrawable(drawable);
+//            chip.setText("Categories");
+//            chipGroup.getChildCount();
+//            chip.getChipStartPadding();
+//            chip.getChipEndPadding();
+//            chipGroup.addView(chip);
+//
+//        }
 
 
     }
@@ -284,7 +225,6 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
     }
 
 
-
     private void insertOrUpdate(TodoTask todoTask) {
         // I used to have this functionality in TodoListActivity's onActivityResult method, but
         // then I couldn't reach it when editing a task directly from the App Widget
@@ -318,6 +258,96 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         //attaching value event listener
+
+    }
+
+
+    public void selectCategoriesAlert() {
+        LayoutInflater inflater = getLayoutInflater();
+        View alertLayout = inflater.inflate(R.layout.activity_select_categories_dailog, null);
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("Select Categories");
+        // this is set the view from XML inside AlertDialog
+        alert.setView(alertLayout);
+        gridView = alertLayout.findViewById(R.id.grid_view_alert);
+        LinearLayout addMore = alertLayout.findViewById(R.id.addMoreCategoriesLayout);
+        loadCategories();
+        // disallow cancel of AlertDialog on click of back button and outside touch
+        alert.setCancelable(false);
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(getBaseContext(), "Cancel clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
+        alert.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                Toast.makeText(AddOrEditTaskActivity.this, "Clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        addMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(AddOrEditTaskActivity.this, AddCategoryActivity.class));
+            }
+        });
+
+
+        AlertDialog dialog = alert.create();
+        dialog.show();
+    }
+
+    public void loadCategories() {
+        databaseCategories = FirebaseDatabase.getInstance().getReference("categories");
+        categories = new ArrayList<>();
+        selectedStrings = new ArrayList<>();
+        databaseCategories.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                //clearing the previous category list
+                categories.clear();
+
+                //iterating through all the nodes
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    Category category = postSnapshot.getValue(Category.class);
+                    categories.add(category);
+                }
+
+                adapter = new GridViewAdapter(categories, AddOrEditTaskActivity.this);
+                gridView.setAdapter(adapter);
+//                //creating adapter
+//                CategoryAdapter categotyAdapter = new CategoryAdapter(AddCategoryActivity.this, categories);
+//                //attaching adapter to the listview
+//                listViewCategory.setAdapter(categotyAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                int selectedIndex = adapter.selectedPositions.indexOf(position);
+                if (selectedIndex > -1) {
+                    adapter.selectedPositions.remove(selectedIndex);
+                    ((GridItemView) v).display(false);
+                    selectedStrings.remove((String) parent.getItemAtPosition(position));
+                } else {
+                    adapter.selectedPositions.add(position);
+                    ((GridItemView) v).display(true);
+                    selectedStrings.add((String) parent.getItemAtPosition(position));
+                }
+
+                Toast.makeText(AddOrEditTaskActivity.this, selectedStrings.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 }

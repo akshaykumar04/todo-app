@@ -4,9 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.Toast;
 
@@ -26,11 +28,11 @@ import java.util.List;
 public class SelectCategoriesDailog extends AppCompatActivity {
 
     private GridView gridView;
+    private static final int EDIT_TASK_REQUEST = 2;
     private GridViewAdapter adapter;
     private ArrayList<String> selectedStrings;
     List<Category> categories;
     DatabaseReference databaseCategories;
-    CardView addCategories;
 
 
     @Override
@@ -38,6 +40,7 @@ public class SelectCategoriesDailog extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_categories_dailog);
         gridView = findViewById(R.id.grid_view);
+
 
         databaseCategories = FirebaseDatabase.getInstance().getReference("categories");
         categories = new ArrayList<>();
@@ -86,9 +89,11 @@ public class SelectCategoriesDailog extends AppCompatActivity {
                     selectedStrings.add((String) parent.getItemAtPosition(position));
                 }
 
-                Toast.makeText(SelectCategoriesDailog.this, selectedStrings.toString(), Toast.LENGTH_SHORT).show();
+
+
             }
         });
+
 
     }
 
