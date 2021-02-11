@@ -88,14 +88,12 @@ public class SelectCategoriesDailog extends AppCompatActivity {
                     ((GridItemView) v).display(true);
                     selectedStrings.add((String) parent.getItemAtPosition(position));
                 }
-
-
-
             }
         });
 
 
     }
+
 
 
 }

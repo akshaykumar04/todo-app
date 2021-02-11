@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,13 +31,18 @@ import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.adapters.GridViewAdapter;
 import com.sstechcanada.todo.custom_views.GridItemView;
 import com.sstechcanada.todo.data.TodoListContract;
+import com.sstechcanada.todo.data.TodoListDbHelper;
 import com.sstechcanada.todo.databinding.ActivityAddOrEditTaskBinding;
 import com.sstechcanada.todo.models.Category;
 import com.sstechcanada.todo.models.TodoTask;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+
+import static com.sstechcanada.todo.data.TodoListContract.TodoListEntry.COLUMN_CATEGORY;
+import static com.sstechcanada.todo.data.TodoListContract.TodoListEntry.COLUMN_CATEGORY_COUNT;
 
 public class AddOrEditTaskActivity extends AppCompatActivity {
     private static final String TAG = AddOrEditTaskActivity.class.getSimpleName();
@@ -49,6 +56,10 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
     private GridView gridView;
     private GridViewAdapter adapter;
     private ArrayList<String> selectedStrings;
+    private int category_count = 0;
+    private String selectedResult = "";
+    private TodoTask todoTaskToAddOrEdit;
+    private TextView tv;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -57,7 +68,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         long dueDate;
         int taskCompleted;
-
+        tv = findViewById(R.id.tv);
 
         if (savedInstanceState == null) {
             Bundle bundle = getIntent().getExtras();
@@ -68,7 +79,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
                 mBinding.rbHighPriority.setChecked(true);
                 mBinding.rbNoDueDate.setChecked(true);
             } else {
-                TodoTask todoTaskToAddOrEdit = bundle.getParcelable(getString(R.string.intent_todo_key));
+                todoTaskToAddOrEdit = bundle.getParcelable(getString(R.string.intent_todo_key));
                 mTaskId = todoTaskToAddOrEdit.getId();
                 mBinding.etTaskDescription.setText(todoTaskToAddOrEdit.getDescription());
 
@@ -214,7 +225,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
                 isCompleted = TodoTask.TASK_NOT_COMPLETED;
             }
 
-            TodoTask todoTask = new TodoTask(description, priority, dueDate, mTaskId, isCompleted);
+            TodoTask todoTask = new TodoTask(description, selectedResult, category_count, priority, dueDate, mTaskId, isCompleted);
 
             insertOrUpdate(todoTask);
 
@@ -234,6 +245,8 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         contentValues.put(TodoListContract.TodoListEntry.COLUMN_PRIORITY, todoTask.getPriority());
         contentValues.put(TodoListContract.TodoListEntry.COLUMN_DUE_DATE, todoTask.getDueDate());
         contentValues.put(TodoListContract.TodoListEntry.COLUMN_COMPLETED, todoTask.getCompleted());
+        contentValues.put(COLUMN_CATEGORY, todoTask.getCategory());
+        contentValues.put(COLUMN_CATEGORY_COUNT, todoTask.getCategory_count());
 
         Log.d(TAG, todoTask.getDueDate() + "");
 
@@ -283,8 +296,25 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         alert.setPositiveButton("Done", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                selectedResult = convertArrayToString(selectedStrings);
+                category_count = selectedStrings.size();
+                if(todoTaskToAddOrEdit != null){
+                    String id = String.valueOf(todoTaskToAddOrEdit.getId());
+                    TodoListDbHelper todoListDbHelper1 = new TodoListDbHelper(AddOrEditTaskActivity.this);
+                    todoListDbHelper1.updateCategory(selectedResult, category_count, Integer.parseInt(id));
+                    Toast.makeText(AddOrEditTaskActivity.this, "Clicked", Toast.LENGTH_SHORT).show();
+                }
+                TodoListDbHelper todoListDbHelper = new TodoListDbHelper(AddOrEditTaskActivity.this);
+                ArrayList<HashMap<String, String>> userlist = todoListDbHelper.getUser();
+                tv.setText("");
+                for(HashMap<String, String> user: userlist){
+                    String record = tv.getText() +
+                            "Category: " + user.get(COLUMN_CATEGORY) +
+                            " Count: " + user.get(COLUMN_CATEGORY_COUNT) +
+                            "\n";
+                    tv.setText(record);
+                }
 
-                Toast.makeText(AddOrEditTaskActivity.this, "Clicked", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -345,9 +375,27 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
                     selectedStrings.add((String) parent.getItemAtPosition(position));
                 }
 
-                Toast.makeText(AddOrEditTaskActivity.this, selectedStrings.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddOrEditTaskActivity.this, convertArrayToString(selectedStrings), Toast.LENGTH_SHORT).show();
             }
         });
 
+    }
+
+    //To Convert String to Array or Array to String
+    public static String strSeparator = "__,__";
+    public static String convertArrayToString(ArrayList<String> array){
+        String str = "";
+        for (int i = 0;i<array.size(); i++) {
+            str = str+array.get(i);
+            // Do not append comma at the end of last element
+            if(i<array.size()-1){
+                str = str+strSeparator;
+            }
+        }
+        return str;
+    }
+    public static String[] convertStringToArray(String str){
+        String[] arr = str.split(strSeparator);
+        return arr;
     }
 }

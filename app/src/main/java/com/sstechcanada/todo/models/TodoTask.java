@@ -28,6 +28,8 @@ public class TodoTask implements Parcelable {
     private long dueDate;
     private int id;
     private int completed;
+    private String category;
+    private int category_count;
 
     public TodoTask() {
         this.description = null;
@@ -35,6 +37,18 @@ public class TodoTask implements Parcelable {
         this.dueDate = 0L;
         this.id = 0;
         this.completed = 0;
+        this.category = null;
+        this.category_count = 0;
+    }
+
+    public TodoTask(String description, String category, int category_count, int priority, long dueDate, int id, int completed) {
+        this.description = description;
+        this.priority = priority;
+        this.dueDate = dueDate;
+        this.id = id;
+        this.completed = completed;
+        this.category_count = category_count;
+        this.category = category;
     }
 
     public TodoTask(String description, int priority, long dueDate, int id, int completed) {
@@ -107,4 +121,19 @@ public class TodoTask implements Parcelable {
         this.completed = completed;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public int getCategory_count() {
+        return category_count;
+    }
+
+    public void setCategory_count(int category_count) {
+        this.category_count = category_count;
+    }
 }
