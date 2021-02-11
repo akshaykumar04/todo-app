@@ -53,14 +53,15 @@ public class TodoListDbHelper extends SQLiteOpenHelper {
         return count;
     }
 
-    public ArrayList<HashMap<String, String>> getUser(){
+    public ArrayList<HashMap<String, String>> getUser(int id){
         SQLiteDatabase database = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> userlist = new ArrayList<>();
 
         String query = "SELECT " +
                 "" + COLUMN_CATEGORY + "," +
                 "" + COLUMN_CATEGORY_COUNT +
-                " FROM " + TABLE_NAME;
+                " FROM " + TABLE_NAME +
+                " WHERE " + COLUMN_ID + " = " + id;
         Cursor cursor = database.rawQuery(query, null);
         while (cursor.moveToNext()){
             HashMap<String, String> user = new HashMap<>();

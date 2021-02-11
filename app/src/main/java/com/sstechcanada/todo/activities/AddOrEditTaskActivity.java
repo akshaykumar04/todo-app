@@ -135,6 +135,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
 //                startActivity(intent);
 
                 selectCategoriesAlert();
+
             }
         });
 
@@ -154,7 +155,9 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
 //
 //        }
 
-
+        if(todoTaskToAddOrEdit != null){
+            display_categories(todoTaskToAddOrEdit);
+        }
     }
 
 
@@ -256,6 +259,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
             Uri uri = TodoListContract.TodoListEntry.CONTENT_URI.buildUpon().appendPath(id).build();
             getContentResolver().update(uri, contentValues, "_id=?", new String[]{id});
         }
+        display_categories(todoTask);
     }
 
 //    private void addChip(String pItem, ChipGroup pChipGroup) {
@@ -303,17 +307,9 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
                     TodoListDbHelper todoListDbHelper1 = new TodoListDbHelper(AddOrEditTaskActivity.this);
                     todoListDbHelper1.updateCategory(selectedResult, category_count, Integer.parseInt(id));
                     Toast.makeText(AddOrEditTaskActivity.this, "Clicked", Toast.LENGTH_SHORT).show();
+                    display_categories(todoTaskToAddOrEdit);
                 }
-                TodoListDbHelper todoListDbHelper = new TodoListDbHelper(AddOrEditTaskActivity.this);
-                ArrayList<HashMap<String, String>> userlist = todoListDbHelper.getUser();
-                tv.setText("");
-                for(HashMap<String, String> user: userlist){
-                    String record = tv.getText() +
-                            "Category: " + user.get(COLUMN_CATEGORY) +
-                            " Count: " + user.get(COLUMN_CATEGORY_COUNT) +
-                            "\n";
-                    tv.setText(record);
-                }
+
 
             }
         });
@@ -398,4 +394,17 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         String[] arr = str.split(strSeparator);
         return arr;
     }
+    void display_categories(TodoTask todoTask){
+        TodoListDbHelper todoListDbHelper = new TodoListDbHelper(AddOrEditTaskActivity.this);
+        ArrayList<HashMap<String, String>> userlist = todoListDbHelper.getUser(todoTask.getId());
+        tv.setText("");
+        for(HashMap<String, String> user: userlist){
+            String record = tv.getText() +
+                    "Category: " + user.get(COLUMN_CATEGORY) +
+                    "\nCount: " + user.get(COLUMN_CATEGORY_COUNT) +
+                    "\n";
+            tv.setText(record);
+        }
+    }
+
 }
