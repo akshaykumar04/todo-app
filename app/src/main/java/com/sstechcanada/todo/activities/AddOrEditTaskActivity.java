@@ -22,6 +22,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.databinding.DataBindingUtil;
 
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipDrawable;
+import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -60,6 +63,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
     private String selectedResult = "";
     private TodoTask todoTaskToAddOrEdit;
     private TextView tv;
+    ChipGroup chipGroup;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -135,25 +139,12 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
 //                startActivity(intent);
 
                 selectCategoriesAlert();
-
             }
         });
 
         //Grid View End
 
-
-//        chipGroup = findViewById(R.id.chipGroup);
-//        for (int  i=0; i<15;  i++){
-//            Chip chip = new Chip(this);
-//            ChipDrawable drawable = ChipDrawable.createFromAttributes(this, null, 0, R.style.Widget_MaterialComponents_Chip_Choice);
-//            chip.setChipDrawable(drawable);
-//            chip.setText("Categories");
-//            chipGroup.getChildCount();
-//            chip.getChipStartPadding();
-//            chip.getChipEndPadding();
-//            chipGroup.addView(chip);
-//
-//        }
+        chipGroup = findViewById(R.id.chipGroup);
 
         if(todoTaskToAddOrEdit != null){
             display_categories(todoTaskToAddOrEdit);
@@ -395,15 +386,32 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         return arr;
     }
     void display_categories(TodoTask todoTask){
+//        TodoListDbHelper todoListDbHelper = new TodoListDbHelper(AddOrEditTaskActivity.this);
+//        ArrayList<HashMap<String, String>> userlist = todoListDbHelper.getUser(todoTask.getId());
+//        tv.setText("");
+//        for(HashMap<String, String> user: userlist){
+//            String record = tv.getText() +
+//                    "Category: " + user.get(COLUMN_CATEGORY) +
+//                    "\nCount: " + user.get(COLUMN_CATEGORY_COUNT) +
+//                    "\n";
+//            tv.setText(record);
+//        }
+        chipGroup.removeAllViews();
         TodoListDbHelper todoListDbHelper = new TodoListDbHelper(AddOrEditTaskActivity.this);
-        ArrayList<HashMap<String, String>> userlist = todoListDbHelper.getUser(todoTask.getId());
-        tv.setText("");
+        ArrayList<HashMap<String, String>> userlist = todoListDbHelper.getUser(todoTaskToAddOrEdit.getId());
+
         for(HashMap<String, String> user: userlist){
-            String record = tv.getText() +
-                    "Category: " + user.get(COLUMN_CATEGORY) +
-                    "\nCount: " + user.get(COLUMN_CATEGORY_COUNT) +
-                    "\n";
-            tv.setText(record);
+            String record[] = convertStringToArray(user.get(COLUMN_CATEGORY));
+            for (int  i=0; i < record.length;  i++){
+                Chip chip = new Chip(this);
+                ChipDrawable drawable = ChipDrawable.createFromAttributes(this, null, 0, R.style.Widget_MaterialComponents_Chip_Choice);
+                chip.setChipDrawable(drawable);
+                chip.setText(record[i]+ "");
+                chipGroup.getChildCount();
+                chip.getChipStartPadding();
+                chip.getChipEndPadding();
+                chipGroup.addView(chip);
+            }
         }
     }
 
