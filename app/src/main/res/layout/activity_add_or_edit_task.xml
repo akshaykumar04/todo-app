@@ -139,10 +139,10 @@
         <TextView
             android:id="@+id/tv_completion_label"
             style="@style/AddEditTaskRadioButtonLabels"
-            android:layout_marginTop="196dp"
+            android:layout_marginTop="284dp"
             android:text="@string/completion"
             app:layout_constraintTop_toBottomOf="@+id/chipGroup"
-            tools:layout_editor_absoluteX="12dp" />
+            tools:layout_editor_absoluteX="20dp" />
 
         <CheckBox
             android:id="@+id/cb_task_completed"
@@ -160,14 +160,16 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="56dp"
+            android:layout_marginTop="96dp"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             app:chipSpacingVertical="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.75"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_categories" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.108" />
 
         <GridView
             android:id="@+id/grid_view"
@@ -182,7 +184,6 @@
             app:layout_constraintVertical_bias="0.887" />
 
         <androidx.cardview.widget.CardView
-            android:visibility="gone"
             android:id="@+id/addCategories"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -192,8 +193,8 @@
             app:cardCornerRadius="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.414"
-            tools:layout_editor_absoluteX="8dp">
+            app:layout_constraintVertical_bias="0.47"
+            tools:layout_editor_absoluteX="12dp">
 
 
             <LinearLayout

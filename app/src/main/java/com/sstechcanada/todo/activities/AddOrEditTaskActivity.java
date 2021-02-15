@@ -129,7 +129,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         } else {
             mBinding.btnAddOrUpdateTask.setText(R.string.update_task);
         }
-
+        chipGroup = findViewById(R.id.chipGroup);
         addCategories = findViewById(R.id.addCategories);
         addCategories.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,11 +143,14 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         });
 
         //Grid View End
-
-        chipGroup = findViewById(R.id.chipGroup);
-
         if(todoTaskToAddOrEdit != null){
-            display_categories(todoTaskToAddOrEdit);
+            TodoListDbHelper todoListDbHelper = new TodoListDbHelper(AddOrEditTaskActivity.this);
+            ArrayList<HashMap<String, String>> userlist = todoListDbHelper.getUser(mTaskId);
+            String record[];
+            for(HashMap<String, String> user: userlist){
+                record = convertStringToArray(user.get(COLUMN_CATEGORY));
+                display_categories(record);
+            }
         }
     }
 
@@ -239,18 +242,19 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         contentValues.put(TodoListContract.TodoListEntry.COLUMN_PRIORITY, todoTask.getPriority());
         contentValues.put(TodoListContract.TodoListEntry.COLUMN_DUE_DATE, todoTask.getDueDate());
         contentValues.put(TodoListContract.TodoListEntry.COLUMN_COMPLETED, todoTask.getCompleted());
-        contentValues.put(COLUMN_CATEGORY, todoTask.getCategory());
-        contentValues.put(COLUMN_CATEGORY_COUNT, todoTask.getCategory_count());
+        contentValues.put(TodoListContract.TodoListEntry.COLUMN_CATEGORY, todoTask.getCategory());
+        contentValues.put(TodoListContract.TodoListEntry.COLUMN_CATEGORY_COUNT, todoTask.getCategory_count());
 
         Log.d(TAG, todoTask.getDueDate() + "");
 
         if (mAddOrEdit.equals(getString(R.string.add_new_task))) {
             getContentResolver().insert(TodoListContract.TodoListEntry.CONTENT_URI, contentValues);
+
         } else {
             Uri uri = TodoListContract.TodoListEntry.CONTENT_URI.buildUpon().appendPath(id).build();
             getContentResolver().update(uri, contentValues, "_id=?", new String[]{id});
         }
-        display_categories(todoTask);
+
     }
 
 //    private void addChip(String pItem, ChipGroup pChipGroup) {
@@ -293,15 +297,18 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 selectedResult = convertArrayToString(selectedStrings);
                 category_count = selectedStrings.size();
+                chipGroup.removeAllViews();
+                String record[] = convertStringToArray(selectedResult);
                 if(todoTaskToAddOrEdit != null){
                     String id = String.valueOf(todoTaskToAddOrEdit.getId());
-                    TodoListDbHelper todoListDbHelper1 = new TodoListDbHelper(AddOrEditTaskActivity.this);
-                    todoListDbHelper1.updateCategory(selectedResult, category_count, Integer.parseInt(id));
-                    Toast.makeText(AddOrEditTaskActivity.this, "Clicked", Toast.LENGTH_SHORT).show();
-                    display_categories(todoTaskToAddOrEdit);
+                    todoTaskToAddOrEdit.setCategory(selectedResult);
+                    todoTaskToAddOrEdit.setCategory_count(category_count);
+//                    TodoListDbHelper todoListDbHelper1 = new TodoListDbHelper(AddOrEditTaskActivity.this);
+//                    todoListDbHelper1.updateCategory(selectedResult, category_count, Integer.parseInt(id));
+//                    Toast.makeText(AddOrEditTaskActivity.this, "Clicked", Toast.LENGTH_SHORT).show();
                 }
-
-
+                // Calling Display Category
+                display_categories(record);
             }
         });
 
@@ -385,33 +392,17 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         String[] arr = str.split(strSeparator);
         return arr;
     }
-    void display_categories(TodoTask todoTask){
-//        TodoListDbHelper todoListDbHelper = new TodoListDbHelper(AddOrEditTaskActivity.this);
-//        ArrayList<HashMap<String, String>> userlist = todoListDbHelper.getUser(todoTask.getId());
-//        tv.setText("");
-//        for(HashMap<String, String> user: userlist){
-//            String record = tv.getText() +
-//                    "Category: " + user.get(COLUMN_CATEGORY) +
-//                    "\nCount: " + user.get(COLUMN_CATEGORY_COUNT) +
-//                    "\n";
-//            tv.setText(record);
-//        }
+    void display_categories(String record[]){
         chipGroup.removeAllViews();
-        TodoListDbHelper todoListDbHelper = new TodoListDbHelper(AddOrEditTaskActivity.this);
-        ArrayList<HashMap<String, String>> userlist = todoListDbHelper.getUser(todoTaskToAddOrEdit.getId());
-
-        for(HashMap<String, String> user: userlist){
-            String record[] = convertStringToArray(user.get(COLUMN_CATEGORY));
-            for (int  i=0; i < record.length;  i++){
-                Chip chip = new Chip(this);
-                ChipDrawable drawable = ChipDrawable.createFromAttributes(this, null, 0, R.style.Widget_MaterialComponents_Chip_Choice);
-                chip.setChipDrawable(drawable);
-                chip.setText(record[i]+ "");
-                chipGroup.getChildCount();
-                chip.getChipStartPadding();
-                chip.getChipEndPadding();
-                chipGroup.addView(chip);
-            }
+        for (int  i=0; i < record.length;  i++){
+            Chip chip = new Chip(this);
+            ChipDrawable drawable = ChipDrawable.createFromAttributes(this, null, 0, R.style.Widget_MaterialComponents_Chip_Choice);
+            chip.setChipDrawable(drawable);
+            chip.setText(record[i]+ "");
+            chipGroup.getChildCount();
+            chip.getChipStartPadding();
+            chip.getChipEndPadding();
+            chipGroup.addView(chip);
         }
     }
 
