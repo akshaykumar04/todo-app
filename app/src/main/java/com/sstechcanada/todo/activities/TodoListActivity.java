@@ -60,6 +60,8 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
 
         mRecyclerView = mBinding.rvTodoList;
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
         mRecyclerView.setLayoutManager(layoutManager);
         mTodoListAdapter = new TodoListAdapter(this, this);
         mRecyclerView.setAdapter(mTodoListAdapter);

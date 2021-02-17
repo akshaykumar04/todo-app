@@ -91,10 +91,10 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoLi
         } else {
             dueDateString = TodoDateUtils.formatDueDate(mContext, dueDate);
         }
-
-        int priority = mCursor.getInt(mPriorityIndex);
+//
+//        int priority = mCursor.getInt(mPriorityIndex);
         holder.tvTodoDueDate.setText(dueDateString);
-        holder.tvTodoPriority.setText(mRes.getStringArray(R.array.priorities)[priority]);
+//        holder.tvTodoPriority.setText(mRes.getStringArray(R.array.priorities)[priority]);
         int isCompleted = mCursor.getInt(mCompletedIndex);
         holder.cbTodoDescription.setChecked(isCompleted == TodoTask.TASK_COMPLETED);
 
@@ -104,12 +104,12 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoLi
             holder.cbTodoDescription.setTextColor(mRes.getColor(R.color.colorCompleted));
             holder.cbTodoDescription.setSupportButtonTintList(completedCheckboxColors);
             holder.tvTodoPriority.setText(mRes.getString(R.string.completed));
-            priority = PriorityStarImageView.COMPLETED;
+//            priority = PriorityStarImageView.COMPLETED;
         } else {
             holder.clTodoListItem.setBackground(mRes.getDrawable(R.drawable.list_item_touch_selector));
             holder.cbTodoDescription.setTextColor(mRes.getColor(R.color.colorPrimaryDark));
             holder.cbTodoDescription.setSupportButtonTintList(unCompletedCheckboxColors);
-            holder.tvTodoPriority.setText(mRes.getStringArray(R.array.priorities)[priority]);
+//            holder.tvTodoPriority.setText(mRes.getStringArray(R.array.priorities)[priority]);
             if (dueDate < TodoDateUtils.getTodaysDateInMillis()) {
                 // display overdue tasks with the date in red
                 // yeah, I know red for both overdue and high priority may be not the best idea
@@ -119,7 +119,7 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoLi
                 Log.d(TAG, "color is " + (holder.tvTodoPriority.getCurrentTextColor()));
             }
         }
-        holder.ivTodoPriorityStar.setPriority(priority);
+//        holder.ivTodoPriorityStar.setPriority(priority);
     }
 
     @Override

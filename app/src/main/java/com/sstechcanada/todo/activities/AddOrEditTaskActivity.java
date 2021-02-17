@@ -192,7 +192,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
 
     public void addOrUpdateTask(View view) {
         String description = mBinding.etTaskDescription.getText().toString().trim();
-        int priority = TodoTask.HIGH_PRIORITY;
+        int priority = category_count;
         int isCompleted = TodoTask.TASK_NOT_COMPLETED;
         long dueDate = TodoTask.NO_DUE_DATE;
         Log.d(TAG, "Here");
