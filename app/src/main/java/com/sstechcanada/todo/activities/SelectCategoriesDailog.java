@@ -49,9 +49,6 @@ public class SelectCategoriesDailog extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                //clearing the previous category list
-                categories.clear();
-
                 //iterating through all the nodes
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Category category = postSnapshot.getValue(Category.class);

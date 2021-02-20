@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,25 +45,45 @@ import java.util.HashMap;
 import java.util.List;
 
 import static com.sstechcanada.todo.data.TodoListContract.TodoListEntry.COLUMN_CATEGORY;
-import static com.sstechcanada.todo.data.TodoListContract.TodoListEntry.COLUMN_CATEGORY_COUNT;
 
 public class AddOrEditTaskActivity extends AppCompatActivity {
     private static final String TAG = AddOrEditTaskActivity.class.getSimpleName();
+    //To Convert String to Array or Array to String
+    public static String strSeparator = "__,__";
     private static String[] numbers = new String[20];
     List<Category> categories;
     DatabaseReference databaseCategories;
     CardView addCategories;
+    ChipGroup chipGroup;
+    ProgressBar progressBar;
+    LinearLayout addMoreCategories;
     private ActivityAddOrEditTaskBinding mBinding;
     private int mTaskId = -1;
     private String mAddOrEdit;
     private GridView gridView;
     private GridViewAdapter adapter;
     private ArrayList<String> selectedStrings;
-    private int category_count = 0;
+    private int category_count = 0, chip_count;
     private String selectedResult = "";
     private TodoTask todoTaskToAddOrEdit;
-    private TextView tv;
-    ChipGroup chipGroup;
+    private TextView tv, noOfCat, addMoreCat;
+
+    public static String convertArrayToString(ArrayList<String> array) {
+        String str = "";
+        for (int i = 0; i < array.size(); i++) {
+            str = str + array.get(i);
+            // Do not append comma at the end of last element
+            if (i < array.size() - 1) {
+                str = str + strSeparator;
+            }
+        }
+        return str;
+    }
+
+    public static String[] convertStringToArray(String str) {
+        String[] arr = str.split(strSeparator);
+        return arr;
+    }
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -73,7 +93,8 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         long dueDate;
         int taskCompleted;
         tv = findViewById(R.id.tv);
-
+        noOfCat = findViewById(R.id.tv_category_number);
+        addMoreCat = findViewById(R.id.tv_add_more);
         if (savedInstanceState == null) {
             Bundle bundle = getIntent().getExtras();
             mAddOrEdit = bundle.getString(getString(R.string.intent_adding_or_editing_key));
@@ -143,17 +164,16 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         });
 
         //Grid View End
-        if(todoTaskToAddOrEdit != null){
+        if (todoTaskToAddOrEdit != null) {
             TodoListDbHelper todoListDbHelper = new TodoListDbHelper(AddOrEditTaskActivity.this);
             ArrayList<HashMap<String, String>> userlist = todoListDbHelper.getUser(mTaskId);
             String record[];
-            for(HashMap<String, String> user: userlist){
+            for (HashMap<String, String> user : userlist) {
                 record = convertStringToArray(user.get(COLUMN_CATEGORY));
                 display_categories(record);
             }
         }
     }
-
 
     private void selectPriorityRadioButton(int priority) {
         switch (priority) {
@@ -167,6 +187,15 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
                 mBinding.rbLowPriority.setChecked(true);
         }
     }
+
+//    private void addChip(String pItem, ChipGroup pChipGroup) {
+//        Chip lChip = new Chip(this);
+//        lChip.setText(pItem);
+//        lChip.setTextColor(getResources().getColor(R.color.colorAccent));
+//        lChip.setChipBackgroundColor(getResources().getColorStateList(R.color.design_default_color_primary));
+//
+//        pChipGroup.addView(lChip, pChipGroup.getChildCount() - 1);
+//    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -232,7 +261,6 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         }
     }
 
-
     private void insertOrUpdate(TodoTask todoTask) {
         // I used to have this functionality in TodoListActivity's onActivityResult method, but
         // then I couldn't reach it when editing a task directly from the App Widget
@@ -257,22 +285,12 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
 
     }
 
-//    private void addChip(String pItem, ChipGroup pChipGroup) {
-//        Chip lChip = new Chip(this);
-//        lChip.setText(pItem);
-//        lChip.setTextColor(getResources().getColor(R.color.colorAccent));
-//        lChip.setChipBackgroundColor(getResources().getColorStateList(R.color.design_default_color_primary));
-//
-//        pChipGroup.addView(lChip, pChipGroup.getChildCount() - 1);
-//    }
-
     @Override
     protected void onStart() {
         super.onStart();
         //attaching value event listener
 
     }
-
 
     public void selectCategoriesAlert() {
         LayoutInflater inflater = getLayoutInflater();
@@ -282,7 +300,8 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         // this is set the view from XML inside AlertDialog
         alert.setView(alertLayout);
         gridView = alertLayout.findViewById(R.id.grid_view_alert);
-        LinearLayout addMore = alertLayout.findViewById(R.id.addMoreCategoriesLayout);
+        addMoreCategories = alertLayout.findViewById(R.id.addMoreCategoriesLayout);
+        progressBar = alertLayout.findViewById(R.id.progress_circular);
         loadCategories();
         // disallow cancel of AlertDialog on click of back button and outside touch
         alert.setCancelable(false);
@@ -297,9 +316,14 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 selectedResult = convertArrayToString(selectedStrings);
                 category_count = selectedStrings.size();
-                chipGroup.removeAllViews();
-                String record[] = convertStringToArray(selectedResult);
-                if(todoTaskToAddOrEdit != null){
+                if (!selectedResult.equals("")) {
+                    String record[] = convertStringToArray(selectedResult);
+                    // Calling Display Category
+                    display_categories(record);
+
+//                    chipGroup.removeAllViews();
+                }
+                if (todoTaskToAddOrEdit != null) {
                     String id = String.valueOf(todoTaskToAddOrEdit.getId());
                     todoTaskToAddOrEdit.setCategory(selectedResult);
                     todoTaskToAddOrEdit.setCategory_count(category_count);
@@ -307,12 +331,12 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
 //                    todoListDbHelper1.updateCategory(selectedResult, category_count, Integer.parseInt(id));
 //                    Toast.makeText(AddOrEditTaskActivity.this, "Clicked", Toast.LENGTH_SHORT).show();
                 }
-                // Calling Display Category
-                display_categories(record);
+
+
             }
         });
 
-        addMore.setOnClickListener(new View.OnClickListener() {
+        addMoreCategories.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(AddOrEditTaskActivity.this, AddCategoryActivity.class));
@@ -334,7 +358,6 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
 
                 //clearing the previous category list
                 categories.clear();
-
                 //iterating through all the nodes
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Category category = postSnapshot.getValue(Category.class);
@@ -343,6 +366,9 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
 
                 adapter = new GridViewAdapter(categories, AddOrEditTaskActivity.this);
                 gridView.setAdapter(adapter);
+                gridView.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.INVISIBLE);
+                addMoreCategories.setVisibility(View.VISIBLE);
 //                //creating adapter
 //                CategoryAdapter categotyAdapter = new CategoryAdapter(AddCategoryActivity.this, categories);
 //                //attaching adapter to the listview
@@ -375,34 +401,27 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
 
     }
 
-    //To Convert String to Array or Array to String
-    public static String strSeparator = "__,__";
-    public static String convertArrayToString(ArrayList<String> array){
-        String str = "";
-        for (int i = 0;i<array.size(); i++) {
-            str = str+array.get(i);
-            // Do not append comma at the end of last element
-            if(i<array.size()-1){
-                str = str+strSeparator;
-            }
-        }
-        return str;
-    }
-    public static String[] convertStringToArray(String str){
-        String[] arr = str.split(strSeparator);
-        return arr;
-    }
-    void display_categories(String record[]){
+    void display_categories(String record[]) {
         chipGroup.removeAllViews();
-        for (int  i=0; i < record.length;  i++){
+        chipGroup.setVisibility(View.VISIBLE);
+        chip_count = record.length;
+        for (int i = 0; i < chip_count; i++) {
             Chip chip = new Chip(this);
             ChipDrawable drawable = ChipDrawable.createFromAttributes(this, null, 0, R.style.Widget_MaterialComponents_Chip_Choice);
             chip.setChipDrawable(drawable);
-            chip.setText(record[i]+ "");
+            chip.setText(record[i] + "");
             chipGroup.getChildCount();
             chip.getChipStartPadding();
             chip.getChipEndPadding();
             chipGroup.addView(chip);
+            noOfCat.setText(chip_count + " Categories Selected");
+            addMoreCat.setText("Click here to add more categories");
+        }
+
+        if (chip_count == 0){
+            Toast.makeText(this, "emplty", Toast.LENGTH_SHORT).show();
+
+            addMoreCat.setText("Click here to add more categories");
         }
     }
 
