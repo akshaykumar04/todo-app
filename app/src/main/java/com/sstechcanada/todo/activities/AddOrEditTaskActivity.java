@@ -227,8 +227,11 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         Log.d(TAG, "Here");
 
         if (description.equals("")) {
-            Toast.makeText(this, getString(R.string.description_cannot_be_empty), Toast.LENGTH_LONG).show();
-        } else {
+            Toast.makeText(this, getString(R.string.description_cannot_be_empty), Toast.LENGTH_SHORT).show();
+        }
+        else if (selectedResult.equals("")){
+            Toast.makeText(this, getString(R.string.category_cannot_be_empty), Toast.LENGTH_SHORT).show();
+        }else {
             // get the priority setting
             if (mBinding.rbMediumPriority.isChecked()) {
                 priority = TodoTask.MEDIUM_PRIORITY;
@@ -308,7 +311,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getBaseContext(), "Cancel clicked", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getBaseContext(), "Cancel clicked", Toast.LENGTH_SHORT).show();
             }
         });
         alert.setPositiveButton("Done", new DialogInterface.OnClickListener() {
@@ -395,7 +398,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
                     selectedStrings.add((String) parent.getItemAtPosition(position));
                 }
 
-                Toast.makeText(AddOrEditTaskActivity.this, convertArrayToString(selectedStrings), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(AddOrEditTaskActivity.this, convertArrayToString(selectedStrings), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -419,7 +422,6 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         }
 
         if (chip_count == 0){
-            Toast.makeText(this, "emplty", Toast.LENGTH_SHORT).show();
 
             addMoreCat.setText("Click here to add more categories");
         }
