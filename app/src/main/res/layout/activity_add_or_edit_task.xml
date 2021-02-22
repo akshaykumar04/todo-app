@@ -16,7 +16,8 @@
             android:layout_marginTop="32dp"
             android:text="@string/Categories"
             app:layout_constraintStart_toStartOf="@+id/et_task_description"
-            app:layout_constraintTop_toBottomOf="@+id/et_task_description" />
+            app:layout_constraintTop_toBottomOf="@+id/et_task_description"
+            />
 
         <EditText
             android:id="@+id/et_task_description"
@@ -28,11 +29,17 @@
             android:layout_marginRight="4dp"
             android:ems="10"
             android:hint="@string/describe_your_task"
-            android:inputType="textCapSentences"
+            android:inputType="textMultiLine"
+            android:lines="5"
+            android:minLines="3"
             android:paddingLeft="3dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/disc_edit_text"
+            android:gravity="start"
+            android:textColor="@color/discp_text"
+            />
 
         <TextView
             android:id="@+id/tv_priority_label"
