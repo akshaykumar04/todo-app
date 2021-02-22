@@ -434,6 +434,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
             chipGroup.getChildCount();
             chip.getChipStartPadding();
             chip.getChipEndPadding();
+            chip.setTextAppearanceResource(R.style.SmallerText);
             chipGroup.addView(chip);
             noOfCat.setText(chip_count + " Categories Selected");
             addMoreCat.setText("Click here to add more categories");

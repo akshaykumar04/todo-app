@@ -63,4 +63,9 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <style name="SmallerText" parent="TextAppearance.AppCompat.Small">
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:padding">5dp</item>
+    </style>
+
 </resources>
