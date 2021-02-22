@@ -9,4 +9,15 @@
     <color name="colorCompletedBackground">#EEEEEE</color>
     <color name="colorUncompletedBackground">#FFFFFF</color>
     <color name="colorNormalWidgetText">#757575</color>
+
+    <color name="chip_1">#EC9690</color>
+    <color name="chip_2">#ED8EAE</color>
+    <color name="chip_3">#EAA0F6</color>
+    <color name="chip_4">#B9A3E3</color>
+    <color name="chip_5">#A4AEE6</color>
+    <color name="chip_6">#9EDDE6</color>
+    <color name="chip_7">#AAE3DD</color>
+    <color name="chip_8">#A6D5A8</color>
+    <color name="chip_9">#F1E9A7</color>
+    <color name="chip_10">#FFAE94</color>
 </resources>

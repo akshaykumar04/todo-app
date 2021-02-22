@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -405,6 +406,18 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
     }
 
     void display_categories(String record[]) {
+        int[] colors = new int[] {
+                R.color.chip_1,
+                R.color.chip_2,
+                R.color.chip_3,
+                R.color.chip_4,
+                R.color.chip_5,
+                R.color.chip_6,
+                R.color.chip_7,
+                R.color.chip_8,
+                R.color.chip_9,
+                R.color.chip_10
+        };
         chipGroup.removeAllViews();
         chipGroup.setVisibility(View.VISIBLE);
         chip_count = record.length;
@@ -412,6 +425,11 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
             Chip chip = new Chip(this);
             ChipDrawable drawable = ChipDrawable.createFromAttributes(this, null, 0, R.style.Widget_MaterialComponents_Chip_Choice);
             chip.setChipDrawable(drawable);
+            if(i>=0 && i<10){
+                chip.setChipBackgroundColorResource(colors[i]);
+            }else if(i>=3){
+                chip.setChipBackgroundColorResource(colors[i%10]);
+            }
             chip.setText(record[i] + "");
             chipGroup.getChildCount();
             chip.getChipStartPadding();
@@ -419,6 +437,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
             chipGroup.addView(chip);
             noOfCat.setText(chip_count + " Categories Selected");
             addMoreCat.setText("Click here to add more categories");
+
         }
 
         if (chip_count == 0){
