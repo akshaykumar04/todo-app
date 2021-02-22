@@ -20,4 +20,7 @@
     <color name="chip_8">#A6D5A8</color>
     <color name="chip_9">#F1E9A7</color>
     <color name="chip_10">#FFAE94</color>
+
+    <color name="discp_border">#D6D4D3</color>
+    <color name="discp_text">#7E7D7C</color>
 </resources>
