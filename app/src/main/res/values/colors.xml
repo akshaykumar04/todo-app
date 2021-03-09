@@ -23,4 +23,14 @@
 
     <color name="discp_border">#D6D4D3</color>
     <color name="discp_text">#7E7D7C</color>
+
+    <color name="circle1">#FB8880</color>
+    <color name="circle2">#FF82AD</color>
+    <color name="circle3">#E67EF8</color>
+    <color name="circle4">#A97DF8</color>
+    <color name="circle5">#7B8DF3</color>
+    <color name="circle6">#7DF882</color>
+    <color name="circle7">#F0FB7F</color>
+    <color name="circle8">#F8D97C</color>
+    <color name="circle9">#F69A7D</color>
 </resources>
