@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +22,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.databinding.DataBindingUtil;
 
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
 import com.google.android.material.chip.ChipGroup;
@@ -39,6 +40,11 @@ import com.sstechcanada.todo.data.TodoListDbHelper;
 import com.sstechcanada.todo.databinding.ActivityAddOrEditTaskBinding;
 import com.sstechcanada.todo.models.Category;
 import com.sstechcanada.todo.models.TodoTask;
+
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -174,6 +180,10 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
                 display_categories(record);
             }
         }
+
+        MobileAds.initialize(this, initializationStatus -> {
+        });
+
     }
 
     private void selectPriorityRadioButton(int priority) {
@@ -336,7 +346,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
 //                    Toast.makeText(AddOrEditTaskActivity.this, "Clicked", Toast.LENGTH_SHORT).show();
                 }
 
-
+                loadAd();
             }
         });
 
@@ -403,6 +413,20 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void loadAd() {
+        InterstitialAd mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId(getResources().getString(R.string.interstitial_ad_unit_test_id));
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mInterstitialAd.loadAd(adRequest);
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                mInterstitialAd.show();
+            }
+        });
     }
 
     void display_categories(String record[]) {
