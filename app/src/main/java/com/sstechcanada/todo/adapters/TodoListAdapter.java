@@ -9,7 +9,10 @@ import android.graphics.Color;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.graphics.drawable.GradientDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +38,8 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoLi
     private int mDueDateIndex;
     private int m_IDIndex;
     private int mCompletedIndex;
+    //Circle Text View
+
 
     public TodoListAdapter(Context context, TodoListAdapterOnClickHandler todoListAdapterOnClickHandler) {
         mClickHandler = todoListAdapterOnClickHandler;
@@ -80,7 +85,8 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoLi
     public void onBindViewHolder(@NonNull TodoListAdapter.TodoListAdapterViewHolder holder, int position) {
         mCursor.moveToPosition(position);
 
-        holder.cbTodoDescription.setText(mCursor.getString(mDescriptionIndex));
+        holder.tvTextDesc.setText(mCursor.getString(mDescriptionIndex));
+
         holder.tvTodoDueDate.setTextColor(holder.tvTodoPriority.getCurrentTextColor());
 
         String dueDateString;
@@ -91,25 +97,25 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoLi
         } else {
             dueDateString = TodoDateUtils.formatDueDate(mContext, dueDate);
         }
-
-        int priority = mCursor.getInt(mPriorityIndex);
+//
+//        int priority = mCursor.getInt(mPriorityIndex);
         holder.tvTodoDueDate.setText(dueDateString);
-        holder.tvTodoPriority.setText(mRes.getStringArray(R.array.priorities)[priority]);
+//        holder.tvTodoPriority.setText(mRes.getStringArray(R.array.priorities)[priority]);
         int isCompleted = mCursor.getInt(mCompletedIndex);
         holder.cbTodoDescription.setChecked(isCompleted == TodoTask.TASK_COMPLETED);
 
         if (isCompleted == TodoTask.TASK_COMPLETED) {
             // if the task is completed, we want everything grey
             holder.clTodoListItem.setBackground(mRes.getDrawable(R.drawable.list_item_completed_touch_selector));
-            holder.cbTodoDescription.setTextColor(mRes.getColor(R.color.colorCompleted));
+            holder.tvTextDesc.setTextColor(mRes.getColor(R.color.colorCompleted));
             holder.cbTodoDescription.setSupportButtonTintList(completedCheckboxColors);
             holder.tvTodoPriority.setText(mRes.getString(R.string.completed));
-            priority = PriorityStarImageView.COMPLETED;
+//            priority = PriorityStarImageView.COMPLETED;
         } else {
             holder.clTodoListItem.setBackground(mRes.getDrawable(R.drawable.list_item_touch_selector));
-            holder.cbTodoDescription.setTextColor(mRes.getColor(R.color.colorPrimaryDark));
+            holder.tvTextDesc.setTextColor(mRes.getColor(R.color.colorPrimaryDark));
             holder.cbTodoDescription.setSupportButtonTintList(unCompletedCheckboxColors);
-            holder.tvTodoPriority.setText(mRes.getStringArray(R.array.priorities)[priority]);
+//            holder.tvTodoPriority.setText(mRes.getStringArray(R.array.priorities)[priority]);
             if (dueDate < TodoDateUtils.getTodaysDateInMillis()) {
                 // display overdue tasks with the date in red
                 // yeah, I know red for both overdue and high priority may be not the best idea
@@ -119,7 +125,16 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoLi
                 Log.d(TAG, "color is " + (holder.tvTodoPriority.getCurrentTextColor()));
             }
         }
-        holder.ivTodoPriorityStar.setPriority(priority);
+//        holder.ivTodoPriorityStar.setPriority(priority);
+
+        //Circle
+        // Set the proper background color on the magnitude circle.
+        // Fetch the background from the TextView, which is a GradientDrawable.
+        GradientDrawable magnitudeCircle = (GradientDrawable) holder.circle_per.getBackground();
+        // Get the appropriate background color based on the current earthquake magnitude
+        int magnitudeColor = getMagnitudeColor(position%9);
+        // Set the color on the magnitude circle
+        magnitudeCircle.setColor(magnitudeColor);
     }
 
     @Override
@@ -149,7 +164,7 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoLi
 
     public class TodoListAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         final AppCompatCheckBox cbTodoDescription;
-        final TextView tvTodoDueDate;
+        TextView tvTodoDueDate, tvTextDesc, circle_per;
         final TextView tvTodoPriority;
         final PriorityStarImageView ivTodoPriorityStar;
         final ConstraintLayout clTodoListItem;
@@ -157,12 +172,15 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoLi
         public TodoListAdapterViewHolder(View itemView) {
             super(itemView);
             cbTodoDescription = itemView.findViewById(R.id.cb_todo_description);
+            tvTextDesc = itemView.findViewById(R.id.tv_todo_desc);
             tvTodoDueDate = itemView.findViewById(R.id.tv_todo_due_date);
             tvTodoPriority = itemView.findViewById(R.id.tv_todo_priority);
             ivTodoPriorityStar = itemView.findViewById(R.id.iv_todo_priority_star);
             clTodoListItem = (ConstraintLayout) itemView;
             itemView.setOnClickListener(this);
             cbTodoDescription.setOnClickListener(this);
+            //Circle
+            circle_per = itemView.findViewById(R.id.circle_per_item);
         }
 
         @Override
@@ -175,5 +193,44 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoLi
                     mCursor.getInt(mCompletedIndex));
             mClickHandler.onClick(todoTask, view);
         }
+    }
+
+    private int getMagnitudeColor(int pos) {
+        int magnitudeColorResourceId;
+        int magnitudeFloor = pos;
+        switch (magnitudeFloor) {
+            case 0:
+            case 1:
+                magnitudeColorResourceId = R.color.circle1;
+                break;
+            case 2:
+                magnitudeColorResourceId = R.color.circle2;
+                break;
+            case 3:
+                magnitudeColorResourceId = R.color.circle3;
+                break;
+            case 4:
+                magnitudeColorResourceId = R.color.circle4;
+                break;
+            case 5:
+                magnitudeColorResourceId = R.color.circle5;
+                break;
+            case 6:
+                magnitudeColorResourceId = R.color.circle6;
+                break;
+            case 7:
+                magnitudeColorResourceId = R.color.circle7;
+                break;
+            case 8:
+                magnitudeColorResourceId = R.color.circle8;
+                break;
+            case 9:
+                magnitudeColorResourceId = R.color.circle9;
+                break;
+            default:
+                magnitudeColorResourceId = R.color.circle1;
+                break;
+        }
+        return ContextCompat.getColor(mContext, magnitudeColorResourceId);
     }
 }

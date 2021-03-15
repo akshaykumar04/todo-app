@@ -1,8 +1,10 @@
 package com.sstechcanada.todo.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -19,111 +21,100 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sstechcanada.todo.R;
-import com.sstechcanada.todo.adapters.ArtistList;
-import com.sstechcanada.todo.models.Artist;
+import com.sstechcanada.todo.adapters.CategoryAdapter;
+import com.sstechcanada.todo.models.Category;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoryActivity extends AppCompatActivity {
+public class AddCategoryActivity extends AppCompatActivity {
 
     //view objects
     EditText editTextName;
-    Button buttonAddArtist;
-    ListView listViewArtists;
-
-    //a list to store all the artist from firebase database
-    List<Artist> artists;
-
-    //our database reference object
-    DatabaseReference databaseArtists;
+    Button buttonAddCategory;
+    ListView listViewCategory;
+    
+    List<Category> categories;
+    
+    DatabaseReference databaseCategories;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category);
-
-
-
-        //getting the reference of artists node
-        databaseArtists = FirebaseDatabase.getInstance().getReference("categories");
-
-        //getting views
+        
+        databaseCategories = FirebaseDatabase.getInstance().getReference("categories");
+        
         editTextName = (EditText) findViewById(R.id.editTextName);
-        listViewArtists = (ListView) findViewById(R.id.listViewArtists);
+        listViewCategory = (ListView) findViewById(R.id.listViewCategory);
 
-        buttonAddArtist = (Button) findViewById(R.id.buttonAddArtist);
+        buttonAddCategory = (Button) findViewById(R.id.buttonAddCategory);
 
-        //list to store artists
-        artists = new ArrayList<>();
+        categories = new ArrayList<>();
 
 
-        //adding an onclicklistener to button
-        buttonAddArtist.setOnClickListener(new View.OnClickListener() {
+        buttonAddCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //calling the method addArtist()
-                //the method is defined below
-                //this method is actually performing the write operation
-                addArtist();
+                addCategory();
             }
         });
 
-        listViewArtists.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listViewCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                //getting the selected artist
-                Artist artist = artists.get(i);
+
+                Category category = categories.get(i);
+                showUpdateDialog(category.getCategoryId(), category.getCategoryName());
 
 //                //creating an intent
-//                Intent intent = new Intent(getApplicationContext(), ArtistActivity.class);
+//                Intent intent = new Intent(getApplicationContext(), CategoryActivity.class);
 //
-//                //putting artist name and id to intent
-//                intent.putExtra(ARTIST_ID, artist.getArtistId());
-//                intent.putExtra(ARTIST_NAME, artist.getArtistName());
+//                //putting category name and id to intent
+//                intent.putExtra(CATEGORY_ID, category.getCategoryId());
+//                intent.putExtra(CATEGORY_NAME, category.getCategoryName());
 //
 //                //starting the activity with intent
 //                startActivity(intent);
             }
         });
 
-        listViewArtists.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+       listViewCategory.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Artist artist = artists.get(i);
-                showUpdateDeleteDialog(artist.getArtistId(), artist.getArtistName());
+                Category category = categories.get(i);
+                showUpdateDialog(category.getCategoryId(), category.getCategoryName());
                 return true;
             }
         });
     }
 
     /*
-     * This method is saving a new artist to the
+     * This method is saving a new category to the
      * Firebase Realtime Database
      * */
-    private void addArtist() {
+    private void addCategory() {
         //getting the values to save
         String name = editTextName.getText().toString().trim();
-        String genre = "gen";
 
         //checking if the value is provided
         if (!TextUtils.isEmpty(name)) {
 
             //getting a unique id using push().getKey() method
-            //it will create a unique id and we will use it as the Primary Key for our Artist
-            String id = databaseArtists.push().getKey();
+            //it will create a unique id and we will use it as the Primary Key for our Category
+            String id = databaseCategories.push().getKey();
 
-            //creating an Artist Object
-            Artist artist = new Artist(id, name, genre);
+            //creating an Category Object
+            Category category = new Category(id, name);
 
-            //Saving the Artist
-            databaseArtists.child(id).setValue(artist);
+            //Saving the Category
+            databaseCategories.child(id).setValue(category);
 
             //setting edittext to blank again
             editTextName.setText("");
 
             //displaying a success toast
-            Toast.makeText(this, "Artist added", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Category added", Toast.LENGTH_LONG).show();
         } else {
             //if the value is not given displaying a toast
             Toast.makeText(this, "Please enter a name", Toast.LENGTH_LONG).show();
@@ -135,35 +126,33 @@ public class CategoryActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         //attaching value event listener
-        databaseArtists.addValueEventListener(new ValueEventListener() {
+        databaseCategories.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                //clearing the previous artist list
-                artists.clear();
+                //clearing the previous category list
+                categories.clear();
 
                 //iterating through all the nodes
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    //getting artist
-                    Artist artist = postSnapshot.getValue(Artist.class);
-                    //adding artist to the list
-                    artists.add(artist);
+                    Category category = postSnapshot.getValue(Category.class);
+                    categories.add(category);
                 }
 
                 //creating adapter
-                ArtistList artistAdapter = new ArtistList(CategoryActivity.this, artists);
+                CategoryAdapter categotyAdapter = new CategoryAdapter(AddCategoryActivity.this, categories);
                 //attaching adapter to the listview
-                listViewArtists.setAdapter(artistAdapter);
+                listViewCategory.setAdapter(categotyAdapter);
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
     }
 
-    private void showUpdateDeleteDialog(final String artistId, String artistName) {
+    private void showUpdateDialog(final String categoryId, String categoryName) {
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
@@ -171,10 +160,11 @@ public class CategoryActivity extends AppCompatActivity {
         dialogBuilder.setView(dialogView);
 
         final EditText editTextName = (EditText) dialogView.findViewById(R.id.editTextName);
-        final Button buttonUpdate = (Button) dialogView.findViewById(R.id.buttonUpdateArtist);
-        final Button buttonDelete = (Button) dialogView.findViewById(R.id.buttonDeleteArtist);
+        final Button buttonUpdate = (Button) dialogView.findViewById(R.id.buttonUpdateCategory);
+        final Button buttonDelete = dialogView.findViewById(R.id.buttonDeleteCategory);
 
-        dialogBuilder.setTitle(artistName);
+
+        dialogBuilder.setTitle(categoryName);
         final AlertDialog b = dialogBuilder.create();
         b.show();
 
@@ -183,9 +173,8 @@ public class CategoryActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String name = editTextName.getText().toString().trim();
-                String genre = "gen";
                 if (!TextUtils.isEmpty(name)) {
-                    updateArtist(artistId, name, genre);
+                    updateCategory(categoryId, name);
                     b.dismiss();
                 }
             }
@@ -195,36 +184,37 @@ public class CategoryActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                deleteArtist(artistId);
+                deleteCategory(categoryId);
                 b.dismiss();
             }
         });
+
     }
 
 
-    private boolean updateArtist(String id, String name, String genre) {
-        //getting the specified artist reference
+
+
+    private void updateCategory(String id, String name) {
+        //getting the specified category reference
         DatabaseReference dR = FirebaseDatabase.getInstance().getReference("categories").child(id);
 
-        //updating artist
-        Artist artist = new Artist(id, name, genre);
-        dR.setValue(artist);
+        //updating category
+        Category category = new Category(id, name);
+        dR.setValue(category);
         Toast.makeText(getApplicationContext(), "Category Updated", Toast.LENGTH_LONG).show();
-        return true;
     }
 
 
-    private boolean deleteArtist(String id) {
-        //getting the specified artist reference
+    private void deleteCategory(String id) {
+        //getting the specified category reference
         DatabaseReference dR = FirebaseDatabase.getInstance().getReference("categories").child(id);
 
-        //removing artist
+        //removing category
         dR.removeValue();
 
-        //getting the tracks reference for the specified artist
+        //getting the tracks reference for the specified category
         Toast.makeText(getApplicationContext(), "Category Deleted", Toast.LENGTH_LONG).show();
 
-        return true;
     }
 
 

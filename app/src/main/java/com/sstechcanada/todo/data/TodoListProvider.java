@@ -15,7 +15,7 @@ public class TodoListProvider extends ContentProvider{
     public static final int CODE_TASK_WITH_ID = 101;
     // tasks are sorted first by completion, then by the selected sort order, then by the other
     // sort order, then by the description
-    public static final String SORT_ORDER_PRIORITY = TodoListContract.TodoListEntry.COLUMN_COMPLETED + ", " + TodoListContract.TodoListEntry.COLUMN_PRIORITY + ", " + TodoListContract.TodoListEntry.COLUMN_DUE_DATE + ", " + TodoListContract.TodoListEntry.COLUMN_DESCRIPTION;
+    public static final String SORT_ORDER_PRIORITY = TodoListContract.TodoListEntry.COLUMN_CATEGORY_COUNT + ", " + TodoListContract.TodoListEntry.COLUMN_DESCRIPTION + ", " + TodoListContract.TodoListEntry.COLUMN_PRIORITY + ", " + TodoListContract.TodoListEntry.COLUMN_DUE_DATE + ", " + TodoListContract.TodoListEntry.COLUMN_COMPLETED;
     public static final String SORT_ORDER_DUEDATE = TodoListContract.TodoListEntry.COLUMN_COMPLETED + ", " + TodoListContract.TodoListEntry.COLUMN_DUE_DATE + ", " + TodoListContract.TodoListEntry.COLUMN_PRIORITY + ", " + TodoListContract.TodoListEntry.COLUMN_DESCRIPTION;
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();

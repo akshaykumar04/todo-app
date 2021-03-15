@@ -12,11 +12,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
+        android:background="@drawable/disc_edit_text"
+        android:padding="10dp"
+        android:maxLines="1"
         android:hint="Enter name" />
 
 
     <Button
-        android:id="@+id/buttonAddArtist"
+        android:id="@+id/buttonAddCategory"
         android:layout_width="match_parent"
         android:layout_below="@id/editTextName"
         android:layout_height="wrap_content"
@@ -29,12 +32,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:textSize="24sp"
-        android:layout_below="@id/buttonAddArtist"
+        android:textSize="20sp"
+        android:layout_below="@id/buttonAddCategory"
         android:text="Categories" />
 
     <ListView
-        android:id="@+id/listViewArtists"
+        android:id="@+id/listViewCategory"
         android:layout_width="match_parent"
         android:layout_marginTop="20dp"
         android:layout_height="wrap_content"
