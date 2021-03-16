@@ -6,7 +6,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp">
+        android:padding="16dp"
+        >
+
+        <include
+            layout="@layout/act_bar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteY="-13dp" />
 
         <TextView
             android:id="@+id/tv_categories"
@@ -16,31 +23,30 @@
             android:layout_marginTop="32dp"
             android:text="@string/Categories"
             app:layout_constraintStart_toStartOf="@+id/et_task_description"
-            app:layout_constraintTop_toBottomOf="@+id/et_task_description"
-            />
+            app:layout_constraintTop_toBottomOf="@+id/et_task_description" />
 
         <EditText
             android:id="@+id/et_task_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="4dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="88dp"
             android:layout_marginEnd="4dp"
             android:layout_marginRight="4dp"
+            android:background="@drawable/disc_edit_text"
             android:ems="10"
+            android:gravity="start"
             android:hint="@string/describe_your_task"
             android:inputType="textMultiLine"
             android:lines="7"
             android:minLines="4"
-            android:paddingLeft="3dp"
             android:padding="9dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:background="@drawable/disc_edit_text"
-            android:gravity="start"
+            android:paddingLeft="3dp"
             android:textColor="@color/discp_text"
-            />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.75"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_priority_label"
@@ -163,17 +169,16 @@
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chipGroup"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            app:chipSpacing="10dp"
             android:visibility="gone"
+            app:chipSpacing="10dp"
             app:layout_constraintEnd_toEndOf="@+id/et_task_description"
             app:layout_constraintHorizontal_bias="0.75"
             app:layout_constraintStart_toStartOf="@+id/et_task_description"
-            app:layout_constraintTop_toBottomOf="@+id/tv_categories"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            />
+            app:layout_constraintTop_toBottomOf="@+id/tv_categories" />
 
         <GridView
             android:id="@+id/grid_view"
@@ -209,9 +214,9 @@
 
 
                 <TextView
+                    android:id="@+id/tv_category_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/tv_category_number"
                     android:layout_gravity="center_horizontal"
                     android:text="No Categories Selected"
                     android:textAlignment="center"
@@ -219,11 +224,11 @@
 
 
                 <TextView
+                    android:id="@+id/tv_add_more"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="12dp"
-                    android:id="@+id/tv_add_more"
                     android:text="Click here to select categories"
                     android:textAlignment="center"
                     android:textSize="12sp" />
@@ -241,12 +246,12 @@
         </androidx.cardview.widget.CardView>
 
         <TextView
-            android:visibility="gone"
             android:id="@+id/tv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="TextView"
             android:textSize="18sp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.045"

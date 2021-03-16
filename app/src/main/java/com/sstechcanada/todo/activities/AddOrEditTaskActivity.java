@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -68,6 +69,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
     private String selectedResult = "";
     private TodoTask todoTaskToAddOrEdit;
     private TextView tv, noOfCat, addMoreCat;
+    private ImageButton toolbar_profile;
 
     public static String convertArrayToString(ArrayList<String> array) {
         String str = "";
@@ -90,7 +92,16 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_add_or_edit_task);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar_profile = findViewById(R.id.profile_toolbar);
+        toolbar_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(AddOrEditTaskActivity.this, "CHl GYa", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         long dueDate;
         int taskCompleted;
         tv = findViewById(R.id.tv);

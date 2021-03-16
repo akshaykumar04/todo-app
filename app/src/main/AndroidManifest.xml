@@ -8,9 +8,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MaterialComponents.Light">
-        <activity android:name=".activities.SelectCategoriesDailog"
-            android:theme="@style/Theme.MaterialComponents.Light.Dialog"></activity>
+        android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
+        <activity android:name=".activities.SelectCategoriesDailog">
+<!--            android:theme="@style/Theme.MaterialComponents.Light.Dialog"-->
+        </activity>
         <activity android:name=".activities.TodoListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
