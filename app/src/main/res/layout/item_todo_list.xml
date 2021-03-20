@@ -54,16 +54,17 @@
                 android:background="@drawable/check_per_item"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.444"
+                app:layout_constraintHorizontal_bias="0.597"
                 app:layout_constraintStart_toEndOf="@+id/tv_todo_desc"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.488" />
 
             <TextView
                 android:id="@+id/tv_todo_desc"
                 android:layout_width="250dp"
                 android:layout_height="22dp"
-                android:layout_marginEnd="64dp"
-                android:layout_marginRight="64dp"
+                android:layout_marginEnd="84dp"
+                android:layout_marginRight="84dp"
                 android:ellipsize="end"
                 android:fontFamily="@font/raleway_semibold"
                 android:maxLines="1"
@@ -74,20 +75,21 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/cb_todo_description"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.515" />
+                app:layout_constraintVertical_bias="0.484" />
 
             <TextView
                 android:id="@+id/circle_per_item"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
                 android:background="@drawable/circle_per_item"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tv_todo_desc"
-                app:layout_constraintHorizontal_bias="0.377"
+                app:layout_constraintHorizontal_bias="0.666"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.488" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
