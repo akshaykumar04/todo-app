@@ -9,6 +9,7 @@
         android:background="#FFffff"
         tools:context="com.sstechcanada.todo.activities.TodoListActivity">
         <include layout = "@layout/act_bar"/>
+
         <ImageView
             android:id="@+id/placeholderImage"
             android:layout_width="wrap_content"
@@ -21,10 +22,11 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_todo_list"
             android:layout_width="match_parent"
-            android:layout_height="619dp"
+            android:layout_height="match_parent"
             android:visibility="visible"
             app:layout_anchor="@+id/placeholderImage"
-            app:layout_anchorGravity="center" />
+            app:layout_anchorGravity="center"
+            android:layout_marginTop="?attr/actionBarSize"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab"
