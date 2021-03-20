@@ -2,11 +2,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-            android:layout_height="match_parent"
+        android:layout_height="match_parent"
         android:background="#FFffff"
-            tools:context="com.sstechcanada.todo.activities.TodoListActivity">
+        tools:context="com.sstechcanada.todo.activities.TodoListActivity">
+        <include layout = "@layout/act_bar"/>
 
         <ImageView
             android:id="@+id/placeholderImage"
@@ -18,11 +20,13 @@
             app:srcCompat="@drawable/placeholder" />
 
         <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_todo_list"
-                android:visibility="visible"
-                android:layout_marginTop="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+            android:id="@+id/rv_todo_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            app:layout_anchor="@+id/placeholderImage"
+            app:layout_anchorGravity="center"
+            android:layout_marginTop="?attr/actionBarSize"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab"
