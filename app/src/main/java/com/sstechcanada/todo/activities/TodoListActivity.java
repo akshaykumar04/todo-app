@@ -18,11 +18,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
@@ -54,6 +56,7 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
     private TodoListAdapter mTodoListAdapter;
     private ActivityTodoListBinding mBinding;
     private SharedPreferences mSharedPreferences;
+    private ImageButton toolbar_profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,10 +70,18 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
         mTodoListAdapter = new TodoListAdapter(this, this);
         mRecyclerView.setAdapter(mTodoListAdapter);
 
-        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.abs_layout);
+//        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+//        getSupportActionBar().setCustomView(R.layout.abs_layout);
 //        DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(this, LinearLayoutManager.VERTICAL);
 //        mRecyclerView.addItemDecoration(mDividerItemDecoration);
+
+        toolbar_profile = findViewById(R.id.profile_toolbar);
+        toolbar_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(TodoListActivity.this, "CHl GYa", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         FloatingActionButton fab = mBinding.fab;
         fab.setOnClickListener(new View.OnClickListener() {
@@ -95,7 +106,8 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.todo_list_menu, menu);
-        return true;
+        //For 3 Dot menu
+        return false;
     }
 
     @SuppressLint("NonConstantResourceId")
