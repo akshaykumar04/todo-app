@@ -51,11 +51,11 @@
             <TextView
                 android:layout_width="10dp"
                 android:layout_height="10dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginRight="32dp"
                 android:background="@drawable/check_per_item"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.597"
-                app:layout_constraintStart_toEndOf="@+id/tv_todo_desc"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.488" />
 
@@ -63,8 +63,8 @@
                 android:id="@+id/tv_todo_desc"
                 android:layout_width="250dp"
                 android:layout_height="22dp"
-                android:layout_marginEnd="84dp"
-                android:layout_marginRight="84dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
                 android:ellipsize="end"
                 android:fontFamily="@font/raleway_semibold"
                 android:maxLines="1"
@@ -73,7 +73,7 @@
                 android:textSize="16sp"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/cb_todo_description"
+                app:layout_constraintStart_toEndOf="@+id/circle_per_item"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.484" />
 
@@ -81,12 +81,10 @@
                 android:id="@+id/circle_per_item"
                 android:layout_width="10dp"
                 android:layout_height="10dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp"
                 android:background="@drawable/circle_per_item"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tv_todo_desc"
-                app:layout_constraintHorizontal_bias="0.666"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.488" />
