@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sstechcanada.todo">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
         <activity android:name=".activities.SelectCategoriesDailog">
-<!--            android:theme="@style/Theme.MaterialComponents.Light.Dialog"-->
+            <!--            android:theme="@style/Theme.MaterialComponents.Light.Dialog"-->
         </activity>
         <activity android:name=".activities.TodoListActivity">
             <intent-filter>
@@ -19,9 +22,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activities.AddCategoryActivity"
             android:launchMode="singleTop"></activity>
+        <activity android:name=".activities.auth.LoginActivity" />
+
         <activity
             android:name=".activities.SettingsActivity"
             android:parentActivityName=".activities.TodoListActivity">
@@ -66,6 +72,9 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3347511713"/>
     </application>
 
 </manifest>
