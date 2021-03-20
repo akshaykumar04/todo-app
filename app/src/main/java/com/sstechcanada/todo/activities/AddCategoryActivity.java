@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -63,7 +64,8 @@ public class AddCategoryActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-//                Category category = categories.get(i);
+                Category category = categories.get(i);
+                showUpdateDialog(category.getCategoryId(), category.getCategoryName());
 
 //                //creating an intent
 //                Intent intent = new Intent(getApplicationContext(), CategoryActivity.class);
@@ -81,7 +83,7 @@ public class AddCategoryActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Category category = categories.get(i);
-                showUpdateDeleteDialog(category.getCategoryId(), category.getCategoryName());
+                showUpdateDialog(category.getCategoryId(), category.getCategoryName());
                 return true;
             }
         });
@@ -150,7 +152,7 @@ public class AddCategoryActivity extends AppCompatActivity {
         });
     }
 
-    private void showUpdateDeleteDialog(final String categoryId, String categoryName) {
+    private void showUpdateDialog(final String categoryId, String categoryName) {
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
@@ -159,7 +161,8 @@ public class AddCategoryActivity extends AppCompatActivity {
 
         final EditText editTextName = (EditText) dialogView.findViewById(R.id.editTextName);
         final Button buttonUpdate = (Button) dialogView.findViewById(R.id.buttonUpdateCategory);
-        final Button buttonDelete = (Button) dialogView.findViewById(R.id.buttonDeleteCategory);
+        final Button buttonDelete = dialogView.findViewById(R.id.buttonDeleteCategory);
+
 
         dialogBuilder.setTitle(categoryName);
         final AlertDialog b = dialogBuilder.create();
@@ -185,7 +188,10 @@ public class AddCategoryActivity extends AppCompatActivity {
                 b.dismiss();
             }
         });
+
     }
+
+
 
 
     private void updateCategory(String id, String name) {
