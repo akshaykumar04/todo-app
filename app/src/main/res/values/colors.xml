@@ -33,4 +33,6 @@
     <color name="circle7">#F0FB7F</color>
     <color name="circle8">#F8D97C</color>
     <color name="circle9">#F69A7D</color>
+
+    <color name="toolbar_background">#FFFFFF</color>
 </resources>
