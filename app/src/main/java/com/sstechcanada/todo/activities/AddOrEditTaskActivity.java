@@ -90,7 +90,8 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
     }
 
     public static String[] convertStringToArray(String str) {
-        String[] arr = str.split(strSeparator);
+        String[] arr={};
+        if(str.length() != 0){arr = str.split(strSeparator);}
         return arr;
     }
 
@@ -251,7 +252,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         if (description.equals("")) {
             Toast.makeText(this, getString(R.string.description_cannot_be_empty), Toast.LENGTH_SHORT).show();
         }
-        else if (selectedResult.equals("")){
+        else if (chipGroup.getChildCount() == 0){
             Toast.makeText(this, getString(R.string.category_cannot_be_empty), Toast.LENGTH_SHORT).show();
         }else {
             // get the priority setting
@@ -341,22 +342,15 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 selectedResult = convertArrayToString(selectedStrings);
                 category_count = selectedStrings.size();
-                if (!selectedResult.equals("")) {
-                    String record[] = convertStringToArray(selectedResult);
-                    // Calling Display Category
-                    display_categories(record);
-
-//                    chipGroup.removeAllViews();
-                }
+//                if (!selectedResult.equals("")) {
+                String record[] = convertStringToArray(selectedResult);
+                // Calling Display Category
+                display_categories(record);
+//                }
                 if (todoTaskToAddOrEdit != null) {
-                    String id = String.valueOf(todoTaskToAddOrEdit.getId());
                     todoTaskToAddOrEdit.setCategory(selectedResult);
                     todoTaskToAddOrEdit.setCategory_count(category_count);
-//                    TodoListDbHelper todoListDbHelper1 = new TodoListDbHelper(AddOrEditTaskActivity.this);
-//                    todoListDbHelper1.updateCategory(selectedResult, category_count, Integer.parseInt(id));
-//                    Toast.makeText(AddOrEditTaskActivity.this, "Clicked", Toast.LENGTH_SHORT).show();
                 }
-
                 loadAd();
             }
         });
@@ -456,6 +450,13 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         chipGroup.removeAllViews();
         chipGroup.setVisibility(View.VISIBLE);
         chip_count = record.length;
+
+        if (chip_count == 0){
+            addMoreCat.setText("Click here to add more categories");
+            noOfCat.setText(chip_count + " Categories Selected");
+            return;
+        }
+
         for (int i = 0; i < chip_count; i++) {
             Chip chip = new Chip(this);
             ChipDrawable drawable = ChipDrawable.createFromAttributes(this, null, 0, R.style.Widget_MaterialComponents_Chip_Choice);
@@ -472,14 +473,8 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
             chip.setTextAppearanceResource(R.style.SmallerText);
             chipGroup.addView(chip);
             noOfCat.setText(chip_count + " Categories Selected");
-            addMoreCat.setText("Click here to add more categories");
-
         }
-
-        if (chip_count == 0){
-
-            addMoreCat.setText("Click here to add more categories");
-        }
+        addMoreCat.setText("Click here to add more categories");
     }
 
 }
