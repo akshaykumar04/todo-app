@@ -261,6 +261,22 @@
                app:layout_constraintTop_toTopOf="parent"
                app:layout_constraintVertical_bias="0.606" />
 
+           <CheckBox
+               android:id="@+id/checkb"
+               android:layout_width="39dp"
+               android:layout_height="31dp"
+               android:layout_alignParentEnd="true"
+               android:layout_alignParentRight="true"
+               android:layout_centerVertical="true"
+               android:button="@drawable/custom_checkbox"
+               android:scaleX="3"
+               android:scaleY="3"
+               app:layout_constraintBottom_toBottomOf="parent"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintTop_toTopOf="parent"
+               app:layout_constraintVertical_bias="0.822" />
+
        </androidx.constraintlayout.widget.ConstraintLayout>
    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
