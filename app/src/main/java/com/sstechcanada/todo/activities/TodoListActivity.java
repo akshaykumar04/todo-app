@@ -82,7 +82,7 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
         toolbar_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(TodoListActivity.this, "CHl GYa", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(TodoListActivity.this, LoginActivity.class));
             }
         });
 

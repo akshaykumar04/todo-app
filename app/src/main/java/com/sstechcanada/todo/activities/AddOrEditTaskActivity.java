@@ -36,6 +36,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sstechcanada.todo.R;
+import com.sstechcanada.todo.activities.auth.LoginActivity;
 import com.sstechcanada.todo.adapters.GridViewAdapter;
 import com.sstechcanada.todo.custom_views.GridItemView;
 import com.sstechcanada.todo.data.TodoListContract;
@@ -107,7 +108,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         toolbar_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(AddOrEditTaskActivity.this, "CHl GYa", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(AddOrEditTaskActivity.this, LoginActivity.class));
             }
         });
         toolBarTitle = findViewById(R.id.toolbarTitle);
