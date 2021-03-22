@@ -74,7 +74,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
     private int category_count = 0, chip_count;
     private String selectedResult = "";
     private TodoTask todoTaskToAddOrEdit;
-    private TextView tv, noOfCat, addMoreCat;
+    private TextView tv, noOfCat, addMoreCat, toolBarTitle;
     private ImageButton toolbar_profile;
 
     public static String convertArrayToString(ArrayList<String> array) {
@@ -108,6 +108,8 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
                 Toast.makeText(AddOrEditTaskActivity.this, "CHl GYa", Toast.LENGTH_SHORT).show();
             }
         });
+        toolBarTitle = findViewById(R.id.toolbarTitle);
+        toolBarTitle.setText("Add/Update Task");
 
         long dueDate;
         int taskCompleted;

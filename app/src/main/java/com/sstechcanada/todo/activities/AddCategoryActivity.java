@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -33,6 +34,7 @@ public class AddCategoryActivity extends AppCompatActivity {
     EditText editTextName;
     Button buttonAddCategory;
     ListView listViewCategory;
+    TextView toolBarTitle;
     
     List<Category> categories;
     
@@ -52,6 +54,8 @@ public class AddCategoryActivity extends AppCompatActivity {
 
         categories = new ArrayList<>();
 
+        toolBarTitle = findViewById(R.id.toolbarTitle);
+        toolBarTitle.setText("Add Categories");
 
         buttonAddCategory.setOnClickListener(new View.OnClickListener() {
             @Override
