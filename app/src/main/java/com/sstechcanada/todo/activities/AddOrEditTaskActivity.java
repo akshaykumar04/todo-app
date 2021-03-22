@@ -20,6 +20,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.cardview.widget.CardView;
 import androidx.databinding.DataBindingUtil;
 
@@ -75,7 +77,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
     private String selectedResult = "";
     private TodoTask todoTaskToAddOrEdit;
     private TextView tv, noOfCat, addMoreCat, toolBarTitle;
-    private ImageButton toolbar_profile;
+    private AppCompatImageView toolbar_profile;
 
     public static String convertArrayToString(ArrayList<String> array) {
         String str = "";
