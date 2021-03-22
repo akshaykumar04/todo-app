@@ -126,7 +126,6 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
                 todoTaskToAddOrEdit = bundle.getParcelable(getString(R.string.intent_todo_key));
                 mTaskId = todoTaskToAddOrEdit.getId();
                 mBinding.etTaskDescription.setText(todoTaskToAddOrEdit.getDescription());
-
                 selectPriorityRadioButton(todoTaskToAddOrEdit.getPriority());
 
                 dueDate = todoTaskToAddOrEdit.getDueDate();
@@ -149,6 +148,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
             mBinding.etTaskDescription.setText(savedInstanceState.getString(getString(R.string.task_description_key)));
             selectPriorityRadioButton(savedInstanceState.getInt(getString(R.string.priority_key)));
             boolean noDueDate = savedInstanceState.getBoolean(getString(R.string.no_due_date_key));
+
             if (noDueDate) {
                 mBinding.rbNoDueDate.setChecked(true);
             } else {
@@ -188,7 +188,9 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
             ArrayList<HashMap<String, String>> userlist = todoListDbHelper.getUser(mTaskId);
             String record[];
             for (HashMap<String, String> user : userlist) {
-                record = convertStringToArray(user.get(COLUMN_CATEGORY));
+                selectedResult = user.get(COLUMN_CATEGORY);
+                record = convertStringToArray(selectedResult);
+                category_count = record.length;
                 display_categories(record);
             }
         }
@@ -239,6 +241,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         outState.putBoolean(getString(R.string.completed_key), mBinding.cbTaskCompleted.isChecked());
         outState.putString(getString(R.string.add_or_edit_key), mAddOrEdit);
         outState.putInt(getString(R.string.id_key), mTaskId);
+//        outState.putString("category", selectedResult);
         super.onSaveInstanceState(outState);
     }
 
@@ -348,6 +351,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
                 display_categories(record);
 //                }
                 if (todoTaskToAddOrEdit != null) {
+
                     todoTaskToAddOrEdit.setCategory(selectedResult);
                     todoTaskToAddOrEdit.setCategory_count(category_count);
                 }
@@ -450,9 +454,8 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         chipGroup.removeAllViews();
         chipGroup.setVisibility(View.VISIBLE);
         chip_count = record.length;
-
+        addMoreCat.setText("Click here to add more categories");
         if (chip_count == 0){
-            addMoreCat.setText("Click here to add more categories");
             noOfCat.setText(chip_count + " Categories Selected");
             return;
         }
@@ -463,7 +466,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
             chip.setChipDrawable(drawable);
             if(i>=0 && i<10){
                 chip.setChipBackgroundColorResource(colors[i]);
-            }else if(i>=3){
+            }else if(i>=10){
                 chip.setChipBackgroundColorResource(colors[i%10]);
             }
             chip.setText(record[i] + "");
@@ -474,7 +477,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
             chipGroup.addView(chip);
             noOfCat.setText(chip_count + " Categories Selected");
         }
-        addMoreCat.setText("Click here to add more categories");
+
     }
 
 }
