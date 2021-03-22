@@ -90,7 +90,8 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
     }
 
     public static String[] convertStringToArray(String str) {
-        String[] arr = str.split(strSeparator);
+        String[] arr={};
+        if(str.length() != 0){arr = str.split(strSeparator);}
         return arr;
     }
 
@@ -125,7 +126,6 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
                 todoTaskToAddOrEdit = bundle.getParcelable(getString(R.string.intent_todo_key));
                 mTaskId = todoTaskToAddOrEdit.getId();
                 mBinding.etTaskDescription.setText(todoTaskToAddOrEdit.getDescription());
-
                 selectPriorityRadioButton(todoTaskToAddOrEdit.getPriority());
 
                 dueDate = todoTaskToAddOrEdit.getDueDate();
@@ -148,6 +148,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
             mBinding.etTaskDescription.setText(savedInstanceState.getString(getString(R.string.task_description_key)));
             selectPriorityRadioButton(savedInstanceState.getInt(getString(R.string.priority_key)));
             boolean noDueDate = savedInstanceState.getBoolean(getString(R.string.no_due_date_key));
+
             if (noDueDate) {
                 mBinding.rbNoDueDate.setChecked(true);
             } else {
@@ -187,7 +188,9 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
             ArrayList<HashMap<String, String>> userlist = todoListDbHelper.getUser(mTaskId);
             String record[];
             for (HashMap<String, String> user : userlist) {
-                record = convertStringToArray(user.get(COLUMN_CATEGORY));
+                selectedResult = user.get(COLUMN_CATEGORY);
+                record = convertStringToArray(selectedResult);
+                category_count = record.length;
                 display_categories(record);
             }
         }
@@ -238,6 +241,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         outState.putBoolean(getString(R.string.completed_key), mBinding.cbTaskCompleted.isChecked());
         outState.putString(getString(R.string.add_or_edit_key), mAddOrEdit);
         outState.putInt(getString(R.string.id_key), mTaskId);
+//        outState.putString("category", selectedResult);
         super.onSaveInstanceState(outState);
     }
 
@@ -251,7 +255,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         if (description.equals("")) {
             Toast.makeText(this, getString(R.string.description_cannot_be_empty), Toast.LENGTH_SHORT).show();
         }
-        else if (selectedResult.equals("")){
+        else if (chipGroup.getChildCount() == 0){
             Toast.makeText(this, getString(R.string.category_cannot_be_empty), Toast.LENGTH_SHORT).show();
         }else {
             // get the priority setting
@@ -341,22 +345,16 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 selectedResult = convertArrayToString(selectedStrings);
                 category_count = selectedStrings.size();
-                if (!selectedResult.equals("")) {
-                    String record[] = convertStringToArray(selectedResult);
-                    // Calling Display Category
-                    display_categories(record);
-
-//                    chipGroup.removeAllViews();
-                }
+//                if (!selectedResult.equals("")) {
+                String record[] = convertStringToArray(selectedResult);
+                // Calling Display Category
+                display_categories(record);
+//                }
                 if (todoTaskToAddOrEdit != null) {
-                    String id = String.valueOf(todoTaskToAddOrEdit.getId());
+
                     todoTaskToAddOrEdit.setCategory(selectedResult);
                     todoTaskToAddOrEdit.setCategory_count(category_count);
-//                    TodoListDbHelper todoListDbHelper1 = new TodoListDbHelper(AddOrEditTaskActivity.this);
-//                    todoListDbHelper1.updateCategory(selectedResult, category_count, Integer.parseInt(id));
-//                    Toast.makeText(AddOrEditTaskActivity.this, "Clicked", Toast.LENGTH_SHORT).show();
                 }
-
                 loadAd();
             }
         });
@@ -456,13 +454,19 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         chipGroup.removeAllViews();
         chipGroup.setVisibility(View.VISIBLE);
         chip_count = record.length;
+        addMoreCat.setText("Click here to add more categories");
+        if (chip_count == 0){
+            noOfCat.setText(chip_count + " Categories Selected");
+            return;
+        }
+
         for (int i = 0; i < chip_count; i++) {
             Chip chip = new Chip(this);
             ChipDrawable drawable = ChipDrawable.createFromAttributes(this, null, 0, R.style.Widget_MaterialComponents_Chip_Choice);
             chip.setChipDrawable(drawable);
             if(i>=0 && i<10){
                 chip.setChipBackgroundColorResource(colors[i]);
-            }else if(i>=3){
+            }else if(i>=10){
                 chip.setChipBackgroundColorResource(colors[i%10]);
             }
             chip.setText(record[i] + "");
@@ -472,14 +476,8 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
             chip.setTextAppearanceResource(R.style.SmallerText);
             chipGroup.addView(chip);
             noOfCat.setText(chip_count + " Categories Selected");
-            addMoreCat.setText("Click here to add more categories");
-
         }
 
-        if (chip_count == 0){
-
-            addMoreCat.setText("Click here to add more categories");
-        }
     }
 
 }
