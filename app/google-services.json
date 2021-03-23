@@ -1,108 +1,34 @@
 {
   "project_info": {
-    "project_number": "612688089101",
-    "firebase_url": "https://resume-builder-app-994e9.firebaseio.com",
-    "project_id": "resume-builder-app-994e9",
-    "storage_bucket": "resume-builder-app-994e9.appspot.com"
+    "project_number": "86938910623",
+    "firebase_url": "https://sstechcanda-default-rtdb.firebaseio.com",
+    "project_id": "sstechcanda",
+    "storage_bucket": "sstechcanda.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:612688089101:android:db94c706b012d8230a4544",
-        "android_client_info": {
-          "package_name": "com.sstechcanada.resumeapp"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "612688089101-rdm2tmnucglqnhttv050s7bo8qv5bt7l.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.sstechcanada.resumeapp",
-            "certificate_hash": "4e5c3db319ecd6f598902716165bbc3bcc992407"
-          }
-        },
-        {
-          "client_id": "612688089101-16k69psjju2a6nib0njnqairgm7op3p8.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAWq5Eq062ZDFkMp2RQkaXkqHzDFlD15Hg"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "612688089101-16k69psjju2a6nib0njnqairgm7op3p8.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:612688089101:android:9d366c47e57caa9a0a4544",
+        "mobilesdk_app_id": "1:86938910623:android:e66edc8b6bbfff348787aa",
         "android_client_info": {
           "package_name": "com.sstechcanada.todo"
         }
       },
       "oauth_client": [
         {
-          "client_id": "612688089101-16k69psjju2a6nib0njnqairgm7op3p8.apps.googleusercontent.com",
+          "client_id": "86938910623-fdie9gfv1riu8n1rh7f1bls81g9k2a1d.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAWq5Eq062ZDFkMp2RQkaXkqHzDFlD15Hg"
+          "current_key": "AIzaSyBFdcChJlmWjtP0r4ff-Y8mzY04-BehCYE"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "612688089101-16k69psjju2a6nib0njnqairgm7op3p8.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:612688089101:android:006ee6d52ef8ea2a0a4544",
-        "android_client_info": {
-          "package_name": "com.workrush.tiktok"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "612688089101-u0m250cqao6953tlcm63e28qttlk3lsd.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.workrush.tiktok",
-            "certificate_hash": "4e5c3db319ecd6f598902716165bbc3bcc992407"
-          }
-        },
-        {
-          "client_id": "612688089101-16k69psjju2a6nib0njnqairgm7op3p8.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAWq5Eq062ZDFkMp2RQkaXkqHzDFlD15Hg"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "612688089101-16k69psjju2a6nib0njnqairgm7op3p8.apps.googleusercontent.com",
+              "client_id": "86938910623-fdie9gfv1riu8n1rh7f1bls81g9k2a1d.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
