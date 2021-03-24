@@ -91,7 +91,7 @@
                 android:fontFamily="@font/raleway_semibold"
                 android:maxLines="1"
                 android:text="Todo Description"
-                android:textColor="@color/colorPrimaryDark"
+                android:textColor="@color/textHeadings"
                 android:textSize="16sp"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"

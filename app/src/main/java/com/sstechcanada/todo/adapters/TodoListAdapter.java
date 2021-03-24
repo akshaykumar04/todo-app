@@ -115,7 +115,7 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoLi
 //            priority = PriorityStarImageView.COMPLETED;
         } else {
             holder.clTodoListItem.setBackground(mRes.getDrawable(R.drawable.list_item_touch_selector));
-            holder.tvTextDesc.setTextColor(mRes.getColor(R.color.colorPrimaryDark));
+            holder.tvTextDesc.setTextColor(mRes.getColor(R.color.textHeadings));
             holder.cbTodoDescription.setSupportButtonTintList(unCompletedCheckboxColors);
             holder.customCheckbox.setChecked(false);
 //            holder.tvTodoPriority.setText(mRes.getStringArray(R.array.priorities)[priority]);

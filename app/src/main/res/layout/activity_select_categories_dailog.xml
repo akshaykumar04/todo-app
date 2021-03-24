@@ -41,6 +41,7 @@
                 android:layout_gravity="center"
                 android:textAlignment="center"
                 android:text="Add More"
+                android:fontFamily="@font/raleway_semibold"
                 android:textSize="16sp"/>
 
 

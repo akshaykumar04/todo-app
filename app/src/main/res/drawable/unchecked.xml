@@ -3,7 +3,7 @@
     <corners android:radius="1dp" />
     <stroke
         android:width="1dp"
-        android:color="@color/colorPrimaryDark" />
+        android:color="#E1BAB9B9" />
     <gradient
         android:startColor="#ffffffff"
         android:centerColor="#ffffffff"

@@ -55,7 +55,7 @@ public class AddCategoryActivity extends AppCompatActivity {
         categories = new ArrayList<>();
 
         toolBarTitle = findViewById(R.id.toolbarTitle);
-        toolBarTitle.setText("Add Categories");
+        toolBarTitle.setText("Add Benefits");
 
         buttonAddCategory.setOnClickListener(new View.OnClickListener() {
             @Override
