@@ -46,18 +46,40 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.478"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                />
 
             <TextView
                 android:layout_width="10dp"
                 android:layout_height="10dp"
                 android:layout_marginEnd="32dp"
                 android:layout_marginRight="32dp"
-                android:background="@drawable/check_per_item"
+                android:background="@drawable/custom_checkbox"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.488" />
+                app:layout_constraintVertical_bias="0.488"
+                android:visibility="gone"/>
+
+            <CheckBox
+                android:checked="false"
+                android:id="@+id/checkb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="28dp"
+                android:layout_marginRight="28dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:button="@drawable/custom_checkbox"
+                android:scaleX="1.1"
+                android:scaleY="1.1"
+                android:enabled="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.478"
+               />
 
             <TextView
                 android:id="@+id/tv_todo_desc"
@@ -69,7 +91,7 @@
                 android:fontFamily="@font/raleway_semibold"
                 android:maxLines="1"
                 android:text="Todo Description"
-                android:textColor="@color/colorPrimaryDark"
+                android:textColor="@color/textHeadings"
                 android:textSize="16sp"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"

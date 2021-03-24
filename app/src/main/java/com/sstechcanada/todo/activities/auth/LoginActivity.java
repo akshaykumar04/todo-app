@@ -6,13 +6,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -28,35 +29,35 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.sstechcanada.todo.R;
-import com.sstechcanada.todo.activities.AddCategoryActivity;
-import com.sstechcanada.todo.activities.AddOrEditTaskActivity;
-
-import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private static final int RC_SIGN_IN = 9001;
+    SignInButton googleSignInButton;
     private FirebaseAuth mAuth;
     private ProgressDialog pDialog;
     private GoogleSignInClient mGoogleSignInClient;
-    private TextView signup, resetPass;
     private ProgressBar progressBar;
-    private EditText inputEmail, inputPass;
-    private Button signInButton;
+    private Button signOutButton;
+    CardView profileCard;
+    ImageView placeHolder, dp;
+    TextView userName, userType, userEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        SignInButton googleSignInButton = findViewById(R.id.sign_in_button);
-        Button signOutButton = findViewById(R.id.sign_out_button);
+        googleSignInButton = findViewById(R.id.sign_in_button);
+        signOutButton = findViewById(R.id.sign_out_button);
         progressBar = findViewById(R.id.progressBar2);
-        inputEmail = findViewById(R.id.etEmail);
-        inputPass = findViewById(R.id.etPass);
-        signInButton = findViewById(R.id.buttonSignIn);
-        resetPass = findViewById(R.id.textView3);
+        profileCard = findViewById(R.id.myCardView);
+        placeHolder = findViewById(R.id.imageView);
+        dp = findViewById(R.id.roundedImage);
+        userName = findViewById(R.id.tv_userName);
+        userType = findViewById(R.id.tv_userType);
+        userEmail = findViewById(R.id.tv_userEmail);
 
 
         pDialog = new ProgressDialog(this);
@@ -84,72 +85,9 @@ public class LoginActivity extends AppCompatActivity {
         }
 
 
-
-        //signup page intent
-        signup = findViewById(R.id.signupText);
-//        signup.setOnClickListener(view -> startActivity(new Intent(LoginActivity.this, SignupActivity.class)));
-
-        signInButton.setOnClickListener(view -> loginUser());
-
-        resetPass.setOnClickListener(view -> forgetPass());
         checkUserStatus();
     }
 
-    public void loginUser() {
-        final String email = inputEmail.getText().toString();
-        final String password = inputPass.getText().toString();
-
-        if (password.isEmpty()) {
-//            inputPass.setError(getString(R.string.input_error_password));
-            inputPass.requestFocus();
-
-        } else {
-            if (!email.isEmpty()) {
-                progressBar.setVisibility(View.VISIBLE);
-
-                //authenticate user
-                mAuth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(LoginActivity.this, task -> {
-                            // If sign in fails, display a message to the user. If sign in succeeds
-                            // the auth state listener will be notified and logic to handle the
-                            // signed in user can be handled in the listener.
-                            progressBar.setVisibility(View.GONE);
-                            if (!task.isSuccessful()) {
-                                // there was an error
-
-                                if (password.length() < 6) {
-//                                    inputPass.setError(getString(R.string.input_error_password_length));
-                                    inputPass.requestFocus();
-
-                                } else {
-                                    Toast.makeText(this, "Authentication Failed, Please check your Id & Pass",
-                                            Toast.LENGTH_LONG).show();
-
-                                }
-                            } else {
-
-                                final FirebaseUser user = Objects.requireNonNull(task.getResult()).getUser();
-                                if (user != null) {
-                                    if (user.isEmailVerified()) {
-                                        Intent intent = new Intent(LoginActivity.this, AddOrEditTaskActivity.class);
-                                        startActivity(intent);
-                                        finishAffinity();
-                                    } else {
-                                        startActivity(new Intent(LoginActivity.this, AddCategoryActivity.class));
-                                    }
-                                }
-                            }
-                        });
-
-            } else
-
-//                inputEmail.setError(getString(R.string.input_error_email));
-            inputEmail.requestFocus();
-
-        }
-
-
-    }
 
     /**
      * Display Progress bar while Logging in through Google
@@ -208,8 +146,7 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             hideProgressDialog();
-                            startActivity(new Intent(LoginActivity.this, AddOrEditTaskActivity.class));
-                            finish();
+                            checkUserStatus();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -241,42 +178,36 @@ public class LoginActivity extends AppCompatActivity {
                         updateUI(null);
                     }
                 });
+        checkUserStatus();
     }
 
     private void checkUserStatus() {
         FirebaseUser User = mAuth.getCurrentUser();
         if (User != null) {
-            Intent i = new Intent(LoginActivity.this, AddOrEditTaskActivity.class);
-            startActivity(i);
-            finish();
+            googleSignInButton.setVisibility(View.GONE);
+            signOutButton.setVisibility(View.VISIBLE);
+            profileCard.setVisibility(View.VISIBLE);
+            dp.setVisibility(View.VISIBLE);
+            placeHolder.setVisibility(View.GONE);
+            userName.setVisibility(View.VISIBLE);
+            userName.setText(User.getDisplayName());
+            userEmail.setVisibility(View.VISIBLE);
+            userEmail.setText(User.getEmail());
+            userType.setVisibility(View.VISIBLE);
+            updateUI(User);
+        } else {
+            googleSignInButton.setVisibility(View.VISIBLE);
+            signOutButton.setVisibility(View.GONE);
+            profileCard.setVisibility(View.GONE);
+            placeHolder.setVisibility(View.VISIBLE);
+            userName.setVisibility(View.GONE);
+            userType.setVisibility(View.GONE);
+            userEmail.setVisibility(View.GONE);
+
+
         }
 
     }
 
-
-    //reset password
-    public void forgetPass() {
-        String email2 = inputEmail.getText().toString().trim();
-
-        if ((email2.isEmpty())) {
-//            inputEmail.setError(getString(R.string.input_error_forget_pass_email_empty));
-            inputEmail.requestFocus();
-            return;
-        } else
-            progressBar.setVisibility(View.VISIBLE);
-            mAuth.sendPasswordResetEmail(email2)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(this, "We have sent you instructions to reset your password!",
-                                Toast.LENGTH_LONG).show();
-
-                    } else {
-                        Toast.makeText(this, "Failed to send reset email!",
-                                Toast.LENGTH_LONG).show();
-                    }
-
-                    progressBar.setVisibility(View.GONE);
-                });
-    }
 
 }

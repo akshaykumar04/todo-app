@@ -24,6 +24,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.loader.app.LoaderManager;
@@ -57,7 +59,7 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
     private TodoListAdapter mTodoListAdapter;
     private ActivityTodoListBinding mBinding;
     private SharedPreferences mSharedPreferences;
-    private ImageButton toolbar_profile;
+    private AppCompatImageView toolbar_profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +82,7 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
         toolbar_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(TodoListActivity.this, "CHl GYa", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(TodoListActivity.this, LoginActivity.class));
             }
         });
 

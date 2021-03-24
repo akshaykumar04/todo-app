@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.sstechcanada.todo.R;
@@ -110,11 +111,13 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoLi
             holder.tvTextDesc.setTextColor(mRes.getColor(R.color.colorCompleted));
             holder.cbTodoDescription.setSupportButtonTintList(completedCheckboxColors);
             holder.tvTodoPriority.setText(mRes.getString(R.string.completed));
+            holder.customCheckbox.setChecked(true);
 //            priority = PriorityStarImageView.COMPLETED;
         } else {
             holder.clTodoListItem.setBackground(mRes.getDrawable(R.drawable.list_item_touch_selector));
-            holder.tvTextDesc.setTextColor(mRes.getColor(R.color.colorPrimaryDark));
+            holder.tvTextDesc.setTextColor(mRes.getColor(R.color.textHeadings));
             holder.cbTodoDescription.setSupportButtonTintList(unCompletedCheckboxColors);
+            holder.customCheckbox.setChecked(false);
 //            holder.tvTodoPriority.setText(mRes.getStringArray(R.array.priorities)[priority]);
             if (dueDate < TodoDateUtils.getTodaysDateInMillis()) {
                 // display overdue tasks with the date in red
@@ -168,6 +171,7 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoLi
         final TextView tvTodoPriority;
         final PriorityStarImageView ivTodoPriorityStar;
         final ConstraintLayout clTodoListItem;
+        CheckBox customCheckbox;
 
         public TodoListAdapterViewHolder(View itemView) {
             super(itemView);
@@ -176,6 +180,7 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoLi
             tvTodoDueDate = itemView.findViewById(R.id.tv_todo_due_date);
             tvTodoPriority = itemView.findViewById(R.id.tv_todo_priority);
             ivTodoPriorityStar = itemView.findViewById(R.id.iv_todo_priority_star);
+            customCheckbox = itemView.findViewById(R.id.checkb);
             clTodoListItem = (ConstraintLayout) itemView;
             itemView.setOnClickListener(this);
             cbTodoDescription.setOnClickListener(this);
