@@ -62,7 +62,7 @@
                 android:visibility="gone"/>
 
             <CheckBox
-                android:checked="true"
+                android:checked="false"
                 android:id="@+id/checkb"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -74,6 +74,7 @@
                 android:button="@drawable/custom_checkbox"
                 android:scaleX="1.1"
                 android:scaleY="1.1"
+                android:enabled="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
