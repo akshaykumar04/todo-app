@@ -29,7 +29,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.AddCategoryActivity;
-import com.sstechcanada.todo.activities.AddOrEditTaskActivity;
 
 import java.util.Objects;
 
@@ -43,15 +42,16 @@ public class LoginActivity extends AppCompatActivity {
     private TextView signup, resetPass;
     private ProgressBar progressBar;
     private EditText inputEmail, inputPass;
-    private Button signInButton;
+    private Button signInButton, signOutButton;
+    SignInButton googleSignInButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        SignInButton googleSignInButton = findViewById(R.id.sign_in_button);
-        Button signOutButton = findViewById(R.id.sign_out_button);
+        googleSignInButton = findViewById(R.id.sign_in_button);
+        signOutButton = findViewById(R.id.sign_out_button);
         progressBar = findViewById(R.id.progressBar2);
         inputEmail = findViewById(R.id.etEmail);
         inputPass = findViewById(R.id.etPass);
@@ -84,14 +84,9 @@ public class LoginActivity extends AppCompatActivity {
         }
 
 
-
         //signup page intent
         signup = findViewById(R.id.signupText);
-//        signup.setOnClickListener(view -> startActivity(new Intent(LoginActivity.this, SignupActivity.class)));
 
-        signInButton.setOnClickListener(view -> loginUser());
-
-        resetPass.setOnClickListener(view -> forgetPass());
         checkUserStatus();
     }
 
@@ -131,7 +126,7 @@ public class LoginActivity extends AppCompatActivity {
                                 final FirebaseUser user = Objects.requireNonNull(task.getResult()).getUser();
                                 if (user != null) {
                                     if (user.isEmailVerified()) {
-                                        Intent intent = new Intent(LoginActivity.this, AddOrEditTaskActivity.class);
+                                        Intent intent = new Intent(LoginActivity.this, AddCategoryActivity.class);
                                         startActivity(intent);
                                         finishAffinity();
                                     } else {
@@ -144,7 +139,7 @@ public class LoginActivity extends AppCompatActivity {
             } else
 
 //                inputEmail.setError(getString(R.string.input_error_email));
-            inputEmail.requestFocus();
+                inputEmail.requestFocus();
 
         }
 
@@ -208,8 +203,7 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             hideProgressDialog();
-                            startActivity(new Intent(LoginActivity.this, AddOrEditTaskActivity.class));
-                            finish();
+                            checkUserStatus();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -224,6 +218,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void updateUI(FirebaseUser user) {
         hideProgressDialog();
+        googleSignInButton.setVisibility(View.GONE);
     }
 
     private void hideProgressDialog() {
@@ -241,14 +236,19 @@ public class LoginActivity extends AppCompatActivity {
                         updateUI(null);
                     }
                 });
+        checkUserStatus();
     }
 
     private void checkUserStatus() {
         FirebaseUser User = mAuth.getCurrentUser();
         if (User != null) {
-            Intent i = new Intent(LoginActivity.this, AddOrEditTaskActivity.class);
-            startActivity(i);
-            finish();
+            googleSignInButton.setVisibility(View.GONE);
+            signOutButton.setVisibility(View.VISIBLE);
+            updateUI(User);
+        } else {
+            googleSignInButton.setVisibility(View.VISIBLE);
+            signOutButton.setVisibility(View.GONE);
+
         }
 
     }
@@ -264,7 +264,7 @@ public class LoginActivity extends AppCompatActivity {
             return;
         } else
             progressBar.setVisibility(View.VISIBLE);
-            mAuth.sendPasswordResetEmail(email2)
+        mAuth.sendPasswordResetEmail(email2)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(this, "We have sent you instructions to reset your password!",
