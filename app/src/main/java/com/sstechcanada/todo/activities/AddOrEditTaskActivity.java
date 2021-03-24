@@ -31,6 +31,8 @@ import com.google.android.gms.ads.initialization.OnInitializationCompleteListene
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
 import com.google.android.material.chip.ChipGroup;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -80,6 +82,8 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
     private TodoTask todoTaskToAddOrEdit;
     private TextView tv, noOfCat, addMoreCat, toolBarTitle;
     private AppCompatImageView toolbar_profile;
+    private FirebaseAuth mAuth;
+    String userID;
 
     public static String convertArrayToString(ArrayList<String> array) {
         String str = "";
@@ -114,6 +118,9 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         });
         toolBarTitle = findViewById(R.id.toolbarTitle);
         toolBarTitle.setText("Add/Update Task");
+
+        mAuth = FirebaseAuth.getInstance();
+        userID = mAuth.getCurrentUser().getUid();
 
 
         long dueDate;
@@ -379,7 +386,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
     }
 
     public void loadCategories() {
-        databaseCategories = FirebaseDatabase.getInstance().getReference("categories");
+        databaseCategories = FirebaseDatabase.getInstance().getReference(userID).child("benefits");
         categories = new ArrayList<>();
         selectedStrings = new ArrayList<>();
         databaseCategories.addValueEventListener(new ValueEventListener() {

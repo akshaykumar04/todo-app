@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -16,15 +17,19 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sstechcanada.todo.R;
+import com.sstechcanada.todo.activities.auth.LoginActivity;
 import com.sstechcanada.todo.adapters.CategoryAdapter;
 import com.sstechcanada.todo.models.Category;
 
+import java.net.Inet4Address;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,13 +44,19 @@ public class AddCategoryActivity extends AppCompatActivity {
     List<Category> categories;
     
     DatabaseReference databaseCategories;
+    private FirebaseAuth mAuth;
+    String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category);
+
+        mAuth = FirebaseAuth.getInstance();
+        userID = mAuth.getCurrentUser().getUid();
+
         
-        databaseCategories = FirebaseDatabase.getInstance().getReference("categories");
+        databaseCategories = FirebaseDatabase.getInstance().getReference(userID).child("benefits");
         
         editTextName = (EditText) findViewById(R.id.editTextName);
         listViewCategory = (ListView) findViewById(R.id.listViewCategory);
@@ -118,7 +129,7 @@ public class AddCategoryActivity extends AppCompatActivity {
             editTextName.setText("");
 
             //displaying a success toast
-            Toast.makeText(this, "Category added", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Benefit added", Toast.LENGTH_LONG).show();
         } else {
             //if the value is not given displaying a toast
             Toast.makeText(this, "Please enter a name", Toast.LENGTH_LONG).show();
@@ -200,24 +211,24 @@ public class AddCategoryActivity extends AppCompatActivity {
 
     private void updateCategory(String id, String name) {
         //getting the specified category reference
-        DatabaseReference dR = FirebaseDatabase.getInstance().getReference("categories").child(id);
+        DatabaseReference dR = FirebaseDatabase.getInstance().getReference(userID).child("benefits").child(id);
 
         //updating category
         Category category = new Category(id, name);
         dR.setValue(category);
-        Toast.makeText(getApplicationContext(), "Category Updated", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Benefits Updated", Toast.LENGTH_LONG).show();
     }
 
 
     private void deleteCategory(String id) {
         //getting the specified category reference
-        DatabaseReference dR = FirebaseDatabase.getInstance().getReference("categories").child(id);
+        DatabaseReference dR = FirebaseDatabase.getInstance().getReference(userID).child("benefits").child(id);
 
         //removing category
         dR.removeValue();
 
         //getting the tracks reference for the specified category
-        Toast.makeText(getApplicationContext(), "Category Deleted", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Benefits Deleted", Toast.LENGTH_LONG).show();
 
     }
 
