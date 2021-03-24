@@ -6,11 +6,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -37,6 +40,9 @@ public class LoginActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private ProgressBar progressBar;
     private Button signOutButton;
+    CardView profileCard;
+    ImageView placeHolder, dp;
+    TextView userName, userType, userEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +52,12 @@ public class LoginActivity extends AppCompatActivity {
         googleSignInButton = findViewById(R.id.sign_in_button);
         signOutButton = findViewById(R.id.sign_out_button);
         progressBar = findViewById(R.id.progressBar2);
+        profileCard = findViewById(R.id.myCardView);
+        placeHolder = findViewById(R.id.imageView);
+        dp = findViewById(R.id.roundedImage);
+        userName = findViewById(R.id.tv_userName);
+        userType = findViewById(R.id.tv_userType);
+        userEmail = findViewById(R.id.tv_userEmail);
 
 
         pDialog = new ProgressDialog(this);
@@ -174,10 +186,24 @@ public class LoginActivity extends AppCompatActivity {
         if (User != null) {
             googleSignInButton.setVisibility(View.GONE);
             signOutButton.setVisibility(View.VISIBLE);
+            profileCard.setVisibility(View.VISIBLE);
+            dp.setVisibility(View.VISIBLE);
+            placeHolder.setVisibility(View.GONE);
+            userName.setVisibility(View.VISIBLE);
+            userName.setText(User.getDisplayName());
+            userEmail.setVisibility(View.VISIBLE);
+            userEmail.setText(User.getEmail());
+            userType.setVisibility(View.VISIBLE);
             updateUI(User);
         } else {
             googleSignInButton.setVisibility(View.VISIBLE);
             signOutButton.setVisibility(View.GONE);
+            profileCard.setVisibility(View.GONE);
+            placeHolder.setVisibility(View.VISIBLE);
+            userName.setVisibility(View.GONE);
+            userType.setVisibility(View.GONE);
+            userEmail.setVisibility(View.GONE);
+
 
         }
 
