@@ -36,7 +36,8 @@
                 android:layout_weight="7"
                 android:paddingLeft="4dp"
                 android:fontFamily="@font/raleway_medium"
-                android:text="Category Name"
+                android:text="Benefit Name"
+                android:inputType="textCapSentences"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                 android:textSize="15sp" />
 

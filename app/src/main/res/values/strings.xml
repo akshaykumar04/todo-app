@@ -28,7 +28,7 @@
     <string name="update_task">Update Task</string>
     <string name="describe_your_task">Describe your task</string>
     <string name="description_cannot_be_empty">Task description cannot be empty.</string>
-    <string name="category_cannot_be_empty">Please select atleast 1 category..</string>
+    <string name="category_cannot_be_empty">Please select atleast 1 Benefits.</string>
 
     <!--for onSaveInstanceState in AddOrEditTodoActivity-->
     <string name="task_description_key" translatable="false">task description</string>
@@ -59,7 +59,7 @@
     <string name="medium_priority_task_orange_star">Orange star for medium priority task</string>
     <string name="low_priority_task_yellow_star">Yellow star for low priority task</string>
     <string name="completed_task_grey_star">Grey star for completed task</string>
-    <string name="Categories">Categories</string>
+    <string name="Categories">Benefits</string>
     <string name="tagline">tagline</string>
     <string name="interstitial_ad_unit_test_id">ca-app-pub-3940256099942544/1033173712</string>
 

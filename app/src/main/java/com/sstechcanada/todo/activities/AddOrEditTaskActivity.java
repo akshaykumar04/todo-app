@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -113,6 +114,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         });
         toolBarTitle = findViewById(R.id.toolbarTitle);
         toolBarTitle.setText("Add/Update Task");
+
 
         long dueDate;
         int taskCompleted;
@@ -330,7 +332,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
         View alertLayout = inflater.inflate(R.layout.activity_select_categories_dailog, null);
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Select Categories");
+        alert.setTitle("Select Benefits");
         // this is set the view from XML inside AlertDialog
         alert.setView(alertLayout);
         gridView = alertLayout.findViewById(R.id.grid_view_alert);
@@ -459,9 +461,9 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         chipGroup.removeAllViews();
         chipGroup.setVisibility(View.VISIBLE);
         chip_count = record.length;
-        addMoreCat.setText("Click here to add more categories");
+        addMoreCat.setText("Click here to add more Benefits");
         if (chip_count == 0){
-            noOfCat.setText(chip_count + " Categories Selected");
+            noOfCat.setText(chip_count + " Benefits Selected");
             return;
         }
 
@@ -480,7 +482,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
             chip.getChipEndPadding();
             chip.setTextAppearanceResource(R.style.SmallerText);
             chipGroup.addView(chip);
-            noOfCat.setText(chip_count + " Categories Selected");
+            noOfCat.setText(chip_count + " Benefits Selected");
         }
 
     }
