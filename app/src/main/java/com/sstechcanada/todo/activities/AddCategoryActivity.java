@@ -112,6 +112,9 @@ public class AddCategoryActivity extends AppCompatActivity {
         //getting the values to save
         String name = editTextName.getText().toString().trim();
 
+        //Making first word capital
+        name = name.substring(0, 1).toUpperCase() + name.substring(1);
+
         //checking if the value is provided
         if (!TextUtils.isEmpty(name)) {
 

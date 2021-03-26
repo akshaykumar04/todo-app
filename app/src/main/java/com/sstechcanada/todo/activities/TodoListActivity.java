@@ -37,6 +37,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.auth.LoginActivity;
 import com.sstechcanada.todo.adapters.TodoListAdapter;
@@ -49,17 +51,17 @@ import com.sstechcanada.todo.utils.NotificationUtils;
 
 public class TodoListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
         TodoListAdapter.TodoListAdapterOnClickHandler,
-        SharedPreferences.OnSharedPreferenceChangeListener {
-    private static final String TAG = TodoListActivity.class.getSimpleName();
-    private static final int ADD_TASK_REQUEST = 1;
-    private static final int EDIT_TASK_REQUEST = 2;
-    private static final int ID_TODOLIST_LOADER = 2018;
+    SharedPreferences.OnSharedPreferenceChangeListener {
+        private static final String TAG = TodoListActivity.class.getSimpleName();
+        private static final int ADD_TASK_REQUEST = 1;
+        private static final int EDIT_TASK_REQUEST = 2;
+        private static final int ID_TODOLIST_LOADER = 2018;
 
-    private RecyclerView mRecyclerView;
-    private TodoListAdapter mTodoListAdapter;
-    private ActivityTodoListBinding mBinding;
-    private SharedPreferences mSharedPreferences;
-    private AppCompatImageView toolbar_profile;
+        private RecyclerView mRecyclerView;
+        private TodoListAdapter mTodoListAdapter;
+        private ActivityTodoListBinding mBinding;
+        private SharedPreferences mSharedPreferences;
+        private AppCompatImageView toolbar_profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,9 +92,11 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(TodoListActivity.this, AddOrEditTaskActivity.class);
-                intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
-                startActivityForResult(intent, ADD_TASK_REQUEST);
+                if(isLogin()){
+                    Intent intent = new Intent(TodoListActivity.this, AddOrEditTaskActivity.class);
+                    intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
+                    startActivityForResult(intent, ADD_TASK_REQUEST);
+                }
             }
         });
 
@@ -274,5 +278,15 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         alarm.cancel(pIntent);
+    }
+
+    public boolean isLogin(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            // User is not signIn
+            Toast.makeText(this, "Please Login First", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
 }

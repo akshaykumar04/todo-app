@@ -116,6 +116,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
                 startActivity(new Intent(AddOrEditTaskActivity.this, LoginActivity.class));
             }
         });
+
         toolBarTitle = findViewById(R.id.toolbarTitle);
         toolBarTitle.setText("Add/Update Task");
 
@@ -272,6 +273,9 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         else if (chipGroup.getChildCount() == 0){
             Toast.makeText(this, getString(R.string.category_cannot_be_empty), Toast.LENGTH_SHORT).show();
         }else {
+            //Making First Char Capital
+            description = description.substring(0, 1).toUpperCase() + description.substring(1);
+
             // get the priority setting
             if (mBinding.rbMediumPriority.isChecked()) {
                 priority = TodoTask.MEDIUM_PRIORITY;

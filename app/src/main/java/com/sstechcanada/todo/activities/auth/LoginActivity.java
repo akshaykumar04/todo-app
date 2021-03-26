@@ -83,16 +83,11 @@ public class LoginActivity extends AppCompatActivity {
                 signOut();
             }
         }
-
-
         checkUserStatus();
     }
-
-
     /**
      * Display Progress bar while Logging in through Google
      */
-
     private void displayProgressDialog() {
         pDialog.setMessage("Logging In.. Please wait...");
         pDialog.setIndeterminate(false);
@@ -203,11 +198,6 @@ public class LoginActivity extends AppCompatActivity {
             userName.setVisibility(View.GONE);
             userType.setVisibility(View.GONE);
             userEmail.setVisibility(View.GONE);
-
-
         }
-
     }
-
-
 }
