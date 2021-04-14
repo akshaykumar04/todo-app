@@ -120,9 +120,8 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         toolBarTitle = findViewById(R.id.toolbarTitle);
         toolBarTitle.setText("Add/Update Task");
 
-        mAuth = FirebaseAuth.getInstance();
-        userID = mAuth.getCurrentUser().getUid();
-
+//        mAuth = FirebaseAuth.getInstance();
+//        userID = mAuth.getCurrentUser().getUid();
 
         long dueDate;
         int taskCompleted;
@@ -390,7 +389,8 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
     }
 
     public void loadCategories() {
-        databaseCategories = FirebaseDatabase.getInstance().getReference(userID).child("benefits");
+        databaseCategories = FirebaseDatabase.getInstance().getReference("categories");
+//        databaseCategories = FirebaseDatabase.getInstance().getReference(userID).child("benefits");
         categories = new ArrayList<>();
         selectedStrings = new ArrayList<>();
         databaseCategories.addValueEventListener(new ValueEventListener() {

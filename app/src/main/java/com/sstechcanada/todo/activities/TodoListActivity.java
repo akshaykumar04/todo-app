@@ -44,6 +44,7 @@ import com.sstechcanada.todo.activities.auth.LoginActivity;
 import com.sstechcanada.todo.adapters.TodoListAdapter;
 import com.sstechcanada.todo.broadcast_receivers.DailyAlarmReceiver;
 import com.sstechcanada.todo.data.TodoListContract;
+import com.sstechcanada.todo.data.TodoListDbHelper;
 import com.sstechcanada.todo.data.TodoListProvider;
 import com.sstechcanada.todo.databinding.ActivityTodoListBinding;
 import com.sstechcanada.todo.models.TodoTask;
@@ -56,12 +57,14 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
         private static final int ADD_TASK_REQUEST = 1;
         private static final int EDIT_TASK_REQUEST = 2;
         private static final int ID_TODOLIST_LOADER = 2018;
+        private int list_limit = 1,db_cnt=0;
 
         private RecyclerView mRecyclerView;
         private TodoListAdapter mTodoListAdapter;
         private ActivityTodoListBinding mBinding;
         private SharedPreferences mSharedPreferences;
         private AppCompatImageView toolbar_profile;
+        private TodoListDbHelper tld;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +77,9 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
         mRecyclerView.setLayoutManager(layoutManager);
         mTodoListAdapter = new TodoListAdapter(this, this);
         mRecyclerView.setAdapter(mTodoListAdapter);
+        tld =new TodoListDbHelper(TodoListActivity.this);
+        db_cnt = tld.todoCount();
+        Toast.makeText(this, ""+db_cnt, Toast.LENGTH_SHORT).show();
 
 //        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 //        getSupportActionBar().setCustomView(R.layout.abs_layout);
@@ -92,6 +98,7 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                db_cnt = tld.todoCount();
                 if(isLogin()){
                     Intent intent = new Intent(TodoListActivity.this, AddOrEditTaskActivity.class);
                     intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
@@ -282,9 +289,12 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
 
     public boolean isLogin(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) {
-            // User is not signIn
-            Toast.makeText(this, "Please Login First", Toast.LENGTH_SHORT).show();
+//        if (user == null) {
+//          return false;
+//        }else
+        if(list_limit <= db_cnt){
+            //Limit Check
+            Toast.makeText(this, "You can not store more than "+list_limit, Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;

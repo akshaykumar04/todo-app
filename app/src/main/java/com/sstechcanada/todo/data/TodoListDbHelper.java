@@ -71,4 +71,16 @@ public class TodoListDbHelper extends SQLiteOpenHelper {
         }
         return userlist;
     }
+
+    public int todoCount(){
+        int cnt = -1;
+        SQLiteDatabase database = this.getWritableDatabase();
+        String query = "SELECT COUNT(*)" +
+                " FROM " + TABLE_NAME;
+        Cursor mCount= database.rawQuery(query, null);
+        mCount.moveToFirst();
+        cnt= mCount.getInt(0);
+        mCount.close();
+        return cnt;
+    }
 }
