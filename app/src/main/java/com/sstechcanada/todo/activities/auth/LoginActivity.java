@@ -54,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
     TextView userName, userType, userEmail;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
+    int list_limit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,12 +155,11 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             hideProgressDialog();
-                            checkUserStatus();
                             FirebaseUser firebaseUser = mAuth.getCurrentUser();
 //                            databaseReference.child("Users").child(firebaseUser.getUid()).child("Email").setValue(firebaseUser.getEmail());
                             databaseReference.child("Users").child(firebaseUser.getUid()).child("Email").setValue(firebaseUser.getEmail());
                             updateUserPackage(firebaseUser);
-
+                            checkUserStatus();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -225,6 +225,15 @@ public class LoginActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(!snapshot.child("purchase_code").exists()){
                     databaseReference.child("purchase_code").setValue("1");
+                }else{
+                    String ans = snapshot.child("purchase_code").getValue(String.class);
+                    list_limit = Integer.parseInt(ans);
+                    if(list_limit != 1){
+                        userType.setText("Premium User");
+                    }else{
+                        userType.setText("Free User");
+                    }
+                    Toast.makeText(LoginActivity.this, ""+list_limit, Toast.LENGTH_SHORT).show();
                 }
                 if(!snapshot.child("purchase_type").exists()){
                     databaseReference.child("purchase_type").setValue("Free User");
