@@ -69,7 +69,7 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
         private static final int ADD_TASK_REQUEST = 1;
         private static final int EDIT_TASK_REQUEST = 2;
         private static final int ID_TODOLIST_LOADER = 2018;
-        private int list_limit = -1,db_cnt=0;
+        private int list_limit,db_cnt=0;
 
         private RecyclerView mRecyclerView;
         private TodoListAdapter mTodoListAdapter;
@@ -104,12 +104,9 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     //iterating through all the nodes
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        Map<String, String> map  = (Map) dataSnapshot.getValue();
-                        if(map != null){
-                            list_limit = Integer.parseInt(map.get("purchase_code"));
-                        }
-                    }
+                    String ans = snapshot.child("purchase_code").getValue(String.class);
+                    list_limit = Integer.parseInt(ans);
+                    Toast.makeText(TodoListActivity.this, "0"+list_limit, Toast.LENGTH_SHORT).show();
                 }
 
                 @Override

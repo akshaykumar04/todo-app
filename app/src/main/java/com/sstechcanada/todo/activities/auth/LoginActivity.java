@@ -156,8 +156,10 @@ public class LoginActivity extends AppCompatActivity {
                             hideProgressDialog();
                             checkUserStatus();
                             FirebaseUser firebaseUser = mAuth.getCurrentUser();
+//                            databaseReference.child("Users").child(firebaseUser.getUid()).child("Email").setValue(firebaseUser.getEmail());
                             databaseReference.child("Users").child(firebaseUser.getUid()).child("Email").setValue(firebaseUser.getEmail());
                             updateUserPackage(firebaseUser);
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -222,7 +224,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(!snapshot.child("purchase_code").exists()){
-                    databaseReference.child("purchase_code").setValue(1);
+                    databaseReference.child("purchase_code").setValue("1");
                 }
                 if(!snapshot.child("purchase_type").exists()){
                     databaseReference.child("purchase_type").setValue("Free User");
