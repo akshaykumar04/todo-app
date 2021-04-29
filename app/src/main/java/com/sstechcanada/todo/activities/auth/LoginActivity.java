@@ -1,7 +1,6 @@
 package com.sstechcanada.todo.activities.auth;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,7 +15,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -37,14 +35,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sstechcanada.todo.R;
-import com.sstechcanada.todo.data.PrefConfig;
-import com.sstechcanada.todo.activities.SplashActivity;
 import com.sstechcanada.todo.activities.TodoListActivity;
 import com.sstechcanada.todo.utils.SaveSharedPreference;
-import com.sstechcanada.todo.models.Users;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -201,6 +193,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         updateUI(null);
+                        SaveSharedPreference.saveLimit(getApplicationContext(), 0);
                     }
                 });
         checkUserStatus();
@@ -245,7 +238,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(!snapshot.child("purchase_code").exists()){
                     databaseReference.child("purchase_code").setValue("1");
-                    PrefConfig.saveLimit(getApplicationContext(), 1);
+                    SaveSharedPreference.saveLimit(getApplicationContext(), 1);
                 }else{
                     String ans = snapshot.child("purchase_code").getValue(String.class);
                     list_limit = Integer.parseInt(ans);
@@ -254,7 +247,7 @@ public class LoginActivity extends AppCompatActivity {
                     }else{
                         userType.setText("Free User");
                     }
-                    PrefConfig.saveLimit(getApplicationContext(), list_limit);
+                    SaveSharedPreference.saveLimit(getApplicationContext(), list_limit);
 //                    Toast.makeText(LoginActivity.this, ""+list_limit, Toast.LENGTH_SHORT).show();
                 }
                 if(!snapshot.child("purchase_type").exists()){

@@ -13,55 +13,40 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.service.autofill.SaveCallback;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.AppCompatImageView;
-import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 import androidx.preference.PreferenceManager;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.auth.LoginActivity;
 import com.sstechcanada.todo.adapters.TodoListAdapter;
 import com.sstechcanada.todo.broadcast_receivers.DailyAlarmReceiver;
-import com.sstechcanada.todo.data.PrefConfig;
 import com.sstechcanada.todo.data.TodoListContract;
 import com.sstechcanada.todo.data.TodoListDbHelper;
 import com.sstechcanada.todo.data.TodoListProvider;
 import com.sstechcanada.todo.databinding.ActivityTodoListBinding;
-import com.sstechcanada.todo.models.Category;
 import com.sstechcanada.todo.models.TodoTask;
-import com.sstechcanada.todo.models.Users;
 import com.sstechcanada.todo.utils.NotificationUtils;
-
-import java.util.List;
-import java.util.Map;
+import com.sstechcanada.todo.utils.SaveSharedPreference;
 
 public class TodoListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
         TodoListAdapter.TodoListAdapterOnClickHandler,
@@ -99,30 +84,11 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
 
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
-//        if(user != null) {
-//            userID = mAuth.getCurrentUser().getUid();
-//            databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userID);
-//            databaseReference.addValueEventListener(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    //iterating through all the nodes
-//                    String ans = snapshot.child("purchase_code").getValue(String.class);
-//                    list_limit = Integer.parseInt(ans);
-//                    Toast.makeText(TodoListActivity.this, "DS "+list_limit, Toast.LENGTH_SHORT).show();
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) {
-//
-//                }
-//            });
-//        }
         tld =new TodoListDbHelper(TodoListActivity.this);
+
+        //Limit Set
         db_cnt = tld.todoCount();
-        if(user != null){
-            list_limit = PrefConfig.loadLimit(this);
-        }
-        Toast.makeText(this, list_limit + " " + db_cnt, Toast.LENGTH_SHORT).show();
+        setValue();
 
 //        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 //        getSupportActionBar().setCustomView(R.layout.abs_layout);
@@ -142,6 +108,7 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
             @Override
             public void onClick(View view) {
                 db_cnt = tld.todoCount();
+                setValue();
                 if(isLogin()){
                     Intent intent = new Intent(TodoListActivity.this, AddOrEditTaskActivity.class);
                     intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
@@ -341,5 +308,11 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
             return false;
         }
         return true;
+    }
+    public void setValue(){
+        if(user != null){
+            list_limit = SaveSharedPreference.loadLimit(this);
+        }
+//        Toast.makeText(this, list_limit + " " + db_cnt, Toast.LENGTH_SHORT).show();
     }
 }
