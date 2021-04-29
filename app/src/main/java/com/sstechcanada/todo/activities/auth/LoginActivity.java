@@ -1,7 +1,9 @@
 package com.sstechcanada.todo.activities.auth;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -34,6 +37,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sstechcanada.todo.R;
+import com.sstechcanada.todo.data.PrefConfig;
 import com.sstechcanada.todo.models.Users;
 
 import java.util.ArrayList;
@@ -55,7 +59,10 @@ public class LoginActivity extends AppCompatActivity {
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
     int list_limit;
-
+    //Shared Preference
+    SharedPreferences sharedpreferences;
+    public static final String PREF = "USER DATA";
+    public static final String LIST_LIMIT = "LIST_LIMIT";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -207,6 +214,11 @@ public class LoginActivity extends AppCompatActivity {
             userEmail.setVisibility(View.VISIBLE);
             userEmail.setText(User.getEmail());
             userType.setVisibility(View.VISIBLE);
+            if(list_limit != 1){
+                userType.setText("Premium User");
+            }else{
+                userType.setText("Free User");
+            }
             updateUI(User);
         } else {
             googleSignInButton.setVisibility(View.VISIBLE);
@@ -225,6 +237,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(!snapshot.child("purchase_code").exists()){
                     databaseReference.child("purchase_code").setValue("1");
+                    PrefConfig.saveLimit(getApplicationContext(), 1);
                 }else{
                     String ans = snapshot.child("purchase_code").getValue(String.class);
                     list_limit = Integer.parseInt(ans);
@@ -233,7 +246,8 @@ public class LoginActivity extends AppCompatActivity {
                     }else{
                         userType.setText("Free User");
                     }
-                    Toast.makeText(LoginActivity.this, ""+list_limit, Toast.LENGTH_SHORT).show();
+                    PrefConfig.saveLimit(getApplicationContext(), list_limit);
+//                    Toast.makeText(LoginActivity.this, ""+list_limit, Toast.LENGTH_SHORT).show();
                 }
                 if(!snapshot.child("purchase_type").exists()){
                     databaseReference.child("purchase_type").setValue("Free User");

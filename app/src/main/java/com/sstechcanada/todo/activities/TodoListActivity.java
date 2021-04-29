@@ -50,6 +50,7 @@ import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.auth.LoginActivity;
 import com.sstechcanada.todo.adapters.TodoListAdapter;
 import com.sstechcanada.todo.broadcast_receivers.DailyAlarmReceiver;
+import com.sstechcanada.todo.data.PrefConfig;
 import com.sstechcanada.todo.data.TodoListContract;
 import com.sstechcanada.todo.data.TodoListDbHelper;
 import com.sstechcanada.todo.data.TodoListProvider;
@@ -65,22 +66,25 @@ import java.util.Map;
 public class TodoListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
         TodoListAdapter.TodoListAdapterOnClickHandler,
     SharedPreferences.OnSharedPreferenceChangeListener {
-        private static final String TAG = TodoListActivity.class.getSimpleName();
-        private static final int ADD_TASK_REQUEST = 1;
-        private static final int EDIT_TASK_REQUEST = 2;
-        private static final int ID_TODOLIST_LOADER = 2018;
-        private int list_limit,db_cnt=0;
+    private static final String TAG = TodoListActivity.class.getSimpleName();
+    private static final int ADD_TASK_REQUEST = 1;
+    private static final int EDIT_TASK_REQUEST = 2;
+    private static final int ID_TODOLIST_LOADER = 2018;
+    private int list_limit=1 ,db_cnt=0;
 
-        private RecyclerView mRecyclerView;
-        private TodoListAdapter mTodoListAdapter;
-        private ActivityTodoListBinding mBinding;
-        private SharedPreferences mSharedPreferences;
-        private AppCompatImageView toolbar_profile;
-        private TodoListDbHelper tld;
-        private FirebaseAuth mAuth;
-        private FirebaseUser firebaseUser;
-        private DatabaseReference databaseReference;
-        String userID;
+    private RecyclerView mRecyclerView;
+    private TodoListAdapter mTodoListAdapter;
+    private ActivityTodoListBinding mBinding;
+    private SharedPreferences mSharedPreferences, ll;
+    private AppCompatImageView toolbar_profile;
+    private TodoListDbHelper tld;
+    private FirebaseAuth mAuth;
+    private FirebaseUser user;
+    private DatabaseReference databaseReference;
+    String userID;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,28 +96,31 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
         mRecyclerView.setLayoutManager(layoutManager);
         mTodoListAdapter = new TodoListAdapter(this, this);
         mRecyclerView.setAdapter(mTodoListAdapter);
-        tld =new TodoListDbHelper(TodoListActivity.this);
-        db_cnt = tld.todoCount();
 
         mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        if(user != null) {
-            userID = mAuth.getCurrentUser().getUid();
-            databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userID);
-            databaseReference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    //iterating through all the nodes
-                    String ans = snapshot.child("purchase_code").getValue(String.class);
-                    list_limit = Integer.parseInt(ans);
-                    Toast.makeText(TodoListActivity.this, "0"+list_limit, Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
+        user = mAuth.getCurrentUser();
+//        if(user != null) {
+//            userID = mAuth.getCurrentUser().getUid();
+//            databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userID);
+//            databaseReference.addValueEventListener(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                    //iterating through all the nodes
+//                    String ans = snapshot.child("purchase_code").getValue(String.class);
+//                    list_limit = Integer.parseInt(ans);
+//                    Toast.makeText(TodoListActivity.this, "DS "+list_limit, Toast.LENGTH_SHORT).show();
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error) {
+//
+//                }
+//            });
+//        }
+        tld =new TodoListDbHelper(TodoListActivity.this);
+        db_cnt = tld.todoCount();
+        if(user != null){
+            list_limit = PrefConfig.loadLimit(this);
         }
         Toast.makeText(this, list_limit + " " + db_cnt, Toast.LENGTH_SHORT).show();
 
