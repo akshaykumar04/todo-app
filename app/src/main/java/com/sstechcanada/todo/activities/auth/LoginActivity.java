@@ -29,6 +29,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.sstechcanada.todo.R;
+import com.sstechcanada.todo.activities.SplashActivity;
+import com.sstechcanada.todo.activities.TodoListActivity;
+import com.sstechcanada.todo.utils.SaveSharedPreference;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -140,6 +143,8 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
+                            SaveSharedPreference.setUserLogIn(LoginActivity.this, "true");
+                            startActivity(new Intent(LoginActivity.this, TodoListActivity.class));
                             hideProgressDialog();
                             checkUserStatus();
                         } else {
@@ -174,6 +179,9 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
         checkUserStatus();
+        SaveSharedPreference.setUserLogIn(LoginActivity.this, "false");
+        finishAffinity();
+        startActivity(new Intent(LoginActivity.this, LoginActivity.class));
     }
 
     private void checkUserStatus() {

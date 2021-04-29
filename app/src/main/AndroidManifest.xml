@@ -12,10 +12,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
-        <activity android:name=".activities.SelectCategoriesDailog">
-            <!--            android:theme="@style/Theme.MaterialComponents.Light.Dialog"-->
-        </activity>
         <activity android:name=".activities.TodoListActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".activities.SelectCategoriesDailog">
+
+            <!-- android:theme="@style/Theme.MaterialComponents.Light.Dialog" -->
+        </activity>
+        <activity
+            android:name=".activities.SplashActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,13 +28,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activities.AddCategoryActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTop"></activity>
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
         <activity android:name=".activities.auth.LoginActivity" />
-
         <activity
             android:name=".activities.SettingsActivity"
             android:parentActivityName=".activities.TodoListActivity">
@@ -39,8 +42,8 @@
         </activity>
         <activity
             android:name=".activities.AddOrEditTaskActivity"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".activities.TodoListActivity">
+            android:parentActivityName=".activities.TodoListActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.sstechcanada.todo.activities.TodoListActivity" />
@@ -49,7 +52,7 @@
         <provider
             android:name=".data.TodoListProvider"
             android:authorities="com.sstechcanada.todo"
-            android:exported="true"/>
+            android:exported="true" />
 
         <receiver android:name=".widget.TodoListWidgetProvider">
             <intent-filter>
@@ -72,12 +75,13 @@
         <service
             android:name=".services.DueCheckIntentService"
             android:exported="false" />
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>
+            android:value="ca-app-pub-3940256099942544~3347511713" />
     </application>
 
 </manifest>
