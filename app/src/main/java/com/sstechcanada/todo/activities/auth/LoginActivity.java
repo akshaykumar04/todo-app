@@ -54,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
     int list_limit;
+    private FirebaseUser user;
     //Shared Preference
     SharedPreferences sharedpreferences;
     public static final String PREF = "USER DATA";
@@ -87,6 +88,7 @@ public class LoginActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(LoginActivity.this, gso);
 
         mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
 
         googleSignInButton.setOnClickListener(v -> signIn());
         signOutButton.setOnClickListener(v -> signOut());
@@ -215,6 +217,7 @@ public class LoginActivity extends AppCompatActivity {
             userEmail.setVisibility(View.VISIBLE);
             userEmail.setText(User.getEmail());
             userType.setVisibility(View.VISIBLE);
+            list_limit = SaveSharedPreference.loadLimit(this);
             if(list_limit != 1){
                 userType.setText("Premium User");
             }else{
@@ -259,5 +262,11 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
+    }
+    public void setValue(){
+        if(user != null){
+            list_limit = SaveSharedPreference.loadLimit(this);
+        }
+//        Toast.makeText(this, list_limit + " " + db_cnt, Toast.LENGTH_SHORT).show();
     }
 }
