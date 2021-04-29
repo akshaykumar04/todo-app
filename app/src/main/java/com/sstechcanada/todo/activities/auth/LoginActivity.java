@@ -28,10 +28,19 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.SplashActivity;
 import com.sstechcanada.todo.activities.TodoListActivity;
 import com.sstechcanada.todo.utils.SaveSharedPreference;
+import com.sstechcanada.todo.models.Users;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -46,6 +55,9 @@ public class LoginActivity extends AppCompatActivity {
     CardView profileCard;
     ImageView placeHolder, dp;
     TextView userName, userType, userEmail;
+    FirebaseDatabase firebaseDatabase;
+    DatabaseReference databaseReference;
+    int list_limit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +74,8 @@ public class LoginActivity extends AppCompatActivity {
         userType = findViewById(R.id.tv_userType);
         userEmail = findViewById(R.id.tv_userEmail);
 
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference();
 
         pDialog = new ProgressDialog(this);
 
@@ -146,6 +160,10 @@ public class LoginActivity extends AppCompatActivity {
                             SaveSharedPreference.setUserLogIn(LoginActivity.this, "true");
                             startActivity(new Intent(LoginActivity.this, TodoListActivity.class));
                             hideProgressDialog();
+                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
+//                            databaseReference.child("Users").child(firebaseUser.getUid()).child("Email").setValue(firebaseUser.getEmail());
+                            databaseReference.child("Users").child(firebaseUser.getUid()).child("Email").setValue(firebaseUser.getEmail());
+                            updateUserPackage(firebaseUser);
                             checkUserStatus();
                         } else {
                             // If sign in fails, display a message to the user.
@@ -207,5 +225,32 @@ public class LoginActivity extends AppCompatActivity {
             userType.setVisibility(View.GONE);
             userEmail.setVisibility(View.GONE);
         }
+    }
+    private void updateUserPackage(FirebaseUser firebaseUser){
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getUid());
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(!snapshot.child("purchase_code").exists()){
+                    databaseReference.child("purchase_code").setValue("1");
+                }else{
+                    String ans = snapshot.child("purchase_code").getValue(String.class);
+                    list_limit = Integer.parseInt(ans);
+                    if(list_limit != 1){
+                        userType.setText("Premium User");
+                    }else{
+                        userType.setText("Free User");
+                    }
+                    Toast.makeText(LoginActivity.this, ""+list_limit, Toast.LENGTH_SHORT).show();
+                }
+                if(!snapshot.child("purchase_type").exists()){
+                    databaseReference.child("purchase_type").setValue("Free User");
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

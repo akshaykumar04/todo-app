@@ -55,7 +55,7 @@ public class AddCategoryActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         userID = mAuth.getCurrentUser().getUid();
 
-        
+//        databaseCategories = FirebaseDatabase.getInstance().getReference("categories");
         databaseCategories = FirebaseDatabase.getInstance().getReference(userID).child("benefits");
         
         editTextName = (EditText) findViewById(R.id.editTextName);
@@ -215,7 +215,7 @@ public class AddCategoryActivity extends AppCompatActivity {
     private void updateCategory(String id, String name) {
         //getting the specified category reference
         DatabaseReference dR = FirebaseDatabase.getInstance().getReference(userID).child("benefits").child(id);
-
+//        DatabaseReference dR = FirebaseDatabase.getInstance().getReference("categories").child(id);
         //updating category
         Category category = new Category(id, name);
         dR.setValue(category);
@@ -226,7 +226,7 @@ public class AddCategoryActivity extends AppCompatActivity {
     private void deleteCategory(String id) {
         //getting the specified category reference
         DatabaseReference dR = FirebaseDatabase.getInstance().getReference(userID).child("benefits").child(id);
-
+//        DatabaseReference dR = FirebaseDatabase.getInstance().getReference("categories").child(id);
         //removing category
         dR.removeValue();
 

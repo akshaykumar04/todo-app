@@ -36,18 +36,31 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.auth.LoginActivity;
 import com.sstechcanada.todo.adapters.TodoListAdapter;
 import com.sstechcanada.todo.broadcast_receivers.DailyAlarmReceiver;
 import com.sstechcanada.todo.data.TodoListContract;
+import com.sstechcanada.todo.data.TodoListDbHelper;
 import com.sstechcanada.todo.data.TodoListProvider;
 import com.sstechcanada.todo.databinding.ActivityTodoListBinding;
+import com.sstechcanada.todo.models.Category;
 import com.sstechcanada.todo.models.TodoTask;
+import com.sstechcanada.todo.models.Users;
 import com.sstechcanada.todo.utils.NotificationUtils;
+
+import java.util.List;
+import java.util.Map;
 
 public class TodoListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
         TodoListAdapter.TodoListAdapterOnClickHandler,
@@ -56,13 +69,18 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
         private static final int ADD_TASK_REQUEST = 1;
         private static final int EDIT_TASK_REQUEST = 2;
         private static final int ID_TODOLIST_LOADER = 2018;
+        private int list_limit,db_cnt=0;
 
         private RecyclerView mRecyclerView;
         private TodoListAdapter mTodoListAdapter;
         private ActivityTodoListBinding mBinding;
         private SharedPreferences mSharedPreferences;
         private AppCompatImageView toolbar_profile;
-
+        private TodoListDbHelper tld;
+        private FirebaseAuth mAuth;
+        private FirebaseUser firebaseUser;
+        private DatabaseReference databaseReference;
+        String userID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +92,30 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
         mRecyclerView.setLayoutManager(layoutManager);
         mTodoListAdapter = new TodoListAdapter(this, this);
         mRecyclerView.setAdapter(mTodoListAdapter);
+        tld =new TodoListDbHelper(TodoListActivity.this);
+        db_cnt = tld.todoCount();
+
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if(user != null) {
+            userID = mAuth.getCurrentUser().getUid();
+            databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userID);
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    //iterating through all the nodes
+                    String ans = snapshot.child("purchase_code").getValue(String.class);
+                    list_limit = Integer.parseInt(ans);
+                    Toast.makeText(TodoListActivity.this, "0"+list_limit, Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+        Toast.makeText(this, list_limit + " " + db_cnt, Toast.LENGTH_SHORT).show();
 
 //        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 //        getSupportActionBar().setCustomView(R.layout.abs_layout);
@@ -92,6 +134,7 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                db_cnt = tld.todoCount();
                 if(isLogin()){
                     Intent intent = new Intent(TodoListActivity.this, AddOrEditTaskActivity.class);
                     intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
@@ -283,8 +326,11 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
     public boolean isLogin(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
-            // User is not signIn
-            Toast.makeText(this, "Please Login First", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "You need to login ", Toast.LENGTH_SHORT).show();
+          return false;
+        }else if(list_limit <= db_cnt){
+            //Limit Check
+            Toast.makeText(this, "You can not store more than "+list_limit, Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;

@@ -123,7 +123,6 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         userID = mAuth.getCurrentUser().getUid();
 
-
         long dueDate;
         int taskCompleted;
         tv = findViewById(R.id.tv);
@@ -390,6 +389,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
     }
 
     public void loadCategories() {
+//        databaseCategories = FirebaseDatabase.getInstance().getReference("categories");
         databaseCategories = FirebaseDatabase.getInstance().getReference(userID).child("benefits");
         categories = new ArrayList<>();
         selectedStrings = new ArrayList<>();
