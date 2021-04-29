@@ -38,6 +38,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.data.PrefConfig;
+import com.sstechcanada.todo.activities.SplashActivity;
+import com.sstechcanada.todo.activities.TodoListActivity;
+import com.sstechcanada.todo.utils.SaveSharedPreference;
 import com.sstechcanada.todo.models.Users;
 
 import java.util.ArrayList;
@@ -161,6 +164,8 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
+                            SaveSharedPreference.setUserLogIn(LoginActivity.this, "true");
+                            startActivity(new Intent(LoginActivity.this, TodoListActivity.class));
                             hideProgressDialog();
                             FirebaseUser firebaseUser = mAuth.getCurrentUser();
 //                            databaseReference.child("Users").child(firebaseUser.getUid()).child("Email").setValue(firebaseUser.getEmail());
@@ -199,6 +204,9 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
         checkUserStatus();
+        SaveSharedPreference.setUserLogIn(LoginActivity.this, "false");
+        finishAffinity();
+        startActivity(new Intent(LoginActivity.this, LoginActivity.class));
     }
 
     private void checkUserStatus() {
