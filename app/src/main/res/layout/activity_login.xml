@@ -16,7 +16,7 @@
         android:layout_marginEnd="8dp"
         android:fontFamily="@font/raleway_semibold"
         android:text="To Do List Maker"
-        android:textSize="32sp"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -32,7 +32,7 @@
         android:layout_marginRight="50dp"
         android:fontFamily="@font/raleway_medium"
         android:text="Items Sorted By The Number Of Benefits"
-        android:textSize="18sp"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />

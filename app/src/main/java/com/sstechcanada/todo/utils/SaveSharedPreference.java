@@ -15,27 +15,23 @@ public class SaveSharedPreference {
         return PreferenceManager.getDefaultSharedPreferences(ctx);
     }
 
-    public static void setUserName(Context ctx, String userName)
-    {
+    public static void setUserName(Context ctx, String userName) {
         SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
         editor.putString(PREF_USER_NAME, userName);
         editor.apply();
     }
 
-    public static void setUserLogIn(Context ctx, String isLoggedIn)
-    {
+    public static void setUserLogIn(Context ctx, String isLoggedIn) {
         SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
         editor.putString(PREF_USER_STATE, isLoggedIn);
         editor.apply();
     }
 
-    public static String getUserName(Context ctx)
-    {
+    public static String getUserName(Context ctx) {
         return getSharedPreferences(ctx).getString(PREF_USER_NAME, "");
     }
 
-    public static String getUserLogin(Context ctx)
-    {
+    public static String getUserLogin(Context ctx) {
         return getSharedPreferences(ctx).getString(PREF_USER_STATE, "");
     }
 }
