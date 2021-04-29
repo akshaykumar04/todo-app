@@ -13,7 +13,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.service.autofill.SaveCallback;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -50,13 +49,13 @@ import com.sstechcanada.todo.utils.SaveSharedPreference;
 
 public class TodoListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
         TodoListAdapter.TodoListAdapterOnClickHandler,
-    SharedPreferences.OnSharedPreferenceChangeListener {
+        SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = TodoListActivity.class.getSimpleName();
     private static final int ADD_TASK_REQUEST = 1;
     private static final int EDIT_TASK_REQUEST = 2;
     private static final int ID_TODOLIST_LOADER = 2018;
-    private int list_limit=1 ,db_cnt=0;
-
+    String userID;
+    private int list_limit = 1, db_cnt = 0;
     private RecyclerView mRecyclerView;
     private TodoListAdapter mTodoListAdapter;
     private ActivityTodoListBinding mBinding;
@@ -66,9 +65,6 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private DatabaseReference databaseReference;
-    String userID;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,11 +80,14 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
 
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
-        tld =new TodoListDbHelper(TodoListActivity.this);
+        tld = new TodoListDbHelper(TodoListActivity.this);
 
         //Limit Set
         db_cnt = tld.todoCount();
         setValue();
+
+        showHidePlaceholder();
+
 
 //        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 //        getSupportActionBar().setCustomView(R.layout.abs_layout);
@@ -109,7 +108,7 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
             public void onClick(View view) {
                 db_cnt = tld.todoCount();
                 setValue();
-                if(isLogin()){
+                if (isLogin()) {
                     Intent intent = new Intent(TodoListActivity.this, AddOrEditTaskActivity.class);
                     intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
                     startActivityForResult(intent, ADD_TASK_REQUEST);
@@ -124,6 +123,14 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
 
         //scheduleDailyDueCheckerAlarm();
         //cancelAlarm();
+    }
+
+    private void showHidePlaceholder() {
+        if (db_cnt == 0) {
+            mBinding.placeholderImage.setVisibility(View.VISIBLE);
+        } else {
+            mBinding.placeholderImage.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -252,10 +259,12 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
 
     @Override
     protected void onResume() {
+
         super.onResume();
         // This is so that if we've edited a task directly from the widget, the widget will still
         // get updated when we come to this activity after clicking UPDATE TASK in AddOrEditTaskActivity
         updateWidget();
+        showHidePlaceholder();
     }
 
     @Override
@@ -297,22 +306,24 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
         alarm.cancel(pIntent);
     }
 
-    public boolean isLogin(){
+    public boolean isLogin() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
             Toast.makeText(this, "You need to login ", Toast.LENGTH_SHORT).show();
-          return false;
-        }else if(list_limit <= db_cnt){
+            return false;
+        } else if (list_limit <= db_cnt) {
             //Limit Check
-            Toast.makeText(this, "You can not store more than "+list_limit, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "You can not store more than " + list_limit, Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
     }
-    public void setValue(){
-        if(user != null){
+
+    public void setValue() {
+        if (user != null) {
             list_limit = SaveSharedPreference.loadLimit(this);
         }
 //        Toast.makeText(this, list_limit + " " + db_cnt, Toast.LENGTH_SHORT).show();
     }
+
 }
