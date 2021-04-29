@@ -1,8 +1,12 @@
 package com.sstechcanada.todo.activities.auth;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -91,7 +95,7 @@ public class LoginActivity extends AppCompatActivity {
         user = mAuth.getCurrentUser();
 
         googleSignInButton.setOnClickListener(v -> signIn());
-        signOutButton.setOnClickListener(v -> signOut());
+        signOutButton.setOnClickListener(v -> showSignOutDialog());
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
@@ -103,6 +107,25 @@ public class LoginActivity extends AppCompatActivity {
         }
         checkUserStatus();
     }
+
+    private void showSignOutDialog() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setMessage("Are you sure you want to Sign out?");
+        alert.setCancelable(true);
+
+        alert.setPositiveButton(
+                "Yes",
+                (dialog, id) -> signOut());
+
+        alert.setNegativeButton(
+                "No",
+                (dialog, id) -> dialog.dismiss());
+
+        AlertDialog alertDialog = alert.create();
+        alert.show();
+
+    }
+
     /**
      * Display Progress bar while Logging in through Google
      */
