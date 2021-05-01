@@ -60,6 +60,7 @@
                 android:background="@color/colorTab"/>
 
             <TextView
+                android:id="@+id/completedTab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/raleway"

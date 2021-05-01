@@ -6,4 +6,137 @@
     android:layout_height="match_parent"
     tools:context=".activities.AppUpgradeActivity">
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animation_view"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="48dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="premium-gold.json"
+        app:lottie_loop="true" />
+
+    <TextView
+        android:id="@+id/textUpgrade"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_semibold"
+        android:paddingVertical="8dp"
+        android:paddingHorizontal="18dp"
+        android:drawablePadding="10dp"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@id/animation_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginVertical="4dp"
+        android:textColor="@color/textHeadings"
+        android:text="Upgrade to premium"
+        android:textAllCaps="true" />
+
+    <TextView
+        android:id="@+id/textUpgradeDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/raleway_medium"
+        android:paddingVertical="8dp"
+        android:paddingHorizontal="35dp"
+        android:drawablePadding="10dp"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/textUpgrade"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginVertical="4dp"
+        android:textAlignment="center"
+        android:text="Upgrade to premium version to access exclusive features" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:gravity="left"
+        android:orientation="vertical"
+        android:paddingHorizontal="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonUpgrade"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textUpgradeDesc">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="4dp"
+            android:drawableLeft="@drawable/ic_check"
+            android:drawablePadding="8dp"
+            android:fontFamily="@font/poppins_semibold"
+            android:lineSpacingExtra="1dp"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="8dp"
+            android:text="create upto 20 todo tasks"
+            android:textAllCaps="true"
+            android:textColor="#000000"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="4dp"
+            android:drawableLeft="@drawable/ic_check"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/poppins_semibold"
+            android:lineSpacingExtra="1dp"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="8dp"
+            android:text="Unlocks Completed todo list section"
+            android:textAllCaps="true"
+            android:textColor="#000000"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="4dp"
+            android:drawableLeft="@drawable/ic_check"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/poppins_semibold"
+            android:lineSpacingExtra="1dp"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="8dp"
+            android:text="Removes Advertisements"
+            android:textAllCaps="true"
+            android:textColor="#000000"
+            android:textSize="14sp" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="4dp"
+            android:drawableLeft="@drawable/ic_check"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/poppins_semibold"
+            android:lineSpacingExtra="1dp"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="8dp"
+            android:text="Exclusive access to more premium features"
+            android:textAllCaps="true"
+            android:textColor="#000000"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="wrap_content"
+        android:id="@+id/buttonUpgrade"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="go-premium.json"
+        app:lottie_loop="true" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

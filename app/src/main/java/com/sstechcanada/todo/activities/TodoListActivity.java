@@ -123,6 +123,10 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
 
         //scheduleDailyDueCheckerAlarm();
         //cancelAlarm();
+
+        mBinding.completedTab.setOnClickListener(view -> {
+            startActivity(new Intent(TodoListActivity.this, AppUpgradeActivity.class));
+        });
     }
 
     private void showHidePlaceholder() {

@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 30
@@ -50,5 +51,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.google.android.gms:play-services-ads:19.1.0'
+    implementation "com.airbnb.android:lottie:3.6.0"
 
 }
