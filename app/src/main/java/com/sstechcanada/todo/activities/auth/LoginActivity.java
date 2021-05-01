@@ -1,15 +1,10 @@
 package com.sstechcanada.todo.activities.auth;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -45,25 +40,26 @@ import com.sstechcanada.todo.utils.SaveSharedPreference;
 
 public class LoginActivity extends AppCompatActivity {
 
+    public static final String PREF = "USER DATA";
+    public static final String LIST_LIMIT = "LIST_LIMIT";
     private static final String TAG = "MainActivity";
     private static final int RC_SIGN_IN = 9001;
     SignInButton googleSignInButton;
-    private FirebaseAuth mAuth;
-    private ProgressDialog pDialog;
-    private GoogleSignInClient mGoogleSignInClient;
-    private ProgressBar progressBar;
-    private Button signOutButton;
     CardView profileCard;
     ImageView placeHolder, dp;
     TextView userName, userType, userEmail;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
     int list_limit;
-    private FirebaseUser user;
     //Shared Preference
     SharedPreferences sharedpreferences;
-    public static final String PREF = "USER DATA";
-    public static final String LIST_LIMIT = "LIST_LIMIT";
+    private FirebaseAuth mAuth;
+    private ProgressDialog pDialog;
+    private GoogleSignInClient mGoogleSignInClient;
+    private ProgressBar progressBar;
+    private Button signOutButton;
+    private FirebaseUser user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,14 +107,14 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showSignOutDialog() {
         androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(this);
-        alert.setTitle("Sign out?");
-        alert.setMessage("Are you sure you want to Sign out?");
+        alert.setTitle(R.string.sign_out);
+        alert.setMessage(R.string.are_you_sure);
         alert.setPositiveButton(
-                "Yes",
+                R.string.yes,
                 (dialog, id) -> signOut());
 
         alert.setNegativeButton(
-                "No",
+                R.string.no,
                 (dialog, id) -> dialog.dismiss());
         alert.show();
     }
@@ -211,12 +207,9 @@ public class LoginActivity extends AppCompatActivity {
         mAuth.signOut();
         // Google sign out
         mGoogleSignInClient.signOut().addOnCompleteListener(this,
-                new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        updateUI(null);
-                        SaveSharedPreference.saveLimit(getApplicationContext(), 0);
-                    }
+                task -> {
+                    updateUI(null);
+                    SaveSharedPreference.saveLimit(getApplicationContext(), 0);
                 });
         checkUserStatus();
         SaveSharedPreference.setUserLogIn(LoginActivity.this, "false");
@@ -238,10 +231,10 @@ public class LoginActivity extends AppCompatActivity {
             userEmail.setText(User.getEmail());
             userType.setVisibility(View.VISIBLE);
             list_limit = SaveSharedPreference.loadLimit(this);
-            if(list_limit != 1){
-                userType.setText("Premium User");
-            }else{
-                userType.setText("Free User");
+            if (list_limit != 1) {
+                userType.setText(R.string.premium_user);
+            } else {
+                userType.setText(R.string.free_user);
             }
             updateUI(User);
         } else {
@@ -254,37 +247,40 @@ public class LoginActivity extends AppCompatActivity {
             userEmail.setVisibility(View.GONE);
         }
     }
-    private void updateUserPackage(FirebaseUser firebaseUser){
+
+    private void updateUserPackage(FirebaseUser firebaseUser) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getUid());
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(!snapshot.child("purchase_code").exists()){
+                if (!snapshot.child("purchase_code").exists()) {
                     databaseReference.child("purchase_code").setValue("1");
                     SaveSharedPreference.saveLimit(getApplicationContext(), 1);
-                }else{
+                } else {
                     String ans = snapshot.child("purchase_code").getValue(String.class);
                     list_limit = Integer.parseInt(ans);
-                    if(list_limit != 1){
-                        userType.setText("Premium User");
-                    }else{
-                        userType.setText("Free User");
+                    if (list_limit != 1) {
+                        userType.setText(R.string.premium_user);
+                    } else {
+                        userType.setText(R.string.free_user);
                     }
                     SaveSharedPreference.saveLimit(getApplicationContext(), list_limit);
 //                    Toast.makeText(LoginActivity.this, ""+list_limit, Toast.LENGTH_SHORT).show();
                 }
-                if(!snapshot.child("purchase_type").exists()){
+                if (!snapshot.child("purchase_type").exists()) {
                     databaseReference.child("purchase_type").setValue("Free User");
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
     }
-    public void setValue(){
-        if(user != null){
+
+    public void setValue() {
+        if (user != null) {
             list_limit = SaveSharedPreference.loadLimit(this);
         }
 //        Toast.makeText(this, list_limit + " " + db_cnt, Toast.LENGTH_SHORT).show();

@@ -62,5 +62,11 @@
     <string name="Categories">Benefits</string>
     <string name="tagline">tagline</string>
     <string name="interstitial_ad_unit_test_id">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="premium_user">Premium User</string>
+    <string name="free_user">Free User</string>
+    <string name="sign_out">Sign out?</string>
+    <string name="are_you_sure">Are you sure you want to Sign out?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
 </resources>
