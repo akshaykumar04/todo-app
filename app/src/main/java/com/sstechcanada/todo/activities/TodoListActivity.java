@@ -313,11 +313,13 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
     public boolean isLogin() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
-            Toast.makeText(this, "You need to login ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "You need to login first", Toast.LENGTH_LONG).show();
+            startActivity(new Intent(TodoListActivity.this, LoginActivity.class));
             return false;
         } else if (list_limit <= db_cnt) {
             //Limit Check
-            Toast.makeText(this, "You can not store more than " + list_limit, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "You can not create more than " + list_limit + " task in free tier, Please upgrade app to premium version", Toast.LENGTH_LONG).show();
+            startActivity(new Intent(TodoListActivity.this, AppUpgradeActivity.class));
             return false;
         }
         return true;
