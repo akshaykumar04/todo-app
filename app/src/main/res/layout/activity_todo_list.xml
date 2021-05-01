@@ -13,18 +13,20 @@
             android:id="@+id/include"
             layout="@layout/act_bar" />
 
-        <ImageView
+        <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/placeholderImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginBottom="16dp"
-            android:padding="20dp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/include"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="placeholder.json"
+            app:lottie_loop="true"
             app:srcCompat="@drawable/placeholder" />
 
         <LinearLayout
