@@ -6,11 +6,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.sstechcanada.todo.models.TodoTask;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.sstechcanada.todo.data.TodoListContract.TodoListEntry.COLUMN_CATEGORY;
 import static com.sstechcanada.todo.data.TodoListContract.TodoListEntry.COLUMN_CATEGORY_COUNT;
+import static com.sstechcanada.todo.data.TodoListContract.TodoListEntry.COLUMN_COMPLETED;
 import static com.sstechcanada.todo.data.TodoListContract.TodoListEntry.COLUMN_ID;
 import static com.sstechcanada.todo.data.TodoListContract.TodoListEntry.TABLE_NAME;
 
@@ -33,7 +36,7 @@ public class TodoListDbHelper extends SQLiteOpenHelper {
                         TodoListContract.TodoListEntry.COLUMN_DUE_DATE + " LONG NOT NULL, " +
                         TodoListContract.TodoListEntry.COLUMN_CATEGORY + " TEXT, " +
                         TodoListContract.TodoListEntry.COLUMN_CATEGORY_COUNT + " INTEGER ," +
-                        TodoListContract.TodoListEntry.COLUMN_COMPLETED + " INTEGER NOT NULL);";
+                        COLUMN_COMPLETED + " INTEGER NOT NULL);";
 
         sqLiteDatabase.execSQL(SQL_CREATE_TODOLIST_TABLE);
     }
@@ -82,5 +85,13 @@ public class TodoListDbHelper extends SQLiteOpenHelper {
         cnt= mCount.getInt(0);
         mCount.close();
         return cnt;
+    }
+
+    public void deleteTodo(String tid){
+        SQLiteDatabase database = this.getWritableDatabase();
+        String query = "DELETE" +
+                " FROM " + TABLE_NAME +
+                " WHERE "+ COLUMN_ID + " = " + tid;
+        database.execSQL(query);
     }
 }

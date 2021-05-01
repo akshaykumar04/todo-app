@@ -6,13 +6,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -21,18 +19,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.cardview.widget.CardView;
 import androidx.databinding.DataBindingUtil;
 
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -84,6 +78,8 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
     private AppCompatImageView toolbar_profile;
     private FirebaseAuth mAuth;
     String userID;
+    //For Delete Status
+    private int status;
 
     public static String convertArrayToString(ArrayList<String> array) {
         String str = "";
@@ -298,13 +294,16 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
             }
 
             TodoTask todoTask = new TodoTask(description, selectedResult, category_count, priority, dueDate, mTaskId, isCompleted);
-
             insertOrUpdate(todoTask);
 
             Intent returnIntent = new Intent();
             setResult(Activity.RESULT_OK, returnIntent);
-            finish();
+
+            if(mAddOrEdit.equals(getString(R.string.add_new_task)) || isCompleted == 0){
+                finish();
+            }
         }
+
     }
 
     private void insertOrUpdate(TodoTask todoTask) {
@@ -318,6 +317,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         contentValues.put(TodoListContract.TodoListEntry.COLUMN_COMPLETED, todoTask.getCompleted());
         contentValues.put(TodoListContract.TodoListEntry.COLUMN_CATEGORY, todoTask.getCategory());
         contentValues.put(TodoListContract.TodoListEntry.COLUMN_CATEGORY_COUNT, todoTask.getCategory_count());
+        status = todoTask.getCompleted();
 
         Log.d(TAG, todoTask.getDueDate() + "");
 
@@ -327,8 +327,10 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         } else {
             Uri uri = TodoListContract.TodoListEntry.CONTENT_URI.buildUpon().appendPath(id).build();
             getContentResolver().update(uri, contentValues, "_id=?", new String[]{id});
+            if(todoTask.getCompleted() == 1){
+                todoDeleteDialog(todoTask, id);
+            }
         }
-
     }
 
     @Override
@@ -496,6 +498,35 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
             noOfCat.setText(chip_count + " Benefits Selected");
         }
 
+    }
+
+    private void todoDeleteDialog(TodoTask todoTask, String tid) {
+        android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(this);
+        alert.setTitle("Task will be deleted");
+        alert.setMessage("Marking this task as complete will permanently delete this task. \nAre you sure?");
+        alert.setCancelable(false);
+        alert.setPositiveButton(
+                "Yes",
+                (dialog, id) -> {
+                    deleteTodo(tid);
+                }
+        );
+        alert.setNegativeButton(
+                "No",
+                (dialog, id) -> {
+                    todoTask.setCompleted(0);
+                    insertOrUpdate(todoTask);
+                    dialog.dismiss();
+                }
+        );
+        android.app.AlertDialog alertDialog = alert.create();
+        alertDialog.show();
+    }
+
+    private void deleteTodo(String tid){
+        TodoListDbHelper todoListDbHelper = new TodoListDbHelper(AddOrEditTaskActivity.this);
+        todoListDbHelper.deleteTodo(tid);
+        finish();
     }
 
 }
