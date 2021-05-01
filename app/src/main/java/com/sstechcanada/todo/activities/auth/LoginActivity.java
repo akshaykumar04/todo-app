@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -109,10 +110,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void showSignOutDialog() {
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(this);
+        alert.setTitle("Sign out?");
         alert.setMessage("Are you sure you want to Sign out?");
-        alert.setCancelable(true);
-
         alert.setPositiveButton(
                 "Yes",
                 (dialog, id) -> signOut());
@@ -120,10 +120,7 @@ public class LoginActivity extends AppCompatActivity {
         alert.setNegativeButton(
                 "No",
                 (dialog, id) -> dialog.dismiss());
-
-        AlertDialog alertDialog = alert.create();
         alert.show();
-
     }
 
     /**

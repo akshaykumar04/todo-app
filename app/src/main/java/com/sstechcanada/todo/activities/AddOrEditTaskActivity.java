@@ -501,7 +501,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
     }
 
     private void todoDeleteDialog(TodoTask todoTask, String tid) {
-        android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(this);
+        androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(this);
         alert.setTitle("Task will be deleted");
         alert.setMessage("Marking this task as complete will permanently delete this task. \nAre you sure?");
         alert.setCancelable(false);
@@ -519,8 +519,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
                     dialog.dismiss();
                 }
         );
-        android.app.AlertDialog alertDialog = alert.create();
-        alertDialog.show();
+        alert.show();
     }
 
     private void deleteTodo(String tid){
