@@ -47,6 +47,8 @@ import com.sstechcanada.todo.models.TodoTask;
 import com.sstechcanada.todo.utils.NotificationUtils;
 import com.sstechcanada.todo.utils.SaveSharedPreference;
 
+import es.dmoral.toasty.Toasty;
+
 public class TodoListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
         TodoListAdapter.TodoListAdapterOnClickHandler,
         SharedPreferences.OnSharedPreferenceChangeListener {
@@ -130,7 +132,7 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
     }
 
     private void showHidePlaceholder() {
-        if (db_cnt == 0) {
+        if (db_cnt <= 2) {
             mBinding.placeholderImage.setVisibility(View.VISIBLE);
         } else {
             mBinding.placeholderImage.setVisibility(View.GONE);
@@ -313,12 +315,12 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
     public boolean isLogin() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
-            Toast.makeText(this, "You need to login first", Toast.LENGTH_LONG).show();
+            Toasty.warning(this, getString(R.string.login_first), Toast.LENGTH_LONG).show();
             startActivity(new Intent(TodoListActivity.this, LoginActivity.class));
             return false;
         } else if (list_limit <= db_cnt) {
             //Limit Check
-            Toast.makeText(this, "You can not create more than " + list_limit + " task in free tier, Please upgrade app to premium version", Toast.LENGTH_LONG).show();
+            Toasty.info(this, getString(R.string.cannot_create) + list_limit + " task in free tier, Please upgrade app to premium version", Toast.LENGTH_LONG, true).show();
             startActivity(new Intent(TodoListActivity.this, AppUpgradeActivity.class));
             return false;
         }
@@ -329,7 +331,6 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
         if (user != null) {
             list_limit = SaveSharedPreference.loadLimit(this);
         }
-//        Toast.makeText(this, list_limit + " " + db_cnt, Toast.LENGTH_SHORT).show();
     }
 
 }

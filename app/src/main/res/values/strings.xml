@@ -68,5 +68,15 @@
     <string name="are_you_sure">Are you sure you want to Sign out?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="task_updated">Task Updated</string>
+    <string name="please_login">Please login to continue</string>
+    <string name="to_do_list_maker">To Do List Maker</string>
+    <string name="items_sorted_by_the_number_of_benefits">Items Sorted By The Number Of Benefits</string>
+    <string name="user_email_com">user@email.com</string>
+    <string name="akshay_kumar">Akshay Kumar</string>
+    <string name="don_t_you_have_an_account_create">Don\'t you have an account? Create</string>
+    <string name="logout">Logout</string>
+    <string name="login_first">You need to login first</string>
+    <string name="cannot_create">You can not create more than </string>
 
 </resources>

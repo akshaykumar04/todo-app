@@ -38,6 +38,8 @@ import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.TodoListActivity;
 import com.sstechcanada.todo.utils.SaveSharedPreference;
 
+import es.dmoral.toasty.Toasty;
+
 public class LoginActivity extends AppCompatActivity {
 
     public static final String PREF = "USER DATA";
@@ -185,7 +187,7 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(getApplicationContext(), "Login Failed: ", Toast.LENGTH_SHORT).show();
+                            Toasty.error(getApplicationContext(), "Login Failed: ", Toast.LENGTH_LONG).show();
                         }
 
                         hideProgressDialog();

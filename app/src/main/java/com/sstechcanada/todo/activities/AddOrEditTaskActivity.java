@@ -52,6 +52,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
+
 import static com.sstechcanada.todo.data.TodoListContract.TodoListEntry.COLUMN_CATEGORY;
 
 public class AddOrEditTaskActivity extends AppCompatActivity {
@@ -263,10 +265,10 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         Log.d(TAG, "Here");
 
         if (description.equals("")) {
-            Toast.makeText(this, getString(R.string.description_cannot_be_empty), Toast.LENGTH_SHORT).show();
+            Toasty.warning(this, getString(R.string.description_cannot_be_empty), Toast.LENGTH_SHORT, true).show();
         }
         else if (chipGroup.getChildCount() == 0){
-            Toast.makeText(this, getString(R.string.category_cannot_be_empty), Toast.LENGTH_SHORT).show();
+            Toasty.warning(this, getString(R.string.category_cannot_be_empty), Toast.LENGTH_SHORT, true).show();
         }else {
             //Making First Char Capital
             description = description.substring(0, 1).toUpperCase() + description.substring(1);
@@ -525,6 +527,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
     private void deleteTodo(String tid){
         TodoListDbHelper todoListDbHelper = new TodoListDbHelper(AddOrEditTaskActivity.this);
         todoListDbHelper.deleteTodo(tid);
+        Toasty.error(this, "Task Deleted", Toast.LENGTH_SHORT, true).show();
         finish();
     }
 

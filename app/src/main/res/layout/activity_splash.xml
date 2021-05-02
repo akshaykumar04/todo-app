@@ -15,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:lottie_autoPlay="true"
-        app:lottie_fileName="icon.json"
+        app:lottie_fileName="appicon.json"
         app:lottie_loop="true"/>
 
     <TextView
@@ -26,7 +26,8 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:fontFamily="@font/raleway_semibold"
-        android:text="To Do List Maker"
+        android:text="@string/to_do_list_maker"
+        android:textColor="@color/textHeadings"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/textView2"
         app:layout_constraintEnd_toEndOf="parent"
@@ -42,7 +43,7 @@
         android:layout_marginRight="50dp"
         android:layout_marginBottom="50dp"
         android:fontFamily="@font/raleway_medium"
-        android:text="Items Sorted By The Number Of Benefits"
+        android:text="@string/items_sorted_by_the_number_of_benefits"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
