@@ -24,6 +24,7 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -61,6 +62,7 @@ public class LoginActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private Button signOutButton;
     private FirebaseUser user;
+    private FloatingActionButton fabBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +78,7 @@ public class LoginActivity extends AppCompatActivity {
         userName = findViewById(R.id.tv_userName);
         userType = findViewById(R.id.tv_userType);
         userEmail = findViewById(R.id.tv_userEmail);
+        fabBack = findViewById(R.id.fabBack);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();
@@ -95,6 +98,10 @@ public class LoginActivity extends AppCompatActivity {
 
         googleSignInButton.setOnClickListener(v -> signIn());
         signOutButton.setOnClickListener(v -> showSignOutDialog());
+
+        fabBack.setOnClickListener(view -> {
+            super.onBackPressed();
+        });
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();

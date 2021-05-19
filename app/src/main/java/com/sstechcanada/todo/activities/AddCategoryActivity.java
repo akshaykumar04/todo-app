@@ -42,7 +42,7 @@ public class AddCategoryActivity extends AppCompatActivity {
     Button buttonAddCategory;
     ListView listViewCategory;
     TextView toolBarTitle;
-    private AppCompatImageView toolbar_profile;
+    private AppCompatImageView toolbar_profile, toolbarBackIcon;
 
     List<Category> categories;
 
@@ -63,6 +63,12 @@ public class AddCategoryActivity extends AppCompatActivity {
 
         editTextName = findViewById(R.id.editTextName);
         listViewCategory = findViewById(R.id.listViewCategory);
+        toolbarBackIcon = findViewById(R.id.arrow_back);
+        toolbarBackIcon.setVisibility(View.VISIBLE);
+        toolbarBackIcon.setOnClickListener(view -> {
+            super.onBackPressed();
+        });
+
 
         buttonAddCategory = findViewById(R.id.buttonAddCategory);
 
@@ -72,26 +78,14 @@ public class AddCategoryActivity extends AppCompatActivity {
         toolBarTitle.setText("Add Benefits");
 
         toolbar_profile = findViewById(R.id.profile_toolbar);
-        toolbar_profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(AddCategoryActivity.this, LoginActivity.class));
-            }
-        });
+        toolbar_profile.setOnClickListener(view -> startActivity(new Intent(AddCategoryActivity.this, LoginActivity.class)));
 
-        buttonAddCategory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addCategory();
-            }
-        });
+        buttonAddCategory.setOnClickListener(view -> addCategory());
 
-        listViewCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        listViewCategory.setOnItemClickListener((adapterView, view, i, l) -> {
 
-                Category category = categories.get(i);
-                showUpdateDialog(category.getCategoryId(), category.getCategoryName());
+            Category category = categories.get(i);
+            showUpdateDialog(category.getCategoryId(), category.getCategoryName());
 
 //                //creating an intent
 //                Intent intent = new Intent(getApplicationContext(), CategoryActivity.class);
@@ -102,7 +96,6 @@ public class AddCategoryActivity extends AppCompatActivity {
 //
 //                //starting the activity with intent
 //                startActivity(intent);
-            }
         });
 
         listViewCategory.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {

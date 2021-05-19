@@ -76,7 +76,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
     private String selectedResult = "";
     private TodoTask todoTaskToAddOrEdit;
     private TextView tv, noOfCat, addMoreCat, toolBarTitle;
-    private AppCompatImageView toolbar_profile;
+    private AppCompatImageView toolbar_profile, toolbarBackIcon;
     private FirebaseAuth mAuth;
     //For Delete Status
     private int status;
@@ -109,7 +109,11 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar_profile = findViewById(R.id.profile_toolbar);
         toolbar_profile.setOnClickListener(view -> startActivity(new Intent(AddOrEditTaskActivity.this, LoginActivity.class)));
-
+//        toolbarBackIcon = findViewById(R.id.arrow_back);
+//        toolbarBackIcon.setVisibility(View.VISIBLE);
+//        toolbarBackIcon.setOnClickListener(view -> {
+//            finish();
+//        });
         toolBarTitle = findViewById(R.id.toolbarTitle);
         toolBarTitle.setText("Add/Update Task");
 
