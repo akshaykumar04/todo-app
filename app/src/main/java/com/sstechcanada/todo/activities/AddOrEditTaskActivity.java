@@ -109,20 +109,18 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar_profile = findViewById(R.id.profile_toolbar);
         toolbar_profile.setOnClickListener(view -> startActivity(new Intent(AddOrEditTaskActivity.this, LoginActivity.class)));
-//        toolbarBackIcon = findViewById(R.id.arrow_back);
-//        toolbarBackIcon.setVisibility(View.VISIBLE);
-//        toolbarBackIcon.setOnClickListener(view -> {
-//            finish();
-//        });
+        toolbarBackIcon = findViewById(R.id.arrow_back);
+        toolbarBackIcon.setVisibility(View.VISIBLE);
+        toolbarBackIcon.setOnClickListener(view -> {
+            super.onBackPressed();
+        });
         toolBarTitle = findViewById(R.id.toolbarTitle);
         toolBarTitle.setText("Add/Update Task");
 
         mAuth = FirebaseAuth.getInstance();
         userID = mAuth.getCurrentUser().getUid();
 
-        AdView adView = mBinding.adView;
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        loadBannerAd();
 
         long dueDate;
         int taskCompleted;
@@ -209,6 +207,13 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
 
         MobileAds.initialize(this, initializationStatus -> {
         });
+
+    }
+
+    private void loadBannerAd() {
+        AdView adView = mBinding.adView;
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
 
     }
 
@@ -351,6 +356,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         gridView = alertLayout.findViewById(R.id.grid_view_alert);
         addMoreCategories = alertLayout.findViewById(R.id.addMoreCategoriesLayout);
         progressBar = alertLayout.findViewById(R.id.progress_circular);
+        AdView bannerAd = alertLayout.findViewById(R.id.adView);
         loadCategories();
         // disallow cancel of AlertDialog on click of back button and outside touch
         alert.setCancelable(false);
@@ -375,6 +381,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
 
         addMoreCategories.setOnClickListener(view -> startActivity(new Intent(AddOrEditTaskActivity.this, AddCategoryActivity.class)));
 
+        bannerAd.loadAd(new AdRequest.Builder().build());
 
         AlertDialog dialog = alert.create();
         dialog.show();

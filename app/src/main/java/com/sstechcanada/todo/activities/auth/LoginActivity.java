@@ -1,5 +1,6 @@
 package com.sstechcanada.todo.activities.auth;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,6 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -63,6 +66,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button signOutButton;
     private FirebaseUser user;
     private FloatingActionButton fabBack;
+    private AdView bannerAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +83,8 @@ public class LoginActivity extends AppCompatActivity {
         userType = findViewById(R.id.tv_userType);
         userEmail = findViewById(R.id.tv_userEmail);
         fabBack = findViewById(R.id.fabBack);
+        bannerAd = findViewById(R.id.adView);
+        bannerAd.loadAd(new AdRequest.Builder().build());
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();
@@ -226,6 +232,7 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(new Intent(LoginActivity.this, LoginActivity.class));
     }
 
+    @SuppressLint("RestrictedApi")
     private void checkUserStatus() {
         FirebaseUser User = mAuth.getCurrentUser();
         if (User != null) {
@@ -239,6 +246,8 @@ public class LoginActivity extends AppCompatActivity {
             userEmail.setVisibility(View.VISIBLE);
             userEmail.setText(User.getEmail());
             userType.setVisibility(View.VISIBLE);
+            fabBack.setVisibility(View.VISIBLE);
+            bannerAd.setVisibility(View.VISIBLE);
             list_limit = SaveSharedPreference.loadLimit(this);
             if (list_limit > 15) {
                 userType.setText(R.string.premium_user);
