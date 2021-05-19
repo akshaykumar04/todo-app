@@ -181,7 +181,7 @@ public class LoginActivity extends AppCompatActivity {
                             hideProgressDialog();
                             FirebaseUser firebaseUser = mAuth.getCurrentUser();
 //                            databaseReference.child("Users").child(firebaseUser.getUid()).child("Email").setValue(firebaseUser.getEmail());
-                            databaseReference.child("Users").child(firebaseUser.getUid()).child("Email").setValue(firebaseUser.getEmail());
+                            databaseReference.child(firebaseUser.getUid()).child("Email").setValue(firebaseUser.getEmail());
                             updateUserPackage(firebaseUser);
                             checkUserStatus();
                         } else {
@@ -233,7 +233,7 @@ public class LoginActivity extends AppCompatActivity {
             userEmail.setText(User.getEmail());
             userType.setVisibility(View.VISIBLE);
             list_limit = SaveSharedPreference.loadLimit(this);
-            if (list_limit != 1) {
+            if (list_limit > 15) {
                 userType.setText(R.string.premium_user);
             } else {
                 userType.setText(R.string.free_user);
@@ -251,22 +251,25 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void updateUserPackage(FirebaseUser firebaseUser) {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getUid());
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child(firebaseUser.getUid());
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String ans = snapshot.child("purchase_code").getValue(String.class);
+                String limit = snapshot.child("item_limit").getValue(String.class);
+
                 if (!snapshot.child("purchase_code").exists()) {
-                    databaseReference.child("purchase_code").setValue("1");
-                    SaveSharedPreference.saveLimit(getApplicationContext(), 1);
+                    databaseReference.child("purchase_code").setValue("0");
+                    databaseReference.child("item_limit").setValue("15");
+                    SaveSharedPreference.saveLimit(getApplicationContext(), 15);
                 } else {
-                    String ans = snapshot.child("purchase_code").getValue(String.class);
                     list_limit = Integer.parseInt(ans);
-                    if (list_limit != 1) {
+                    if (list_limit != 0) {
                         userType.setText(R.string.premium_user);
                     } else {
                         userType.setText(R.string.free_user);
                     }
-                    SaveSharedPreference.saveLimit(getApplicationContext(), list_limit);
+                    SaveSharedPreference.saveLimit(getApplicationContext(), 15);
 //                    Toast.makeText(LoginActivity.this, ""+list_limit, Toast.LENGTH_SHORT).show();
                 }
                 if (!snapshot.child("purchase_type").exists()) {

@@ -6,7 +6,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFffff"
+        android:background="#ffffff"
         tools:context="com.sstechcanada.todo.activities.TodoListActivity">
 
         <include
@@ -20,14 +20,14 @@
             android:layout_gravity="center_vertical"
             android:layout_marginBottom="16dp"
             android:visibility="gone"
+            android:elevation="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/include"
             app:lottie_autoPlay="true"
             app:lottie_fileName="placeholder.json"
-            app:lottie_loop="true"
-            app:srcCompat="@drawable/placeholder" />
+            app:lottie_loop="true" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -83,11 +83,12 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_todo_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="12dp"
             android:visibility="visible"
             app:layout_anchor="@+id/placeholderImage"
             app:layout_anchorGravity="center"
+            app:layout_constraintBottom_toTopOf="@+id/adView"
             app:layout_constraintTop_toBottomOf="@id/tabBar" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -98,8 +99,23 @@
             android:layout_margin="16dp"
             android:contentDescription="@string/add_new_task"
             android:src="@drawable/ic_fab_add"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/adView"
             app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="4dp"
+            app:adSize="BANNER"
+            app:adUnitId="@string/banner_ad_test"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.438"
+            app:layout_constraintStart_toStartOf="parent" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

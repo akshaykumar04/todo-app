@@ -17,6 +17,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -59,10 +61,10 @@ public class AddCategoryActivity extends AppCompatActivity {
 //        databaseCategories = FirebaseDatabase.getInstance().getReference("categories");
         databaseCategories = FirebaseDatabase.getInstance().getReference(userID).child("benefits");
 
-        editTextName = (EditText) findViewById(R.id.editTextName);
-        listViewCategory = (ListView) findViewById(R.id.listViewCategory);
+        editTextName = findViewById(R.id.editTextName);
+        listViewCategory = findViewById(R.id.listViewCategory);
 
-        buttonAddCategory = (Button) findViewById(R.id.buttonAddCategory);
+        buttonAddCategory = findViewById(R.id.buttonAddCategory);
 
         categories = new ArrayList<>();
 
@@ -111,6 +113,10 @@ public class AddCategoryActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        AdView adView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
     }
 
     /*
@@ -185,8 +191,8 @@ public class AddCategoryActivity extends AppCompatActivity {
         final View dialogView = inflater.inflate(R.layout.update_dialog, null);
         dialogBuilder.setView(dialogView);
 
-        final EditText editTextName = (EditText) dialogView.findViewById(R.id.editTextName);
-        final Button buttonUpdate = (Button) dialogView.findViewById(R.id.buttonUpdateCategory);
+        final EditText editTextName = dialogView.findViewById(R.id.editTextName);
+        final Button buttonUpdate = dialogView.findViewById(R.id.buttonUpdateCategory);
         final Button buttonDelete = dialogView.findViewById(R.id.buttonDeleteCategory);
 
 

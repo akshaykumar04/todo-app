@@ -2,14 +2,12 @@ package com.sstechcanada.todo.activities;
 
 import android.app.Activity;
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -23,6 +21,11 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.cardview.widget.CardView;
 import androidx.databinding.DataBindingUtil;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
 import com.google.android.material.chip.ChipGroup;
@@ -42,11 +45,6 @@ import com.sstechcanada.todo.databinding.ActivityAddOrEditTaskBinding;
 import com.sstechcanada.todo.models.Category;
 import com.sstechcanada.todo.models.TodoTask;
 
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.ads.MobileAds;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -58,15 +56,16 @@ import static com.sstechcanada.todo.data.TodoListContract.TodoListEntry.COLUMN_C
 
 public class AddOrEditTaskActivity extends AppCompatActivity {
     private static final String TAG = AddOrEditTaskActivity.class.getSimpleName();
+    private static final String[] numbers = new String[20];
     //To Convert String to Array or Array to String
-    public static String strSeparator = "__,__";
-    private static String[] numbers = new String[20];
+    public static String strSeparator = ", ";
     List<Category> categories;
     DatabaseReference databaseCategories;
     CardView addCategories;
     ChipGroup chipGroup;
     ProgressBar progressBar;
     LinearLayout addMoreCategories;
+    String userID;
     private ActivityAddOrEditTaskBinding mBinding;
     private int mTaskId = -1;
     private String mAddOrEdit;
@@ -79,7 +78,6 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
     private TextView tv, noOfCat, addMoreCat, toolBarTitle;
     private AppCompatImageView toolbar_profile;
     private FirebaseAuth mAuth;
-    String userID;
     //For Delete Status
     private int status;
 
@@ -96,8 +94,10 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
     }
 
     public static String[] convertStringToArray(String str) {
-        String[] arr={};
-        if(str.length() != 0){arr = str.split(strSeparator);}
+        String[] arr = {};
+        if (str.length() != 0) {
+            arr = str.split(strSeparator);
+        }
         return arr;
     }
 
@@ -108,18 +108,17 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
 
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar_profile = findViewById(R.id.profile_toolbar);
-        toolbar_profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(AddOrEditTaskActivity.this, LoginActivity.class));
-            }
-        });
+        toolbar_profile.setOnClickListener(view -> startActivity(new Intent(AddOrEditTaskActivity.this, LoginActivity.class)));
 
         toolBarTitle = findViewById(R.id.toolbarTitle);
         toolBarTitle.setText("Add/Update Task");
 
         mAuth = FirebaseAuth.getInstance();
         userID = mAuth.getCurrentUser().getUid();
+
+        AdView adView = mBinding.adView;
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
 
         long dueDate;
         int taskCompleted;
@@ -183,22 +182,19 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         }
         chipGroup = findViewById(R.id.chipGroup);
         addCategories = findViewById(R.id.addCategories);
-        addCategories.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        addCategories.setOnClickListener(view -> {
 //                Intent intent = new Intent(AddOrEditTaskActivity.this,
 //                        SelectCategoriesDailog.class);
 //                startActivity(intent);
 
-                selectCategoriesAlert();
-            }
+            selectCategoriesAlert();
         });
 
         //Grid View End
         if (todoTaskToAddOrEdit != null) {
             TodoListDbHelper todoListDbHelper = new TodoListDbHelper(AddOrEditTaskActivity.this);
             ArrayList<HashMap<String, String>> userlist = todoListDbHelper.getUser(mTaskId);
-            String record[];
+            String[] record;
             for (HashMap<String, String> user : userlist) {
                 selectedResult = user.get(COLUMN_CATEGORY);
                 record = convertStringToArray(selectedResult);
@@ -266,10 +262,9 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
 
         if (description.equals("")) {
             Toasty.warning(this, getString(R.string.description_cannot_be_empty), Toast.LENGTH_SHORT, true).show();
-        }
-        else if (chipGroup.getChildCount() == 0){
+        } else if (chipGroup.getChildCount() == 0) {
             Toasty.warning(this, getString(R.string.category_cannot_be_empty), Toast.LENGTH_SHORT, true).show();
-        }else {
+        } else {
             //Making First Char Capital
             description = description.substring(0, 1).toUpperCase() + description.substring(1);
 
@@ -301,7 +296,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
             Intent returnIntent = new Intent();
             setResult(Activity.RESULT_OK, returnIntent);
 
-            if(mAddOrEdit.equals(getString(R.string.add_new_task)) || isCompleted == 0){
+            if (mAddOrEdit.equals(getString(R.string.add_new_task)) || isCompleted == 0) {
                 finish();
             }
         }
@@ -329,7 +324,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         } else {
             Uri uri = TodoListContract.TodoListEntry.CONTENT_URI.buildUpon().appendPath(id).build();
             getContentResolver().update(uri, contentValues, "_id=?", new String[]{id});
-            if(todoTask.getCompleted() == 1){
+            if (todoTask.getCompleted() == 1) {
                 todoDeleteDialog(todoTask, id);
             }
         }
@@ -355,37 +350,26 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         loadCategories();
         // disallow cancel of AlertDialog on click of back button and outside touch
         alert.setCancelable(false);
-        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+        alert.setNegativeButton("Cancel", (dialog, which) -> {
 //                Toast.makeText(getBaseContext(), "Cancel clicked", Toast.LENGTH_SHORT).show();
-            }
         });
-        alert.setPositiveButton("Done", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                selectedResult = convertArrayToString(selectedStrings);
-                category_count = selectedStrings.size();
+        alert.setPositiveButton("Done", (dialog, which) -> {
+            selectedResult = convertArrayToString(selectedStrings);
+            category_count = selectedStrings.size();
 //                if (!selectedResult.equals("")) {
-                String record[] = convertStringToArray(selectedResult);
-                // Calling Display Category
-                display_categories(record);
+            String[] record = convertStringToArray(selectedResult);
+            // Calling Display Category
+            display_categories(record);
 //                }
-                if (todoTaskToAddOrEdit != null) {
+            if (todoTaskToAddOrEdit != null) {
 
-                    todoTaskToAddOrEdit.setCategory(selectedResult);
-                    todoTaskToAddOrEdit.setCategory_count(category_count);
-                }
-                loadAd();
+                todoTaskToAddOrEdit.setCategory(selectedResult);
+                todoTaskToAddOrEdit.setCategory_count(category_count);
             }
+//            loadAd(); //disabled full screen ads as requested
         });
 
-        addMoreCategories.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(AddOrEditTaskActivity.this, AddCategoryActivity.class));
-            }
-        });
+        addMoreCategories.setOnClickListener(view -> startActivity(new Intent(AddOrEditTaskActivity.this, AddCategoryActivity.class)));
 
 
         AlertDialog dialog = alert.create();
@@ -426,27 +410,25 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
             }
         });
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                int selectedIndex = adapter.selectedPositions.indexOf(position);
-                if (selectedIndex > -1) {
-                    adapter.selectedPositions.remove(selectedIndex);
-                    ((GridItemView) v).display(false);
-                    selectedStrings.remove((String) parent.getItemAtPosition(position));
-                } else {
-                    adapter.selectedPositions.add(position);
-                    ((GridItemView) v).display(true);
-                    selectedStrings.add((String) parent.getItemAtPosition(position));
-                }
+        gridView.setOnItemClickListener((parent, v, position, id) -> {
+            int selectedIndex = adapter.selectedPositions.indexOf(position);
+            if (selectedIndex > -1) {
+                adapter.selectedPositions.remove(selectedIndex);
+                ((GridItemView) v).display(false);
+                selectedStrings.remove(parent.getItemAtPosition(position));
+            } else {
+                adapter.selectedPositions.add(position);
+                ((GridItemView) v).display(true);
+                selectedStrings.add((String) parent.getItemAtPosition(position));
+            }
 
 //                Toast.makeText(AddOrEditTaskActivity.this, convertArrayToString(selectedStrings), Toast.LENGTH_SHORT).show();
-            }
         });
 
     }
 
     private void loadAd() {
+
         InterstitialAd mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId(getResources().getString(R.string.interstitial_ad_unit_test_id));
         AdRequest adRequest = new AdRequest.Builder().build();
@@ -460,8 +442,8 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         });
     }
 
-    void display_categories(String record[]) {
-        int[] colors = new int[] {
+    void display_categories(String[] record) {
+        int[] colors = new int[]{
                 R.color.chip_1,
                 R.color.chip_2,
                 R.color.chip_3,
@@ -477,7 +459,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         chipGroup.setVisibility(View.VISIBLE);
         chip_count = record.length;
         addMoreCat.setText("Click here to add more Benefits");
-        if (chip_count == 0){
+        if (chip_count == 0) {
             noOfCat.setText(chip_count + " Benefits Selected");
             return;
         }
@@ -486,10 +468,10 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
             Chip chip = new Chip(this);
             ChipDrawable drawable = ChipDrawable.createFromAttributes(this, null, 0, R.style.Widget_MaterialComponents_Chip_Choice);
             chip.setChipDrawable(drawable);
-            if(i>=0 && i<10){
+            if (i >= 0 && i < 10) {
                 chip.setChipBackgroundColorResource(colors[i]);
-            }else if(i>=10){
-                chip.setChipBackgroundColorResource(colors[i%10]);
+            } else if (i >= 10) {
+                chip.setChipBackgroundColorResource(colors[i % 10]);
             }
             chip.setText(record[i] + "");
             chipGroup.getChildCount();
@@ -524,7 +506,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         alert.show();
     }
 
-    private void deleteTodo(String tid){
+    private void deleteTodo(String tid) {
         TodoListDbHelper todoListDbHelper = new TodoListDbHelper(AddOrEditTaskActivity.this);
         todoListDbHelper.deleteTodo(tid);
         Toasty.error(this, "Task Deleted", Toast.LENGTH_SHORT, true).show();

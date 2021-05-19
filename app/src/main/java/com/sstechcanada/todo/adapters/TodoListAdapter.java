@@ -6,12 +6,6 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Color;
-import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.appcompat.widget.AppCompatCheckBox;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.graphics.drawable.GradientDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.custom_views.PriorityStarImageView;
@@ -35,6 +35,7 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoLi
     private final ColorStateList unCompletedCheckboxColors;
     private Cursor mCursor;
     private int mDescriptionIndex;
+    private int mBenefits;
     private int mPriorityIndex;
     private int mDueDateIndex;
     private int m_IDIndex;
@@ -87,6 +88,7 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoLi
         mCursor.moveToPosition(position);
 
         holder.tvTextDesc.setText(mCursor.getString(mDescriptionIndex));
+        holder.tvBenefits.setText(mCursor.getString(mBenefits));
 
         holder.tvTodoDueDate.setTextColor(holder.tvTodoPriority.getCurrentTextColor());
 
@@ -138,6 +140,7 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoLi
         int magnitudeColor = getMagnitudeColor(position%9);
         // Set the color on the magnitude circle
         magnitudeCircle.setColor(magnitudeColor);
+        holder.tvBenefits.setTextColor(magnitudeColor);
     }
 
     @Override
@@ -157,6 +160,7 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoLi
             mDueDateIndex = mCursor.getColumnIndex(TodoListContract.TodoListEntry.COLUMN_DUE_DATE);
             m_IDIndex = mCursor.getColumnIndex(TodoListContract.TodoListEntry.COLUMN_ID);
             mCompletedIndex = mCursor.getColumnIndex(TodoListContract.TodoListEntry.COLUMN_COMPLETED);
+            mBenefits = mCursor.getColumnIndex(TodoListContract.TodoListEntry.COLUMN_CATEGORY);
         }
         notifyDataSetChanged();
     }
@@ -167,7 +171,7 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoLi
 
     public class TodoListAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         final AppCompatCheckBox cbTodoDescription;
-        TextView tvTodoDueDate, tvTextDesc, circle_per;
+        TextView tvTodoDueDate, tvTextDesc, circle_per, tvBenefits;
         final TextView tvTodoPriority;
         final PriorityStarImageView ivTodoPriorityStar;
         final ConstraintLayout clTodoListItem;
@@ -182,6 +186,7 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoLi
             ivTodoPriorityStar = itemView.findViewById(R.id.iv_todo_priority_star);
             customCheckbox = itemView.findViewById(R.id.checkb);
             clTodoListItem = (ConstraintLayout) itemView;
+            tvBenefits = itemView.findViewById(R.id.todo_benefits);
             itemView.setOnClickListener(this);
             cbTodoDescription.setOnClickListener(this);
             //Circle

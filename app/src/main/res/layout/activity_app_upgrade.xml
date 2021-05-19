@@ -74,7 +74,7 @@
             android:lineSpacingExtra="1dp"
             android:paddingHorizontal="10dp"
             android:paddingVertical="8dp"
-            android:text="create upto 20 todo tasks"
+            android:text="create up to 20 to do lists"
             android:textAllCaps="true"
             android:textColor="#000000"
             android:textSize="14sp" />
@@ -89,7 +89,7 @@
             android:lineSpacingExtra="1dp"
             android:paddingHorizontal="8dp"
             android:paddingVertical="8dp"
-            android:text="Unlocks Completed todo list section"
+            android:text="Unlocks Completed to do list section"
             android:textAllCaps="true"
             android:textColor="#000000"
             android:textSize="14sp" />
@@ -104,7 +104,7 @@
             android:lineSpacingExtra="1dp"
             android:paddingHorizontal="8dp"
             android:paddingVertical="8dp"
-            android:text="Removes Advertisements"
+            android:text="REMOVES ADS"
             android:textAllCaps="true"
             android:textColor="#000000"
             android:textSize="14sp" />
