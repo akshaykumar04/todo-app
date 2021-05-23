@@ -101,14 +101,14 @@
 
             <TextView
                 android:id="@+id/todo_benefits"
-                android:layout_width="0dp"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="-2dp"
                 android:fontFamily="@font/raleway_semibold"
+                android:maxLines="1"
                 android:textColor="@color/circle1"
                 android:textSize="9sp"
                 android:textStyle="italic"
-                app:layout_constraintEnd_toEndOf="@id/tv_todo_desc"
                 app:layout_constraintStart_toStartOf="@id/tv_todo_desc"
                 app:layout_constraintTop_toBottomOf="@id/tv_todo_desc"
                 tools:text="benefits">
