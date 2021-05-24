@@ -31,11 +31,8 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -44,7 +41,6 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.auth.LoginActivity;
-import com.sstechcanada.todo.adapters.CategoryAdapter;
 import com.sstechcanada.todo.adapters.GridViewAdapter;
 import com.sstechcanada.todo.custom_views.GridItemView;
 import com.sstechcanada.todo.data.TodoListContract;
@@ -90,6 +86,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
     private int status;;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference benefitCollectionRef;
+    private String[] record;
 
 
     public static String convertArrayToString(ArrayList<String> array) {
@@ -232,16 +229,16 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
     }
 
     private void selectPriorityRadioButton(int priority) {
-        switch (priority) {
-            case TodoTask.HIGH_PRIORITY:
-                mBinding.rbHighPriority.setChecked(true);
-                break;
-            case TodoTask.MEDIUM_PRIORITY:
-                mBinding.rbMediumPriority.setChecked(true);
-                break;
-            case TodoTask.LOW_PRIORITY:
-                mBinding.rbLowPriority.setChecked(true);
-        }
+//        switch (priority) {
+//            case TodoTask.HIGH_PRIORITY:
+//                mBinding.rbHighPriority.setChecked(true);
+//                break;
+//            case TodoTask.MEDIUM_PRIORITY:
+//                mBinding.rbMediumPriority.setChecked(true);
+//                break;
+//            case TodoTask.LOW_PRIORITY:
+//                mBinding.rbLowPriority.setChecked(true);
+//        }
     }
 
 //    private void addChip(String pItem, ChipGroup pChipGroup) {
@@ -381,7 +378,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
             selectedResult = convertArrayToString(selectedStrings);
             category_count = selectedStrings.size();
 //                if (!selectedResult.equals("")) {
-            String[] record = convertStringToArray(selectedResult);
+            record = convertStringToArray(selectedResult);
             // Calling Display Category
             display_categories(record);
 //                }

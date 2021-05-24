@@ -35,15 +35,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sstechcanada.todo.R;
-import com.sstechcanada.todo.activities.TodoListActivity;
+import com.sstechcanada.todo.activities.TodoListActivity2;
 import com.sstechcanada.todo.utils.SaveSharedPreference;
 
 import java.util.HashMap;
@@ -160,7 +157,7 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
         if(currentUser!=null){
-            startActivity(new Intent(LoginActivity.this, TodoListActivity.class));
+            startActivity(new Intent(LoginActivity.this, TodoListActivity2.class));
         }
 
     }
@@ -203,6 +200,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithCredential:success");
 //                            SaveSharedPreference.setUserLogIn(LoginActivity.this, "true");
 //                            startActivity(new Intent(LoginActivity.this, TodoListActivity.class));
+                            Toasty.error(getApplicationContext(), "sign in complete ", Toast.LENGTH_LONG).show();
                             hideProgressDialog();
 //                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
 //                            databaseReference.child("Users").child(firebaseUser.getUid()).child("Email").setValue(firebaseUser.getEmail());
@@ -291,7 +289,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Void aVoid) {
                 Toasty.success(getApplicationContext(), "Profile Updated", Toast.LENGTH_LONG).show();
-                startActivity(new Intent(LoginActivity.this, TodoListActivity.class));
+                startActivity(new Intent(LoginActivity.this, TodoListActivity2.class));
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
