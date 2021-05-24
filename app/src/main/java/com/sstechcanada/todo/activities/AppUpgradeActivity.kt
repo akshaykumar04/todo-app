@@ -40,11 +40,11 @@ class AppUpgradeActivity : AppCompatActivity() {
         toggle_button_layout.setToggled(2131362117, true)
         toggle_button_layout.onToggledListener = { toggleButton: ToggleButtonLayout, toggle: Toggle, b: Boolean ->
 
-            when {
-                toggle.title.toString() == getString(R.string._0_99_month) -> {
+            when (toggle.id) {
+                2131362117 -> {
                     tvListsCount.text = getString(R.string.create_up_to_3_to_do_lists)
                 }
-                toggle.title.toString() == getString(R.string._9_99_month) -> {
+                2131362118 -> {
                     tvListsCount.text = getString(R.string.create_up_to_20_to_do_lists)
                 }
             }
