@@ -8,7 +8,6 @@
     android:padding="20dp"
     tools:context=".activities.SelectCategoriesDailog">
 
-
     <GridView
         android:id="@+id/grid_view_alert"
         android:layout_width="match_parent"
