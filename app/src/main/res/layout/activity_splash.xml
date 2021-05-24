@@ -26,7 +26,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:fontFamily="@font/raleway_semibold"
-        android:text="@string/to_do_list_maker"
+        android:text="@string/app_name"
         android:textColor="@color/textHeadings"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/textView2"

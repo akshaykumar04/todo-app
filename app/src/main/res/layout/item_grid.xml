@@ -22,5 +22,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.499"
-        tools:text="Yo" />
+        tools:text="Yo"
+        android:maxLines="1"
+        android:maxLength="18"
+        />
 </androidx.cardview.widget.CardView>
