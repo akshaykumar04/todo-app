@@ -80,5 +80,9 @@
     <string name="cannot_create">You can not create more than: </string>
     <string name="banner_ad_id">ca-app-pub-3111421321050812/4092511181</string>
     <string name="banner_ad_test">ca-app-pub-3111421321050812/4092511181</string>
+    <string name="_0_99_month">$ 0.99 / month</string>
+    <string name="_9_99_month">$ 9.99 / month</string>
+    <string name="create_up_to_20_to_do_lists">create up to 20 to do lists</string>
+    <string name="create_up_to_3_to_do_lists">create up to 3 to do lists</string>
 
 </resources>

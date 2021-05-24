@@ -19,12 +19,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.savvyapps.togglebuttonlayout.ToggleButtonLayout
+        android:id="@+id/toggle_button_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="16dp"
+        android:layout_marginTop="4dp"
+        app:allowDeselection="false"
+        app:dividerColor="@android:color/darker_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textUpgradeDesc"
+        app:menu="@menu/toggles"
+        app:multipleSelection="false"
+        app:selectedColor="@color/toggleSelected" />
+
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animation_view"
         android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_marginTop="48dp"
+        android:layout_height="180dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -67,6 +83,7 @@
         android:text="Upgrade to premium version to access exclusive features" />
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
@@ -76,7 +93,7 @@
         app:layout_constraintBottom_toTopOf="@+id/buttonUpgrade"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textUpgradeDesc">
+        app:layout_constraintTop_toBottomOf="@id/toggle_button_layout">
 
         <TextView
             android:layout_width="wrap_content"
@@ -88,7 +105,8 @@
             android:lineSpacingExtra="1dp"
             android:paddingHorizontal="10dp"
             android:paddingVertical="8dp"
-            android:text="create up to 20 to do lists"
+            android:id="@+id/tvListsCount"
+            android:text="@string/create_up_to_3_to_do_lists"
             android:textAllCaps="true"
             android:textColor="#000000"
             android:textSize="14sp" />
