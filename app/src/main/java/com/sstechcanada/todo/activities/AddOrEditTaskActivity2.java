@@ -48,6 +48,7 @@ import com.sstechcanada.todo.data.TodoListDbHelper;
 import com.sstechcanada.todo.databinding.ActivityAddOrEditTaskBinding;
 import com.sstechcanada.todo.models.Category;
 import com.sstechcanada.todo.models.TodoTask;
+import com.sstechcanada.todo.models.TodoTaskFirestore;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -71,14 +72,14 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
     LinearLayout addMoreCategories;
     String userID;
     private ActivityAddOrEditTaskBinding mBinding;
-    private int mTaskId = -1;
+    private String mTaskId = "-1";
     private String mAddOrEdit;
     private GridView gridView;
     private GridViewAdapter adapter;
     private ArrayList<String> selectedStrings;
     private int category_count = 0, chip_count;
     private String selectedResult = "";
-    private TodoTask todoTaskToAddOrEdit;
+    private TodoTaskFirestore todoTaskToAddOrEdit;
     private TextView tv, noOfCat, addMoreCat, toolBarTitle;
     private AppCompatImageView toolbar_profile, toolbarBackIcon;
     private FirebaseAuth mAuth;
@@ -147,7 +148,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                 mBinding.rbNoDueDate.setChecked(true);
             } else {
                 todoTaskToAddOrEdit = bundle.getParcelable(getString(R.string.intent_todo_key));
-                mTaskId = todoTaskToAddOrEdit.getId();
+                mTaskId = todoTaskToAddOrEdit.getDocumentID();
                 mBinding.etTaskDescription.setText(todoTaskToAddOrEdit.getDescription());
                 selectPriorityRadioButton(todoTaskToAddOrEdit.getPriority());
 
@@ -167,7 +168,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
             }
         } else {
             mAddOrEdit = savedInstanceState.getString(getString(R.string.add_or_edit_key));
-            mTaskId = savedInstanceState.getInt(getString(R.string.id_key));
+            mTaskId = savedInstanceState.getString(getString(R.string.id_key));
             mBinding.etTaskDescription.setText(savedInstanceState.getString(getString(R.string.task_description_key)));
             selectPriorityRadioButton(savedInstanceState.getInt(getString(R.string.priority_key)));
             boolean noDueDate = savedInstanceState.getBoolean(getString(R.string.no_due_date_key));
@@ -205,15 +206,15 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 
         //Grid View End
         if (todoTaskToAddOrEdit != null) {
-            TodoListDbHelper todoListDbHelper = new TodoListDbHelper(AddOrEditTaskActivity2.this);
-            ArrayList<HashMap<String, String>> userlist = todoListDbHelper.getUser(mTaskId);
+//            TodoListDbHelper todoListDbHelper = new TodoListDbHelper(AddOrEditTaskActivity2.this);
+//            ArrayList<HashMap<String, String>> userlist = todoListDbHelper.getUser(mTaskId);
             String[] record;
-            for (HashMap<String, String> user : userlist) {
-                selectedResult = user.get(COLUMN_CATEGORY);
-                record = convertStringToArray(selectedResult);
+//            for (HashMap<String, String> user : userlist) {
+//                selectedResult = user.get(COLUMN_CATEGORY);
+                record = convertStringToArray(todoTaskToAddOrEdit.getBenefitsString());
                 category_count = record.length;
                 display_categories(record);
-            }
+//            }
         }
 
         MobileAds.initialize(this, initializationStatus -> {
@@ -268,7 +269,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
         outState.putInt(getString(R.string.day_key), mBinding.dpDueDate.getDayOfMonth());
         outState.putBoolean(getString(R.string.completed_key), mBinding.cbTaskCompleted.isChecked());
         outState.putString(getString(R.string.add_or_edit_key), mAddOrEdit);
-        outState.putInt(getString(R.string.id_key), mTaskId);
+        outState.putString(getString(R.string.id_key), mTaskId);
 //        outState.putString("category", selectedResult);
         super.onSaveInstanceState(outState);
     }
@@ -310,8 +311,8 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                 isCompleted = TodoTask.TASK_NOT_COMPLETED;
             }
 //          aDDING TO SQLITE
-            TodoTask todoTask = new TodoTask(description, selectedResult, category_count, priority, dueDate, mTaskId, isCompleted);
-            insertOrUpdate(todoTask);
+//            TodoTask todoTask = new TodoTask(description, selectedResult, category_count, priority, dueDate, mTaskId, isCompleted);
+//            insertOrUpdate(todoTask);
 //
             Intent returnIntent = new Intent();
             setResult(Activity.RESULT_OK, returnIntent);
@@ -384,8 +385,8 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 //                }
             if (todoTaskToAddOrEdit != null) {
 
-                todoTaskToAddOrEdit.setCategory(selectedResult);
-                todoTaskToAddOrEdit.setCategory_count(category_count);
+                todoTaskToAddOrEdit.setBenefitsString(selectedResult);
+//                todoTaskToAddOrEdit.setCategory_count();
             }
 //            loadAd(); //disabled full screen ads as requested
         });
