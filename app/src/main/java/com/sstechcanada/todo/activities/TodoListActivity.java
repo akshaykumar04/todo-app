@@ -117,7 +117,7 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
                 db_cnt = tld.todoCount();
                 setValue();
                 if (isLogin()) {
-                    Intent intent = new Intent(TodoListActivity.this, AddOrEditTaskActivity.class);
+                    Intent intent = new Intent(TodoListActivity.this, AddOrEditTaskActivity2.class);
                     intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
                     startActivityForResult(intent, ADD_TASK_REQUEST);
                 }
@@ -205,7 +205,7 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
             }, 500);
         } else {
             // edit the task
-            Intent intent = new Intent(this, AddOrEditTaskActivity.class);
+            Intent intent = new Intent(this, AddOrEditTaskActivity2.class);
             intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.edit_task));
             intent.putExtra(getString(R.string.intent_todo_key), todoTask);
             startActivityForResult(intent, EDIT_TASK_REQUEST);

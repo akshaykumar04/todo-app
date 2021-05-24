@@ -26,6 +26,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.AuthCredential;
@@ -38,9 +40,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.TodoListActivity;
 import com.sstechcanada.todo.utils.SaveSharedPreference;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import es.dmoral.toasty.Toasty;
 
@@ -60,6 +67,7 @@ public class LoginActivity extends AppCompatActivity {
     //Shared Preference
     SharedPreferences sharedpreferences;
     private FirebaseAuth mAuth;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     private ProgressDialog pDialog;
     private GoogleSignInClient mGoogleSignInClient;
     private ProgressBar progressBar;
@@ -151,6 +159,10 @@ public class LoginActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
+        if(currentUser!=null){
+            startActivity(new Intent(LoginActivity.this, TodoListActivity.class));
+        }
+
     }
 
     private void signIn() {
@@ -189,13 +201,13 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            SaveSharedPreference.setUserLogIn(LoginActivity.this, "true");
-                            startActivity(new Intent(LoginActivity.this, TodoListActivity.class));
+//                            SaveSharedPreference.setUserLogIn(LoginActivity.this, "true");
+//                            startActivity(new Intent(LoginActivity.this, TodoListActivity.class));
                             hideProgressDialog();
-                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
+//                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
 //                            databaseReference.child("Users").child(firebaseUser.getUid()).child("Email").setValue(firebaseUser.getEmail());
-                            databaseReference.child(firebaseUser.getUid()).child("Email").setValue(firebaseUser.getEmail());
-                            updateUserPackage(firebaseUser);
+//                            databaseReference.child(firebaseUser.getUid()).child("Email").setValue(firebaseUser.getEmail());
+                            updateUserPackage();
                             checkUserStatus();
                         } else {
                             // If sign in fails, display a message to the user.
@@ -266,38 +278,60 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void updateUserPackage(FirebaseUser firebaseUser) {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child(firebaseUser.getUid());
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String ans = snapshot.child("purchase_code").getValue(String.class);
-                String limit = snapshot.child("item_limit").getValue(String.class);
+    private void updateUserPackage() {
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        DocumentReference documentReferenceCurrentReference=db.collection("Users").document(firebaseUser.getUid());
+        Map<String,String> profile =new HashMap<>();
+        profile.put("Email",firebaseUser.getEmail());
+        profile.put("purchase_code","0");
+//        profile.put("item_limit","15");
+        profile.put("purchase_type","Free User");
 
-                if (!snapshot.child("purchase_code").exists()) {
-                    databaseReference.child("purchase_code").setValue("0");
-                    databaseReference.child("item_limit").setValue("15");
-                    SaveSharedPreference.saveLimit(getApplicationContext(), 15);
-                } else {
-                    list_limit = Integer.parseInt(ans);
-                    if (list_limit != 0) {
-                        userType.setText(R.string.premium_user);
-                    } else {
-                        userType.setText(R.string.free_user);
-                    }
-                    SaveSharedPreference.saveLimit(getApplicationContext(), 15);
-//                    Toast.makeText(LoginActivity.this, ""+list_limit, Toast.LENGTH_SHORT).show();
-                }
-                if (!snapshot.child("purchase_type").exists()) {
-                    databaseReference.child("purchase_type").setValue("Free User");
-                }
+        documentReferenceCurrentReference.set(profile).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toasty.success(getApplicationContext(), "Profile Updated", Toast.LENGTH_LONG).show();
+                startActivity(new Intent(LoginActivity.this, TodoListActivity.class));
             }
-
+        }).addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
+            public void onFailure(@NonNull Exception e) {
+                Toasty.error(getApplicationContext(), "Profile Updation Failed: ", Toast.LENGTH_LONG).show();
             }
         });
+
+//        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child(firebaseUser.getUid());
+//        databaseReference.child(firebaseUser.getUid()).child("Email").setValue(firebaseUser.getEmail());
+//        databaseReference.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                String ans = snapshot.child("purchase_code").getValue(String.class);
+//                String limit = snapshot.child("").getValue(String.class);
+//
+//                if (!snapshot.child("purchase_code").exists()) {
+//                    databaseReference.child("purchase_code").setValue("0");
+//                    databaseReference.child("item_limit").setValue("15");
+//                    SaveSharedPreference.saveLimit(getApplicationContext(), 15);
+//                } else {
+//                    list_limit = Integer.parseInt(ans);
+//                    if (list_limit != 0) {
+//                        userType.setText(R.string.premium_user);
+//                    } else {
+//                        userType.setText(R.string.free_user);
+//                    }
+//                    SaveSharedPreference.saveLimit(getApplicationContext(), 15);
+////                    Toast.makeText(LoginActivity.this, ""+list_limit, Toast.LENGTH_SHORT).show();
+//                }
+//                if (!snapshot.child("purchase_type").exists()) {
+//                    databaseReference.child("purchase_type").setValue("Free User");
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
     }
 
     public void setValue() {

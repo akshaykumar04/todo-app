@@ -13,29 +13,38 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.auth.LoginActivity;
 import com.sstechcanada.todo.adapters.CategoryAdapter;
 import com.sstechcanada.todo.models.Category;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import es.dmoral.toasty.Toasty;
 
-public class AddCategoryActivity extends AppCompatActivity {
+public class AddCategoryActivity2 extends AppCompatActivity {
 
     //view objects
     EditText editTextName;
@@ -45,22 +54,23 @@ public class AddCategoryActivity extends AppCompatActivity {
     private AppCompatImageView toolbar_profile, toolbarBackIcon;
 
     List<Category> categories;
-
-    DatabaseReference databaseCategories;
+//    DatabaseReference databaseCategories;
     String userID;
     private FirebaseAuth mAuth;
-
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    CollectionReference benefitCollectionRef;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category);
 
         mAuth = FirebaseAuth.getInstance();
-        userID = mAuth.getCurrentUser().getUid();
+        userID=mAuth.getCurrentUser().getUid();
+        benefitCollectionRef=db.collection("Users").document(userID).collection("Benefits");
 
 
 //        databaseCategories = FirebaseDatabase.getInstance().getReference("categories");
-        databaseCategories = FirebaseDatabase.getInstance().getReference(userID).child("benefits");
+//        databaseCategories = FirebaseDatabase.getInstance().getReference(userID).child("benefits");
 
         editTextName = findViewById(R.id.editTextName);
         listViewCategory = findViewById(R.id.listViewCategory);
@@ -79,7 +89,7 @@ public class AddCategoryActivity extends AppCompatActivity {
         toolBarTitle.setText("Add Benefits");
 
         toolbar_profile = findViewById(R.id.profile_toolbar);
-        toolbar_profile.setOnClickListener(view -> startActivity(new Intent(AddCategoryActivity.this, LoginActivity.class)));
+        toolbar_profile.setOnClickListener(view -> startActivity(new Intent(AddCategoryActivity2.this, LoginActivity.class)));
 
         buttonAddCategory.setOnClickListener(view -> addCategory());
 
@@ -124,25 +134,40 @@ public class AddCategoryActivity extends AppCompatActivity {
         //checking if the value is provided
         if (!name.isEmpty()) {
 
+            DocumentReference documentReferenceCurrentReference=benefitCollectionRef.document();
+            Map<String,String> category =new HashMap<>();
+            category.put("category_name",name);
 
+
+            documentReferenceCurrentReference.set(category, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Toasty.success(getApplicationContext(), "Benefit added", Toast.LENGTH_SHORT).show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toasty.error(getApplicationContext(), "Benefit addition Failed: ", Toast.LENGTH_LONG).show();
+                }
+            });
 
             //getting a unique id using push().getKey() method
             //it will create a unique id and we will use it as the Primary Key for our Category
-            String id = databaseCategories.push().getKey();
-
-            //Making first word capital
-            name = name.substring(0, 1).toUpperCase() + name.substring(1);
-            //creating an Category Object
-            Category category = new Category(id, name);
-
-            //Saving the Category
-            databaseCategories.child(id).setValue(category);
+//            String id = databaseCategories.push().getKey();
+//
+//            //Making first word capital
+//            name = name.substring(0, 1).toUpperCase() + name.substring(1);
+//            //creating an Category Object
+//            Category category = new Category(id, name);
+//
+//            //Saving the Category
+//            databaseCategories.child(id).setValue(category);
 
             //setting edittext to blank again
             editTextName.setText("");
 
             //displaying a success toast
-            Toasty.success(this, "Benefit added", Toast.LENGTH_SHORT).show();
+
         } else {
             //if the value is not given displaying a toast
             Toasty.warning(this, "Please enter a name", Toast.LENGTH_SHORT).show();
@@ -154,30 +179,42 @@ public class AddCategoryActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         //attaching value event listener
-        databaseCategories.addValueEventListener(new ValueEventListener() {
+       benefitCollectionRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                //clearing the previous category list
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 categories.clear();
 
                 //iterating through all the nodes
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    Category category = postSnapshot.getValue(Category.class);
-                    categories.add(category);
-                }
-
-                //creating adapter
-                CategoryAdapter categotyAdapter = new CategoryAdapter(AddCategoryActivity.this, categories);
-                //attaching adapter to the listview
-                listViewCategory.setAdapter(categotyAdapter);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                benefitCollectionRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for(DocumentSnapshot dataSnapshot:queryDocumentSnapshots){
+                            Category category = new Category(dataSnapshot.getId(),(String) dataSnapshot.get("category_name"));
+                            categories.add(category);
+                        }
+                        CategoryAdapter categotyAdapter = new CategoryAdapter(AddCategoryActivity2.this, categories);
+                        //attaching adapter to the listview
+                        listViewCategory.setAdapter(categotyAdapter);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toasty.error(getApplicationContext(), "Benefit fetch failed ", Toast.LENGTH_LONG).show();
+                    }
+                });
 
             }
         });
+
+       //clearing the previous category list
+
+//                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+//                    Category category = postSnapshot.getValue(Category.class);
+//                    categories.add(category);
+//                }
+
+                //creating adapter
+
     }
 
     private void showUpdateDialog(final String categoryId, String categoryName) {
@@ -216,21 +253,22 @@ public class AddCategoryActivity extends AppCompatActivity {
 
     private void updateCategory(String id, String name) {
         //getting the specified category reference
-        DatabaseReference dR = FirebaseDatabase.getInstance().getReference(userID).child("benefits").child(id);
+
+        DocumentReference documentReferenceBenefitReference=benefitCollectionRef.document(id);
+
 //        DatabaseReference dR = FirebaseDatabase.getInstance().getReference("categories").child(id);
         //updating category
         Category category = new Category(id, name);
-        dR.setValue(category);
+        documentReferenceBenefitReference.update("category_name",name);
         Toasty.success(getApplicationContext(), "Benefits Updated", Toast.LENGTH_SHORT).show();
     }
 
 
     private void deleteCategory(String id) {
         //getting the specified category reference
-        DatabaseReference dR = FirebaseDatabase.getInstance().getReference(userID).child("benefits").child(id);
-//        DatabaseReference dR = FirebaseDatabase.getInstance().getReference("categories").child(id);
+        DocumentReference documentReferenceBenefitReference=benefitCollectionRef.document(id);
         //removing category
-        dR.removeValue();
+        documentReferenceBenefitReference.delete();
 
         //getting the tracks reference for the specified category
         Toasty.error(getApplicationContext(), "Benefits Deleted", Toast.LENGTH_SHORT).show();

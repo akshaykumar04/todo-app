@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.models.Category;
 
@@ -16,6 +18,7 @@ import java.util.List;
 public class CategoryAdapter extends ArrayAdapter<Category> {
     private final Activity context;
     List<Category> categories;
+
 
     public CategoryAdapter(Activity context, List<Category> categories) {
         super(context, R.layout.layout_artist_list, categories);

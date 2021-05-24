@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
@@ -24,6 +25,8 @@ import androidx.databinding.DataBindingUtil;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
 import com.google.android.material.chip.ChipGroup;
@@ -33,8 +36,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.auth.LoginActivity;
+import com.sstechcanada.todo.adapters.CategoryAdapter;
 import com.sstechcanada.todo.adapters.GridViewAdapter;
 import com.sstechcanada.todo.custom_views.GridItemView;
 import com.sstechcanada.todo.data.TodoListContract;
@@ -52,8 +62,8 @@ import es.dmoral.toasty.Toasty;
 
 import static com.sstechcanada.todo.data.TodoListContract.TodoListEntry.COLUMN_CATEGORY;
 
-public class AddOrEditTaskActivity extends AppCompatActivity {
-    private static final String TAG = AddOrEditTaskActivity.class.getSimpleName();
+public class AddOrEditTaskActivity2 extends AppCompatActivity {
+    private static final String TAG = AddOrEditTaskActivity2.class.getSimpleName();
     private static final String[] numbers = new String[20];
     //To Convert String to Array or Array to String
     public static String strSeparator = ", ";
@@ -77,7 +87,9 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
     private AppCompatImageView toolbar_profile, toolbarBackIcon;
     private FirebaseAuth mAuth;
     //For Delete Status
-    private int status;
+    private int status;;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    CollectionReference benefitCollectionRef;
 
 
     public static String convertArrayToString(ArrayList<String> array) {
@@ -107,7 +119,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
 
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar_profile = findViewById(R.id.profile_toolbar);
-        toolbar_profile.setOnClickListener(view -> startActivity(new Intent(AddOrEditTaskActivity.this, LoginActivity.class)));
+        toolbar_profile.setOnClickListener(view -> startActivity(new Intent(AddOrEditTaskActivity2.this, LoginActivity.class)));
         toolbarBackIcon = findViewById(R.id.arrow_back);
         toolbarBackIcon.setVisibility(View.VISIBLE);
         toolbarBackIcon.setOnClickListener(view -> {
@@ -117,7 +129,8 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         toolBarTitle.setText("Add/Update Task");
 
         mAuth = FirebaseAuth.getInstance();
-        userID = mAuth.getCurrentUser().getUid();
+        userID=mAuth.getCurrentUser().getUid();
+        benefitCollectionRef=db.collection("Users").document(userID).collection("Benefits");
 
         loadBannerAd();
 
@@ -195,7 +208,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
 
         //Grid View End
         if (todoTaskToAddOrEdit != null) {
-            TodoListDbHelper todoListDbHelper = new TodoListDbHelper(AddOrEditTaskActivity.this);
+            TodoListDbHelper todoListDbHelper = new TodoListDbHelper(AddOrEditTaskActivity2.this);
             ArrayList<HashMap<String, String>> userlist = todoListDbHelper.getUser(mTaskId);
             String[] record;
             for (HashMap<String, String> user : userlist) {
@@ -380,7 +393,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
 //            loadAd(); //disabled full screen ads as requested
         });
 
-        addMoreCategories.setOnClickListener(view -> startActivity(new Intent(AddOrEditTaskActivity.this, AddCategoryActivity.class)));
+        addMoreCategories.setOnClickListener(view -> startActivity(new Intent(AddOrEditTaskActivity2.this, AddCategoryActivity2.class)));
 
         bannerAd.loadAd(new AdRequest.Builder().build());
 
@@ -393,34 +406,37 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         databaseCategories = FirebaseDatabase.getInstance().getReference(userID).child("benefits");
         categories = new ArrayList<>();
         selectedStrings = new ArrayList<>();
-        databaseCategories.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                //clearing the previous category list
+        benefitCollectionRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 categories.clear();
+
                 //iterating through all the nodes
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    Category category = postSnapshot.getValue(Category.class);
-                    categories.add(category);
-                }
+                benefitCollectionRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for(DocumentSnapshot dataSnapshot:queryDocumentSnapshots){
+                            Category category = new Category(dataSnapshot.getId(),(String) dataSnapshot.get("category_name"));
+                            categories.add(category);
+                        }
 
-                adapter = new GridViewAdapter(categories, AddOrEditTaskActivity.this);
-                gridView.setAdapter(adapter);
-                gridView.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.INVISIBLE);
-                addMoreCategories.setVisibility(View.VISIBLE);
-//                //creating adapter
-//                CategoryAdapter categotyAdapter = new CategoryAdapter(AddCategoryActivity.this, categories);
-//                //attaching adapter to the listview
-//                listViewCategory.setAdapter(categotyAdapter);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                        adapter = new GridViewAdapter(categories, AddOrEditTaskActivity2.this);
+                        gridView.setAdapter(adapter);
+                        gridView.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.INVISIBLE);
+                        addMoreCategories.setVisibility(View.VISIBLE);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toasty.error(getApplicationContext(), "Benefit fetch failed ", Toast.LENGTH_LONG).show();
+                    }
+                });
 
             }
         });
+
 
         gridView.setOnItemClickListener((parent, v, position, id) -> {
             int selectedIndex = adapter.selectedPositions.indexOf(position);
@@ -496,7 +512,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
     }
 
     private void todoDeleteDialog(TodoTask todoTask, String tid) {
-        androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(this);
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Task will be deleted");
         alert.setMessage("Marking this task as complete will permanently delete this task. \nAre you sure?");
         alert.setCancelable(false);
@@ -518,7 +534,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
     }
 
     private void deleteTodo(String tid) {
-        TodoListDbHelper todoListDbHelper = new TodoListDbHelper(AddOrEditTaskActivity.this);
+        TodoListDbHelper todoListDbHelper = new TodoListDbHelper(AddOrEditTaskActivity2.this);
         todoListDbHelper.deleteTodo(tid);
         Toasty.error(this, "Task Deleted", Toast.LENGTH_SHORT, true).show();
         finish();
