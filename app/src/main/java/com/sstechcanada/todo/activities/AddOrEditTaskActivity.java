@@ -21,10 +21,8 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.cardview.widget.CardView;
 import androidx.databinding.DataBindingUtil;
 
-import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
@@ -80,6 +78,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     //For Delete Status
     private int status;
+
 
     public static String convertArrayToString(ArrayList<String> array) {
         String str = "";
@@ -438,20 +437,19 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
 
     }
 
-    private void loadAd() {
-
-        InterstitialAd mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId(getResources().getString(R.string.interstitial_ad_unit_test_id));
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mInterstitialAd.loadAd(adRequest);
-        mInterstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-                super.onAdLoaded();
-                mInterstitialAd.show();
-            }
-        });
-    }
+//    private void loadAd() {
+//
+//        AdRequest adRequest = new AdRequest.Builder().build();
+//        InterstitialAd.load(this, getResources().getString(R.string.interstitial_ad_unit_test_id), adRequest, new InterstitialAdLoadCallback() {
+//            @Override
+//            public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+//                super.onAdLoaded(interstitialAd);
+//                mInterstitialAd = interstitialAd;
+//                mInterstitialAd.show(AddOrEditTaskActivity.this);
+//            }
+//        });
+//
+//    }
 
     void display_categories(String[] record) {
         int[] colors = new int[]{

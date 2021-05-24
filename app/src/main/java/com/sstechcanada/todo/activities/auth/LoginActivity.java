@@ -200,7 +200,7 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toasty.error(getApplicationContext(), "Login Failed: ", Toast.LENGTH_LONG).show();
+//                            Toasty.error(getApplicationContext(), "Login Failed: ", Toast.LENGTH_LONG).show();
                         }
 
                         hideProgressDialog();

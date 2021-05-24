@@ -28,6 +28,7 @@ class SplashActivity : AppCompatActivity() {
         } else {
             startActivity(Intent(this, LoginActivity::class.java))
             Toasty.info(this, getString(R.string.please_login), Toast.LENGTH_LONG, true).show()
+
             finish()
         }
     }

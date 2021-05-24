@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name" translatable="false">Sorted To Do List Maker</string>
 
     <string name="action_settings">Settings</string>
@@ -26,9 +26,9 @@
     <string name="edit_task">Edit Task</string>
     <string name="add_task">Add Task</string>
     <string name="update_task">Update Task</string>
-    <string name="describe_your_task">Describe your task</string>
-    <string name="description_cannot_be_empty">Task description cannot be empty.</string>
-    <string name="category_cannot_be_empty">Please select atleast 1 Benefits.</string>
+    <string name="describe_your_task" tools:ignore="MissingTranslation">Describe your task</string>
+    <string name="description_cannot_be_empty" tools:ignore="MissingTranslation">Task description cannot be empty.</string>
+    <string name="category_cannot_be_empty" tools:ignore="MissingTranslation">Please select atleast 1 Benefits.</string>
 
     <!--for onSaveInstanceState in AddOrEditTodoActivity-->
     <string name="task_description_key" translatable="false">task description</string>
@@ -45,40 +45,40 @@
     <string name="complete_or_edit_task">Complete or Edit Task?</string>
     <string name="task_done">Task Done</string>
     <string name="cancel">Cancel</string>
-    <string name="completion">Completion</string>
+    <string name="completion" translatable="false">Completion</string>
 
     <!--for Notifications-->
     <string name="main_notification_channel_name" translatable="false">Primary</string>
     <string name="due_and_overdue_tasks">Due and overdue tasks</string>
-    <string name="you_have">You have\u0020</string>
-    <string name="due_today">\u0020due today</string>
-    <string name="and">, and\u0020</string>
+    <string name="you_have" translatable="false">You have\u0020</string>
+    <string name="due_today" translatable="false">\u0020due today</string>
+    <string name="and" translatable="false">, and\u0020</string>
 
     <!--Additional accessibility contentDescriptions (some just use existing strings above)-->
-    <string name="high_priority_task_red_star">Red star for high priority task</string>
-    <string name="medium_priority_task_orange_star">Orange star for medium priority task</string>
-    <string name="low_priority_task_yellow_star">Yellow star for low priority task</string>
-    <string name="completed_task_grey_star">Grey star for completed task</string>
-    <string name="Categories">Benefits</string>
-    <string name="tagline">tagline</string>
-    <string name="interstitial_ad_unit_test_id">ca-app-pub-3111421321050812/4462552010</string>
-    <string name="premium_user">Premium User</string>
-    <string name="free_user">Free User</string>
-    <string name="sign_out">Sign out?</string>
-    <string name="are_you_sure">Are you sure you want to Sign out?</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
-    <string name="task_updated">Task Updated</string>
-    <string name="please_login">Please login to continue</string>
-    <string name="to_do_list_maker">To Do List Maker</string>
-    <string name="items_sorted_by_the_number_of_benefits">Items Sorted By The Number Of Benefits</string>
-    <string name="user_email_com">user@email.com</string>
-    <string name="akshay_kumar">Akshay Kumar</string>
-    <string name="don_t_you_have_an_account_create">Don\'t you have an account? Create</string>
-    <string name="logout">Logout</string>
-    <string name="login_first">You need to login first</string>
-    <string name="cannot_create">You can not create more than: </string>
-    <string name="banner_ad_id">ca-app-pub-3111421321050812/4092511181</string>
-    <string name="banner_ad_test">ca-app-pub-3111421321050812/4092511181</string>
+    <string name="high_priority_task_red_star" translatable="false">Red star for high priority task</string>
+    <string name="medium_priority_task_orange_star" translatable="false">Orange star for medium priority task</string>
+    <string name="low_priority_task_yellow_star" translatable="false">Yellow star for low priority task</string>
+    <string name="completed_task_grey_star" translatable="false">Grey star for completed task</string>
+    <string name="Categories" translatable="false">Benefits</string>
+    <string name="tagline" translatable="false">tagline</string>
+    <string name="interstitial_ad_unit_test_id" translatable="false">ca-app-pub-3111421321050812/4462552010</string>
+    <string name="premium_user" translatable="false">Premium User</string>
+    <string name="free_user" translatable="false">Free User</string>
+    <string name="sign_out" translatable="false">Sign out?</string>
+    <string name="are_you_sure" translatable="false">Are you sure you want to Sign out?</string>
+    <string name="yes" translatable="false">Yes</string>
+    <string name="no" translatable="false">No</string>
+    <string name="task_updated" translatable="false">Task Updated</string>
+    <string name="please_login" translatable="false">Please login to continue</string>
+    <string name="to_do_list_maker" translatable="false">To Do List Maker</string>
+    <string name="items_sorted_by_the_number_of_benefits" translatable="false">Items Sorted By The Number Of Benefits</string>
+    <string name="user_email_com" translatable="false">user@email.com</string>
+    <string name="akshay_kumar" translatable="false">Akshay Kumar</string>
+    <string name="don_t_you_have_an_account_create" translatable="false">Don\'t you have an account? Create</string>
+    <string name="logout" translatable="false">Logout</string>
+    <string name="login_first" translatable="false">You need to login first</string>
+    <string name="cannot_create" translatable="false">You can not create more than: </string>
+    <string name="banner_ad_id" tools:ignore="MissingTranslation">ca-app-pub-3111421321050812/4092511181</string>
+    <string name="banner_ad_test" tools:ignore="MissingTranslation">ca-app-pub-3111421321050812/4092511181</string>
 
 </resources>
