@@ -1,7 +1,9 @@
 package com.sstechcanada.todo.activities.auth;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -23,26 +27,46 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sstechcanada.todo.R;
+import com.sstechcanada.todo.activities.TodoListActivity;
+import com.sstechcanada.todo.utils.SaveSharedPreference;
+
+import es.dmoral.toasty.Toasty;
 
 public class LoginActivity extends AppCompatActivity {
 
+    public static final String PREF = "USER DATA";
+    public static final String LIST_LIMIT = "LIST_LIMIT";
     private static final String TAG = "MainActivity";
     private static final int RC_SIGN_IN = 9001;
     SignInButton googleSignInButton;
+    CardView profileCard;
+    ImageView placeHolder, dp;
+    TextView userName, userType, userEmail;
+    FirebaseDatabase firebaseDatabase;
+    DatabaseReference databaseReference;
+    int list_limit;
+    //Shared Preference
+    SharedPreferences sharedpreferences;
     private FirebaseAuth mAuth;
     private ProgressDialog pDialog;
     private GoogleSignInClient mGoogleSignInClient;
     private ProgressBar progressBar;
     private Button signOutButton;
-    CardView profileCard;
-    ImageView placeHolder, dp;
-    TextView userName, userType, userEmail;
+    private FirebaseUser user;
+    private FloatingActionButton fabBack;
+    private AdView bannerAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +82,12 @@ public class LoginActivity extends AppCompatActivity {
         userName = findViewById(R.id.tv_userName);
         userType = findViewById(R.id.tv_userType);
         userEmail = findViewById(R.id.tv_userEmail);
+        fabBack = findViewById(R.id.fabBack);
+        bannerAd = findViewById(R.id.adView);
+        bannerAd.loadAd(new AdRequest.Builder().build());
 
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference();
 
         pDialog = new ProgressDialog(this);
 
@@ -71,9 +100,14 @@ public class LoginActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(LoginActivity.this, gso);
 
         mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
 
         googleSignInButton.setOnClickListener(v -> signIn());
-        signOutButton.setOnClickListener(v -> signOut());
+        signOutButton.setOnClickListener(v -> showSignOutDialog());
+
+        fabBack.setOnClickListener(view -> {
+            super.onBackPressed();
+        });
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
@@ -85,6 +119,21 @@ public class LoginActivity extends AppCompatActivity {
         }
         checkUserStatus();
     }
+
+    private void showSignOutDialog() {
+        androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(this);
+        alert.setTitle(R.string.sign_out);
+        alert.setMessage(R.string.are_you_sure);
+        alert.setPositiveButton(
+                R.string.yes,
+                (dialog, id) -> signOut());
+
+        alert.setNegativeButton(
+                R.string.no,
+                (dialog, id) -> dialog.dismiss());
+        alert.show();
+    }
+
     /**
      * Display Progress bar while Logging in through Google
      */
@@ -140,12 +189,18 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
+                            SaveSharedPreference.setUserLogIn(LoginActivity.this, "true");
+                            startActivity(new Intent(LoginActivity.this, TodoListActivity.class));
                             hideProgressDialog();
+                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
+//                            databaseReference.child("Users").child(firebaseUser.getUid()).child("Email").setValue(firebaseUser.getEmail());
+                            databaseReference.child(firebaseUser.getUid()).child("Email").setValue(firebaseUser.getEmail());
+                            updateUserPackage(firebaseUser);
                             checkUserStatus();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(getApplicationContext(), "Login Failed: ", Toast.LENGTH_SHORT).show();
+                            Toasty.error(getApplicationContext(), "Login Failed: ", Toast.LENGTH_LONG).show();
                         }
 
                         hideProgressDialog();
@@ -167,15 +222,17 @@ public class LoginActivity extends AppCompatActivity {
         mAuth.signOut();
         // Google sign out
         mGoogleSignInClient.signOut().addOnCompleteListener(this,
-                new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        updateUI(null);
-                    }
+                task -> {
+                    updateUI(null);
+                    SaveSharedPreference.saveLimit(getApplicationContext(), 0);
                 });
         checkUserStatus();
+        SaveSharedPreference.setUserLogIn(LoginActivity.this, "false");
+        finishAffinity();
+        startActivity(new Intent(LoginActivity.this, LoginActivity.class));
     }
 
+    @SuppressLint("RestrictedApi")
     private void checkUserStatus() {
         FirebaseUser User = mAuth.getCurrentUser();
         if (User != null) {
@@ -189,6 +246,14 @@ public class LoginActivity extends AppCompatActivity {
             userEmail.setVisibility(View.VISIBLE);
             userEmail.setText(User.getEmail());
             userType.setVisibility(View.VISIBLE);
+            fabBack.setVisibility(View.VISIBLE);
+            bannerAd.setVisibility(View.VISIBLE);
+            list_limit = SaveSharedPreference.loadLimit(this);
+            if (list_limit > 15) {
+                userType.setText(R.string.premium_user);
+            } else {
+                userType.setText(R.string.free_user);
+            }
             updateUI(User);
         } else {
             googleSignInButton.setVisibility(View.VISIBLE);
@@ -199,5 +264,46 @@ public class LoginActivity extends AppCompatActivity {
             userType.setVisibility(View.GONE);
             userEmail.setVisibility(View.GONE);
         }
+    }
+
+    private void updateUserPackage(FirebaseUser firebaseUser) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child(firebaseUser.getUid());
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String ans = snapshot.child("purchase_code").getValue(String.class);
+                String limit = snapshot.child("item_limit").getValue(String.class);
+
+                if (!snapshot.child("purchase_code").exists()) {
+                    databaseReference.child("purchase_code").setValue("0");
+                    databaseReference.child("item_limit").setValue("15");
+                    SaveSharedPreference.saveLimit(getApplicationContext(), 15);
+                } else {
+                    list_limit = Integer.parseInt(ans);
+                    if (list_limit != 0) {
+                        userType.setText(R.string.premium_user);
+                    } else {
+                        userType.setText(R.string.free_user);
+                    }
+                    SaveSharedPreference.saveLimit(getApplicationContext(), 15);
+//                    Toast.makeText(LoginActivity.this, ""+list_limit, Toast.LENGTH_SHORT).show();
+                }
+                if (!snapshot.child("purchase_type").exists()) {
+                    databaseReference.child("purchase_type").setValue("Free User");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void setValue() {
+        if (user != null) {
+            list_limit = SaveSharedPreference.loadLimit(this);
+        }
+//        Toast.makeText(this, list_limit + " " + db_cnt, Toast.LENGTH_SHORT).show();
     }
 }

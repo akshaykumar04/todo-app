@@ -18,50 +18,57 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.AppCompatImageView;
-import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 import androidx.preference.PreferenceManager;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.auth.LoginActivity;
 import com.sstechcanada.todo.adapters.TodoListAdapter;
 import com.sstechcanada.todo.broadcast_receivers.DailyAlarmReceiver;
 import com.sstechcanada.todo.data.TodoListContract;
+import com.sstechcanada.todo.data.TodoListDbHelper;
 import com.sstechcanada.todo.data.TodoListProvider;
 import com.sstechcanada.todo.databinding.ActivityTodoListBinding;
 import com.sstechcanada.todo.models.TodoTask;
 import com.sstechcanada.todo.utils.NotificationUtils;
+import com.sstechcanada.todo.utils.SaveSharedPreference;
+
+import es.dmoral.toasty.Toasty;
 
 public class TodoListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
         TodoListAdapter.TodoListAdapterOnClickHandler,
-    SharedPreferences.OnSharedPreferenceChangeListener {
-        private static final String TAG = TodoListActivity.class.getSimpleName();
-        private static final int ADD_TASK_REQUEST = 1;
-        private static final int EDIT_TASK_REQUEST = 2;
-        private static final int ID_TODOLIST_LOADER = 2018;
-
-        private RecyclerView mRecyclerView;
-        private TodoListAdapter mTodoListAdapter;
-        private ActivityTodoListBinding mBinding;
-        private SharedPreferences mSharedPreferences;
-        private AppCompatImageView toolbar_profile;
+        SharedPreferences.OnSharedPreferenceChangeListener {
+    private static final String TAG = TodoListActivity.class.getSimpleName();
+    private static final int ADD_TASK_REQUEST = 1;
+    private static final int EDIT_TASK_REQUEST = 2;
+    private static final int ID_TODOLIST_LOADER = 2018;
+    String userID;
+    private int list_limit = 1, db_cnt = 0;
+    private RecyclerView mRecyclerView;
+    private TodoListAdapter mTodoListAdapter;
+    private ActivityTodoListBinding mBinding;
+    private SharedPreferences mSharedPreferences, ll;
+    private AppCompatImageView toolbar_profile;
+    private TodoListDbHelper tld;
+    private FirebaseAuth mAuth;
+    private FirebaseUser user;
+    private DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +81,21 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
         mRecyclerView.setLayoutManager(layoutManager);
         mTodoListAdapter = new TodoListAdapter(this, this);
         mRecyclerView.setAdapter(mTodoListAdapter);
+
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+        tld = new TodoListDbHelper(TodoListActivity.this);
+
+        //Limit Set
+        db_cnt = tld.todoCount();
+        setValue();
+
+        showHidePlaceholder();
+
+        AdView adView = mBinding.adView;
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+
 
 //        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 //        getSupportActionBar().setCustomView(R.layout.abs_layout);
@@ -92,7 +114,9 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isLogin()){
+                db_cnt = tld.todoCount();
+                setValue();
+                if (isLogin()) {
                     Intent intent = new Intent(TodoListActivity.this, AddOrEditTaskActivity.class);
                     intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
                     startActivityForResult(intent, ADD_TASK_REQUEST);
@@ -107,6 +131,18 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
 
         //scheduleDailyDueCheckerAlarm();
         //cancelAlarm();
+
+        mBinding.completedTab.setOnClickListener(view -> {
+            startActivity(new Intent(TodoListActivity.this, AppUpgradeActivity.class));
+        });
+    }
+
+    private void showHidePlaceholder() {
+        if (db_cnt <= 2) {
+            mBinding.placeholderImage.setVisibility(View.VISIBLE);
+        } else {
+            mBinding.placeholderImage.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -235,10 +271,12 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
 
     @Override
     protected void onResume() {
+
         super.onResume();
         // This is so that if we've edited a task directly from the widget, the widget will still
         // get updated when we come to this activity after clicking UPDATE TASK in AddOrEditTaskActivity
         updateWidget();
+        showHidePlaceholder();
     }
 
     @Override
@@ -280,13 +318,25 @@ public class TodoListActivity extends AppCompatActivity implements LoaderManager
         alarm.cancel(pIntent);
     }
 
-    public boolean isLogin(){
+    public boolean isLogin() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
-            // User is not signIn
-            Toast.makeText(this, "Please Login First", Toast.LENGTH_SHORT).show();
+            Toasty.warning(this, getString(R.string.login_first), Toast.LENGTH_LONG).show();
+            startActivity(new Intent(TodoListActivity.this, LoginActivity.class));
+            return false;
+        } else if (list_limit <= db_cnt) {
+            //Limit Check
+            Toasty.info(this, getString(R.string.cannot_create) + list_limit + " task in free tier, Please upgrade app to premium version", Toast.LENGTH_LONG, true).show();
+            startActivity(new Intent(TodoListActivity.this, AppUpgradeActivity.class));
             return false;
         }
         return true;
     }
+
+    public void setValue() {
+        if (user != null) {
+            list_limit = SaveSharedPreference.loadLimit(this);
+        }
+    }
+
 }

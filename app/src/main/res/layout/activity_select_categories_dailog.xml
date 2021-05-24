@@ -5,58 +5,62 @@
     android:layout_width="400dp"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="25dp"
+    android:padding="20dp"
     tools:context=".activities.SelectCategoriesDailog">
-
 
     <GridView
         android:id="@+id/grid_view_alert"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="3" />
+        android:numColumns="3"
+        android:visibility="gone" />
 
     <ProgressBar
         android:id="@+id/progress_circular"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </ProgressBar>
+        android:layout_height="match_parent" />
 
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="4dp"
+        app:adSize="BANNER"
+        app:adUnitId="@string/banner_ad_test" />
 
 
     <LinearLayout
+        android:id="@+id/addMoreCategoriesLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/addMoreCategoriesLayout"
-        android:orientation="horizontal"
-        android:layout_marginTop="20dp"
-        android:visibility="gone"
         android:layout_gravity="center_horizontal"
-        android:padding="4dp">
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal"
+        android:padding="4dp"
+        android:visibility="visible">
 
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:textAlignment="center"
-                android:text="Add More"
-                android:fontFamily="@font/raleway_semibold"
-                android:textSize="16sp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:fontFamily="@font/raleway_semibold"
+            android:text="Add More"
+            android:textAlignment="center"
+            android:textSize="16sp" />
 
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_gravity="center"
-                android:src="@android:drawable/ic_menu_add">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            android:src="@android:drawable/ic_menu_add">
 
-            </ImageView>
+        </ImageView>
 
 
-
-      </LinearLayout>
-
+    </LinearLayout>
 
 
 </LinearLayout>

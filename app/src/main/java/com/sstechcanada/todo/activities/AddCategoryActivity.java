@@ -1,10 +1,5 @@
 package com.sstechcanada.todo.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -17,8 +12,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageView;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,9 +30,10 @@ import com.sstechcanada.todo.activities.auth.LoginActivity;
 import com.sstechcanada.todo.adapters.CategoryAdapter;
 import com.sstechcanada.todo.models.Category;
 
-import java.net.Inet4Address;
 import java.util.ArrayList;
 import java.util.List;
+
+import es.dmoral.toasty.Toasty;
 
 public class AddCategoryActivity extends AppCompatActivity {
 
@@ -40,12 +42,13 @@ public class AddCategoryActivity extends AppCompatActivity {
     Button buttonAddCategory;
     ListView listViewCategory;
     TextView toolBarTitle;
-    
+    private AppCompatImageView toolbar_profile, toolbarBackIcon;
+
     List<Category> categories;
-    
+
     DatabaseReference databaseCategories;
-    private FirebaseAuth mAuth;
     String userID;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,32 +58,34 @@ public class AddCategoryActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         userID = mAuth.getCurrentUser().getUid();
 
-        
+//        databaseCategories = FirebaseDatabase.getInstance().getReference("categories");
         databaseCategories = FirebaseDatabase.getInstance().getReference(userID).child("benefits");
-        
-        editTextName = (EditText) findViewById(R.id.editTextName);
-        listViewCategory = (ListView) findViewById(R.id.listViewCategory);
 
-        buttonAddCategory = (Button) findViewById(R.id.buttonAddCategory);
+        editTextName = findViewById(R.id.editTextName);
+        listViewCategory = findViewById(R.id.listViewCategory);
+        toolbarBackIcon = findViewById(R.id.arrow_back);
+        toolbarBackIcon.setVisibility(View.VISIBLE);
+        toolbarBackIcon.setOnClickListener(view -> {
+            super.onBackPressed();
+        });
+
+
+        buttonAddCategory = findViewById(R.id.buttonAddCategory);
 
         categories = new ArrayList<>();
 
         toolBarTitle = findViewById(R.id.toolbarTitle);
         toolBarTitle.setText("Add Benefits");
 
-        buttonAddCategory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addCategory();
-            }
-        });
+        toolbar_profile = findViewById(R.id.profile_toolbar);
+        toolbar_profile.setOnClickListener(view -> startActivity(new Intent(AddCategoryActivity.this, LoginActivity.class)));
 
-        listViewCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        buttonAddCategory.setOnClickListener(view -> addCategory());
 
-                Category category = categories.get(i);
-                showUpdateDialog(category.getCategoryId(), category.getCategoryName());
+        listViewCategory.setOnItemClickListener((adapterView, view, i, l) -> {
+
+            Category category = categories.get(i);
+            showUpdateDialog(category.getCategoryId(), category.getCategoryName());
 
 //                //creating an intent
 //                Intent intent = new Intent(getApplicationContext(), CategoryActivity.class);
@@ -91,10 +96,9 @@ public class AddCategoryActivity extends AppCompatActivity {
 //
 //                //starting the activity with intent
 //                startActivity(intent);
-            }
         });
 
-       listViewCategory.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        listViewCategory.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Category category = categories.get(i);
@@ -102,6 +106,10 @@ public class AddCategoryActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        AdView adView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
     }
 
     /*
@@ -112,16 +120,15 @@ public class AddCategoryActivity extends AppCompatActivity {
         //getting the values to save
         String name = editTextName.getText().toString().trim();
 
-        //Making first word capital
-        name = name.substring(0, 1).toUpperCase() + name.substring(1);
-
         //checking if the value is provided
-        if (!TextUtils.isEmpty(name)) {
+        if (!name.isEmpty()) {
 
             //getting a unique id using push().getKey() method
             //it will create a unique id and we will use it as the Primary Key for our Category
             String id = databaseCategories.push().getKey();
 
+            //Making first word capital
+            name = name.substring(0, 1).toUpperCase() + name.substring(1);
             //creating an Category Object
             Category category = new Category(id, name);
 
@@ -132,10 +139,10 @@ public class AddCategoryActivity extends AppCompatActivity {
             editTextName.setText("");
 
             //displaying a success toast
-            Toast.makeText(this, "Benefit added", Toast.LENGTH_LONG).show();
+            Toasty.success(this, "Benefit added", Toast.LENGTH_SHORT).show();
         } else {
             //if the value is not given displaying a toast
-            Toast.makeText(this, "Please enter a name", Toast.LENGTH_LONG).show();
+            Toasty.warning(this, "Please enter a name", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -177,8 +184,8 @@ public class AddCategoryActivity extends AppCompatActivity {
         final View dialogView = inflater.inflate(R.layout.update_dialog, null);
         dialogBuilder.setView(dialogView);
 
-        final EditText editTextName = (EditText) dialogView.findViewById(R.id.editTextName);
-        final Button buttonUpdate = (Button) dialogView.findViewById(R.id.buttonUpdateCategory);
+        final EditText editTextName = dialogView.findViewById(R.id.editTextName);
+        final Button buttonUpdate = dialogView.findViewById(R.id.buttonUpdateCategory);
         final Button buttonDelete = dialogView.findViewById(R.id.buttonDeleteCategory);
 
 
@@ -187,51 +194,43 @@ public class AddCategoryActivity extends AppCompatActivity {
         b.show();
 
 
-        buttonUpdate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String name = editTextName.getText().toString().trim();
-                if (!TextUtils.isEmpty(name)) {
-                    updateCategory(categoryId, name);
-                    b.dismiss();
-                }
+        buttonUpdate.setOnClickListener(view -> {
+            String name = editTextName.getText().toString().trim();
+            if (!TextUtils.isEmpty(name)) {
+                updateCategory(categoryId, name);
+                b.dismiss();
             }
         });
 
-        buttonDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        buttonDelete.setOnClickListener(view -> {
 
-                deleteCategory(categoryId);
-                b.dismiss();
-            }
+            deleteCategory(categoryId);
+            b.dismiss();
         });
 
     }
 
 
-
-
     private void updateCategory(String id, String name) {
         //getting the specified category reference
         DatabaseReference dR = FirebaseDatabase.getInstance().getReference(userID).child("benefits").child(id);
-
+//        DatabaseReference dR = FirebaseDatabase.getInstance().getReference("categories").child(id);
         //updating category
         Category category = new Category(id, name);
         dR.setValue(category);
-        Toast.makeText(getApplicationContext(), "Benefits Updated", Toast.LENGTH_LONG).show();
+        Toasty.success(getApplicationContext(), "Benefits Updated", Toast.LENGTH_SHORT).show();
     }
 
 
     private void deleteCategory(String id) {
         //getting the specified category reference
         DatabaseReference dR = FirebaseDatabase.getInstance().getReference(userID).child("benefits").child(id);
-
+//        DatabaseReference dR = FirebaseDatabase.getInstance().getReference("categories").child(id);
         //removing category
         dR.removeValue();
 
         //getting the tracks reference for the specified category
-        Toast.makeText(getApplicationContext(), "Benefits Deleted", Toast.LENGTH_LONG).show();
+        Toasty.error(getApplicationContext(), "Benefits Deleted", Toast.LENGTH_SHORT).show();
 
     }
 
