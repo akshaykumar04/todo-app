@@ -12,6 +12,7 @@ import es.dmoral.toasty.Toasty
 
 class SplashActivity : AppCompatActivity() {
     private var TIME_OUT: Long = 2000
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)

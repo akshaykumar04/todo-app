@@ -1,5 +1,11 @@
 package com.sstechcanada.todo.activities;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -14,13 +20,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.ads.AdRequest;
@@ -46,24 +48,25 @@ import com.sstechcanada.todo.utils.NotificationUtils;
 
 import es.dmoral.toasty.Toasty;
 
-public class TodoListActivity2 extends AppCompatActivity {
+public class CompletedTodoListActivity extends AppCompatActivity {
     private static final String TAG = TodoListActivity.class.getSimpleName();
     private static final int ADD_TASK_REQUEST = 1;
     private static final int EDIT_TASK_REQUEST = 2;
     private static final int ID_TODOLIST_LOADER = 2018;
     String userID;
+    ImageView placeholderImage;
     private int list_limit = 15;
     public static int db_cnt=0;
     private RecyclerView mRecyclerView;
     private TodoListAdapter mTodoListAdapter;
-    private ActivityTodoListBinding mBinding;
+//    private ActivityTodoListBinding mBinding;
     private SharedPreferences mSharedPreferences, ll;
     private AppCompatImageView toolbar_profile;
     private TodoListDbHelper tld;
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private DatabaseReference databaseReference;
-
+    TextView ongoingTab;
     private FirebaseFirestore db=FirebaseFirestore.getInstance();
     private CollectionReference usersColRef=db.collection("Users");
     private TodoListFirestoreAdapter todoListFirestoreAdapter;
@@ -71,16 +74,10 @@ public class TodoListActivity2 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_todo_list);
-        mRecyclerView = mBinding.rvTodoList;
-//        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-//        layoutManager.setReverseLayout(true);
-//        layoutManager.setStackFromEnd(true);
-//        mRecyclerView.setLayoutManager(layoutManager);
-//        mTodoListAdapter = new TodoListAdapter(this, this);
-//        mRecyclerView.setAdapter(mTodoListAdapter);
+        setContentView(R.layout.activity_completed_todo_list);
 
-
+        mRecyclerView = findViewById(R.id.rv_todo_list);
+        placeholderImage=findViewById(R.id.placeholderImage);
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         userID=user.getUid();
@@ -91,25 +88,19 @@ public class TodoListActivity2 extends AppCompatActivity {
 
         setValue();
 
-        AdView adView = mBinding.adView;
+        AdView adView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
-
-
-//        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-//        getSupportActionBar().setCustomView(R.layout.abs_layout);
-//        DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(this, LinearLayoutManager.VERTICAL);
-//        mRecyclerView.addItemDecoration(mDividerItemDecoration);
 
         toolbar_profile = findViewById(R.id.profile_toolbar);
         toolbar_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(TodoListActivity2.this, LoginActivity.class));
+                startActivity(new Intent(CompletedTodoListActivity.this, LoginActivity.class));
             }
         });
 
-        FloatingActionButton fab = mBinding.fab;
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -117,31 +108,23 @@ public class TodoListActivity2 extends AppCompatActivity {
 //                Log.i("ItemCount", String.valueOf(db_cnt));
                 setValue();
                 if (isLogin()) {
-                    Intent intent = new Intent(TodoListActivity2.this, AddOrEditTaskActivity2.class);
+                    Intent intent = new Intent(CompletedTodoListActivity.this, AddOrEditTaskActivity2.class);
                     intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
                     startActivityForResult(intent, ADD_TASK_REQUEST);
                 }
             }
         });
 
-//        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-//        mSharedPreferences.registerOnSharedPreferenceChangeListener(this);
-
-//        getSupportLoaderManager().initLoader(ID_TODOLIST_LOADER, null, this);
-
-        //scheduleDailyDueCheckerAlarm();
-        //cancelAlarm();
-
-        mBinding.completedTab.setOnClickListener(view -> {
-//            startActivity(new Intent(TodoListActivity2.this, AppUpgradeActivity.class));
-            startActivity(new Intent(TodoListActivity2.this, CompletedTodoListActivity.class));
-
+        ongoingTab = findViewById(R.id.ongoingTab);
+        ongoingTab.setOnClickListener(view -> {
+            startActivity(new Intent(CompletedTodoListActivity.this, TodoListActivity2.class));
         });
+
     }
 
     private void setUpFirestoreRecyclerView() {
         Query query =usersColRef.document(userID).collection("Lists").document(
-                "List one").collection("Todo").whereEqualTo("Status","Pending").orderBy("priority", Query.Direction.DESCENDING);
+                "List one").collection("Todo").whereEqualTo("Status","Completed").orderBy("priority", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<TodoTaskFirestore> options =new FirestoreRecyclerOptions.Builder<TodoTaskFirestore>().setQuery(query,TodoTaskFirestore.class).build();
         todoListFirestoreAdapter=new TodoListFirestoreAdapter(options);
@@ -167,18 +150,12 @@ public class TodoListActivity2 extends AppCompatActivity {
 
     private void showHidePlaceholder() {
         if (db_cnt <= 2) {
-            mBinding.placeholderImage.setVisibility(View.VISIBLE);
+
+            placeholderImage.setVisibility(View.VISIBLE);
         } else {
-            mBinding.placeholderImage.setVisibility(View.GONE);
+            placeholderImage.setVisibility(View.GONE);
         }
     }
-
-//    public static showPlaceholder() {
-////            show placehoder on datachange if getItemcount>=3
-//    }
-//    public static HidePlaceholder() {
-////        hide placehoder on datachange if getItemcount<=3
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -207,46 +184,6 @@ public class TodoListActivity2 extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-//    @Override
-//    public void onClick(TodoTask todoTask, View view) {
-//        // are they checking or unchecking the task checkbox, or tapping the task to edit it?
-//        if (view instanceof CheckBox) {
-//            // checking off task gets it flagged for deletion soon, and unchecking it reprieves it
-//            final String id = String.valueOf(todoTask.getId());
-//            final Uri uri = TodoListContract.TodoListEntry.CONTENT_URI.buildUpon().appendPath(id).build();
-//            int isCompleted;
-//
-//            final ContentValues contentValues = new ContentValues();
-//            contentValues.put(TodoListContract.TodoListEntry.COLUMN_DESCRIPTION, todoTask.getDescription());
-//            contentValues.put(TodoListContract.TodoListEntry.COLUMN_PRIORITY, todoTask.getPriority());
-//            contentValues.put(TodoListContract.TodoListEntry.COLUMN_DUE_DATE, todoTask.getDueDate());
-//
-//            if (((CheckBox) view).isChecked()) {
-//                isCompleted = TodoTask.TASK_COMPLETED;
-//            } else {
-//                isCompleted = TodoTask.TASK_NOT_COMPLETED;
-//            }
-//
-//            contentValues.put(TodoListContract.TodoListEntry.COLUMN_COMPLETED, isCompleted);
-//
-//            // Wait half a second so they can briefly see the check appear or disappear before
-//            // the task is moved to or from the bottom
-//            Handler handler = new Handler();
-//            handler.postDelayed(new Runnable() {
-//                public void run() {
-//                    getContentResolver().update(uri, contentValues, "_id=?", new String[]{id});
-//                    updateWidget();
-//                }
-//            }, 500);
-//        } else {
-//            // edit the task
-//            Intent intent = new Intent(this, AddOrEditTaskActivity2.class);
-//            intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.edit_task));
-//            intent.putExtra(getString(R.string.intent_todo_key), todoTask);
-//            startActivityForResult(intent, EDIT_TASK_REQUEST);
-//        }
-//    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -260,50 +197,6 @@ public class TodoListActivity2 extends AppCompatActivity {
         Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         sendBroadcast(intent);
     }
-
-//    @Override
-//    public Loader<Cursor> onCreateLoader(int loaderId, Bundle bundle) {
-//        if (loaderId == ID_TODOLIST_LOADER) {
-//            String sortOrderPreference = getSortOrderPreference();
-//            String sortOrder;
-//            Uri todoListQueryUri = TodoListContract.TodoListEntry.CONTENT_URI;
-//            // sort order preference is the primary sort, with the other sort order as secondary
-//            if (sortOrderPreference.equals(getString(R.string.priority))) {
-//                sortOrder = TodoListProvider.SORT_ORDER_PRIORITY;
-//            } else {
-//                sortOrder = TodoListProvider.SORT_ORDER_DUEDATE;
-//            }
-//
-//            return new CursorLoader(this,
-//                    todoListQueryUri,
-//                    null,
-//                    null,
-//                    null,
-//                    sortOrder);
-//        } else {
-//            throw new RuntimeException("Loader Not Implemented: " + loaderId);
-//        }
-//    }
-
-//    @Override
-//    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-////        mTodoListAdapter.swapCursor(data);
-//    }
-//
-//    @Override
-//    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
-//    }
-//
-//    private String getSortOrderPreference() {
-//        return mSharedPreferences.getString(getString(R.string.pref_sort_by_key), getString(R.string.priority));
-//    }
-//
-//    @Override
-//    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-//        mTodoListAdapter.swapCursor(null);
-//        getSupportLoaderManager().restartLoader(ID_TODOLIST_LOADER, null, this);
-//        updateWidget();
-//    }
 
     @Override
     protected void onResume() {
@@ -358,12 +251,12 @@ public class TodoListActivity2 extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
             Toasty.warning(this, getString(R.string.login_first), Toast.LENGTH_LONG).show();
-            startActivity(new Intent(TodoListActivity2.this, LoginActivity.class));
+            startActivity(new Intent(CompletedTodoListActivity.this, LoginActivity.class));
             return false;
         } else if (list_limit <= db_cnt) {
             //Limit Check
             Toasty.info(this, getString(R.string.cannot_create) + list_limit + " task in free tier, Please upgrade app to premium version", Toast.LENGTH_LONG, true).show();
-            startActivity(new Intent(TodoListActivity2.this, AppUpgradeActivity.class));
+            startActivity(new Intent(CompletedTodoListActivity.this, AppUpgradeActivity.class));
             return false;
         }
         return true;
@@ -374,5 +267,6 @@ public class TodoListActivity2 extends AppCompatActivity {
             list_limit = 15;
         }
     }
+
 
 }

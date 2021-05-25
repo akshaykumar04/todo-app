@@ -12,10 +12,11 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
-        <activity android:name=".activities.TodoListActivity2"></activity>
+        <activity android:name=".activities.CompletedTodoListActivity"></activity>
+        <activity android:name=".activities.TodoListActivity2" />
         <activity
             android:name=".activities.AppUpgradeActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.TodoListActivity"
             android:screenOrientation="portrait" />

@@ -455,25 +455,22 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
     }
 
     public void loadCategories() {
+
 //        databaseCategories = FirebaseDatabase.getInstance().getReference("categories");
 //        databaseCategories = FirebaseDatabase.getInstance().getReference(userID).child("benefits");
-        categories = new ArrayList<>();
-        selectedStrings = new ArrayList<>();
 
         benefitCollectionRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                categories = new ArrayList<>();
+                selectedStrings = new ArrayList<>();
                 categories.clear();
+                for(DocumentSnapshot dataSnapshot:value){
+                    Category category = new Category(dataSnapshot.getId(),(String) dataSnapshot.get("category_name"));
+                    categories.add(category);
+                }
 
                 //iterating through all the nodes
-                benefitCollectionRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        categories.clear();
-                        for(DocumentSnapshot dataSnapshot:queryDocumentSnapshots){
-                            Category category = new Category(dataSnapshot.getId(),(String) dataSnapshot.get("category_name"));
-                            categories.add(category);
-                        }
 
                         adapter = new GridViewAdapter(categories, AddOrEditTaskActivity2.this);
                         gridView.setAdapter(adapter);
@@ -487,18 +484,13 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                                     selectedStrings.add(record[j]);
                                 }
                             }
-
                         }
+                        selectedResult="";
+                        selectedResult=convertArrayToString(selectedStrings);
 
                         progressBar.setVisibility(View.INVISIBLE);
                         addMoreCategories.setVisibility(View.VISIBLE);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toasty.error(getApplicationContext(), "Benefit fetch failed ", Toast.LENGTH_LONG).show();
-                    }
-                });
+
 
             }
         });
