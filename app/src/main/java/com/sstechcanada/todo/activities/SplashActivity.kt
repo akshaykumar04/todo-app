@@ -23,7 +23,7 @@ class SplashActivity : AppCompatActivity() {
 
     private fun checkUserState() {
         if (SaveSharedPreference.getUserLogin(this).equals("true")) {
-            startActivity(Intent(this, TodoListActivity::class.java))
+            startActivity(Intent(this, TodoListActivity2::class.java))
             finish()
         } else {
             startActivity(Intent(this, LoginActivity::class.java))

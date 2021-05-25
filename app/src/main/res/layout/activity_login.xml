@@ -30,7 +30,7 @@
         android:layout_marginEnd="8dp"
         android:textColor="@color/textHeadings"
         android:fontFamily="@font/raleway_semibold"
-        android:text="@string/to_do_list_maker"
+        android:text="@string/app_name"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

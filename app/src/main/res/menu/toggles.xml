@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/toggle_center"
+        android:title="@string/_0_99_month" />
+
+    <item
+        android:id="@+id/toggle_right"
+        android:title="@string/_9_99_month" />
+</menu>

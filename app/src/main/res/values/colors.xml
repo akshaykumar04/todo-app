@@ -38,4 +38,5 @@
     <color name="circle9">#66BB6A</color>
 
     <color name="toolbar_background">#FFFFFF</color>
+    <color name="toggleSelected">#7C446DFF</color>
 </resources>
