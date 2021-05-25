@@ -32,7 +32,6 @@ import com.google.android.material.chip.ChipDrawable;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -52,12 +51,9 @@ import com.sstechcanada.todo.models.TodoTaskFirestore;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 
 import es.dmoral.toasty.Toasty;
-
-import static com.sstechcanada.todo.data.TodoListContract.TodoListEntry.COLUMN_CATEGORY;
 
 public class AddOrEditTaskActivity2 extends AppCompatActivity {
     private static final String TAG = AddOrEditTaskActivity2.class.getSimpleName();
@@ -148,6 +144,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                 mBinding.rbNoDueDate.setChecked(true);
             } else {
                 todoTaskToAddOrEdit = bundle.getParcelable(getString(R.string.intent_todo_key));
+                selectedResult=todoTaskToAddOrEdit.getBenefitsString();
                 mTaskId = todoTaskToAddOrEdit.getDocumentID();
                 mBinding.etTaskDescription.setText(todoTaskToAddOrEdit.getDescription());
                 selectPriorityRadioButton(todoTaskToAddOrEdit.getPriority());
@@ -208,7 +205,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
         if (todoTaskToAddOrEdit != null) {
 //            TodoListDbHelper todoListDbHelper = new TodoListDbHelper(AddOrEditTaskActivity2.this);
 //            ArrayList<HashMap<String, String>> userlist = todoListDbHelper.getUser(mTaskId);
-            String[] record;
+//            String[] record;
 //            for (HashMap<String, String> user : userlist) {
 //                selectedResult = user.get(COLUMN_CATEGORY);
                 record = convertStringToArray(todoTaskToAddOrEdit.getBenefitsString());
@@ -401,7 +398,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 
     public void loadCategories() {
 //        databaseCategories = FirebaseDatabase.getInstance().getReference("categories");
-        databaseCategories = FirebaseDatabase.getInstance().getReference(userID).child("benefits");
+//        databaseCategories = FirebaseDatabase.getInstance().getReference(userID).child("benefits");
         categories = new ArrayList<>();
         selectedStrings = new ArrayList<>();
 
@@ -414,6 +411,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                 benefitCollectionRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        categories.clear();
                         for(DocumentSnapshot dataSnapshot:queryDocumentSnapshots){
                             Category category = new Category(dataSnapshot.getId(),(String) dataSnapshot.get("category_name"));
                             categories.add(category);
@@ -422,6 +420,18 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                         adapter = new GridViewAdapter(categories, AddOrEditTaskActivity2.this);
                         gridView.setAdapter(adapter);
                         gridView.setVisibility(View.VISIBLE);
+
+                        record = convertStringToArray(selectedResult);
+                        for(int i=0;i<categories.size();i++){
+                            for(int j=0;j<record.length;j++){
+                                if(record[j].equals(categories.get(i).getCategoryName())) {
+                                    adapter.selectedPositions.add(i);
+                                    selectedStrings.add(record[j]);
+                                }
+                            }
+
+                        }
+
                         progressBar.setVisibility(View.INVISIBLE);
                         addMoreCategories.setVisibility(View.VISIBLE);
                     }
