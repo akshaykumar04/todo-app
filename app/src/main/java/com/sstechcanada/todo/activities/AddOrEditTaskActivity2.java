@@ -283,7 +283,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
         int priority = category_count;
         int isCompleted = TodoTask.TASK_NOT_COMPLETED;
         long dueDate = TodoTask.NO_DUE_DATE;
-        uploadDataToFirestore();
+
         Log.d(TAG, "Here");
 
         if (description.equals("")) {
@@ -293,6 +293,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
         } else {
             //Making First Char Capital
             description = description.substring(0, 1).toUpperCase() + description.substring(1);
+            uploadDataToFirestore();
 
             // get the priority setting
             if (mBinding.rbMediumPriority.isChecked()) {
@@ -337,6 +338,8 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
             newTaskMap.put("description", description);
             newTaskMap.put("priority", benefitsArrayFirestore.size());
             newTaskMap.put("Benefits", benefitsArrayFirestore);
+            String task_status = "Pending";;
+            newTaskMap.put("Status", task_status);
             UserColRef.document().set(newTaskMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
@@ -354,6 +357,13 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
             updateTaskMap.put("description", description);
             updateTaskMap.put("priority", benefitsArrayFirestore.size());
             updateTaskMap.put("Benefits", benefitsArrayFirestore);
+            String task_status;
+            if (mBinding.cbTaskCompleted.isChecked()) {
+                task_status = "Completed";
+            } else {
+                task_status = "Pending";;
+            }
+            updateTaskMap.put("Status", task_status);
             UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).set(updateTaskMap, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {

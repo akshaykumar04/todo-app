@@ -141,7 +141,7 @@ public class TodoListActivity2 extends AppCompatActivity {
 
     private void setUpFirestoreRecyclerView() {
         Query query =usersColRef.document(userID).collection("Lists").document(
-                "List one").collection("Todo").orderBy("priority", Query.Direction.DESCENDING);
+                "List one").collection("Todo").whereEqualTo("Status","Pending").orderBy("priority", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<TodoTaskFirestore> options =new FirestoreRecyclerOptions.Builder<TodoTaskFirestore>().setQuery(query,TodoTaskFirestore.class).build();
         todoListFirestoreAdapter=new TodoListFirestoreAdapter(options);
