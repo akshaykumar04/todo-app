@@ -70,7 +70,10 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
                         model.getDueDate(),
                         model.getDocumentID(),
                         0,
-                        model.getBenefitsString(),model.getBenefits());
+                        model.getCategory(),
+                        2,
+                        model.getBenefits(),
+                        model.getBenefitsString());
 
                 Intent intent = new Intent(v.getContext(), AddOrEditTaskActivity2.class);
                 intent.putExtra("Adding or editing", "Edit Task");

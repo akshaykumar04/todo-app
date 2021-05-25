@@ -3,9 +3,6 @@ package com.sstechcanada.todo.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.google.firebase.firestore.Exclude;
 
 import java.util.ArrayList;
@@ -21,48 +18,47 @@ public class TodoTaskFirestore implements Parcelable {
     private ArrayList<String> Benefits;
     private String benefitsString;
 
+        public TodoTaskFirestore(){}
+//    public TodoTaskFirestore(String description, int priority, long dueDate, String documentID, int i, String category, int i1, ArrayList<String> benefits, String benefitsString){}
 
-    public TodoTaskFirestore(){}
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
+    protected TodoTaskFirestore(Parcel in) {
+        description = in.readString();
+        priority = in.readInt();
+        dueDate = in.readLong();
+        documentID = in.readString();
+        completed = in.readInt();
+        category = in.readString();
+        category_count = in.readInt();
+        Benefits = in.createStringArrayList();
+        benefitsString = in.readString();
     }
 
-    @Override
-    public boolean equals(@Nullable Object obj) {
-        return super.equals(obj);
-    }
+    public static final Creator<TodoTaskFirestore> CREATOR = new Creator<TodoTaskFirestore>() {
+        @Override
+        public TodoTaskFirestore createFromParcel(Parcel in) {
+            return new TodoTaskFirestore(in);
+        }
 
-    @NonNull
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return super.toString();
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-    }
+        @Override
+        public TodoTaskFirestore[] newArray(int size) {
+            return new TodoTaskFirestore[size];
+        }
+    };
 
     public void setBenefitsString(String benefitsString) {
         this.benefitsString = benefitsString;
     }
 
-    public TodoTaskFirestore(String description, int priority, long dueDate, int id, int completed, String category, int category_count, ArrayList<String> Benefits) {
+    public TodoTaskFirestore(String description, int priority, long dueDate, String documentID, int completed, String category, int category_count, ArrayList<String> Benefits,String benefitsString) {
         this.description = description;
         this.priority = priority;
         this.dueDate = dueDate;
+        this.documentID=documentID;
         this.completed = completed;
         this.category = category;
         this.category_count = category_count;
         this.Benefits = Benefits;
+        this.benefitsString=benefitsString;
     }
 
     public String getDescription() {
@@ -112,60 +108,43 @@ public class TodoTaskFirestore implements Parcelable {
 
     }
 
-    public TodoTaskFirestore(String description, int priority, long dueDate, String documentID, int completed,String benefitsString,ArrayList<String> Benefits) {
-        this.description = description;
-        this.priority = priority;
-        this.dueDate = dueDate;
-        this.documentID = documentID;
-        this.completed = completed;
-        this.benefitsString = benefitsString;
-        this.Benefits=Benefits;
-    }
-
     @Override
     public int describeContents() {
         return 0;
     }
-//
-//    @Override
-//    public void writeToParcel(Parcel dest, int flags) {
-//
-//    }
-    private TodoTaskFirestore(Parcel in) {
-        description = in.readString();
-        priority = in.readInt();
-        dueDate = in.readLong();
-        documentID = in.readString();
-        completed = in.readInt();
-        benefitsString= in.readString();
-//        Benefits=in.readArrayList(new ArrayList[]);
-    }
 
     @Override
-    public void writeToParcel(Parcel parcel, int flags) {
+    public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(description);
         parcel.writeInt(priority);
         parcel.writeLong(dueDate);
         parcel.writeString(documentID);
         parcel.writeInt(completed);
+        parcel.writeString(category);
+        parcel.writeInt(category_count);
+        parcel.writeStringList(Benefits);
         parcel.writeString(benefitsString);
-        parcel.writeArray(new ArrayList[]{Benefits});
     }
+//
+//    public TodoTaskFirestore(String description, int priority, long dueDate, String documentID, int completed,String benefitsString,ArrayList<String> Benefits) {
+//        this.description = description;
+//        this.priority = priority;
+//        this.dueDate = dueDate;
+//        this.documentID = documentID;
+//        this.completed = completed;
+//        this.benefitsString = benefitsString;
+//        this.Benefits=Benefits;
+//    }
+
+
+//    @Override
+//    public void writeToParcel(Parcel dest, int flags) {
+//
+//    }
+
 
 
     //creator - used when un-parceling our parcle (creating the object)
-    public static final Parcelable.Creator<TodoTaskFirestore> CREATOR
-            = new Parcelable.Creator<TodoTaskFirestore>() {
-        @Override
-        public TodoTaskFirestore createFromParcel(Parcel in) {
-            return new TodoTaskFirestore(in);
-        }
-
-        @Override
-        public TodoTaskFirestore[] newArray(int size) {
-            return new TodoTaskFirestore[size];
-        }
-    };
 
 
 
