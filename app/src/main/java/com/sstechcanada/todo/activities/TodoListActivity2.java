@@ -43,7 +43,6 @@ import com.sstechcanada.todo.databinding.ActivityTodoListBinding;
 import com.sstechcanada.todo.models.TodoTask;
 import com.sstechcanada.todo.models.TodoTaskFirestore;
 import com.sstechcanada.todo.utils.NotificationUtils;
-import com.sstechcanada.todo.utils.SaveSharedPreference;
 
 import es.dmoral.toasty.Toasty;
 
@@ -53,7 +52,8 @@ public class TodoListActivity2 extends AppCompatActivity {
     private static final int EDIT_TASK_REQUEST = 2;
     private static final int ID_TODOLIST_LOADER = 2018;
     String userID;
-    private int list_limit = 1, db_cnt = 0;
+    private int list_limit = 15;
+    public static int db_cnt=0;
     private RecyclerView mRecyclerView;
     private TodoListAdapter mTodoListAdapter;
     private ActivityTodoListBinding mBinding;
@@ -73,9 +73,9 @@ public class TodoListActivity2 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_todo_list);
         mRecyclerView = mBinding.rvTodoList;
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        layoutManager.setReverseLayout(true);
-        layoutManager.setStackFromEnd(true);
+//        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+//        layoutManager.setReverseLayout(true);
+//        layoutManager.setStackFromEnd(true);
 //        mRecyclerView.setLayoutManager(layoutManager);
 //        mTodoListAdapter = new TodoListAdapter(this, this);
 //        mRecyclerView.setAdapter(mTodoListAdapter);
@@ -91,7 +91,7 @@ public class TodoListActivity2 extends AppCompatActivity {
 
         setValue();
 
-        showHidePlaceholder();
+
 
         AdView adView = mBinding.adView;
         AdRequest adRequest = new AdRequest.Builder().build();
@@ -115,7 +115,8 @@ public class TodoListActivity2 extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                db_cnt = tld.todoCount();
+                db_cnt = todoListFirestoreAdapter.getItemCount();
+//                Log.i("ItemCount", String.valueOf(db_cnt));
                 setValue();
                 if (isLogin()) {
                     Intent intent = new Intent(TodoListActivity2.this, AddOrEditTaskActivity2.class);
@@ -140,13 +141,15 @@ public class TodoListActivity2 extends AppCompatActivity {
 
     private void setUpFirestoreRecyclerView() {
         Query query =usersColRef.document(userID).collection("Lists").document(
-                "List one").collection("Todo").orderBy("priority");
+                "List one").collection("Todo").orderBy("priority", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<TodoTaskFirestore> options =new FirestoreRecyclerOptions.Builder<TodoTaskFirestore>().setQuery(query,TodoTaskFirestore.class).build();
         todoListFirestoreAdapter=new TodoListFirestoreAdapter(options);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(todoListFirestoreAdapter);
+        db_cnt = todoListFirestoreAdapter.getItemCount();
+
     }
 
     @Override
@@ -161,6 +164,7 @@ public class TodoListActivity2 extends AppCompatActivity {
         todoListFirestoreAdapter.stopListening();
     }
 
+
     private void showHidePlaceholder() {
         if (db_cnt <= 2) {
             mBinding.placeholderImage.setVisibility(View.VISIBLE);
@@ -168,6 +172,13 @@ public class TodoListActivity2 extends AppCompatActivity {
             mBinding.placeholderImage.setVisibility(View.GONE);
         }
     }
+
+//    public static showPlaceholder() {
+////            show placehoder on datachange if getItemcount>=3
+//    }
+//    public static HidePlaceholder() {
+////        hide placehoder on datachange if getItemcount<=3
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -360,7 +371,7 @@ public class TodoListActivity2 extends AppCompatActivity {
 
     public void setValue() {
         if (user != null) {
-            list_limit = SaveSharedPreference.loadLimit(this);
+            list_limit = 15;
         }
     }
 

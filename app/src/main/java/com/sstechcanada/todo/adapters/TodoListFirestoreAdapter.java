@@ -28,6 +28,8 @@ import com.sstechcanada.todo.activities.AddOrEditTaskActivity2;
 import com.sstechcanada.todo.custom_views.PriorityStarImageView;
 import com.sstechcanada.todo.models.TodoTaskFirestore;
 
+import static com.sstechcanada.todo.activities.TodoListActivity2.db_cnt;
+
 public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskFirestore, TodoListFirestoreAdapter.TodoListFirestoreHolder> {
 
     private FirebaseAuth mAuth= FirebaseAuth.getInstance();
@@ -53,9 +55,7 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
     protected void onBindViewHolder(@NonNull TodoListFirestoreHolder holder, int position, @NonNull TodoTaskFirestore model) {
 
         holder.tvTextDesc.setText(model.getDescription());
-        Log.d("Description",model.getDescription());
         holder.tvBenefits.setText(model.getBenefitsString());
-
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,7 +64,6 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
                 model.setDocumentID(documentSnapshot.getId());
 
                 String doc_id = String.valueOf(model.getDocumentID());
-                Log.i("ID model",doc_id);
                 TodoTaskFirestore todoTask = new TodoTaskFirestore(model.getDescription(),
                        model.getPriority(),
                         model.getDueDate(),
@@ -78,29 +77,7 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
                 Intent intent = new Intent(v.getContext(), AddOrEditTaskActivity2.class);
                 intent.putExtra("Adding or editing", "Edit Task");
                 intent.putExtra("Todo",todoTask);
-                intent.putExtra("flagAdhoc","False");
-
                 v.getContext().startActivity(intent);
-
-//                TodoTaskFirestore todoTaskFirestore=new TodoTaskFirestore(documentSnapshot.get(), int priority, long dueDate, int completed, String category, int category_count, ArrayList<String> Benefits)
-
-//                    usersColRef.document(userID).collection("Lists").document("List one").collection("Todo").document(doc_id)
-//                         .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-//                     @Override
-//                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-//
-//                         TodoTaskFirestore todoTaskFirestore=new TodoTaskFirestore(documentSnapshot.get(), int priority, long dueDate, int id, int completed, String category, int category_count, ArrayList<String> Benefits) {
-//
-//                         }
-//                 }).addOnFailureListener(new OnFailureListener() {
-//                     @Override
-//                     public void onFailure(@NonNull Exception e) {
-//
-//                     }
-//                 });
-
-
-
 
             }
         });
@@ -138,6 +115,17 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
             //Circle
             circle_per = itemView.findViewById(R.id.circle_per_item);
         }
+    }
+
+    @Override
+    public void onDataChanged() {
+        super.onDataChanged();
+//        if(getItemCount()>=3){
+////            showPlaceHoder();
+//        } else{
+////            hidePlaceHoder();
+//        }
+        db_cnt=getItemCount();
     }
 }
 

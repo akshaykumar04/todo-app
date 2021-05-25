@@ -38,6 +38,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.auth.LoginActivity;
 import com.sstechcanada.todo.adapters.GridViewAdapter;
@@ -50,8 +51,11 @@ import com.sstechcanada.todo.models.TodoTask;
 import com.sstechcanada.todo.models.TodoTaskFirestore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import es.dmoral.toasty.Toasty;
 
@@ -83,7 +87,9 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
     private int status;;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference benefitCollectionRef;
+    CollectionReference UserColRef;
     private String[] record;
+    private String description;
 
 
     public static String convertArrayToString(ArrayList<String> array) {
@@ -125,6 +131,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         userID=mAuth.getCurrentUser().getUid();
         benefitCollectionRef=db.collection("Users").document(userID).collection("Benefits");
+        UserColRef=db.collection("Users").document(userID).collection("Lists").document("List one").collection("Todo");
 
         loadBannerAd();
 
@@ -272,10 +279,11 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
     }
 
     public void addOrUpdateTask(View view) {
-        String description = mBinding.etTaskDescription.getText().toString().trim();
+        description = mBinding.etTaskDescription.getText().toString().trim();
         int priority = category_count;
         int isCompleted = TodoTask.TASK_NOT_COMPLETED;
         long dueDate = TodoTask.NO_DUE_DATE;
+        uploadDataToFirestore();
         Log.d(TAG, "Here");
 
         if (description.equals("")) {
@@ -310,15 +318,55 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 //          aDDING TO SQLITE
 //            TodoTask todoTask = new TodoTask(description, selectedResult, category_count, priority, dueDate, mTaskId, isCompleted);
 //            insertOrUpdate(todoTask);
+//            uploadDataToFirestore();
 //
             Intent returnIntent = new Intent();
             setResult(Activity.RESULT_OK, returnIntent);
 
-            if (mAddOrEdit.equals(getString(R.string.add_new_task)) || isCompleted == 0) {
-                finish();
-            }
+//            if (mAddOrEdit.equals(getString(R.string.add_new_task)) || isCompleted == 0) {
+//                finish();
+//            }
         }
 
+    }
+
+    private void uploadDataToFirestore() {
+        List<String> benefitsArrayFirestore = Arrays.asList(record);
+        if(mAddOrEdit.equals(getString(R.string.add_new_task))){
+            Map<String, Object> newTaskMap = new HashMap<>();
+            newTaskMap.put("description", description);
+            newTaskMap.put("priority", benefitsArrayFirestore.size());
+            newTaskMap.put("Benefits", benefitsArrayFirestore);
+            UserColRef.document().set(newTaskMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    startActivity(new Intent(AddOrEditTaskActivity2.this, TodoListActivity2.class));
+                    Toasty.success(AddOrEditTaskActivity2.this,"New Todo-Item Successfully Added");
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toasty.error(AddOrEditTaskActivity2.this,"Something went wrong");
+                }
+            });
+        }else {
+            Map<String, Object> updateTaskMap = new HashMap<>();
+            updateTaskMap.put("description", description);
+            updateTaskMap.put("priority", benefitsArrayFirestore.size());
+            updateTaskMap.put("Benefits", benefitsArrayFirestore);
+            UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).set(updateTaskMap, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    startActivity(new Intent(AddOrEditTaskActivity2.this, TodoListActivity2.class));
+                    Toasty.success(AddOrEditTaskActivity2.this,"New Todo-Item Successfully Added");
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toasty.error(AddOrEditTaskActivity2.this,"Something went wrong");
+                }
+            });
+        }
     }
 
     private void insertOrUpdate(TodoTask todoTask) {

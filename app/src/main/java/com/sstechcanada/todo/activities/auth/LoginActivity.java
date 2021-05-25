@@ -156,10 +156,6 @@ public class LoginActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
-        if(currentUser!=null){
-            startActivity(new Intent(LoginActivity.this, TodoListActivity2.class));
-        }
-
     }
 
     private void signIn() {
@@ -198,8 +194,8 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-//                            SaveSharedPreference.setUserLogIn(LoginActivity.this, "true");
-//                            startActivity(new Intent(LoginActivity.this, TodoListActivity.class));
+                            SaveSharedPreference.setUserLogIn(LoginActivity.this, "true");
+//                            startActivity(new Intent(LoginActivity.this, TodoListActivity2.class));
                             Toasty.error(getApplicationContext(), "sign in complete ", Toast.LENGTH_LONG).show();
                             hideProgressDialog();
 //                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
