@@ -9,10 +9,13 @@ import java.util.ArrayList;
 
 public class TodoTaskFirestore implements Parcelable {
     private String description;
+
+
     private int priority;
     private long dueDate;
     private String documentID;
-    private int completed;
+//    private int completed;
+    private String Status;
     private String category;
     private int category_count;
     private ArrayList<String> Benefits;
@@ -26,7 +29,8 @@ public class TodoTaskFirestore implements Parcelable {
         priority = in.readInt();
         dueDate = in.readLong();
         documentID = in.readString();
-        completed = in.readInt();
+        Status=in.readString();
+//        completed = in.readInt();
         category = in.readString();
         category_count = in.readInt();
         Benefits = in.createStringArrayList();
@@ -49,12 +53,13 @@ public class TodoTaskFirestore implements Parcelable {
         this.benefitsString = benefitsString;
     }
 
-    public TodoTaskFirestore(String description, int priority, long dueDate, String documentID, int completed, String category, int category_count, ArrayList<String> Benefits,String benefitsString) {
+    public TodoTaskFirestore(String description, int priority, long dueDate, String documentID,  String Status, String category, int category_count, ArrayList<String> Benefits,String benefitsString) {
         this.description = description;
         this.priority = priority;
         this.dueDate = dueDate;
         this.documentID=documentID;
-        this.completed = completed;
+        this.Status=Status;
+//        this.completed = completed;
         this.category = category;
         this.category_count = category_count;
         this.Benefits = Benefits;
@@ -63,6 +68,14 @@ public class TodoTaskFirestore implements Parcelable {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getStatus() {
+        return Status;
+    }
+
+    public void setStatus(String status) {
+        Status = status;
     }
 
     public int getPriority() {
@@ -82,9 +95,9 @@ public class TodoTaskFirestore implements Parcelable {
         this.documentID = documentID;
     }
 
-    public int getCompleted() {
-        return completed;
-    }
+//    public int getCompleted() {
+//        return completed;
+//    }
 
     public String getCategory() {
         return category;
@@ -119,7 +132,8 @@ public class TodoTaskFirestore implements Parcelable {
         parcel.writeInt(priority);
         parcel.writeLong(dueDate);
         parcel.writeString(documentID);
-        parcel.writeInt(completed);
+        parcel.writeString(Status);
+//        parcel.writeInt(completed);
         parcel.writeString(category);
         parcel.writeInt(category_count);
         parcel.writeStringList(Benefits);

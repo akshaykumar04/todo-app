@@ -68,7 +68,7 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
                        model.getPriority(),
                         model.getDueDate(),
                         model.getDocumentID(),
-                        0,
+                        model.getStatus(),
                         model.getCategory(),
                         2,
                         model.getBenefits(),

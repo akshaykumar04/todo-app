@@ -71,6 +71,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
     ProgressBar progressBar;
     LinearLayout addMoreCategories;
     String userID;
+    String taskCompleted = "Pending";
     private ActivityAddOrEditTaskBinding mBinding;
     private String mTaskId = "-1";
     private String mAddOrEdit;
@@ -136,7 +137,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
         loadBannerAd();
 
         long dueDate;
-        int taskCompleted;
+
         tv = findViewById(R.id.tv);
         noOfCat = findViewById(R.id.tv_category_number);
         addMoreCat = findViewById(R.id.tv_add_more);
@@ -154,6 +155,11 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                 selectedResult=todoTaskToAddOrEdit.getBenefitsString();
                 mTaskId = todoTaskToAddOrEdit.getDocumentID();
                 mBinding.etTaskDescription.setText(todoTaskToAddOrEdit.getDescription());
+
+                taskCompleted = todoTaskToAddOrEdit.getStatus();
+
+                mBinding.cbTaskCompleted.setChecked(taskCompleted.equals("Completed"));
+
                 selectPriorityRadioButton(todoTaskToAddOrEdit.getPriority());
 
                 dueDate = todoTaskToAddOrEdit.getDueDate();
@@ -167,8 +173,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                     mBinding.dpDueDate.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
                 }
 
-                taskCompleted = todoTaskToAddOrEdit.getCompleted();
-                mBinding.cbTaskCompleted.setChecked(taskCompleted == TodoTask.TASK_COMPLETED);
+
             }
         } else {
             mAddOrEdit = savedInstanceState.getString(getString(R.string.add_or_edit_key));
@@ -186,7 +191,15 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                     savedInstanceState.getInt(getString(R.string.month_key)),
                     savedInstanceState.getInt(getString(R.string.day_key)));
 
-            mBinding.cbTaskCompleted.setChecked(savedInstanceState.getBoolean(getString(R.string.completed_key)));
+            if(taskCompleted.equals("Completed")){
+                mBinding.cbTaskCompleted.setChecked(true);
+            }else{
+                mBinding.cbTaskCompleted.setChecked(true);
+            }
+
+
+
+
         }
         setTitle(mAddOrEdit);
 
