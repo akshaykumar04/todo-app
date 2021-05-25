@@ -2,8 +2,6 @@ package com.sstechcanada.todo.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,8 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -30,7 +26,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.AddOrEditTaskActivity2;
 import com.sstechcanada.todo.custom_views.PriorityStarImageView;
-import com.sstechcanada.todo.models.TodoTask;
 import com.sstechcanada.todo.models.TodoTaskFirestore;
 
 public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskFirestore, TodoListFirestoreAdapter.TodoListFirestoreHolder> {
@@ -75,7 +70,7 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
                         model.getDueDate(),
                         model.getDocumentID(),
                         0,
-                        model.getBenefitsString());
+                        model.getBenefitsString(),model.getBenefits());
 
                 Intent intent = new Intent(v.getContext(), AddOrEditTaskActivity2.class);
                 intent.putExtra("Adding or editing", "Edit Task");
