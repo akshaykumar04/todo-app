@@ -128,7 +128,7 @@ public class CompletedTodoListActivity extends AppCompatActivity {
                 "List one").collection("Todo").whereEqualTo("Status","Completed").orderBy("priority", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<TodoTaskFirestore> options =new FirestoreRecyclerOptions.Builder<TodoTaskFirestore>().setQuery(query,TodoTaskFirestore.class).build();
-        todoListFirestoreAdapter=new TodoListFirestoreAdapter(options);
+        todoListFirestoreAdapter=new TodoListFirestoreAdapter(options,this);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(todoListFirestoreAdapter);

@@ -141,6 +141,7 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoLi
         // Set the color on the magnitude circle
         magnitudeCircle.setColor(magnitudeColor);
         holder.tvBenefits.setTextColor(magnitudeColor);
+
     }
 
     @Override
@@ -210,6 +211,8 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoLi
         int magnitudeFloor = pos;
         switch (magnitudeFloor) {
             case 0:
+                magnitudeColorResourceId = R.color.circle8;
+                break;
             case 1:
                 magnitudeColorResourceId = R.color.circle1;
                 break;

@@ -2,6 +2,7 @@ package com.sstechcanada.todo.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -46,7 +48,7 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
      *
      * @param options
      */
-    public TodoListFirestoreAdapter(@NonNull FirestoreRecyclerOptions<TodoTaskFirestore> options) {
+    public TodoListFirestoreAdapter(@NonNull FirestoreRecyclerOptions<TodoTaskFirestore> options,Context context) {
         super(options);
         this.context = context;
     }
@@ -56,6 +58,19 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
 
         holder.tvTextDesc.setText(model.getDescription());
         holder.tvBenefits.setText(model.getBenefitsString());
+        holder.customCheckbox.setChecked(model.getStatus().equals("Completed"));
+
+        //Circle
+        // Set the proper background color on the magnitude circle.
+        // Fetch the background from the TextView, which is a GradientDrawable.
+        GradientDrawable magnitudeCircle = (GradientDrawable) holder.circle_per.getBackground();
+        // Get the appropriate background color based on the current earthquake magnitude
+        int magnitudeColor = getMagnitudeColor(position%9);
+        // Set the color on the magnitude circle
+        magnitudeCircle.setColor(magnitudeColor);
+//        holder.circle_per.setBackgroundColor(magnitudeColor);
+        holder.tvBenefits.setTextColor(magnitudeColor);
+
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,8 +125,7 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
             customCheckbox = itemView.findViewById(R.id.checkb);
             clTodoListItem = (ConstraintLayout) itemView;
             tvBenefits = itemView.findViewById(R.id.todo_benefits);
-//            itemView.setOnClickListener(this);
-//            cbTodoDescription.setOnClickListener(this);
+
             //Circle
             circle_per = itemView.findViewById(R.id.circle_per_item);
         }
@@ -125,6 +139,47 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
         } else{
             hidePlaceHolder();
         }
+    }
+
+    private int getMagnitudeColor(int pos) {
+        int magnitudeColorResourceId;
+        int magnitudeFloor = pos;
+        switch (magnitudeFloor) {
+            case 0:
+                magnitudeColorResourceId = R.color.circle8;
+                break;
+            case 1:
+                magnitudeColorResourceId = R.color.circle1;
+                break;
+            case 2:
+                magnitudeColorResourceId = R.color.circle2;
+                break;
+            case 3:
+                magnitudeColorResourceId = R.color.circle3;
+                break;
+            case 4:
+                magnitudeColorResourceId = R.color.circle4;
+                break;
+            case 5:
+                magnitudeColorResourceId = R.color.circle5;
+                break;
+            case 6:
+                magnitudeColorResourceId = R.color.circle6;
+                break;
+            case 7:
+                magnitudeColorResourceId = R.color.circle7;
+                break;
+            case 8:
+                magnitudeColorResourceId = R.color.circle8;
+                break;
+            case 9:
+                magnitudeColorResourceId = R.color.circle9;
+                break;
+            default:
+                magnitudeColorResourceId = R.color.circle1;
+                break;
+        }
+        return ContextCompat.getColor(context, magnitudeColorResourceId);
     }
 }
 

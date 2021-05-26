@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#ffffff"
-        tools:context="com.sstechcanada.todo.activities.TodoListActivity">
+        tools:context="com.sstechcanada.todo.activities.CompletedTodoListActivity">
 
         <include
             android:id="@+id/include"
