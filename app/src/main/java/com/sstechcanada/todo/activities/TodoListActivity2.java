@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,6 +23,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -67,19 +69,23 @@ public class TodoListActivity2 extends AppCompatActivity {
     private FirebaseFirestore db=FirebaseFirestore.getInstance();
     private CollectionReference usersColRef=db.collection("Users");
     private TodoListFirestoreAdapter todoListFirestoreAdapter;
+    public static LottieAnimationView lottieAnimationView;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_todo_list);
         mRecyclerView = mBinding.rvTodoList;
+//        setContentView(R.layout.activity_todo_list);
+        lottieAnimationView=findViewById(R.id.placeholderImage);
 //        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 //        layoutManager.setReverseLayout(true);
 //        layoutManager.setStackFromEnd(true);
 //        mRecyclerView.setLayoutManager(layoutManager);
 //        mTodoListAdapter = new TodoListAdapter(this, this);
 //        mRecyclerView.setAdapter(mTodoListAdapter);
-
 
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
@@ -114,7 +120,7 @@ public class TodoListActivity2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 db_cnt = todoListFirestoreAdapter.getItemCount();
-//                Log.i("ItemCount", String.valueOf(db_cnt));
+                Log.i("ItemCount", "FAB Clicked");
                 setValue();
                 if (isLogin()) {
                     Intent intent = new Intent(TodoListActivity2.this, AddOrEditTaskActivity2.class);
@@ -165,20 +171,20 @@ public class TodoListActivity2 extends AppCompatActivity {
     }
 
 
-    private void showHidePlaceholder() {
-        if (db_cnt <= 2) {
-            mBinding.placeholderImage.setVisibility(View.VISIBLE);
-        } else {
-            mBinding.placeholderImage.setVisibility(View.GONE);
-        }
-    }
+//    private void showHidePlaceholder() {
+//        if (db_cnt <= 2) {
+//            mBinding.placeholderImage.setVisibility(View.VISIBLE);
+//        } else {
+//            mBinding.placeholderImage.setVisibility(View.GONE);
+//        }
+//    }
 
-//    public static showPlaceholder() {
-////            show placehoder on datachange if getItemcount>=3
-//    }
-//    public static HidePlaceholder() {
-////        hide placehoder on datachange if getItemcount<=3
-//    }
+    public static void showPlaceHolder() {
+        lottieAnimationView.setVisibility(View.VISIBLE);
+    }
+    public static void hidePlaceHolder() {
+        lottieAnimationView.setVisibility(View.INVISIBLE);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -312,7 +318,7 @@ public class TodoListActivity2 extends AppCompatActivity {
         // This is so that if we've edited a task directly from the widget, the widget will still
         // get updated when we come to this activity after clicking UPDATE TASK in AddOrEditTaskActivity
         updateWidget();
-        showHidePlaceholder();
+//        showHidePlaceholder();
     }
 
     @Override

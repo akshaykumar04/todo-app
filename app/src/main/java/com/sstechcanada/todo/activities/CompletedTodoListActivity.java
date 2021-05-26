@@ -1,11 +1,5 @@
 package com.sstechcanada.todo.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -24,6 +18,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -41,12 +40,13 @@ import com.sstechcanada.todo.adapters.TodoListFirestoreAdapter;
 import com.sstechcanada.todo.broadcast_receivers.DailyAlarmReceiver;
 import com.sstechcanada.todo.data.TodoListContract;
 import com.sstechcanada.todo.data.TodoListDbHelper;
-import com.sstechcanada.todo.databinding.ActivityTodoListBinding;
 import com.sstechcanada.todo.models.TodoTask;
 import com.sstechcanada.todo.models.TodoTaskFirestore;
 import com.sstechcanada.todo.utils.NotificationUtils;
 
 import es.dmoral.toasty.Toasty;
+
+import static com.sstechcanada.todo.activities.TodoListActivity2.lottieAnimationView;
 
 public class CompletedTodoListActivity extends AppCompatActivity {
     private static final String TAG = TodoListActivity.class.getSimpleName();
@@ -77,10 +77,11 @@ public class CompletedTodoListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_completed_todo_list);
 
         mRecyclerView = findViewById(R.id.rv_todo_list);
-        placeholderImage=findViewById(R.id.placeholderImage);
+//        placeholderImage=findViewById(R.id.placeholderImage);
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         userID=user.getUid();
+        lottieAnimationView=findViewById(R.id.placeholderImage);
 
         setUpFirestoreRecyclerView();
 
@@ -148,15 +149,6 @@ public class CompletedTodoListActivity extends AppCompatActivity {
     }
 
 
-    private void showHidePlaceholder() {
-        if (db_cnt <= 2) {
-
-            placeholderImage.setVisibility(View.VISIBLE);
-        } else {
-            placeholderImage.setVisibility(View.GONE);
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -205,7 +197,7 @@ public class CompletedTodoListActivity extends AppCompatActivity {
         // This is so that if we've edited a task directly from the widget, the widget will still
         // get updated when we come to this activity after clicking UPDATE TASK in AddOrEditTaskActivity
         updateWidget();
-        showHidePlaceholder();
+
     }
 
     @Override

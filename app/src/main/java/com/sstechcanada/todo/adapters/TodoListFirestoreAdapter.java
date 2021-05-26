@@ -2,7 +2,6 @@ package com.sstechcanada.todo.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +27,8 @@ import com.sstechcanada.todo.activities.AddOrEditTaskActivity2;
 import com.sstechcanada.todo.custom_views.PriorityStarImageView;
 import com.sstechcanada.todo.models.TodoTaskFirestore;
 
-import static com.sstechcanada.todo.activities.TodoListActivity2.db_cnt;
+import static com.sstechcanada.todo.activities.TodoListActivity2.hidePlaceHolder;
+import static com.sstechcanada.todo.activities.TodoListActivity2.showPlaceHolder;
 
 public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskFirestore, TodoListFirestoreAdapter.TodoListFirestoreHolder> {
 
@@ -120,12 +120,11 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
     @Override
     public void onDataChanged() {
         super.onDataChanged();
-//        if(getItemCount()>=3){
-////            showPlaceHoder();
-//        } else{
-////            hidePlaceHoder();
-//        }
-        db_cnt=getItemCount();
+        if(getItemCount()<=2){
+            showPlaceHolder();
+        } else{
+            hidePlaceHolder();
+        }
     }
 }
 

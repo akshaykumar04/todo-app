@@ -347,12 +347,14 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
     private void uploadDataToFirestore() {
         List<String> benefitsArrayFirestore = Arrays.asList(record);
         if(mAddOrEdit.equals(getString(R.string.add_new_task))){
+
             Map<String, Object> newTaskMap = new HashMap<>();
             newTaskMap.put("description", description);
             newTaskMap.put("priority", benefitsArrayFirestore.size());
             newTaskMap.put("Benefits", benefitsArrayFirestore);
             String task_status = "Pending";;
             newTaskMap.put("Status", task_status);
+
             UserColRef.document().set(newTaskMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
@@ -365,6 +367,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                     Toasty.error(AddOrEditTaskActivity2.this,"Something went wrong");
                 }
             });
+
         }else {
             Map<String, Object> updateTaskMap = new HashMap<>();
             updateTaskMap.put("description", description);
@@ -498,6 +501,13 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                                 }
                             }
                         }
+//                        for(int j=0;j<record.length;j++){
+//                                int k;
+//                                k=categories.indexOf(record[j]);
+//                                adapter.selectedPositions.add(k);
+//                                selectedStrings.add(record[j]);
+//                            }
+////
                         selectedResult="";
                         selectedResult=convertArrayToString(selectedStrings);
 

@@ -22,7 +22,7 @@ public class TodoTaskFirestore implements Parcelable {
     private String benefitsString;
 
         public TodoTaskFirestore(){}
-//    public TodoTaskFirestore(String description, int priority, long dueDate, String documentID, int i, String category, int i1, ArrayList<String> benefits, String benefitsString){}
+
 
     protected TodoTaskFirestore(Parcel in) {
         description = in.readString();

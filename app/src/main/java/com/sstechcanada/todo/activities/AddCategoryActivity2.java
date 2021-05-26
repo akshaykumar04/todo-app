@@ -3,6 +3,7 @@ package com.sstechcanada.todo.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,12 +24,11 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -37,6 +37,7 @@ import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.auth.LoginActivity;
 import com.sstechcanada.todo.adapters.CategoryAdapter;
 import com.sstechcanada.todo.models.Category;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,13 +53,13 @@ public class AddCategoryActivity2 extends AppCompatActivity {
     ListView listViewCategory;
     TextView toolBarTitle;
     private AppCompatImageView toolbar_profile, toolbarBackIcon;
-
     List<Category> categories;
-//    DatabaseReference databaseCategories;
     String userID;
     private FirebaseAuth mAuth;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference benefitCollectionRef;
+    CollectionReference UserColRef;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,11 +68,7 @@ public class AddCategoryActivity2 extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         userID=mAuth.getCurrentUser().getUid();
         benefitCollectionRef=db.collection("Users").document(userID).collection("Benefits");
-
-
-//        databaseCategories = FirebaseDatabase.getInstance().getReference("categories");
-//        databaseCategories = FirebaseDatabase.getInstance().getReference(userID).child("benefits");
-
+        UserColRef=db.collection("Users").document(userID).collection("Lists").document("List one").collection("Todo");
         editTextName = findViewById(R.id.editTextName);
         listViewCategory = findViewById(R.id.listViewCategory);
         toolbarBackIcon = findViewById(R.id.arrow_back);
@@ -82,8 +79,7 @@ public class AddCategoryActivity2 extends AppCompatActivity {
 
 
         buttonAddCategory = findViewById(R.id.buttonAddCategory);
-
-        categories = new ArrayList<>();
+         categories = new ArrayList<>();
 
         toolBarTitle = findViewById(R.id.toolbarTitle);
         toolBarTitle.setText("Add Benefits");
@@ -244,7 +240,7 @@ public class AddCategoryActivity2 extends AppCompatActivity {
 
         buttonDelete.setOnClickListener(view -> {
 
-            deleteCategory(categoryId);
+            deleteCategory(categoryId,categoryName);
             b.dismiss();
         });
 
@@ -264,15 +260,46 @@ public class AddCategoryActivity2 extends AppCompatActivity {
     }
 
 
-    private void deleteCategory(String id) {
+    private void deleteCategory(String id,String categoryName) {
         //getting the specified category reference
         DocumentReference documentReferenceBenefitReference=benefitCollectionRef.document(id);
         //removing category
-        documentReferenceBenefitReference.delete();
+        documentReferenceBenefitReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toasty.success(getApplicationContext(), "Benefit Deleted", Toast.LENGTH_SHORT).show();
+                deleteCategoryFromEachTodo(categoryName);
 
-        //getting the tracks reference for the specified category
-        Toasty.error(getApplicationContext(), "Benefits Deleted", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toasty.error(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
+            }
+        });
 
+    }
+
+    private void deleteCategoryFromEachTodo(String categoryToBeDeletedName) {
+
+        UserColRef.whereArrayContains("Benefits",categoryToBeDeletedName).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for(DocumentSnapshot documentSnapshot:queryDocumentSnapshots){
+                    UserColRef.document(documentSnapshot.getId()).update("Benefits", FieldValue.arrayRemove(categoryToBeDeletedName)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.i("DeletionLogs", "Benefit Deleted From Each To-Do!");
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                                Log.i("DeletionLogs","Benefit Not Deleted From Each To-Do!");
+                        }
+                    });
+                }
+            }
+        });
     }
 
 
