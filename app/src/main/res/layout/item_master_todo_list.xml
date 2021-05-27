@@ -25,9 +25,21 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/tv_todo_list"
+            android:id="@+id/list_default_icon"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/circle_per_item"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.488"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/master_list_default_icon" />
+
+        <TextView
+            android:id="@+id/tv_todo_list_name"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/list_default_icon"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.484"
             android:layout_width="250dp"
@@ -42,18 +54,36 @@
             android:textSize="16sp"
             android:visibility="visible" />
 
+        <TextView
+            android:id="@+id/tv_todo_list_desc"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-2dp"
+            android:fontFamily="@font/raleway_semibold"
+            android:maxLines="1"
+            android:textColor="@color/circle1"
+            android:textSize="9sp"
+            android:textStyle="italic"
+            app:layout_constraintStart_toStartOf="@id/tv_todo_list_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_todo_list_name"
+            tools:text="benefits"/>
+
+
+
 
         <TextView
             android:id="@+id/circle_per_item"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_todo_list_name"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.488"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintVertical_bias="0.484"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="20dp"
-            android:background="@drawable/master_list_default_icon" />
+            android:backgroundTint="@color/textHeadings"
+            android:background="@drawable/ic_baseline_navigate_next_24" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
