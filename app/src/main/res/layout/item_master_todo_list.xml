@@ -25,7 +25,7 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/tv_todo_desc"
+            android:id="@+id/tv_todo_list"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/circle_per_item"
             app:layout_constraintTop_toTopOf="parent"
