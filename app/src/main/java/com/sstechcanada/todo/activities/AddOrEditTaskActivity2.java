@@ -194,7 +194,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
             if(taskCompleted.equals("Completed")){
                 mBinding.cbTaskCompleted.setChecked(true);
             }else{
-                mBinding.cbTaskCompleted.setChecked(true);
+                mBinding.cbTaskCompleted.setChecked(false);
             }
 
 
@@ -358,9 +358,9 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
             UserColRef.document().set(newTaskMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    startActivity(new Intent(AddOrEditTaskActivity2.this, TodoListActivity2.class));
                     Toasty.success(AddOrEditTaskActivity2.this,"New Todo-Item Successfully Added");
-                }
+                    startActivity(new Intent(AddOrEditTaskActivity2.this, TodoListActivity2.class));
+                                }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
@@ -431,7 +431,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 
     public void selectCategoriesAlert() {
         LayoutInflater inflater = getLayoutInflater();
-        View alertLayout = inflater.inflate(R.layout.activity_select_categories_dailog, null);
+        View alertLayout = inflater.inflate(R.layout.add_list_dialog, null);
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Select Benefits");
         // this is set the view from XML inside AlertDialog
@@ -488,19 +488,19 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 
                 //iterating through all the nodes
 
-                        adapter = new GridViewAdapter(categories, AddOrEditTaskActivity2.this);
-                        gridView.setAdapter(adapter);
-                        gridView.setVisibility(View.VISIBLE);
+                adapter = new GridViewAdapter(categories, AddOrEditTaskActivity2.this);
+                gridView.setAdapter(adapter);
+                gridView.setVisibility(View.VISIBLE);
 
-                        record = convertStringToArray(selectedResult);
-                        for(int i=0;i<categories.size();i++){
-                            for(int j=0;j<record.length;j++){
-                                if(record[j].equals(categories.get(i).getCategoryName())) {
-                                    adapter.selectedPositions.add(i);
-                                    selectedStrings.add(record[j]);
-                                }
-                            }
+                record = convertStringToArray(selectedResult);
+                for(int i=0;i<categories.size();i++){
+                    for(int j=0;j<record.length;j++){
+                        if(record[j].equals(categories.get(i).getCategoryName())) {
+                            adapter.selectedPositions.add(i);
+                            selectedStrings.add(record[j]);
                         }
+                    }
+                }
 //                        for(int j=0;j<record.length;j++){
 //                                int k;
 //                                k=categories.indexOf(record[j]);
@@ -508,11 +508,11 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 //                                selectedStrings.add(record[j]);
 //                            }
 ////
-                        selectedResult="";
-                        selectedResult=convertArrayToString(selectedStrings);
+                selectedResult="";
+                selectedResult=convertArrayToString(selectedStrings);
 
-                        progressBar.setVisibility(View.INVISIBLE);
-                        addMoreCategories.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.INVISIBLE);
+                addMoreCategories.setVisibility(View.VISIBLE);
 
 
             }
