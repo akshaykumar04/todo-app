@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sstechcanada.todo">
+    package="com.sstechcanada.todo" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -11,8 +11,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
-        <activity android:name=".activities.CompletedTodoListActivity"></activity>
+        android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" >
+        <activity android:name=".activities.MasterTodoListActivity" >
+        </activity>
+        <activity android:name=".activities.CompletedTodoListActivity" />
         <activity android:name=".activities.TodoListActivity2" />
         <activity
             android:name=".activities.AppUpgradeActivity"
@@ -20,13 +22,13 @@
         <activity
             android:name=".activities.TodoListActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activities.SelectCategoriesDailog">
+        <activity android:name=".activities.SelectCategoriesDailog" >
 
             <!-- android:theme="@style/Theme.MaterialComponents.Light.Dialog" -->
         </activity>
         <activity
             android:name=".activities.SplashActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -44,7 +46,7 @@
         <activity android:name=".activities.auth.LoginActivity" />
         <activity
             android:name=".activities.SettingsActivity"
-            android:parentActivityName=".activities.TodoListActivity">
+            android:parentActivityName=".activities.TodoListActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.sstechcanada.todo.activities.TodoListActivity" />
@@ -52,7 +54,7 @@
         <activity
             android:name=".activities.AddOrEditTaskActivity"
             android:parentActivityName=".activities.TodoListActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.sstechcanada.todo.activities.TodoListActivity" />
@@ -60,7 +62,7 @@
         <activity
             android:name=".activities.AddOrEditTaskActivity2"
             android:parentActivityName=".activities.TodoListActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.sstechcanada.todo.activities.TodoListActivity" />
@@ -71,7 +73,7 @@
             android:authorities="com.sstechcanada.todo"
             android:exported="true" />
 
-        <receiver android:name=".widget.TodoListWidgetProvider">
+        <receiver android:name=".widget.TodoListWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

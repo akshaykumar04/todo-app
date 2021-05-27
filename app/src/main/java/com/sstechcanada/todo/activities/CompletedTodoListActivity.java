@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,6 +41,7 @@ import com.sstechcanada.todo.adapters.TodoListFirestoreAdapter;
 import com.sstechcanada.todo.broadcast_receivers.DailyAlarmReceiver;
 import com.sstechcanada.todo.data.TodoListContract;
 import com.sstechcanada.todo.data.TodoListDbHelper;
+import com.sstechcanada.todo.databinding.ActivityCompletedTodoListBinding;
 import com.sstechcanada.todo.models.TodoTask;
 import com.sstechcanada.todo.models.TodoTaskFirestore;
 import com.sstechcanada.todo.utils.NotificationUtils;
@@ -59,7 +61,7 @@ public class CompletedTodoListActivity extends AppCompatActivity {
     public static int db_cnt=0;
     private RecyclerView mRecyclerView;
     private TodoListAdapter mTodoListAdapter;
-//    private ActivityTodoListBinding mBinding;
+    private ActivityCompletedTodoListBinding mBinding;
     private SharedPreferences mSharedPreferences, ll;
     private AppCompatImageView toolbar_profile;
     private TodoListDbHelper tld;
@@ -75,6 +77,11 @@ public class CompletedTodoListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_completed_todo_list);
+//        mBinding = ActivityCompletedTodoListBinding.inflate(getLayoutInflater());
+//        View view = mBinding.getRoot();
+//        setContentView(view);
+
+
 
         mRecyclerView = findViewById(R.id.rv_todo_list);
 //        placeholderImage=findViewById(R.id.placeholderImage);
@@ -259,6 +266,7 @@ public class CompletedTodoListActivity extends AppCompatActivity {
             list_limit = 15;
         }
     }
+
 
 
 }
