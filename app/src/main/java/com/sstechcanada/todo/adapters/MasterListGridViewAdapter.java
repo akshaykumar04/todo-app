@@ -5,11 +5,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import com.sstechcanada.todo.custom_views.GridItemView;
-import com.sstechcanada.todo.models.Category;
+import com.sstechcanada.todo.custom_views.MasterIconGridItemView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MasterListGridViewAdapter extends BaseAdapter {
     private Activity activity;
@@ -49,7 +47,7 @@ public class MasterListGridViewAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        GridItemView customView = (convertView == null) ? new GridItemView(activity) : (GridItemView) convertView;
+        MasterIconGridItemView customView = (convertView == null) ? new MasterIconGridItemView(activity) : (MasterIconGridItemView) convertView;
         String s = listDrawable.get(position);
         customView.display(s, listDrawable.contains(position));
 

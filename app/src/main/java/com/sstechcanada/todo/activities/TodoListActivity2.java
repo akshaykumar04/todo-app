@@ -42,12 +42,13 @@ import com.sstechcanada.todo.broadcast_receivers.DailyAlarmReceiver;
 import com.sstechcanada.todo.data.TodoListContract;
 import com.sstechcanada.todo.data.TodoListDbHelper;
 import com.sstechcanada.todo.databinding.ActivityTodoListBinding;
-import com.sstechcanada.todo.models.List;
 import com.sstechcanada.todo.models.TodoTask;
 import com.sstechcanada.todo.models.TodoTaskFirestore;
 import com.sstechcanada.todo.utils.NotificationUtils;
 
 import es.dmoral.toasty.Toasty;
+
+import static com.sstechcanada.todo.activities.MasterTodoListActivity.listId;
 
 public class TodoListActivity2 extends AppCompatActivity {
     private static final String TAG = TodoListActivity.class.getSimpleName();
@@ -66,7 +67,6 @@ public class TodoListActivity2 extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private DatabaseReference databaseReference;
-    String ListId="";
     private FirebaseFirestore db=FirebaseFirestore.getInstance();
     private CollectionReference usersColRef=db.collection("Users");
     private TodoListFirestoreAdapter todoListFirestoreAdapter;
@@ -147,10 +147,12 @@ public class TodoListActivity2 extends AppCompatActivity {
     }
 
     private void setUpFirestoreRecyclerView() {
-        ListId=getIntent().getStringExtra("ListId");
-        Log.i("ListId", ListId);
+//        listId=getIntent().getStringExtra("ListId");
+        Log.i("ListId","Setupdrecyasdf");
+        Log.i("ListId","n"+ listId);
+
         Query query =usersColRef.document(userID).collection("Lists").document(
-                ListId).collection("Todo").whereEqualTo("Status","Pending").orderBy("priority", Query.Direction.DESCENDING);
+                listId).collection("Todo").whereEqualTo("Status","Pending").orderBy("priority", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<TodoTaskFirestore> options =new FirestoreRecyclerOptions.Builder<TodoTaskFirestore>().setQuery(query,TodoTaskFirestore.class).build();
         todoListFirestoreAdapter=new TodoListFirestoreAdapter(options,this);

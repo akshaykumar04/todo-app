@@ -40,7 +40,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sstechcanada.todo.R;
-import com.sstechcanada.todo.activities.TodoListActivity2;
+import com.sstechcanada.todo.activities.MasterTodoListActivity;
 import com.sstechcanada.todo.utils.SaveSharedPreference;
 
 import java.util.HashMap;
@@ -154,8 +154,8 @@ public class LoginActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
+        user = mAuth.getCurrentUser();
+        updateUI(user);
     }
 
     private void signIn() {
@@ -285,7 +285,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Void aVoid) {
                 Toasty.success(getApplicationContext(), "Profile Updated", Toast.LENGTH_LONG).show();
-                startActivity(new Intent(LoginActivity.this, TodoListActivity2.class));
+                startActivity(new Intent(LoginActivity.this, MasterTodoListActivity.class));
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -326,6 +326,14 @@ public class LoginActivity extends AppCompatActivity {
 //
 //            }
 //        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(user!=null){
+            startActivity(new Intent(LoginActivity.this,MasterTodoListActivity.class));
+        }
     }
 
     public void setValue() {

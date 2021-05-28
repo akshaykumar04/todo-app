@@ -20,7 +20,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
-import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -48,6 +47,7 @@ import com.sstechcanada.todo.utils.NotificationUtils;
 
 import es.dmoral.toasty.Toasty;
 
+import static com.sstechcanada.todo.activities.MasterTodoListActivity.listId;
 import static com.sstechcanada.todo.activities.TodoListActivity2.lottieAnimationView;
 
 public class CompletedTodoListActivity extends AppCompatActivity {
@@ -132,7 +132,7 @@ public class CompletedTodoListActivity extends AppCompatActivity {
 
     private void setUpFirestoreRecyclerView() {
         Query query =usersColRef.document(userID).collection("Lists").document(
-                "List one").collection("Todo").whereEqualTo("Status","Completed").orderBy("priority", Query.Direction.DESCENDING);
+                listId).collection("Todo").whereEqualTo("Status","Completed").orderBy("priority", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<TodoTaskFirestore> options =new FirestoreRecyclerOptions.Builder<TodoTaskFirestore>().setQuery(query,TodoTaskFirestore.class).build();
         todoListFirestoreAdapter=new TodoListFirestoreAdapter(options,this);

@@ -3,26 +3,18 @@ package com.sstechcanada.todo.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -30,13 +22,10 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sstechcanada.todo.R;
-import com.sstechcanada.todo.activities.AddCategoryActivity2;
-import com.sstechcanada.todo.activities.AddOrEditTaskActivity2;
-import com.sstechcanada.todo.activities.TodoListActivity;
 import com.sstechcanada.todo.activities.TodoListActivity2;
-import com.sstechcanada.todo.custom_views.PriorityStarImageView;
 import com.sstechcanada.todo.models.List;
-import com.sstechcanada.todo.models.TodoTaskFirestore;
+
+import static com.sstechcanada.todo.activities.MasterTodoListActivity.listId;
 
 public class MasterListFirestoreAdapter extends FirestoreRecyclerAdapter<List, MasterListFirestoreAdapter.MasterListFirestoreHolder> {
 
@@ -83,8 +72,8 @@ public class MasterListFirestoreAdapter extends FirestoreRecyclerAdapter<List, M
 
                 DocumentSnapshot documentSnapshot=getSnapshots().getSnapshot(position);
                 model.setListId(documentSnapshot.getId());
-                String listId= model.getListId();
-
+                listId= model.getListId();
+                Log.i("ListId", "Firestore: "+listId);
                 Intent intent = new Intent(v.getContext(), TodoListActivity2.class);
                 intent.putExtra("ListId",listId);
                 v.getContext().startActivity(intent);

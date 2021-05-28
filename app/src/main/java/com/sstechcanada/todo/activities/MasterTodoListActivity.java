@@ -1,13 +1,5 @@
 package com.sstechcanada.todo.activities;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -27,8 +19,14 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.ads.AdRequest;
@@ -40,28 +38,19 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.auth.LoginActivity;
-import com.sstechcanada.todo.adapters.GridViewAdapter;
 import com.sstechcanada.todo.adapters.MasterListFirestoreAdapter;
 import com.sstechcanada.todo.adapters.MasterListGridViewAdapter;
 import com.sstechcanada.todo.adapters.TodoListAdapter;
-import com.sstechcanada.todo.adapters.TodoListFirestoreAdapter;
 import com.sstechcanada.todo.broadcast_receivers.DailyAlarmReceiver;
 import com.sstechcanada.todo.custom_views.GridItemView;
 import com.sstechcanada.todo.data.TodoListContract;
 import com.sstechcanada.todo.data.TodoListDbHelper;
-import com.sstechcanada.todo.databinding.ActivityCompletedTodoListBinding;
-import com.sstechcanada.todo.models.Category;
 import com.sstechcanada.todo.models.List;
 import com.sstechcanada.todo.models.TodoTask;
-import com.sstechcanada.todo.models.TodoTaskFirestore;
 import com.sstechcanada.todo.utils.NotificationUtils;
 
 import java.util.ArrayList;
@@ -69,8 +58,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import es.dmoral.toasty.Toasty;
-
-import static com.sstechcanada.todo.activities.TodoListActivity2.lottieAnimationView;
 
 public class MasterTodoListActivity extends AppCompatActivity {
     private static final String TAG = MasterTodoListActivity.class.getSimpleName();
@@ -96,7 +83,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
     String selectedDrawable,sdrawable;
     ArrayList<String> listDrawable;
     private MasterListGridViewAdapter gridAdapter;
-
+    public static String listId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -59,6 +59,8 @@ import java.util.Map;
 
 import es.dmoral.toasty.Toasty;
 
+import static com.sstechcanada.todo.activities.MasterTodoListActivity.listId;
+
 public class AddOrEditTaskActivity2 extends AppCompatActivity {
     private static final String TAG = AddOrEditTaskActivity2.class.getSimpleName();
     private static final String[] numbers = new String[20];
@@ -132,8 +134,8 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         userID=mAuth.getCurrentUser().getUid();
         benefitCollectionRef=db.collection("Users").document(userID).collection("Benefits");
-        UserColRef=db.collection("Users").document(userID).collection("Lists").document("List one").collection("Todo");
-
+        UserColRef=db.collection("Users").document(userID).collection("Lists").document(listId).collection("Todo");
+        Log.i("ListId", "Add or edit: "+listId);
         loadBannerAd();
 
         long dueDate;
@@ -431,7 +433,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 
     public void selectCategoriesAlert() {
         LayoutInflater inflater = getLayoutInflater();
-        View alertLayout = inflater.inflate(R.layout.add_list_dialog, null);
+        View alertLayout = inflater.inflate(R.layout.activity_select_categories_dailog, null);
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Select Benefits");
         // this is set the view from XML inside AlertDialog
