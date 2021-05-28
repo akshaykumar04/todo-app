@@ -361,7 +361,9 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                 @Override
                 public void onSuccess(Void aVoid) {
                     Toasty.success(AddOrEditTaskActivity2.this,"New Todo-Item Successfully Added");
-                    startActivity(new Intent(AddOrEditTaskActivity2.this, TodoListActivity2.class));
+                    Intent intent=new Intent(AddOrEditTaskActivity2.this, TodoListActivity2.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
                                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -385,7 +387,9 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
             UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).set(updateTaskMap, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    startActivity(new Intent(AddOrEditTaskActivity2.this, TodoListActivity2.class));
+                    Intent intent=new Intent(AddOrEditTaskActivity2.this, TodoListActivity2.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
                     Toasty.success(AddOrEditTaskActivity2.this,"New Todo-Item Successfully Added");
                 }
             }).addOnFailureListener(new OnFailureListener() {

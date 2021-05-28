@@ -85,7 +85,7 @@ public class AddCategoryActivity2 extends AppCompatActivity {
         toolBarTitle.setText("Add Benefits");
 
         toolbar_profile = findViewById(R.id.profile_toolbar);
-        toolbar_profile.setOnClickListener(view -> startActivity(new Intent(AddCategoryActivity2.this, LoginActivity.class)));
+        toolbar_profile.setOnClickListener(view -> startActivity(new Intent(AddCategoryActivity2.this, LoginActivity.class) ));
 
         buttonAddCategory.setOnClickListener(view -> addCategory());
 
@@ -224,16 +224,14 @@ public class AddCategoryActivity2 extends AppCompatActivity {
         final Button buttonUpdate = dialogView.findViewById(R.id.buttonUpdateCategory);
         final Button buttonDelete = dialogView.findViewById(R.id.buttonDeleteCategory);
 
-
         dialogBuilder.setTitle(categoryName);
         final AlertDialog b = dialogBuilder.create();
         b.show();
 
-
         buttonUpdate.setOnClickListener(view -> {
             String name = editTextName.getText().toString().trim();
             if (!TextUtils.isEmpty(name)) {
-                updateCategory(categoryId, name);
+                updateCategory(categoryId, name,categoryName);
                 b.dismiss();
             }
         });
@@ -247,16 +245,68 @@ public class AddCategoryActivity2 extends AppCompatActivity {
     }
 
 
-    private void updateCategory(String id, String name) {
+    private void updateCategory(String id, String name,String oldName) {
         //getting the specified category reference
-
         DocumentReference documentReferenceBenefitReference=benefitCollectionRef.document(id);
 
-//        DatabaseReference dR = FirebaseDatabase.getInstance().getReference("categories").child(id);
+//      DatabaseReference dR = FirebaseDatabase.getInstance().getReference("categories").child(id);
         //updating category
-        Category category = new Category(id, name);
-        documentReferenceBenefitReference.update("category_name",name);
-        Toasty.success(getApplicationContext(), "Benefits Updated", Toast.LENGTH_SHORT).show();
+        //getting the specified category reference
+        DocumentReference documentReferenceBenefit=benefitCollectionRef.document(id);
+        //removing category
+        documentReferenceBenefitReference.update("category_name",name).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+//                Toasty.success(getApplicationContext(), "Benefit Updated", Toast.LENGTH_SHORT).show();
+                updateCategoryFromEachTodo(name,oldName);
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toasty.error(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
+            }
+        });
+//        Category category = new Category(id, name);
+//        documentReferenceBenefitReference.update("category_name",name);
+//        Toasty.success(getApplicationContext(), "Benefits Updated", Toast.LENGTH_SHORT).show();
+    }
+
+    private void updateCategoryFromEachTodo(String categoryNameToBeUpdated, String oldCategoryName) {
+
+        UserColRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for(DocumentSnapshot documentSnapshot:queryDocumentSnapshots){
+
+                    UserColRef.document(documentSnapshot.getId()).collection("Todo").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            for(DocumentSnapshot documentSnapshotInner:queryDocumentSnapshots){
+                                UserColRef.document(documentSnapshot.getId()).collection("Todo").document(documentSnapshotInner.getId()).update("Benefits", FieldValue.arrayRemove(oldCategoryName),"Benefits",FieldValue.arrayUnion(categoryNameToBeUpdated)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+
+                                    }
+                                });
+                            }
+
+                            Toasty.success(getApplicationContext(), "Benefit Updated", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+                    });
+                }
+            }
+        });
     }
 
 
