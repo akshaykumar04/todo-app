@@ -138,6 +138,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
                     }
                 }else {
                     if (isLogin()) {
+                        Toasty.info(getApplicationContext(), getString(R.string.cannot_create), Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(MasterTodoListActivity.this, AppUpgradeActivity.class);
 //                        intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
                         startActivity(intent);
@@ -380,7 +381,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
             return false;
         } else if (list_limit <= list_cnt) {
             //Limit Check
-            Toasty.info(this, getString(R.string.cannot_create) + list_limit + " task in free tier, Please upgrade app to premium version", Toast.LENGTH_LONG, true).show();
+            Toasty.warning(this, getString(R.string.cannot_create), Toast.LENGTH_LONG, true).show();
             startActivity(new Intent(MasterTodoListActivity.this, AppUpgradeActivity.class));
             return false;
         }

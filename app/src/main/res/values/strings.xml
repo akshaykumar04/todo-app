@@ -77,7 +77,7 @@
     <string name="don_t_you_have_an_account_create">Don\'t you have an account? Create</string>
     <string name="logout">Logout</string>
     <string name="login_first">You need to login first</string>
-    <string name="cannot_create">You can not create more than: </string>
+    <string name="cannot_create">You can not create more lists in this tier, Please upgrade your membership tier</string>
     <string name="banner_ad_id">ca-app-pub-3111421321050812/4092511181</string>
     <string name="banner_ad_test">ca-app-pub-3111421321050812/4092511181</string>
     <string name="_0_99_month">$ 0.99 / month</string>
