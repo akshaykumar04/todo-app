@@ -71,7 +71,6 @@
                 android:textStyle="bold"
                 android:paddingVertical="8dp"
                 android:paddingHorizontal="18dp"
-                android:drawableRight="@drawable/ic_lock"
                 android:drawablePadding="10dp"
                 android:textSize="12sp"
                 android:textAlignment="center"

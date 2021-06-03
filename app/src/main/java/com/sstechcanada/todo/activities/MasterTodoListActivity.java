@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -81,9 +82,8 @@ public class MasterTodoListActivity extends AppCompatActivity {
     private FirebaseFirestore db=FirebaseFirestore.getInstance();
     private CollectionReference usersColRef=db.collection("Users");
     private MasterListFirestoreAdapter masterListFirestoreAdapter;
-
     private GridView gridView;
-    ProgressBar progressBar;
+    ProgressBar progressBar,loadingProgressBar;
     String selectedDrawable,sdrawable;
     ArrayList<String> listDrawable;
     private MasterListGridViewAdapter gridAdapter;
@@ -96,6 +96,8 @@ public class MasterTodoListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_master_todo_list);
 
         mRecyclerView = findViewById(R.id.rv_todo_list);
+        loadingProgressBar= findViewById(R.id.loadingProgressBar);
+        showProgressBar();
 //        placeholderImage=findViewById(R.id.placeholderImage);
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
@@ -158,6 +160,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
                        Log.i("purchasecode","new :"+documentSnapshot.get("masterListLimit").toString());
                         userAccountDetails.add(0, documentSnapshot.get("masterListLimit").toString());
                         userAccountDetails.add(1, documentSnapshot.get("todoItemLimit").toString());
+                        hideProgressBar();
                     }
                 });
             }
@@ -176,11 +179,12 @@ public class MasterTodoListActivity extends AppCompatActivity {
         alert.setTitle("Add List");
         // this is set the view from XML inside AlertDialog
         alert.setView(alertLayout);
-        gridView = alertLayout.findViewById(R.id.grid_view_alert);
+//        gridView = alertLayout.findViewById(R.id.grid_view_alert);
 //        addMoreCategories = alertLayout.findViewById(R.id.addMoreCategoriesLayout);
         progressBar = alertLayout.findViewById(R.id.progress_circular);
+        progressBar.setVisibility(View.GONE);
         AdView bannerAd = alertLayout.findViewById(R.id.adView);
-        loadImages();
+//        loadImages();
         // disallow cancel of AlertDialog on click of back button and outside touch
         alert.setCancelable(false);
         alert.setNegativeButton("Cancel", (dialog, which) -> {
@@ -387,6 +391,20 @@ public class MasterTodoListActivity extends AppCompatActivity {
         if (user != null) {
             list_limit = 15;
         }
+    }
+
+    private void showProgressBar() {
+        loadingProgressBar.setVisibility(View.VISIBLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+    }
+
+
+    private void hideProgressBar() {
+        if (loadingProgressBar.getVisibility() == View.VISIBLE) {
+            loadingProgressBar.setVisibility(View.INVISIBLE);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        }
+
     }
 
 }

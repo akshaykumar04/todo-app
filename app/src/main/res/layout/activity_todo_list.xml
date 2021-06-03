@@ -13,6 +13,19 @@
             android:id="@+id/include"
             layout="@layout/act_bar" />
 
+        <ProgressBar
+            android:id="@+id/loadingProgressBar"
+            android:layout_width="match_parent"
+            android:layout_height="15dp"
+            android:layout_marginTop="-5dp"
+            android:indeterminate="true"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:indeterminateTint="@color/colorTab"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/include" />
+
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/placeholderImage"
             android:layout_width="wrap_content"
@@ -33,7 +46,7 @@
             android:layout_width="wrap_content"
             android:id="@+id/tabBar"
             android:background="@drawable/tab_bg"
-            app:layout_constraintTop_toBottomOf="@id/include"
+            app:layout_constraintTop_toBottomOf="@id/loadingProgressBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_height="wrap_content"

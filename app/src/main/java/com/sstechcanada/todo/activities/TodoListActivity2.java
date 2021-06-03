@@ -15,6 +15,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -73,6 +75,7 @@ public class TodoListActivity2 extends AppCompatActivity {
     private CollectionReference usersColRef=db.collection("Users");
     private TodoListFirestoreAdapter todoListFirestoreAdapter;
     public static LottieAnimationView lottieAnimationView;
+    ProgressBar loadingProgressBar;
 
 
 
@@ -81,6 +84,14 @@ public class TodoListActivity2 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_todo_list);
         mRecyclerView = mBinding.rvTodoList;
+        loadingProgressBar=mBinding.loadingProgressBar;
+
+        if(Integer.valueOf(purchaseCode)!=0){
+            Log.i("purchase code",purchaseCode);
+            Log.i("purchase code","purchaseCode");
+            mBinding.completedTab.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        }
+        showProgressBar();
 //        setContentView(R.layout.activity_todo_list);
         lottieAnimationView=findViewById(R.id.placeholderImage);
 //        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -175,6 +186,7 @@ public class TodoListActivity2 extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(todoListFirestoreAdapter);
         db_cnt = todoListFirestoreAdapter.getItemCount();
+        hideProgressBar();
 
     }
 
@@ -400,5 +412,20 @@ public class TodoListActivity2 extends AppCompatActivity {
             list_limit = 15;
         }
     }
+
+    private void showProgressBar() {
+        loadingProgressBar.setVisibility(View.VISIBLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+    }
+
+
+    private void hideProgressBar() {
+        if (loadingProgressBar.getVisibility() == View.VISIBLE) {
+            loadingProgressBar.setVisibility(View.INVISIBLE);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        }
+
+    }
+
 
 }
