@@ -30,6 +30,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,6 +44,7 @@ import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.MasterTodoListActivity;
 import com.sstechcanada.todo.utils.SaveSharedPreference;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,6 +56,7 @@ public class LoginActivity extends AppCompatActivity {
     public static final String LIST_LIMIT = "LIST_LIMIT";
     private static final String TAG = "MainActivity";
     private static final int RC_SIGN_IN = 9001;
+    public static ArrayList<String> userAccountDetails =new ArrayList<>();
     SignInButton googleSignInButton;
     CardView profileCard;
     ImageView placeHolder, dp;
@@ -279,12 +282,16 @@ public class LoginActivity extends AppCompatActivity {
         profile.put("Email",firebaseUser.getEmail());
         profile.put("purchase_code","0");
 //        profile.put("item_limit","15");
-        profile.put("purchase_type","Free User");
+
 
         documentReferenceCurrentReference.set(profile).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toasty.success(getApplicationContext(), "Profile Updated", Toast.LENGTH_LONG).show();
+
+                Map<String, Object> claims = new HashMap<>();
+                claims.put("purchaseCode", 0);
+
+
                 startActivity(new Intent(LoginActivity.this, MasterTodoListActivity.class));
             }
         }).addOnFailureListener(new OnFailureListener() {

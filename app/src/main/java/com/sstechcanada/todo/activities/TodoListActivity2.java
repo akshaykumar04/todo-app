@@ -49,6 +49,8 @@ import com.sstechcanada.todo.utils.NotificationUtils;
 import es.dmoral.toasty.Toasty;
 
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.listId;
+import static com.sstechcanada.todo.activities.MasterTodoListActivity.purchaseCode;
+import static com.sstechcanada.todo.activities.auth.LoginActivity.userAccountDetails;
 
 public class TodoListActivity2 extends AppCompatActivity {
     private static final String TAG = TodoListActivity.class.getSimpleName();
@@ -122,12 +124,22 @@ public class TodoListActivity2 extends AppCompatActivity {
             public void onClick(View view) {
                 db_cnt = todoListFirestoreAdapter.getItemCount();
                 Log.i("ItemCount", "FAB Clicked");
-                setValue();
-                if (isLogin()) {
-                    Intent intent = new Intent(TodoListActivity2.this, AddOrEditTaskActivity2.class);
-                    intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
-                    startActivityForResult(intent, ADD_TASK_REQUEST);
+                if(Integer.parseInt(userAccountDetails.get(1))>todoListFirestoreAdapter.getItemCount()){
+                    setValue();
+                    if (isLogin()) {
+                        Intent intent = new Intent(TodoListActivity2.this, AddOrEditTaskActivity2.class);
+                        intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
+                        startActivityForResult(intent, ADD_TASK_REQUEST);
+                    }
+                }else{
+                    if (isLogin()) {
+                        Intent intent = new Intent(TodoListActivity2.this, AppUpgradeActivity.class);
+//                        intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
+                        startActivity(intent);
+                    }
+
                 }
+
             }
         });
 
@@ -140,9 +152,12 @@ public class TodoListActivity2 extends AppCompatActivity {
         //cancelAlarm();
 
         mBinding.completedTab.setOnClickListener(view -> {
+            if(Integer.valueOf(purchaseCode)!=0){
+                startActivity(new Intent(TodoListActivity2.this, CompletedTodoListActivity.class));
+            }else{
+                startActivity(new Intent(TodoListActivity2.this, AppUpgradeActivity.class));
+            }
 //            startActivity(new Intent(TodoListActivity2.this, AppUpgradeActivity.class));
-            startActivity(new Intent(TodoListActivity2.this, CompletedTodoListActivity.class));
-
         });
     }
 
