@@ -50,6 +50,8 @@ import java.util.Map;
 
 import es.dmoral.toasty.Toasty;
 
+import static com.sstechcanada.todo.activities.MasterTodoListActivity.purchaseCode;
+
 public class LoginActivity extends AppCompatActivity {
 
     public static final String PREF = "USER DATA";
@@ -258,10 +260,10 @@ public class LoginActivity extends AppCompatActivity {
             fabBack.setVisibility(View.VISIBLE);
             bannerAd.setVisibility(View.VISIBLE);
             list_limit = SaveSharedPreference.loadLimit(this);
-            if (list_limit > 15) {
-                userType.setText(R.string.premium_user);
-            } else {
+            if (purchaseCode.equals("0")) {
                 userType.setText(R.string.free_user);
+            } else {
+                userType.setText(R.string.premium_user);
             }
             updateUI(User);
         } else {
@@ -288,8 +290,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Void aVoid) {
 
-                Map<String, Object> claims = new HashMap<>();
-                claims.put("purchaseCode", 0);
+//                Map<String, Object> claims = new HashMap<>();
+//                claims.put("purchaseCode", 0);
 
 
                 startActivity(new Intent(LoginActivity.this, MasterTodoListActivity.class));

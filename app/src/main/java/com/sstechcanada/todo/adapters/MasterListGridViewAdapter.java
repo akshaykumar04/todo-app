@@ -14,7 +14,7 @@ public class MasterListGridViewAdapter extends BaseAdapter {
     private String selectedDrawable;
     ArrayList<String> listDrawable;
     Integer[] imageList;
-    public static int selectedPosition;
+    public  int selectedPosition;
 
     public MasterListGridViewAdapter( Integer[] imageList, Activity activity) {
         this.imageList = imageList;

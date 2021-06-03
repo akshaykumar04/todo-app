@@ -31,6 +31,6 @@ public class MasterIconGridItemView extends FrameLayout {
     }
 
     public void display(boolean isSelected) {
-        cardView.setBackgroundResource(isSelected ? R.color.colorPrimary : R.color.colorAccent);
+        cardView.setBackgroundResource(isSelected ? R.drawable.selected_icon_bg : R.color.colorUncompletedBackground);
     }
 }
