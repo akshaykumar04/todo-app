@@ -38,14 +38,14 @@ class AppUpgradeActivity : AppCompatActivity() {
     }
 
     private fun setupPriceToggle() {
-        toggle_button_layout.setToggled(2131362117, true)
+        toggle_button_layout.setToggled(R.id.toggle_left, true)
         toggle_button_layout.onToggledListener = { toggleButton: ToggleButtonLayout, toggle: Toggle, b: Boolean ->
 
             when (toggle.id) {
-                2131362117 -> {
+                R.id.toggle_left -> {
                     tvListsCount.text = getString(R.string.create_up_to_3_to_do_lists)
                 }
-                2131362118 -> {
+                R.id.toggle_right -> {
                     tvListsCount.text = getString(R.string.create_up_to_20_to_do_lists)
                 }
             }

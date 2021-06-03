@@ -199,7 +199,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithCredential:success");
                             SaveSharedPreference.setUserLogIn(LoginActivity.this, "true");
 //                            startActivity(new Intent(LoginActivity.this, TodoListActivity2.class));
-                            Toasty.error(getApplicationContext(), "sign in complete ", Toast.LENGTH_LONG).show();
+                            Toasty.success(getApplicationContext(), "Sign in complete ", Toast.LENGTH_LONG).show();
                             hideProgressDialog();
 //                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
 //                            databaseReference.child("Users").child(firebaseUser.getUid()).child("Email").setValue(firebaseUser.getEmail());
