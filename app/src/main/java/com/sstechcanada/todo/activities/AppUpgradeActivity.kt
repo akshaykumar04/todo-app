@@ -15,6 +15,7 @@ import com.sstechcanada.todo.R
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_app_upgrade.*
 
+
 class AppUpgradeActivity : AppCompatActivity() {
 
     val premium_app = "com.sstechcanada.todo_plus"

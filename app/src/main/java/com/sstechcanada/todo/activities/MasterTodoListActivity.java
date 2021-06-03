@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,6 +39,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.sstechcanada.todo.R;
@@ -58,6 +60,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import es.dmoral.toasty.Toasty;
+
+import static com.sstechcanada.todo.activities.auth.LoginActivity.userAccountDetails;
 
 public class MasterTodoListActivity extends AppCompatActivity {
     private static final String TAG = MasterTodoListActivity.class.getSimpleName();
@@ -84,6 +88,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
     ArrayList<String> listDrawable;
     private MasterListGridViewAdapter gridAdapter;
     public static String listId;
+    public static String purchaseCode="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +100,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         userID = user.getUid();
+        setPurchaseCode();
 //        lottieAnimationView = findViewById(R.id.placeholderImage);
 
         setUpFirestoreRecyclerView();
@@ -121,20 +127,47 @@ public class MasterTodoListActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                list_cnt = masterListFirestoreAdapter.getItemCount();
-                setValue();
+                if(Integer.parseInt(userAccountDetails.get(0))>masterListFirestoreAdapter.getItemCount()){
+                    Log.i("purchasecode","masterlist limit :"+(userAccountDetails.get(0)));
+                    Log.i("purchasecode","masterlist items :"+(masterListFirestoreAdapter.getItemCount()));
+                    setValue();
+                    if (isLogin()) {
+                        addNewlistAlert();
+                    }
+                }else {
+                    if (isLogin()) {
+                        Intent intent = new Intent(MasterTodoListActivity.this, AppUpgradeActivity.class);
+//                        intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
+                        startActivity(intent);
+                    }
 
-                addNewlistAlert();
-                if (isLogin()) {
-//                    Intent intent = new Intent(MasterTodoListActivity.this, TodoListActivity.class);
-//                    intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
-//                    startActivityForResult(intent);
                 }
             }
         });
     }
 
+    private void setPurchaseCode() {
+        usersColRef.document(userID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                purchaseCode=documentSnapshot.get("purchase_code").toString();
+                db.collection("UserTiers").document(purchaseCode).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        Log.i("purchasecode","purchase code :"+purchaseCode);
+                       Log.i("purchasecode","new :"+documentSnapshot.get("masterListLimit").toString());
+                        userAccountDetails.add(0, documentSnapshot.get("masterListLimit").toString());
+                        userAccountDetails.add(1, documentSnapshot.get("todoItemLimit").toString());
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
 
+            }
+        });
+    }
 
     public void addNewlistAlert() {
         LayoutInflater inflater = getLayoutInflater();
