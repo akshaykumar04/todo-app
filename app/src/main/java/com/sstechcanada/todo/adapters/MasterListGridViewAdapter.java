@@ -13,8 +13,14 @@ public class MasterListGridViewAdapter extends BaseAdapter {
     private Activity activity;
     private String selectedDrawable;
     ArrayList<String> listDrawable;
-    int selectedPosition;
+    Integer[] imageList;
+    public static int selectedPosition;
 
+    public MasterListGridViewAdapter( Integer[] imageList, Activity activity) {
+        this.imageList = imageList;
+        this.activity = activity;
+        selectedPosition = 0;
+    }
 
     public MasterListGridViewAdapter(String selectedDrawable, Activity activity) {
         this.selectedDrawable = selectedDrawable;
@@ -30,14 +36,14 @@ public class MasterListGridViewAdapter extends BaseAdapter {
     @Override
     public int getCount() {
 //        return strings.length;
-        return listDrawable.size();
+        return imageList.length;
     }
 
     @Override
     public Object getItem(int position) {
 //        String s = listDrawable.get(position);
 //        return strings[position];
-        return listDrawable.get(position);
+        return imageList[position];
     }
 
     @Override
@@ -47,9 +53,11 @@ public class MasterListGridViewAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
         MasterIconGridItemView customView = (convertView == null) ? new MasterIconGridItemView(activity) : (MasterIconGridItemView) convertView;
-        String s = listDrawable.get(position);
-        customView.display(s, listDrawable.contains(position));
+//        String s = listDrawable.get(position);
+        int drawableRes=imageList[position];
+        customView.display(drawableRes,selectedPosition==position);
 
         return customView;
     }

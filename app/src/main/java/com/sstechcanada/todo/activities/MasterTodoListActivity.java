@@ -50,6 +50,7 @@ import com.sstechcanada.todo.adapters.MasterListGridViewAdapter;
 import com.sstechcanada.todo.adapters.TodoListAdapter;
 import com.sstechcanada.todo.broadcast_receivers.DailyAlarmReceiver;
 import com.sstechcanada.todo.custom_views.GridItemView;
+import com.sstechcanada.todo.custom_views.MasterIconGridItemView;
 import com.sstechcanada.todo.data.TodoListContract;
 import com.sstechcanada.todo.data.TodoListDbHelper;
 import com.sstechcanada.todo.models.List;
@@ -84,8 +85,10 @@ public class MasterTodoListActivity extends AppCompatActivity {
     private MasterListFirestoreAdapter masterListFirestoreAdapter;
     private GridView gridView;
     ProgressBar progressBar,loadingProgressBar;
-    String selectedDrawable,sdrawable;
-    ArrayList<String> listDrawable;
+//    String
+    int selectedDrawable,sdrawable;
+//    ArrayList<String>
+    public static  Integer[]  listDrawable;
     private MasterListGridViewAdapter gridAdapter;
     public static String listId;
     public static String purchaseCode="";
@@ -97,6 +100,14 @@ public class MasterTodoListActivity extends AppCompatActivity {
 
         mRecyclerView = findViewById(R.id.rv_todo_list);
         loadingProgressBar= findViewById(R.id.loadingProgressBar);
+
+        listDrawable= new Integer[]{
+                R.drawable.master_list_default_icon, R.drawable.idea, R.drawable.ic_lock,R.drawable.ic_to_do_list,
+                R.drawable.circle_per_item,  R.drawable.sport, R.drawable.movie, R.drawable.globe, R.drawable.music,
+                R.drawable.heart, R.drawable.diet, R.drawable.book,
+                 R.drawable.shopping_cart,
+        };
+
         showProgressBar();
 //        placeholderImage=findViewById(R.id.placeholderImage);
         mAuth = FirebaseAuth.getInstance();
@@ -179,12 +190,12 @@ public class MasterTodoListActivity extends AppCompatActivity {
         alert.setTitle("Add List");
         // this is set the view from XML inside AlertDialog
         alert.setView(alertLayout);
-//        gridView = alertLayout.findViewById(R.id.grid_view_alert);
+        gridView = alertLayout.findViewById(R.id.grid_view_alert);
 //        addMoreCategories = alertLayout.findViewById(R.id.addMoreCategoriesLayout);
         progressBar = alertLayout.findViewById(R.id.progress_circular);
-        progressBar.setVisibility(View.GONE);
+
         AdView bannerAd = alertLayout.findViewById(R.id.adView);
-//        loadImages();
+        loadImages();
         // disallow cancel of AlertDialog on click of back button and outside touch
         alert.setCancelable(false);
         alert.setNegativeButton("Cancel", (dialog, which) -> {
@@ -200,7 +211,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
 
             Map<String, Object> newList = new HashMap<>();
             newList.put("ListName", name);
-            newList.put("Image", sdrawable);
+            newList.put("positionImage", sdrawable);
             newList.put("ListDescription", description);
 
             usersColRef.document(userID).collection("Lists").document().set(newList).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -228,11 +239,12 @@ public class MasterTodoListActivity extends AppCompatActivity {
 
     public void loadImages() {
 
-        listDrawable=new ArrayList<>();
-        listDrawable.add("@drawable/master_list_default_icon");
-        listDrawable.add("@drawable/ic_to_do_list");
-        listDrawable.add("@drawable/ic_lock");
-        listDrawable.add("@drawable/circle_per_item");
+
+
+//        listDrawable.add("@drawable/master_list_default_icon");
+//        listDrawable.add("@drawable/ic_to_do_list");
+//        listDrawable.add("@drawable/ic_lock");
+//        listDrawable.add("@drawable/circle_per_item");
 
         gridAdapter = new MasterListGridViewAdapter(listDrawable, MasterTodoListActivity.this);
         gridView.setAdapter(gridAdapter);
@@ -242,13 +254,23 @@ public class MasterTodoListActivity extends AppCompatActivity {
 //            gridView.setAdapter(null);
 //            gridView.setAdapter(gridAdapter);
 
+            Log.i("gridView","on click" );
+
             int selectedIndex = position;
-            if (selectedIndex > -1) {
-                ((GridItemView) v).display(false);
-                selectedDrawable="";
+            if (selectedIndex < -1) {
+//                ((MasterIconGridItemView) v).display(false);
+                Log.i("gridView","nothing");
+                selectedDrawable=0;
             } else {
-                ((GridItemView) v).display(true);
-                selectedDrawable= (String) gridAdapter.getItem(position);
+
+                Log.i("gridView", String.valueOf(position));
+                selectedDrawable= position;
+                for(int i=0;i<listDrawable.length;i++) {
+                    Log.i("gridView", String.valueOf(i));
+                    ((MasterIconGridItemView) v).display(i == position);
+
+                }
+
             }
 
         });

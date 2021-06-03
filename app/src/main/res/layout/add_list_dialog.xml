@@ -33,7 +33,7 @@
         android:background="@drawable/disc_edit_text"
         android:padding="10dp"
         android:maxLines="1"
-        android:maxLength="18"
+        android:maxLength="30"
         android:hint="Enter list description" />
 
 
@@ -42,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="10dp"
-        android:numColumns="3"
+        android:numColumns="5"
         android:visibility="gone" />
 
     <ProgressBar

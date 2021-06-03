@@ -6,27 +6,31 @@ import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
+
 import com.sstechcanada.todo.R;
 
 public class MasterIconGridItemView extends FrameLayout {
 
     private TextView textView;
+    private CardView cardView;
 
     public MasterIconGridItemView(Context context) {
         super(context);
-        LayoutInflater.from(context).inflate(R.layout.item_grid, this);
+        LayoutInflater.from(context).inflate(R.layout.item_grid_master_list, this);
         textView = (TextView) getRootView().findViewById(R.id.text);
+        cardView = (CardView) getRootView().findViewById(R.id.cardView);
     }
 
-    public void display(String text, boolean isSelected) {
-        int imageResource = getContext().getResources().getIdentifier(text, null, getContext().getPackageName());
-        Drawable drawable = getContext().getResources().getDrawable(imageResource);
+    public void display(int text,boolean isSelected) {
+//        int imageResource = getContext().getResources().getIdentifier(text, null, getContext().getPackageName());
+        Drawable drawable = getContext().getResources().getDrawable(text);
         textView.setBackground(drawable);
 //        textView.setText(text);
         display(isSelected);
     }
 
     public void display(boolean isSelected) {
-        textView.setBackgroundResource(isSelected ? R.drawable.green_square : R.drawable.gray_square);
+        cardView.setBackgroundResource(isSelected ? R.color.colorPrimary : R.color.colorAccent);
     }
 }

@@ -71,6 +71,7 @@
                 android:textStyle="bold"
                 android:paddingVertical="8dp"
                 android:paddingHorizontal="18dp"
+                android:drawableRight="@drawable/ic_baseline_check_circle_24"
                 android:drawablePadding="10dp"
                 android:textSize="12sp"
                 android:textAlignment="center"

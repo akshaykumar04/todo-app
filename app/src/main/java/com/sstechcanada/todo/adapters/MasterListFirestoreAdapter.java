@@ -22,6 +22,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sstechcanada.todo.R;
+import com.sstechcanada.todo.activities.MasterTodoListActivity;
 import com.sstechcanada.todo.activities.TodoListActivity2;
 import com.sstechcanada.todo.models.List;
 
@@ -54,10 +55,9 @@ public class MasterListFirestoreAdapter extends FirestoreRecyclerAdapter<List, M
         try {
             holder.tv_todo_list_name.setText(model.getListName());
             holder.tv_todo_list_desc.setText(model.getListDescription());
-            String res =model.getImage();
-            if(res!=null || res!=""){
-                int imageResource = context.getResources().getIdentifier(res, null, context.getPackageName());
-                Drawable drawable = context.getResources().getDrawable(imageResource);
+
+            Drawable drawable = context.getResources().getDrawable(model.getImage());
+            if(drawable!=null ){
                 holder.list_default_icon.setBackground(drawable);
             }
 
@@ -116,45 +116,6 @@ public class MasterListFirestoreAdapter extends FirestoreRecyclerAdapter<List, M
 //        }
 //    }
 
-//    private int getMagnitudeColor(int pos) {
-//        int magnitudeColorResourceId;
-//        int magnitudeFloor = pos;
-//        switch (magnitudeFloor) {
-//            case 0:
-//                magnitudeColorResourceId = R.color.circle8;
-//                break;
-//            case 1:
-//                magnitudeColorResourceId = R.color.circle1;
-//                break;
-//            case 2:
-//                magnitudeColorResourceId = R.color.circle2;
-//                break;
-//            case 3:
-//                magnitudeColorResourceId = R.color.circle3;
-//                break;
-//            case 4:
-//                magnitudeColorResourceId = R.color.circle4;
-//                break;
-//            case 5:
-//                magnitudeColorResourceId = R.color.circle5;
-//                break;
-//            case 6:
-//                magnitudeColorResourceId = R.color.circle6;
-//                break;
-//            case 7:
-//                magnitudeColorResourceId = R.color.circle7;
-//                break;
-//            case 8:
-//                magnitudeColorResourceId = R.color.circle8;
-//                break;
-//            case 9:
-//                magnitudeColorResourceId = R.color.circle9;
-//                break;
-//            default:
-//                magnitudeColorResourceId = R.color.circle1;
-//                break;
-//        }
-//        return ContextCompat.getColor(context, magnitudeColorResourceId);
-//    }
+//
 }
 
