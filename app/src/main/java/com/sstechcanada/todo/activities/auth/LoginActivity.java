@@ -206,7 +206,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithCredential:success");
                             SaveSharedPreference.setUserLogIn(LoginActivity.this, "true");
 //                            startActivity(new Intent(LoginActivity.this, TodoListActivity2.class));
-                            Toasty.success(getApplicationContext(), "Sign in complete ", Toast.LENGTH_LONG).show();
+                            Toasty.success(getApplicationContext(), "Sign in complete", Toast.LENGTH_SHORT).show();
                             hideProgressDialog();
 //                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
 //                            databaseReference.child("Users").child(firebaseUser.getUid()).child("Email").setValue(firebaseUser.getEmail());
@@ -299,12 +299,12 @@ public class LoginActivity extends AppCompatActivity {
                        @Override
                        public void onSuccess(Void aVoid) {
                            startActivity(new Intent(LoginActivity.this, MasterTodoListActivity.class));
-                           Toasty.success(getApplicationContext(), "Profile creation complete: ", Toast.LENGTH_SHORT).show();
+                           Toasty.success(getApplicationContext(), "Profile creation complete", Toast.LENGTH_SHORT).show();
                        }
                    }).addOnFailureListener(new OnFailureListener() {
                        @Override
                        public void onFailure(@NonNull Exception e) {
-                           Toasty.error(getApplicationContext(), "Error in profile creation ", Toast.LENGTH_SHORT).show();
+                           Toasty.error(getApplicationContext(), "Error in profile creation", Toast.LENGTH_SHORT).show();
                        }
                    });
 
