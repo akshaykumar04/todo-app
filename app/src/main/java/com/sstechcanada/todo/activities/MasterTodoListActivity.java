@@ -6,6 +6,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
@@ -45,6 +46,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.SetOptions;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.auth.LoginActivity;
 import com.sstechcanada.todo.adapters.MasterListFirestoreAdapter;
@@ -58,6 +60,7 @@ import com.sstechcanada.todo.models.List;
 import com.sstechcanada.todo.models.TodoTask;
 import com.sstechcanada.todo.utils.NotificationUtils;
 import com.sstechcanada.todo.utils.SwipeController;
+import com.sstechcanada.todo.utils.SwipeControllerActions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -197,7 +200,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
         progressBar = alertLayout.findViewById(R.id.progress_circular);
 
         AdView bannerAd = alertLayout.findViewById(R.id.adView);
-        loadImages();
+        loadImages(0);
         // disallow cancel of AlertDialog on click of back button and outside touch
         alert.setCancelable(false);
         alert.setNegativeButton("Cancel", (dialog, which) -> {
@@ -219,7 +222,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
             usersColRef.document(userID).collection("Lists").document().set(newList).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    Toasty.success(MasterTodoListActivity.this,"New Todo-Item Successfully Added");
+                    Toasty.success(MasterTodoListActivity.this,"New List Successfully Added");
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -238,19 +241,73 @@ public class MasterTodoListActivity extends AppCompatActivity {
 
     }
 
+    public void editListAlert(String oldListName,String oldListDescription,int oldListIconPosition,String documentSnapshotId) {
+        LayoutInflater inflater = getLayoutInflater();
+        View alertLayout = inflater.inflate(R.layout.add_list_dialog, null);
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
-    public void loadImages() {
+        alert.setTitle("Edit List");
+        // this is set the view from XML inside AlertDialog
+        alert.setView(alertLayout);
+        gridView = alertLayout.findViewById(R.id.grid_view_alert);
+//        addMoreCategories = alertLayout.findViewById(R.id.addMoreCategoriesLayout);
+        progressBar = alertLayout.findViewById(R.id.progress_circular);
+
+        AdView bannerAd = alertLayout.findViewById(R.id.adView);
+
+//        gridAdapter.selectedPosition=oldListIconPosition;
+        loadImages(oldListIconPosition);
+        // disallow cancel of AlertDialog on click of back button and outside touch
+        alert.setCancelable(false);
+        alert.setNegativeButton("Cancel", (dialog, which) -> {
+//                Toast.makeText(getBaseContext(), "Cancel clicked", Toast.LENGTH_SHORT).show();
+        });
+        alert.setPositiveButton("Done", (dialog, which) -> {
+            sdrawable=selectedDrawable;
+//            int imageResource = getResources().getIdentifier(sdrawable, null, getPackageName());
+            String name = ((EditText) alertLayout.findViewById(R.id.editTextListName)).getText().toString();
+            String description = ((EditText) alertLayout.findViewById(R.id.editTextListDescription)).getText().toString();
+
+            usersColRef.document(userID).collection("Lists");
+
+            Map<String, Object> list = new HashMap<>();
+            list.put("ListName", name);
+            list.put("positionImage", sdrawable);
+            list.put("ListDescription", description);
+
+            usersColRef.document(userID).collection("Lists").document(documentSnapshotId).update(list).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Toasty.success(MasterTodoListActivity.this,"List Successfully Edited");
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toasty.error(MasterTodoListActivity.this,"Something went wrong");
+                }
+            });
+        });
 
 
+        bannerAd.loadAd(new AdRequest.Builder().build());
 
-//        listDrawable.add("@drawable/master_list_default_icon");
-//        listDrawable.add("@drawable/ic_to_do_list");
-//        listDrawable.add("@drawable/ic_lock");
-//        listDrawable.add("@drawable/circle_per_item");
+        AlertDialog dialog = alert.create();
+        dialog.show();
 
+        EditText listNameEditText= dialog.findViewById(R.id.editTextListName);
+        listNameEditText.setText(oldListName);
+        EditText ListDescriptionEditText= dialog.findViewById(R.id.editTextListDescription);
+        ListDescriptionEditText.setText(oldListDescription);
+
+    }
+
+
+    public void loadImages(int iconPosition) {
         gridAdapter = new MasterListGridViewAdapter(listDrawable, MasterTodoListActivity.this);
         gridView.setAdapter(gridAdapter);
         gridView.setVisibility(View.VISIBLE);
+
+        gridAdapter.selectedPosition=iconPosition;
 
         gridView.setOnItemClickListener((parent, v, position, id) -> {
 //            gridView.setAdapter(null);
@@ -264,7 +321,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
                 ((MasterIconGridItemView) v).display(false);
 
                 gridAdapter.selectedPosition = -1;
-                selectedDrawable=0;
+                selectedDrawable=iconPosition;
             } else {
                 Log.i("gridView", String.valueOf(position));
 
@@ -286,10 +343,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
 
         });
         progressBar.setVisibility(View.INVISIBLE);
-
-
     }
-
 
     private void setUpFirestoreRecyclerView() {
 //        ItemTouchHelper mIth = new ItemTouchHelper(
@@ -328,7 +382,45 @@ public class MasterTodoListActivity extends AppCompatActivity {
         masterListFirestoreAdapter=new MasterListFirestoreAdapter(options,this);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        SwipeController swipeController = new SwipeController();
+
+        SwipeController swipeController = new SwipeController(this,new SwipeControllerActions() {
+            @Override
+            public void onRightClicked(int position) {
+                Log.i("cluck","right");
+
+                new AlertDialog.Builder(MasterTodoListActivity.this)
+                        .setIcon(android.R.drawable.ic_menu_delete)
+                        .setTitle("Confirm Delete")
+                        .setMessage("Are you sure you want to delete this list?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                DocumentSnapshot documentSnapshot=masterListFirestoreAdapter.getSnapshots().getSnapshot(position);
+                                String id=documentSnapshot.getId();
+                                usersColRef.document(userID).collection("Lists").document(id).delete();
+                            }
+                        })
+                        .setNegativeButton("No",null)
+                        .show();
+
+//                mAdapter.players.remove(position);
+//                mAdapter.notifyItemRemoved(position);
+//                mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
+            }
+
+            @Override
+            public void onLeftClicked(int position) {
+                Log.i("cluck","left");
+                DocumentSnapshot documentSnapshot=masterListFirestoreAdapter.getSnapshots().getSnapshot(position);
+                List list=documentSnapshot.toObject(List.class);
+//                List list=masterListFirestoreAdapter.getItem(position);
+                String oldListName=list.getListName();
+                String oldListDescription=list.getListDescription();
+                int oldListIconPosition=list.getPositionImage();
+
+                editListAlert(oldListName,oldListDescription,oldListIconPosition,documentSnapshot.getId());
+            }
+        });
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
         itemTouchhelper.attachToRecyclerView(mRecyclerView);
         mRecyclerView.setAdapter(masterListFirestoreAdapter);

@@ -38,12 +38,7 @@ public class MasterListFirestoreAdapter extends FirestoreRecyclerAdapter<List, M
 
     private FirebaseFirestore db=FirebaseFirestore.getInstance();
     private CollectionReference usersColRef=db.collection("Users");
-    /**
-     * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
-     * FirestoreRecyclerOptions} for configuration options.
-     *
-     * @param options
-     */
+
     public MasterListFirestoreAdapter(@NonNull FirestoreRecyclerOptions<List> options, Context context) {
         super(options);
         this.context = context;
@@ -80,6 +75,8 @@ public class MasterListFirestoreAdapter extends FirestoreRecyclerAdapter<List, M
 
             }
         });
+
+
 
 
     }

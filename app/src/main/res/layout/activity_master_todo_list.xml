@@ -58,7 +58,8 @@
           android:layout_height="wrap_content"
           android:text="Choose List"
           android:textColor="@color/black"
-          android:textSize="25sp"
+          android:textSize="22sp"
+          android:fontFamily="@font/raleway_semibold"
           android:textStyle="bold" />
 
     </LinearLayout>
