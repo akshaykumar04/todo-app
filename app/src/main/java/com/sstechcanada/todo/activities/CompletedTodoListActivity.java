@@ -48,6 +48,7 @@ import com.sstechcanada.todo.utils.NotificationUtils;
 import es.dmoral.toasty.Toasty;
 
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.listId;
+import static com.sstechcanada.todo.activities.MasterTodoListActivity.purchaseCode;
 import static com.sstechcanada.todo.activities.TodoListActivity2.lottieAnimationView;
 
 public class CompletedTodoListActivity extends AppCompatActivity {
@@ -96,9 +97,11 @@ public class CompletedTodoListActivity extends AppCompatActivity {
 
         setValue();
 
-        AdView adView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        if(purchaseCode.equals("0")){
+            AdView adView = findViewById(R.id.adView);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            adView.loadAd(adRequest);
+        }
 
         toolbar_profile = findViewById(R.id.profile_toolbar);
         toolbar_profile.setOnClickListener(new View.OnClickListener() {

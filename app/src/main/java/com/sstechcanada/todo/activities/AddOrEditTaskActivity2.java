@@ -63,6 +63,7 @@ import java.util.Map;
 import es.dmoral.toasty.Toasty;
 
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.listId;
+import static com.sstechcanada.todo.activities.MasterTodoListActivity.purchaseCode;
 
 public class AddOrEditTaskActivity2 extends AppCompatActivity {
     private static final String TAG = AddOrEditTaskActivity2.class.getSimpleName();
@@ -251,9 +252,12 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
     }
 
     private void loadBannerAd() {
-        AdView adView = mBinding.adView;
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        if(purchaseCode.equals("0")){
+            AdView adView = findViewById(R.id.adView);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            adView.loadAd(adRequest);
+        }
+
 
     }
 
@@ -485,7 +489,10 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 
         addMoreCategories.setOnClickListener(view -> startActivity(new Intent(AddOrEditTaskActivity2.this, AddCategoryActivity2.class)));
 
-        bannerAd.loadAd(new AdRequest.Builder().build());
+        if(purchaseCode.equals("0")){
+            bannerAd.loadAd(new AdRequest.Builder().build());
+        }
+
 
         AlertDialog dialog = alert.create();
         dialog.show();

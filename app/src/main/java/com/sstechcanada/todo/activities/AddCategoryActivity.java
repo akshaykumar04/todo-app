@@ -35,6 +35,8 @@ import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 
+import static com.sstechcanada.todo.activities.MasterTodoListActivity.purchaseCode;
+
 public class AddCategoryActivity extends AppCompatActivity {
 
     //view objects
@@ -107,10 +109,12 @@ public class AddCategoryActivity extends AppCompatActivity {
                 return true;
             }
         });
+        if(purchaseCode.equals("0")){
+            AdView adView = findViewById(R.id.adView);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            adView.loadAd(adRequest);
+        }
 
-        AdView adView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
     }
 
     /*

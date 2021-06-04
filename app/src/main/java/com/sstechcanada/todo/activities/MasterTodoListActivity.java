@@ -128,9 +128,13 @@ public class MasterTodoListActivity extends AppCompatActivity {
 
         setValue();
 
-        AdView adView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        if(purchaseCode.equals("0")){
+            AdView adView = findViewById(R.id.adView);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            adView.loadAd(adRequest);
+        }
+
+
 
 
         toolbar_profile = findViewById(R.id.profile_toolbar);
@@ -233,8 +237,10 @@ public class MasterTodoListActivity extends AppCompatActivity {
             });
         });
 
+        if(purchaseCode.equals("0")){
+            bannerAd.loadAd(new AdRequest.Builder().build());
+        }
 
-        bannerAd.loadAd(new AdRequest.Builder().build());
 
         AlertDialog dialog = alert.create();
         dialog.show();
@@ -289,8 +295,10 @@ public class MasterTodoListActivity extends AppCompatActivity {
             });
         });
 
+        if(purchaseCode.equals("0")){
+            bannerAd.loadAd(new AdRequest.Builder().build());
+        }
 
-        bannerAd.loadAd(new AdRequest.Builder().build());
 
         AlertDialog dialog = alert.create();
         dialog.show();
@@ -497,7 +505,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
 
         super.onResume();
         // This is so that if we've edited a task directly from the widget, the widget will still
-        // get updated when we come to this activity after clicking UPDATE TASK in AddOrEditTaskActivity
+        // get updated when we come to this activity after clicking UPDATE TASK in adOrEditTaskActivity
         updateWidget();
 
     }
