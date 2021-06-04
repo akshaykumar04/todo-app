@@ -262,12 +262,15 @@ public class MasterTodoListActivity extends AppCompatActivity {
             if ( selectedIndex == position) {
                 ((MasterIconGridItemView) v).display(false);
 
+                gridAdapter.selectedPosition = -1;
                 selectedDrawable=0;
             } else {
                 Log.i("gridView", String.valueOf(position));
 
+                if(gridAdapter.selectedPosition!=-1){
+                    ((MasterIconGridItemView)gridView.getChildAt( gridAdapter.selectedPosition)).display(false);
 
-                ((MasterIconGridItemView)gridView.getChildAt( gridAdapter.selectedPosition)).display(false);
+                }
 
                 selectedDrawable= position;
                 ((MasterIconGridItemView) v).display(true);
