@@ -430,5 +430,9 @@ public class TodoListActivity2 extends AppCompatActivity {
 
     }
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(TodoListActivity2.this,MasterTodoListActivity.class));
+    }
 }
