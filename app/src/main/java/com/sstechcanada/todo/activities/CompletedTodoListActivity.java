@@ -97,10 +97,13 @@ public class CompletedTodoListActivity extends AppCompatActivity {
 
         setValue();
 
+        AdView adView = findViewById(R.id.adView);
+
         if(purchaseCode.equals("0")){
-            AdView adView = findViewById(R.id.adView);
             AdRequest adRequest = new AdRequest.Builder().build();
             adView.loadAd(adRequest);
+        }else{
+            adView.setVisibility(View.GONE);
         }
 
         toolbar_profile = findViewById(R.id.profile_toolbar);

@@ -111,10 +111,14 @@ public class TodoListActivity2 extends AppCompatActivity {
         //Limit Set
 
         setValue();
+
+        AdView adView = mBinding.adView;
         if(purchaseCode.equals("0")){
-            AdView adView = mBinding.adView;
+
             AdRequest adRequest = new AdRequest.Builder().build();
             adView.loadAd(adRequest);
+        }else{
+            adView.setVisibility(View.GONE);
         }
 
 

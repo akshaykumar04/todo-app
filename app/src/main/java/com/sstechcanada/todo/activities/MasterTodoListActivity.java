@@ -128,10 +128,14 @@ public class MasterTodoListActivity extends AppCompatActivity {
 
         setValue();
 
+        AdView adView = findViewById(R.id.adView);
+
         if(purchaseCode.equals("0")){
-            AdView adView = findViewById(R.id.adView);
+
             AdRequest adRequest = new AdRequest.Builder().build();
             adView.loadAd(adRequest);
+        }else{
+            adView.setVisibility(View.GONE);
         }
 
 
@@ -239,12 +243,12 @@ public class MasterTodoListActivity extends AppCompatActivity {
 
         if(purchaseCode.equals("0")){
             bannerAd.loadAd(new AdRequest.Builder().build());
+        }else{
+            bannerAd.setVisibility(View.GONE);
         }
-
 
         AlertDialog dialog = alert.create();
         dialog.show();
-
 
     }
 
@@ -297,6 +301,8 @@ public class MasterTodoListActivity extends AppCompatActivity {
 
         if(purchaseCode.equals("0")){
             bannerAd.loadAd(new AdRequest.Builder().build());
+        }else{
+            bannerAd.setVisibility(View.GONE);
         }
 
 
