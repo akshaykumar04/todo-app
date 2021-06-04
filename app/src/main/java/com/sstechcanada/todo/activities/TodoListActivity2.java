@@ -89,7 +89,8 @@ public class TodoListActivity2 extends AppCompatActivity {
         if(Integer.valueOf(purchaseCode)!=0){
             Log.i("purchase code",purchaseCode);
             Log.i("purchase code","purchaseCode");
-            mBinding.completedTab.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+
+            mBinding.completedTab.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_check_circle_24, 0);
         }
         showProgressBar();
 //        setContentView(R.layout.activity_todo_list);
