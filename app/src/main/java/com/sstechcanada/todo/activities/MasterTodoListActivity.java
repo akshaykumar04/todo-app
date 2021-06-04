@@ -8,6 +8,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -49,15 +51,14 @@ import com.sstechcanada.todo.adapters.MasterListFirestoreAdapter;
 import com.sstechcanada.todo.adapters.MasterListGridViewAdapter;
 import com.sstechcanada.todo.adapters.TodoListAdapter;
 import com.sstechcanada.todo.broadcast_receivers.DailyAlarmReceiver;
-import com.sstechcanada.todo.custom_views.GridItemView;
 import com.sstechcanada.todo.custom_views.MasterIconGridItemView;
 import com.sstechcanada.todo.data.TodoListContract;
 import com.sstechcanada.todo.data.TodoListDbHelper;
 import com.sstechcanada.todo.models.List;
 import com.sstechcanada.todo.models.TodoTask;
 import com.sstechcanada.todo.utils.NotificationUtils;
+import com.sstechcanada.todo.utils.SwipeController;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -288,12 +289,56 @@ public class MasterTodoListActivity extends AppCompatActivity {
 
 
     private void setUpFirestoreRecyclerView() {
+//        ItemTouchHelper mIth = new ItemTouchHelper(
+//                new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN,
+//                        ItemTouchHelper.LEFT) {
+//                    public boolean onMove(RecyclerView mRecyclerView,
+//                                          RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+//                        final int fromPos = viewHolder.getAdapterPosition();
+//                        final int toPos = target.getAdapterPosition();
+//                        // move item in `fromPos` to `toPos` in adapter.
+//                        return true;// true if moved, false otherwise
+//                    }
+//                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+//                        // remove from adapter
+//                    }
+//
+//                    @Override
+//                    public int convertToAbsoluteDirection(int flags, int layoutDirection) {
+//                        if (swipeBack) {
+//                            swipeBack = false;
+//                            return 0;
+//                        }
+//                        return super.convertToAbsoluteDirection(flags, layoutDirection);
+//                    }
+//
+//                    @Override
+//                    public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+//                        super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+//                    }
+//
+//                });
+
+
         Query query =usersColRef.document(userID).collection("Lists");
         FirestoreRecyclerOptions<List> options =new FirestoreRecyclerOptions.Builder<List>().setQuery(query,List.class).build();
         masterListFirestoreAdapter=new MasterListFirestoreAdapter(options,this);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        SwipeController swipeController = new SwipeController();
+        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
+        itemTouchhelper.attachToRecyclerView(mRecyclerView);
         mRecyclerView.setAdapter(masterListFirestoreAdapter);
+
+        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+                swipeController.onDraw(c);
+            }
+        });
+
+
+
         list_cnt = masterListFirestoreAdapter.getItemCount();
 
     }
@@ -435,5 +480,10 @@ public class MasterTodoListActivity extends AppCompatActivity {
         }
 
     }
+
+
+
+
+
 
 }
