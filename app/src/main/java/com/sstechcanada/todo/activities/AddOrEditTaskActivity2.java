@@ -22,8 +22,6 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.cardview.widget.CardView;
 import androidx.databinding.DataBindingUtil;
 
-import com.github.thunder413.datetimeutils.DateTimeStyle;
-import com.github.thunder413.datetimeutils.DateTimeUtils;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
@@ -52,10 +50,11 @@ import com.sstechcanada.todo.models.Category;
 import com.sstechcanada.todo.models.TodoTask;
 import com.sstechcanada.todo.models.TodoTaskFirestore;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -397,11 +396,12 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
             String task_status;
             if (mBinding.cbTaskCompleted.isChecked()) {
                 task_status = "Completed";
-                DateTimeUtils.setTimeZone("UTC");
-                String date = DateTimeUtils.formatWithStyle(new Date(), DateTimeStyle.MEDIUM);
-                String time = DateTimeUtils.formatTime(new Date(),true);
-
-                updateTaskMap.put("TimestampCompleted", date+" "+time);
+                Calendar calendar = Calendar.getInstance();
+                String dateStr = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime());
+                SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
+                Log.i("dateTime","TimestampCompleted"+ dateStr);
+                String timeStr = sdf.format(calendar.getTime());
+                updateTaskMap.put("TimestampCompleted", dateStr+" "+timeStr);
             } else {
                 task_status = "Pending";;
             }
