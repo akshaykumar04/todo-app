@@ -93,8 +93,13 @@ public class LoginActivity extends AppCompatActivity {
         userType = findViewById(R.id.tv_userType);
         userEmail = findViewById(R.id.tv_userEmail);
         fabBack = findViewById(R.id.fabBack);
+
         bannerAd = findViewById(R.id.adView);
-        bannerAd.loadAd(new AdRequest.Builder().build());
+        if(purchaseCode.equals("0")){
+            bannerAd.loadAd(new AdRequest.Builder().build());
+        }else{
+            bannerAd.setVisibility(View.GONE);
+        }
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();

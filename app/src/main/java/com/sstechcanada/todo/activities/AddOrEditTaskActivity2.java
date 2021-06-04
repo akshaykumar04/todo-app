@@ -252,10 +252,13 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
     }
 
     private void loadBannerAd() {
+
+        AdView adView = findViewById(R.id.adView);
         if(purchaseCode.equals("0")){
-            AdView adView = findViewById(R.id.adView);
             AdRequest adRequest = new AdRequest.Builder().build();
             adView.loadAd(adRequest);
+        }else{
+            adView.setVisibility(View.GONE);
         }
 
 
@@ -491,6 +494,8 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 
         if(purchaseCode.equals("0")){
             bannerAd.loadAd(new AdRequest.Builder().build());
+        }else{
+            bannerAd.setVisibility(View.GONE);
         }
 
 
