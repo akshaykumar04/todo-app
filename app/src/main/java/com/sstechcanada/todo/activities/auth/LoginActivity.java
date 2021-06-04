@@ -30,7 +30,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -292,13 +291,10 @@ public class LoginActivity extends AppCompatActivity {
             Map<String, String> profile = new HashMap<>();
             profile.put("Email", firebaseUser.getEmail());
             profile.put("purchase_code", "0");
-
-
-
             documentReferenceCurrentReference.set(profile).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-
+                    startActivity(new Intent(LoginActivity.this, MasterTodoListActivity.class));
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -306,9 +302,7 @@ public class LoginActivity extends AppCompatActivity {
                     Toasty.error(getApplicationContext(), "Profile Updation Failed: ", Toast.LENGTH_LONG).show();
                 }
             });
-        }
-
-        startActivity(new Intent(LoginActivity.this, MasterTodoListActivity.class));
+        }else{ startActivity(new Intent(LoginActivity.this, MasterTodoListActivity.class));}
 
 
 //        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child(firebaseUser.getUid());
