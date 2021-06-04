@@ -1,34 +1,33 @@
 {
   "project_info": {
-    "project_number": "86938910623",
-    "firebase_url": "https://sstechcanda-default-rtdb.firebaseio.com",
-    "project_id": "sstechcanda",
-    "storage_bucket": "sstechcanda.appspot.com"
+    "project_number": "444095359781",
+    "project_id": "sorted-to-do-list",
+    "storage_bucket": "sorted-to-do-list.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:86938910623:android:e66edc8b6bbfff348787aa",
+        "mobilesdk_app_id": "1:444095359781:android:e9df8904bc31c152c6c8cc",
         "android_client_info": {
           "package_name": "com.sstechcanada.todo"
         }
       },
       "oauth_client": [
         {
-          "client_id": "86938910623-fdie9gfv1riu8n1rh7f1bls81g9k2a1d.apps.googleusercontent.com",
+          "client_id": "444095359781-0ba38l4409062j9iu8almb2gt4md3q02.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBFdcChJlmWjtP0r4ff-Y8mzY04-BehCYE"
+          "current_key": "AIzaSyChn-GwMTuPaxcOPtqytOg45QvDdAY5d40"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "86938910623-fdie9gfv1riu8n1rh7f1bls81g9k2a1d.apps.googleusercontent.com",
+              "client_id": "444095359781-0ba38l4409062j9iu8almb2gt4md3q02.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
