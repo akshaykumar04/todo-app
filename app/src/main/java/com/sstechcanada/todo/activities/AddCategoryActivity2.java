@@ -235,15 +235,27 @@ public class AddCategoryActivity2 extends AppCompatActivity {
         buttonUpdate.setOnClickListener(view -> {
             String name = editTextName.getText().toString().trim();
             if (!TextUtils.isEmpty(name)) {
-                updateCategory(categoryId, name,categoryName);
+                updateCategory(categoryId, name, categoryName);
                 b.dismiss();
+            } else {
+                Toasty.warning(this, "Please enter a Benefit name", Toast.LENGTH_SHORT).show();
             }
         });
 
         buttonDelete.setOnClickListener(view -> {
-
-            deleteCategory(categoryId,categoryName);
+            androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(this);
+            alert.setTitle(R.string.delete_benefit);
+            alert.setMessage(R.string.delete_benefit_message);
+            alert.setPositiveButton(
+                    R.string.yes,
+                    (dialog, id) -> deleteCategory(categoryId, categoryName));
             b.dismiss();
+
+            alert.setNegativeButton(
+                    R.string.no,
+                    (dialog, id) -> dialog.dismiss());
+            alert.show();
+
         });
 
     }
@@ -323,7 +335,6 @@ public class AddCategoryActivity2 extends AppCompatActivity {
             public void onSuccess(Void aVoid) {
                 Toasty.success(getApplicationContext(), "Benefit Deleted", Toast.LENGTH_SHORT).show();
                 deleteCategoryFromEachTodo(categoryName);
-
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

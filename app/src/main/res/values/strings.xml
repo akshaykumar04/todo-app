@@ -65,6 +65,8 @@
     <string name="premium_user">Premium User</string>
     <string name="free_user">Free User</string>
     <string name="sign_out">Sign out?</string>
+    <string name="delete_benefit">Are you sure to delete benefit?</string>
+    <string name="delete_benefit_message">Deleting this benefit will delete this from all To Do items</string>
     <string name="are_you_sure">Are you sure you want to Sign out?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
@@ -84,5 +86,6 @@
     <string name="_9_99_month">$ 9.99 / month</string>
     <string name="create_up_to_20_to_do_lists">create up to 20 to do lists</string>
     <string name="create_up_to_3_to_do_lists">create up to 3 to do lists</string>
+    <string name="title_add_benefit">Add Benefits</string>
 
 </resources>
