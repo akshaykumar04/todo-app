@@ -280,28 +280,31 @@ public class LoginActivity extends AppCompatActivity {
     private void updateUserPackage() {
         FirebaseUser firebaseUser = mAuth.getCurrentUser();
         DocumentReference documentReferenceCurrentReference=db.collection("Users").document(firebaseUser.getUid());
-        Map<String,String> profile =new HashMap<>();
-        profile.put("Email",firebaseUser.getEmail());
-        profile.put("purchase_code","0");
-//        profile.put("item_limit","15");
+
+        long creationTimestamp = mAuth.getCurrentUser().getMetadata().getCreationTimestamp();
+        long lastSignInTimestamp = mAuth.getCurrentUser().getMetadata().getLastSignInTimestamp();
+        if (creationTimestamp==lastSignInTimestamp) {
+            Map<String, String> profile = new HashMap<>();
+            profile.put("Email", firebaseUser.getEmail());
+            profile.put("purchase_code", "0");
 
 
-        documentReferenceCurrentReference.set(profile).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
 
-//                Map<String, Object> claims = new HashMap<>();
-//                claims.put("purchaseCode", 0);
+            documentReferenceCurrentReference.set(profile).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
 
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toasty.error(getApplicationContext(), "Profile Updation Failed: ", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
 
-                startActivity(new Intent(LoginActivity.this, MasterTodoListActivity.class));
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toasty.error(getApplicationContext(), "Profile Updation Failed: ", Toast.LENGTH_LONG).show();
-            }
-        });
+        startActivity(new Intent(LoginActivity.this, MasterTodoListActivity.class));
+
 
 //        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child(firebaseUser.getUid());
 //        databaseReference.child(firebaseUser.getUid()).child("Email").setValue(firebaseUser.getEmail());

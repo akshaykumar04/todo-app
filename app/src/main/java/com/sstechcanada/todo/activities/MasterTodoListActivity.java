@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,6 +30,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.view.GravityCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -74,28 +76,28 @@ public class MasterTodoListActivity extends AppCompatActivity {
     String userID;
     ImageView placeholderImage;
     private int list_limit = 15;
-    public static int list_cnt=0;
+    public static int list_cnt = 0;
     private RecyclerView mRecyclerView;
     private TodoListAdapter mTodoListAdapter;
-//    private MasterTodoListActivity mBinding;
+    //    private MasterTodoListActivity mBinding;
     private SharedPreferences mSharedPreferences, ll;
     private AppCompatImageView toolbar_profile;
     private TodoListDbHelper tld;
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private DatabaseReference databaseReference;
-    private FirebaseFirestore db=FirebaseFirestore.getInstance();
-    private CollectionReference usersColRef=db.collection("Users");
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference usersColRef = db.collection("Users");
     private MasterListFirestoreAdapter masterListFirestoreAdapter;
     private GridView gridView;
-    ProgressBar progressBar,loadingProgressBar;
-//    String
-    int selectedDrawable,sdrawable;
-//    ArrayList<String>
-    public static  Integer[]  listDrawable;
+    ProgressBar progressBar, loadingProgressBar;
+    //    String
+    int selectedDrawable, sdrawable;
+    //    ArrayList<String>
+    public static Integer[] listDrawable;
     private MasterListGridViewAdapter gridAdapter;
     public static String listId;
-    public static String purchaseCode="";
+    public static String purchaseCode = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,13 +105,13 @@ public class MasterTodoListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_master_todo_list);
 
         mRecyclerView = findViewById(R.id.rv_todo_list);
-        loadingProgressBar= findViewById(R.id.loadingProgressBar);
+        loadingProgressBar = findViewById(R.id.loadingProgressBar);
 
-        listDrawable= new Integer[]{
-                R.drawable.master_list_default_icon, R.drawable.idea, R.drawable.ic_lock,R.drawable.ic_to_do_list,
-                R.drawable.circle_per_item,  R.drawable.sport, R.drawable.movie, R.drawable.globe, R.drawable.music,
+        listDrawable = new Integer[]{
+                R.drawable.master_list_default_icon, R.drawable.idea, R.drawable.ic_lock, R.drawable.ic_to_do_list,
+                R.drawable.circle_per_item, R.drawable.sport, R.drawable.movie, R.drawable.globe, R.drawable.music,
                 R.drawable.heart, R.drawable.diet, R.drawable.book,
-                 R.drawable.shopping_cart,
+                R.drawable.shopping_cart,
         };
 
         showProgressBar();
@@ -131,7 +133,6 @@ public class MasterTodoListActivity extends AppCompatActivity {
         adView.loadAd(adRequest);
 
 
-
         toolbar_profile = findViewById(R.id.profile_toolbar);
         toolbar_profile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,14 +145,14 @@ public class MasterTodoListActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(Integer.parseInt(userAccountDetails.get(0))>masterListFirestoreAdapter.getItemCount()){
-                    Log.i("purchasecode","masterlist limit :"+(userAccountDetails.get(0)));
-                    Log.i("purchasecode","masterlist items :"+(masterListFirestoreAdapter.getItemCount()));
+                if (Integer.parseInt(userAccountDetails.get(0)) > masterListFirestoreAdapter.getItemCount()) {
+                    Log.i("purchasecode", "masterlist limit :" + (userAccountDetails.get(0)));
+                    Log.i("purchasecode", "masterlist items :" + (masterListFirestoreAdapter.getItemCount()));
                     setValue();
                     if (isLogin()) {
                         addNewlistAlert();
                     }
-                }else {
+                } else {
                     if (isLogin()) {
                         Toasty.info(getApplicationContext(), getString(R.string.cannot_create), Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(MasterTodoListActivity.this, AppUpgradeActivity.class);
@@ -168,12 +169,12 @@ public class MasterTodoListActivity extends AppCompatActivity {
         usersColRef.document(userID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                purchaseCode=documentSnapshot.get("purchase_code").toString();
+                purchaseCode = documentSnapshot.get("purchase_code").toString();
                 db.collection("UserTiers").document(purchaseCode).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        Log.i("purchasecode","purchase code :"+purchaseCode);
-                       Log.i("purchasecode","new :"+documentSnapshot.get("masterListLimit").toString());
+                        Log.i("purchasecode", "purchase code :" + purchaseCode);
+                        Log.i("purchasecode", "new :" + documentSnapshot.get("masterListLimit").toString());
                         userAccountDetails.add(0, documentSnapshot.get("masterListLimit").toString());
                         userAccountDetails.add(1, documentSnapshot.get("todoItemLimit").toString());
                         hideProgressBar();
@@ -207,7 +208,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
 //                Toast.makeText(getBaseContext(), "Cancel clicked", Toast.LENGTH_SHORT).show();
         });
         alert.setPositiveButton("Done", (dialog, which) -> {
-            sdrawable=selectedDrawable;
+            sdrawable = selectedDrawable;
 //            int imageResource = getResources().getIdentifier(sdrawable, null, getPackageName());
             String name = ((EditText) alertLayout.findViewById(R.id.editTextListName)).getText().toString();
             String description = ((EditText) alertLayout.findViewById(R.id.editTextListDescription)).getText().toString();
@@ -222,12 +223,12 @@ public class MasterTodoListActivity extends AppCompatActivity {
             usersColRef.document(userID).collection("Lists").document().set(newList).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    Toasty.success(MasterTodoListActivity.this,"New List Successfully Added");
+                    Toasty.success(MasterTodoListActivity.this, "New List Successfully Added");
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toasty.error(MasterTodoListActivity.this,"Something went wrong");
+                    Toasty.error(MasterTodoListActivity.this, "Something went wrong");
                 }
             });
         });
@@ -241,7 +242,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
 
     }
 
-    public void editListAlert(String oldListName,String oldListDescription,int oldListIconPosition,String documentSnapshotId) {
+    public void editListAlert(String oldListName, String oldListDescription, int oldListIconPosition, String documentSnapshotId) {
         LayoutInflater inflater = getLayoutInflater();
         View alertLayout = inflater.inflate(R.layout.add_list_dialog, null);
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -263,7 +264,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
 //                Toast.makeText(getBaseContext(), "Cancel clicked", Toast.LENGTH_SHORT).show();
         });
         alert.setPositiveButton("Done", (dialog, which) -> {
-            sdrawable=selectedDrawable;
+            sdrawable = selectedDrawable;
 //            int imageResource = getResources().getIdentifier(sdrawable, null, getPackageName());
             String name = ((EditText) alertLayout.findViewById(R.id.editTextListName)).getText().toString();
             String description = ((EditText) alertLayout.findViewById(R.id.editTextListDescription)).getText().toString();
@@ -278,12 +279,12 @@ public class MasterTodoListActivity extends AppCompatActivity {
             usersColRef.document(userID).collection("Lists").document(documentSnapshotId).update(list).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    Toasty.success(MasterTodoListActivity.this,"List Successfully Edited");
+                    Toasty.success(MasterTodoListActivity.this, "List Successfully Edited");
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toasty.error(MasterTodoListActivity.this,"Something went wrong");
+                    Toasty.error(MasterTodoListActivity.this, "Something went wrong");
                 }
             });
         });
@@ -294,9 +295,9 @@ public class MasterTodoListActivity extends AppCompatActivity {
         AlertDialog dialog = alert.create();
         dialog.show();
 
-        EditText listNameEditText= dialog.findViewById(R.id.editTextListName);
+        EditText listNameEditText = dialog.findViewById(R.id.editTextListName);
         listNameEditText.setText(oldListName);
-        EditText ListDescriptionEditText= dialog.findViewById(R.id.editTextListDescription);
+        EditText ListDescriptionEditText = dialog.findViewById(R.id.editTextListDescription);
         ListDescriptionEditText.setText(oldListDescription);
 
     }
@@ -307,32 +308,32 @@ public class MasterTodoListActivity extends AppCompatActivity {
         gridView.setAdapter(gridAdapter);
         gridView.setVisibility(View.VISIBLE);
 
-        gridAdapter.selectedPosition=iconPosition;
+        gridAdapter.selectedPosition = iconPosition;
 
         gridView.setOnItemClickListener((parent, v, position, id) -> {
 //            gridView.setAdapter(null);
 //            gridView.setAdapter(gridAdapter);
 
-            Log.i("gridView","on click" );
+            Log.i("gridView", "on click");
 
             int selectedIndex = gridAdapter.selectedPosition;
 
-            if ( selectedIndex == position) {
+            if (selectedIndex == position) {
                 ((MasterIconGridItemView) v).display(false);
 
                 gridAdapter.selectedPosition = -1;
-                selectedDrawable=iconPosition;
+                selectedDrawable = iconPosition;
             } else {
                 Log.i("gridView", String.valueOf(position));
 
-                if(gridAdapter.selectedPosition!=-1){
-                    ((MasterIconGridItemView)gridView.getChildAt( gridAdapter.selectedPosition)).display(false);
+                if (gridAdapter.selectedPosition != -1) {
+                    ((MasterIconGridItemView) gridView.getChildAt(gridAdapter.selectedPosition)).display(false);
 
                 }
 
-                selectedDrawable= position;
+                selectedDrawable = position;
                 ((MasterIconGridItemView) v).display(true);
-                gridAdapter.selectedPosition=position;
+                gridAdapter.selectedPosition = position;
 
 //                for(int i=0;i<listDrawable.length;i++) {
 //                    Log.i("gridView", String.valueOf(i));
@@ -377,16 +378,16 @@ public class MasterTodoListActivity extends AppCompatActivity {
 //                });
 
 
-        Query query =usersColRef.document(userID).collection("Lists");
-        FirestoreRecyclerOptions<List> options =new FirestoreRecyclerOptions.Builder<List>().setQuery(query,List.class).build();
-        masterListFirestoreAdapter=new MasterListFirestoreAdapter(options,this);
+        Query query = usersColRef.document(userID).collection("Lists");
+        FirestoreRecyclerOptions<List> options = new FirestoreRecyclerOptions.Builder<List>().setQuery(query, List.class).build();
+        masterListFirestoreAdapter = new MasterListFirestoreAdapter(options, this);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        SwipeController swipeController = new SwipeController(this,new SwipeControllerActions() {
+        SwipeController swipeController = new SwipeController(this, new SwipeControllerActions() {
             @Override
             public void onRightClicked(int position) {
-                Log.i("cluck","right");
+                Log.i("cluck", "right");
 
                 new AlertDialog.Builder(MasterTodoListActivity.this)
                         .setIcon(android.R.drawable.ic_menu_delete)
@@ -395,12 +396,12 @@ public class MasterTodoListActivity extends AppCompatActivity {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                DocumentSnapshot documentSnapshot=masterListFirestoreAdapter.getSnapshots().getSnapshot(position);
-                                String id=documentSnapshot.getId();
+                                DocumentSnapshot documentSnapshot = masterListFirestoreAdapter.getSnapshots().getSnapshot(position);
+                                String id = documentSnapshot.getId();
                                 usersColRef.document(userID).collection("Lists").document(id).delete();
                             }
                         })
-                        .setNegativeButton("No",null)
+                        .setNegativeButton("No", null)
                         .show();
 
 //                mAdapter.players.remove(position);
@@ -410,15 +411,15 @@ public class MasterTodoListActivity extends AppCompatActivity {
 
             @Override
             public void onLeftClicked(int position) {
-                Log.i("cluck","left");
-                DocumentSnapshot documentSnapshot=masterListFirestoreAdapter.getSnapshots().getSnapshot(position);
-                List list=documentSnapshot.toObject(List.class);
+                Log.i("cluck", "left");
+                DocumentSnapshot documentSnapshot = masterListFirestoreAdapter.getSnapshots().getSnapshot(position);
+                List list = documentSnapshot.toObject(List.class);
 //                List list=masterListFirestoreAdapter.getItem(position);
-                String oldListName=list.getListName();
-                String oldListDescription=list.getListDescription();
-                int oldListIconPosition=list.getPositionImage();
+                String oldListName = list.getListName();
+                String oldListDescription = list.getListDescription();
+                int oldListIconPosition = list.getPositionImage();
 
-                editListAlert(oldListName,oldListDescription,oldListIconPosition,documentSnapshot.getId());
+                editListAlert(oldListName, oldListDescription, oldListIconPosition, documentSnapshot.getId());
             }
         });
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
@@ -431,7 +432,6 @@ public class MasterTodoListActivity extends AppCompatActivity {
                 swipeController.onDraw(c);
             }
         });
-
 
 
         list_cnt = masterListFirestoreAdapter.getItemCount();
@@ -502,11 +502,11 @@ public class MasterTodoListActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-//        mSharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
-    }
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+////        mSharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+//    }
 
     private void deleteAllCheckedTasks() {
         // this is just for testing, later a service will do it periodically
@@ -576,9 +576,42 @@ public class MasterTodoListActivity extends AppCompatActivity {
 
     }
 
+    private boolean doubleBackToExitPressedOnce;
+    private Handler mHandler = new Handler();
 
+    private final Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            doubleBackToExitPressedOnce = false;
+        }
+    };
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mHandler != null) {
+            mHandler.removeCallbacks(mRunnable);
+        }
+    }
 
+    @Override
+    public void onBackPressed() {
 
+//            if(getSupportFragmentManager().findFragmentById(R.id.fragment_container).getParentFragment()==R.layout.fragment_profile){
+        if (doubleBackToExitPressedOnce) {
+            this.finishAffinity();
+            return;
+        }
 
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please press back again to exit", Toast.LENGTH_SHORT).show();
+        mHandler.postDelayed(mRunnable, 2000);
+
+    }
 }
+
+
+
+
+
+

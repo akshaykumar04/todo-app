@@ -79,6 +79,7 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
                 model.setDocumentID(documentSnapshot.getId());
 
                 String doc_id = String.valueOf(model.getDocumentID());
+
                 TodoTaskFirestore todoTask = new TodoTaskFirestore(model.getDescription(),
                        model.getPriority(),
                         model.getDueDate(),
@@ -87,7 +88,8 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
                         model.getCategory(),
                         2,
                         model.getBenefits(),
-                        model.getBenefitsString());
+                        model.getBenefitsString(),
+                        model.getTimestampCompleted());
 
                 Intent intent = new Intent(v.getContext(), AddOrEditTaskActivity2.class);
                 intent.putExtra("Adding or editing", "Edit Task");

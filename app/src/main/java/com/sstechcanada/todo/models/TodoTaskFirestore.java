@@ -8,9 +8,8 @@ import com.google.firebase.firestore.Exclude;
 import java.util.ArrayList;
 
 public class TodoTaskFirestore implements Parcelable {
+
     private String description;
-
-
     private int priority;
     private long dueDate;
     private String documentID;
@@ -20,8 +19,9 @@ public class TodoTaskFirestore implements Parcelable {
     private int category_count;
     private ArrayList<String> Benefits;
     private String benefitsString;
+    private String TimestampCompleted;
 
-        public TodoTaskFirestore(){}
+    public TodoTaskFirestore(){}
 
 
     protected TodoTaskFirestore(Parcel in) {
@@ -35,6 +35,8 @@ public class TodoTaskFirestore implements Parcelable {
         category_count = in.readInt();
         Benefits = in.createStringArrayList();
         benefitsString = in.readString();
+        TimestampCompleted = in.readString();
+
     }
 
     public static final Creator<TodoTaskFirestore> CREATOR = new Creator<TodoTaskFirestore>() {
@@ -53,7 +55,7 @@ public class TodoTaskFirestore implements Parcelable {
         this.benefitsString = benefitsString;
     }
 
-    public TodoTaskFirestore(String description, int priority, long dueDate, String documentID,  String Status, String category, int category_count, ArrayList<String> Benefits,String benefitsString) {
+    public TodoTaskFirestore(String description, int priority, long dueDate, String documentID, String Status, String category, int category_count, ArrayList<String> Benefits,String benefitsString,String TimestampCompleted) {
         this.description = description;
         this.priority = priority;
         this.dueDate = dueDate;
@@ -64,6 +66,7 @@ public class TodoTaskFirestore implements Parcelable {
         this.category_count = category_count;
         this.Benefits = Benefits;
         this.benefitsString=benefitsString;
+        this.TimestampCompleted=TimestampCompleted;
     }
 
     public String getDescription() {
@@ -111,6 +114,14 @@ public class TodoTaskFirestore implements Parcelable {
         return Benefits;
     }
 
+    public String getTimestampCompleted() {
+        return TimestampCompleted;
+    }
+
+    public void setTimestampCompleted(String timestampCompleted) {
+        TimestampCompleted = timestampCompleted;
+    }
+
     public String getBenefitsString(){
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < Benefits.size(); i++) {
@@ -138,8 +149,10 @@ public class TodoTaskFirestore implements Parcelable {
         parcel.writeInt(category_count);
         parcel.writeStringList(Benefits);
         parcel.writeString(benefitsString);
+        parcel.writeString(TimestampCompleted);
     }
-//
+
+
 //    public TodoTaskFirestore(String description, int priority, long dueDate, String documentID, int completed,String benefitsString,ArrayList<String> Benefits) {
 //        this.description = description;
 //        this.priority = priority;

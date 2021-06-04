@@ -22,6 +22,8 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.cardview.widget.CardView;
 import androidx.databinding.DataBindingUtil;
 
+import com.github.thunder413.datetimeutils.DateTimeStyle;
+import com.github.thunder413.datetimeutils.DateTimeUtils;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
@@ -53,6 +55,7 @@ import com.sstechcanada.todo.models.TodoTaskFirestore;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -162,6 +165,11 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 
                 mBinding.cbTaskCompleted.setChecked(taskCompleted.equals("Completed"));
 
+                if(taskCompleted.equals("Completed")){
+                    mBinding.timestampCompletedtextView.setText(todoTaskToAddOrEdit.getTimestampCompleted());
+                    mBinding.timestampCompletedtextView.setVisibility(View.VISIBLE);
+                }
+
                 selectPriorityRadioButton(todoTaskToAddOrEdit.getPriority());
 
                 dueDate = todoTaskToAddOrEdit.getDueDate();
@@ -195,6 +203,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 
             if(taskCompleted.equals("Completed")){
                 mBinding.cbTaskCompleted.setChecked(true);
+                mBinding.timestampCompletedtextView.setText(todoTaskToAddOrEdit.getTimestampCompleted());
             }else{
                 mBinding.cbTaskCompleted.setChecked(false);
             }
@@ -356,6 +365,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
             newTaskMap.put("Benefits", benefitsArrayFirestore);
             String task_status = "Pending";;
             newTaskMap.put("Status", task_status);
+            newTaskMap.put("TimestampCompleted", " ");
 
             UserColRef.document().set(newTaskMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
@@ -380,6 +390,11 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
             String task_status;
             if (mBinding.cbTaskCompleted.isChecked()) {
                 task_status = "Completed";
+                DateTimeUtils.setTimeZone("UTC");
+                String date = DateTimeUtils.formatWithStyle(new Date(), DateTimeStyle.MEDIUM);
+                String time = DateTimeUtils.formatTime(new Date(),true);
+
+                updateTaskMap.put("TimestampCompleted", date+" "+time);
             } else {
                 task_status = "Pending";;
             }
