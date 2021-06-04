@@ -39,6 +39,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.MasterTodoListActivity;
 import com.sstechcanada.todo.utils.SaveSharedPreference;
@@ -287,22 +288,55 @@ public class LoginActivity extends AppCompatActivity {
 
         long creationTimestamp = mAuth.getCurrentUser().getMetadata().getCreationTimestamp();
         long lastSignInTimestamp = mAuth.getCurrentUser().getMetadata().getLastSignInTimestamp();
-        if (creationTimestamp==lastSignInTimestamp) {
-            Map<String, String> profile = new HashMap<>();
-            profile.put("Email", firebaseUser.getEmail());
-            profile.put("purchase_code", "0");
-            documentReferenceCurrentReference.set(profile).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
+        db.collection("Users").whereEqualTo("Email",firebaseUser.getEmail()).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+               if(queryDocumentSnapshots.size()==0){
+                   Map<String, String> profile = new HashMap<>();
+                   profile.put("Email", firebaseUser.getEmail());
+                   profile.put("purchase_code", "0");
+                   documentReferenceCurrentReference.set(profile).addOnSuccessListener(new OnSuccessListener<Void>() {
+                       @Override
+                       public void onSuccess(Void aVoid) {
+                           startActivity(new Intent(LoginActivity.this, MasterTodoListActivity.class));
+                           Toasty.success(getApplicationContext(), "Profile creation complete: ", Toast.LENGTH_SHORT).show();
+                       }
+                   }).addOnFailureListener(new OnFailureListener() {
+                       @Override
+                       public void onFailure(@NonNull Exception e) {
+                           Toasty.error(getApplicationContext(), "Error in profile creation ", Toast.LENGTH_SHORT).show();
+                       }
+                   });
+
+               }else{
                     startActivity(new Intent(LoginActivity.this, MasterTodoListActivity.class));
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toasty.error(getApplicationContext(), "Profile Updation Failed: ", Toast.LENGTH_LONG).show();
-                }
-            });
-        }else{ startActivity(new Intent(LoginActivity.this, MasterTodoListActivity.class));}
+               }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+
+        /////CreationTimestamp logic not working properly because of firebase migration
+//        if (creationTimestamp==lastSignInTimestamp) {
+//            Map<String, String> profile = new HashMap<>();
+//            profile.put("Email", firebaseUser.getEmail());
+//            profile.put("purchase_code", "0");
+//            documentReferenceCurrentReference.set(profile).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                @Override
+//                public void onSuccess(Void aVoid) {
+//                    startActivity(new Intent(LoginActivity.this, MasterTodoListActivity.class));
+//                    Toasty.success(getApplicationContext(), "Profile Updation Failed: ", Toast.LENGTH_LONG).show();
+//                }
+//            }).addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception e) {
+//                    Toasty.error(getApplicationContext(), "Profile Updation Failed: ", Toast.LENGTH_LONG).show();
+//                }
+//            });
+//        }else{ startActivity(new Intent(LoginActivity.this, MasterTodoListActivity.class));}
 
 
 //        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child(firebaseUser.getUid());
