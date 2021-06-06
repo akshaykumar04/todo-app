@@ -12,7 +12,8 @@
         <include
             layout="@layout/act_bar"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -47,6 +48,8 @@
                android:id="@+id/et_task_description"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
+               android:maxHeight="150dp"
+               android:scrollbars="vertical"
                android:layout_marginLeft="4dp"
                android:layout_marginTop="88dp"
                android:layout_marginEnd="4dp"
@@ -58,7 +61,6 @@
                android:hint="@string/describe_your_task"
                android:inputType="textMultiLine|textCapSentences"
                android:lines="7"
-               android:maxLength="28"
                android:minLines="2"
                android:padding="10dp"
                android:paddingLeft="3dp"
@@ -187,7 +189,7 @@
 
             <CheckBox
                 android:id="@+id/cb_task_completed"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:button="@drawable/custom_checkbox"
@@ -201,14 +203,15 @@
             <TextView
                 android:id="@+id/timestampCompletedtextView"
                 style="@style/AddEditTaskRadioButtonLabels"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="16dp"
+                android:layout_marginStart="27dp"
+                android:layout_marginTop="4dp"
                 android:fontFamily="@font/raleway"
                 android:text="12, May,1999 14:04:0"
-                android:visibility="gone"
                 android:textColor="@color/colorNormalWidgetText"
                 android:textSize="13sp"
+                android:visibility="visible"
                 app:layout_constraintStart_toStartOf="@+id/cb_task_completed"
                 app:layout_constraintTop_toBottomOf="@+id/cb_task_completed" />
 

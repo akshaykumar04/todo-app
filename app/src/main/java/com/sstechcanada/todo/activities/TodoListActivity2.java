@@ -51,6 +51,7 @@ import com.sstechcanada.todo.utils.NotificationUtils;
 import es.dmoral.toasty.Toasty;
 
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.listId;
+import static com.sstechcanada.todo.activities.MasterTodoListActivity.listName;
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.purchaseCode;
 import static com.sstechcanada.todo.activities.auth.LoginActivity.userAccountDetails;
 
@@ -79,6 +80,7 @@ public class TodoListActivity2 extends AppCompatActivity {
 
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +94,8 @@ public class TodoListActivity2 extends AppCompatActivity {
 
             mBinding.completedTab.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_check_circle_24, 0);
         }
+
+
         showProgressBar();
 //        setContentView(R.layout.activity_todo_list);
         lottieAnimationView=findViewById(R.id.placeholderImage);
@@ -201,6 +205,7 @@ public class TodoListActivity2 extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         todoListFirestoreAdapter.startListening();
+        mBinding.listNameTextView.setText(listName);
     }
 
     @Override

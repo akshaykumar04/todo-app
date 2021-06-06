@@ -12,7 +12,10 @@
 
         <include
             android:id="@+id/include"
-            layout="@layout/act_bar" />
+            layout="@layout/act_bar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/placeholderImage"
@@ -30,54 +33,68 @@
             app:lottie_fileName="placeholder.json"
             app:lottie_loop="true" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:id="@+id/tabBar"
-            android:background="@drawable/tab_bg"
-            app:layout_constraintTop_toBottomOf="@id/include"
+        <TextView
+            android:id="@+id/listNameTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:fontFamily="@font/raleway_medium"
+            android:text="List"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="normal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/include"/>
+
+        <LinearLayout
+            android:id="@+id/tabBar"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
+            android:layout_marginTop="22dp"
+            android:background="@drawable/tab_bg"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/listNameTextView">
 
             <TextView
                 android:id="@+id/ongoingTab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/textHeadings"
-                android:fontFamily="@font/raleway"
-                android:textStyle="bold"
-                android:paddingHorizontal="18dp"
-                android:paddingVertical="8dp"
                 android:drawableLeft="@drawable/ic_to_do_list"
                 android:drawablePadding="10dp"
+                android:fontFamily="@font/raleway"
+                android:paddingHorizontal="18dp"
+                android:paddingVertical="8dp"
                 android:text="Ongoing"
-                android:textSize="12sp"
                 android:textAlignment="center"
-                android:textAllCaps="true" />
+                android:textAllCaps="true"
+                android:textColor="@color/textHeadings"
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="@color/colorTab"/>
+                android:background="@color/colorTab" />
 
             <TextView
                 android:id="@+id/completedTab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/colorTab"
-                android:fontFamily="@font/raleway"
-                android:textStyle="bold"
-                android:paddingVertical="8dp"
-                android:paddingHorizontal="18dp"
                 android:drawableRight="@drawable/ic_baseline_check_circle_24"
                 android:drawablePadding="10dp"
-                android:textSize="12sp"
-                android:textAlignment="center"
-                android:textColor="#ffffff"
+                android:fontFamily="@font/raleway"
+                android:paddingHorizontal="18dp"
+                android:paddingVertical="8dp"
                 android:text="completed"
-                android:textAllCaps="true" />
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textColor="#ffffff"
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 

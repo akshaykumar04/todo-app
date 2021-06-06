@@ -27,6 +27,7 @@ import com.sstechcanada.todo.activities.TodoListActivity2;
 import com.sstechcanada.todo.models.List;
 
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.listId;
+import static com.sstechcanada.todo.activities.MasterTodoListActivity.listName;
 
 public class MasterListFirestoreAdapter extends FirestoreRecyclerAdapter<List, MasterListFirestoreAdapter.MasterListFirestoreHolder> {
 
@@ -71,6 +72,11 @@ public class MasterListFirestoreAdapter extends FirestoreRecyclerAdapter<List, M
                 Log.i("ListId", "Firestore: "+listId);
                 Intent intent = new Intent(v.getContext(), TodoListActivity2.class);
                 intent.putExtra("ListId",listId);
+                if(model.getListName()!=null && (!model.getListName().equals(""))){
+                    listName=model.getListName();
+                }else{
+                    listName="Unnamed List";
+                }
                 v.getContext().startActivity(intent);
 
             }

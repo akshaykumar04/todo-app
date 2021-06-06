@@ -94,7 +94,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
     //    ArrayList<String>
     public static Integer[] listDrawable;
     private MasterListGridViewAdapter gridAdapter;
-    public static String listId;
+    public static String listId,listName;
     public static String purchaseCode = "";
 
     @Override

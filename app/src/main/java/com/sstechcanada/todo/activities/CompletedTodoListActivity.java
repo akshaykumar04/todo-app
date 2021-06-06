@@ -41,6 +41,7 @@ import com.sstechcanada.todo.broadcast_receivers.DailyAlarmReceiver;
 import com.sstechcanada.todo.data.TodoListContract;
 import com.sstechcanada.todo.data.TodoListDbHelper;
 import com.sstechcanada.todo.databinding.ActivityCompletedTodoListBinding;
+import com.sstechcanada.todo.models.List;
 import com.sstechcanada.todo.models.TodoTask;
 import com.sstechcanada.todo.models.TodoTaskFirestore;
 import com.sstechcanada.todo.utils.NotificationUtils;
@@ -48,6 +49,7 @@ import com.sstechcanada.todo.utils.NotificationUtils;
 import es.dmoral.toasty.Toasty;
 
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.listId;
+import static com.sstechcanada.todo.activities.MasterTodoListActivity.listName;
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.purchaseCode;
 import static com.sstechcanada.todo.activities.TodoListActivity2.lottieAnimationView;
 
@@ -62,7 +64,7 @@ public class CompletedTodoListActivity extends AppCompatActivity {
     public static int db_cnt=0;
     private RecyclerView mRecyclerView;
     private TodoListAdapter mTodoListAdapter;
-    private ActivityCompletedTodoListBinding mBinding;
+//    private ActivityCompletedTodoListBinding mBinding;
     private SharedPreferences mSharedPreferences, ll;
     private AppCompatImageView toolbar_profile;
     private TodoListDbHelper tld;
@@ -73,6 +75,7 @@ public class CompletedTodoListActivity extends AppCompatActivity {
     private FirebaseFirestore db=FirebaseFirestore.getInstance();
     private CollectionReference usersColRef=db.collection("Users");
     private TodoListFirestoreAdapter todoListFirestoreAdapter;
+    TextView textViewListName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +92,11 @@ public class CompletedTodoListActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         userID=user.getUid();
+
+        textViewListName=findViewById(R.id.listNameTextView);
         lottieAnimationView=findViewById(R.id.placeholderImage);
+
+
 
         setUpFirestoreRecyclerView();
 
@@ -105,6 +112,8 @@ public class CompletedTodoListActivity extends AppCompatActivity {
         }else{
             adView.setVisibility(View.GONE);
         }
+
+
 
         toolbar_profile = findViewById(R.id.profile_toolbar);
         toolbar_profile.setOnClickListener(new View.OnClickListener() {
@@ -153,6 +162,7 @@ public class CompletedTodoListActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         todoListFirestoreAdapter.startListening();
+        textViewListName.setText(listName);
     }
 
     @Override
