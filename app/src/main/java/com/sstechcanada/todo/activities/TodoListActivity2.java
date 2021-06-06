@@ -407,7 +407,7 @@ public class TodoListActivity2 extends AppCompatActivity {
             return false;
         } else if (list_limit <= db_cnt) {
             //Limit Check
-            Toasty.info(this, getString(R.string.cannot_create) + list_limit + " task in free tier, Please upgrade app to premium version", Toast.LENGTH_LONG, true).show();
+            Toasty.info(this, getString(R.string.upgrade_todo_list), Toast.LENGTH_LONG, true).show();
             startActivity(new Intent(TodoListActivity2.this, AppUpgradeActivity.class));
             return false;
         }

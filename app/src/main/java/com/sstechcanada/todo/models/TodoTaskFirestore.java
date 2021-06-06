@@ -125,7 +125,11 @@ public class TodoTaskFirestore implements Parcelable {
     public String getBenefitsString(){
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < Benefits.size(); i++) {
-            stringBuilder.append(Benefits.get(i)+", ");
+            if(i== Benefits.size()-1) {
+                stringBuilder.append(Benefits.get(i));
+            }else{
+                stringBuilder.append(Benefits.get(i) + ", ");
+            }
         }
         return benefitsString = stringBuilder.toString();
 

@@ -30,7 +30,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
-import androidx.core.view.GravityCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,7 +47,6 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.SetOptions;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.auth.LoginActivity;
 import com.sstechcanada.todo.adapters.MasterListFirestoreAdapter;
@@ -162,7 +160,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
                     }
                 } else {
                     if (isLogin()) {
-                        Toasty.info(getApplicationContext(), getString(R.string.cannot_create), Toast.LENGTH_LONG).show();
+                        Toasty.info(getApplicationContext(), getString(R.string.upgrade_master_list), Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(MasterTodoListActivity.this, AppUpgradeActivity.class);
 //                        intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
                         startActivity(intent);
@@ -563,7 +561,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
             return false;
         } else if (list_limit <= list_cnt) {
             //Limit Check
-            Toasty.warning(this, getString(R.string.cannot_create), Toast.LENGTH_LONG, true).show();
+            Toasty.warning(this, getString(R.string.upgrade_master_list), Toast.LENGTH_LONG, true).show();
             startActivity(new Intent(MasterTodoListActivity.this, AppUpgradeActivity.class));
             return false;
         }
