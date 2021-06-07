@@ -50,7 +50,7 @@ public class MasterListFirestoreAdapter extends FirestoreRecyclerAdapter<List, M
 
         try {
             holder.tv_todo_list_name.setText(model.getListName());
-            holder.tv_todo_list_desc.setText(model.getListDescription());
+//            holder.tv_todo_list_desc.setText(model.getListDescription());
 
             Drawable drawable = context.getResources().getDrawable(model.getImage());
             if(drawable!=null ){
@@ -97,12 +97,12 @@ public class MasterListFirestoreAdapter extends FirestoreRecyclerAdapter<List, M
 
     class MasterListFirestoreHolder extends RecyclerView.ViewHolder{
 
-        TextView tv_todo_list_name, list_default_icon, tv_todo_list_desc;
+        TextView tv_todo_list_name, list_default_icon;
         CardView cardView;
         public MasterListFirestoreHolder(@NonNull View itemView) {
             super(itemView);
             cardView=itemView.findViewById(R.id.materialCard);
-            tv_todo_list_desc = itemView.findViewById(R.id.tv_todo_list_desc);
+//            tv_todo_list_desc = itemView.findViewById(R.id.tv_todo_list_desc);
             list_default_icon = itemView.findViewById(R.id.list_default_icon);
             tv_todo_list_name = itemView.findViewById(R.id.tv_todo_list_name);
 

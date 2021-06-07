@@ -217,14 +217,14 @@ public class MasterTodoListActivity extends AppCompatActivity {
             sdrawable = selectedDrawable;
 //            int imageResource = getResources().getIdentifier(sdrawable, null, getPackageName());
             String name = ((EditText) alertLayout.findViewById(R.id.editTextListName)).getText().toString();
-            String description = ((EditText) alertLayout.findViewById(R.id.editTextListDescription)).getText().toString();
+//            String description = ((EditText) alertLayout.findViewById(R.id.editTextListDescription)).getText().toString();
 
             usersColRef.document(userID).collection("Lists");
 
             Map<String, Object> newList = new HashMap<>();
             newList.put("ListName", name);
             newList.put("positionImage", sdrawable);
-            newList.put("ListDescription", description);
+//            newList.put("ListDescription", description);
 
             usersColRef.document(userID).collection("Lists").document().set(newList).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
@@ -250,7 +250,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
 
     }
 
-    public void editListAlert(String oldListName, String oldListDescription, int oldListIconPosition, String documentSnapshotId) {
+    public void editListAlert(String oldListName, int oldListIconPosition, String documentSnapshotId) {
         LayoutInflater inflater = getLayoutInflater();
         View alertLayout = inflater.inflate(R.layout.add_list_dialog, null);
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -275,14 +275,14 @@ public class MasterTodoListActivity extends AppCompatActivity {
             sdrawable = selectedDrawable;
 //            int imageResource = getResources().getIdentifier(sdrawable, null, getPackageName());
             String name = ((EditText) alertLayout.findViewById(R.id.editTextListName)).getText().toString();
-            String description = ((EditText) alertLayout.findViewById(R.id.editTextListDescription)).getText().toString();
+//            String description = ((EditText) alertLayout.findViewById(R.id.editTextListDescription)).getText().toString();
 
             usersColRef.document(userID).collection("Lists");
 
             Map<String, Object> list = new HashMap<>();
             list.put("ListName", name);
             list.put("positionImage", sdrawable);
-            list.put("ListDescription", description);
+//            list.put("ListDescription", description);
 
             usersColRef.document(userID).collection("Lists").document(documentSnapshotId).update(list).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
@@ -309,8 +309,8 @@ public class MasterTodoListActivity extends AppCompatActivity {
 
         EditText listNameEditText = dialog.findViewById(R.id.editTextListName);
         listNameEditText.setText(oldListName);
-        EditText ListDescriptionEditText = dialog.findViewById(R.id.editTextListDescription);
-        ListDescriptionEditText.setText(oldListDescription);
+//        EditText ListDescriptionEditText = dialog.findViewById(R.id.editTextListDescription);
+//        ListDescriptionEditText.setText(oldListDescription);
 
     }
 
@@ -428,10 +428,10 @@ public class MasterTodoListActivity extends AppCompatActivity {
                 List list = documentSnapshot.toObject(List.class);
 //                List list=masterListFirestoreAdapter.getItem(position);
                 String oldListName = list.getListName();
-                String oldListDescription = list.getListDescription();
+//                String oldListDescription = list.getListDescription();
                 int oldListIconPosition = list.getPositionImage();
 
-                editListAlert(oldListName, oldListDescription, oldListIconPosition, documentSnapshot.getId());
+                editListAlert(oldListName, oldListIconPosition, documentSnapshot.getId());
             }
         });
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
