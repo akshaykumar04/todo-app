@@ -70,7 +70,7 @@ import java.util.Map;
 
 import es.dmoral.toasty.Toasty;
 
-import static com.sstechcanada.todo.activities.auth.LoginActivity.newUser;
+import static com.sstechcanada.todo.activities.auth.LoginActivity.flagMasterListFirstRun;
 import static com.sstechcanada.todo.activities.auth.LoginActivity.userAccountDetails;
 
 public class MasterTodoListActivity extends AppCompatActivity {
@@ -131,7 +131,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
 
         setUpFirestoreRecyclerView();
 
-        if(newUser){
+        if(flagMasterListFirstRun){
             callWalkThrough();
         }
 
@@ -675,13 +675,15 @@ public class MasterTodoListActivity extends AppCompatActivity {
             public void onSequenceFinish() {
 
 //                Toast.makeText(MasterTodoListActivity.this,"Sequence Finished",Toast.LENGTH_SHORT).show();
+                Toast.makeText(MasterTodoListActivity.this,"Awesome, Now you can add your first list!",Toast.LENGTH_SHORT).show();
+
+                flagMasterListFirstRun=false;
 
             }
 
             @Override
             public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
 
-                Toast.makeText(MasterTodoListActivity.this,"Awesome, Now you can add your first list!",Toast.LENGTH_SHORT).show();
 
             }
 

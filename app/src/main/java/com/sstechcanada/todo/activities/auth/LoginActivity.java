@@ -77,7 +77,8 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseUser user;
     private FloatingActionButton fabBack;
     private AdView bannerAd;
-    public static Boolean newUser=false;
+    public static Boolean flagMasterListFirstRun=false;
+    public static Boolean flagTodoListFirstRun=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -296,7 +297,8 @@ public class LoginActivity extends AppCompatActivity {
                    Map<String, String> profile = new HashMap<>();
                    profile.put("Email", firebaseUser.getEmail());
                    profile.put("purchase_code", "0");
-                   newUser=true;
+                   flagMasterListFirstRun=true;
+                   flagTodoListFirstRun=true;
                    documentReferenceCurrentReference.set(profile).addOnSuccessListener(new OnSuccessListener<Void>() {
                        @Override
                        public void onSuccess(Void aVoid) {

@@ -52,7 +52,6 @@ import com.sstechcanada.todo.broadcast_receivers.DailyAlarmReceiver;
 import com.sstechcanada.todo.data.TodoListContract;
 import com.sstechcanada.todo.data.TodoListDbHelper;
 import com.sstechcanada.todo.databinding.ActivityTodoListBinding;
-import com.sstechcanada.todo.models.List;
 import com.sstechcanada.todo.models.TodoTask;
 import com.sstechcanada.todo.models.TodoTaskFirestore;
 import com.sstechcanada.todo.utils.NotificationUtils;
@@ -64,7 +63,7 @@ import es.dmoral.toasty.Toasty;
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.listId;
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.listName;
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.purchaseCode;
-import static com.sstechcanada.todo.activities.auth.LoginActivity.newUser;
+import static com.sstechcanada.todo.activities.auth.LoginActivity.flagTodoListFirstRun;
 import static com.sstechcanada.todo.activities.auth.LoginActivity.userAccountDetails;
 
 public class TodoListActivity2 extends AppCompatActivity {
@@ -125,7 +124,7 @@ public class TodoListActivity2 extends AppCompatActivity {
 
         setUpFirestoreRecyclerView();
 
-        if(newUser){
+        if(flagTodoListFirstRun){
             callWalkThrough();
         }
 
@@ -538,13 +537,15 @@ public class TodoListActivity2 extends AppCompatActivity {
             public void onSequenceFinish() {
 
 //                Toast.makeText(TodoListActivity2.this,"Sequence Finished",Toast.LENGTH_SHORT).show();
+                Toast.makeText(TodoListActivity2.this,"You are all set now!",Toast.LENGTH_SHORT).show();
+                flagTodoListFirstRun=false;
 
             }
 
             @Override
             public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
 
-                Toast.makeText(TodoListActivity2.this,"You are all set now!",Toast.LENGTH_SHORT).show();
+
 
             }
 
