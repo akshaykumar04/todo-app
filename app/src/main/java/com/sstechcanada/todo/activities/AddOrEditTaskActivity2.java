@@ -193,7 +193,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                         }else{
 
                             new AlertDialog.Builder(AddOrEditTaskActivity2.this)
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .setIcon(R.drawable.ic_baseline_check_circle_24)
                                     .setTitle("Confirm Complete")
                                     .setMessage("Are you sure you want to mark this task as completed?")
                                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
