@@ -74,7 +74,7 @@
                 android:button="@drawable/custom_checkbox"
                 android:scaleX="1.1"
                 android:scaleY="1.1"
-                android:enabled="false"
+                android:enabled="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

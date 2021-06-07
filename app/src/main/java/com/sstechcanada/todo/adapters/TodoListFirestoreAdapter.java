@@ -1,8 +1,10 @@
 package com.sstechcanada.todo.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +12,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -18,17 +21,31 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.AddOrEditTaskActivity2;
+import com.sstechcanada.todo.activities.TodoListActivity;
+import com.sstechcanada.todo.activities.TodoListActivity2;
 import com.sstechcanada.todo.custom_views.PriorityStarImageView;
 import com.sstechcanada.todo.models.TodoTaskFirestore;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+
+import es.dmoral.toasty.Toasty;
+
+import static com.sstechcanada.todo.activities.MasterTodoListActivity.listId;
 import static com.sstechcanada.todo.activities.TodoListActivity2.hidePlaceHolder;
 import static com.sstechcanada.todo.activities.TodoListActivity2.showPlaceHolder;
 
@@ -42,6 +59,10 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
 
     private FirebaseFirestore db=FirebaseFirestore.getInstance();
     private CollectionReference usersColRef=db.collection("Users");
+
+    CollectionReference UserColRef=db.collection("Users").document(userID).collection("Lists").document(listId).collection("Todo");
+
+
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
      * FirestoreRecyclerOptions} for configuration options.
@@ -63,6 +84,7 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
 
         holder.customCheckbox.setChecked(model.getStatus().equals("Completed"));
 
+
         //Circle
         // Set the proper background color on the magnitude circle.
         // Fetch the background from the TextView, which is a GradientDrawable.
@@ -74,12 +96,115 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
 //        holder.circle_per.setBackgroundColor(magnitudeColor);
         holder.tvBenefits.setTextColor(magnitudeColor);
 
+        DocumentSnapshot documentSnapshot=getSnapshots().getSnapshot(position);
+        model.setDocumentID(documentSnapshot.getId());
+
+
+        holder.customCheckbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("onclick", "checkbox");
+
+                if(holder.customCheckbox.isChecked()){
+
+                    new AlertDialog.Builder(context)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("Confirm Complete")
+                            .setMessage("Are you sure you want to mark this task as completed?")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    Map<String, Object> updateTaskMap = new HashMap<>();
+                                        String task_status = "Completed";
+                                        Calendar calendar = Calendar.getInstance();
+                                        String dateStr = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime());
+                                        SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
+                                        Log.i("dateTime","TimestampCompleted"+ dateStr);
+                                        String timeStr = sdf.format(calendar.getTime());
+                                        updateTaskMap.put("TimestampCompleted", dateStr+" "+timeStr);
+
+                                    updateTaskMap.put("Status", task_status);
+                                    UserColRef.document(model.getDocumentID()).set(updateTaskMap, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+
+                                            Toasty.success(context,"Todo-task marked as completed");
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toasty.error(context,"Something went wrong");
+                                        }
+                                    });
+//
+                                }
+                            })
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    holder.customCheckbox.setChecked(false);
+
+                                }
+                            })
+                            .show();
+
+
+                }else{
+
+                    new AlertDialog.Builder(context)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("Confirm Incomplete")
+                            .setMessage("Are you sure you want to mark this task as incomplete?")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Map<String, Object> updateTaskMap = new HashMap<>();
+                                    String task_status = "Pending";
+                                    Calendar calendar = Calendar.getInstance();
+                                    String dateStr = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime());
+                                    SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
+                                    Log.i("dateTime","TimestampCompleted"+ dateStr);
+                                    String timeStr = sdf.format(calendar.getTime());
+                                    updateTaskMap.put("TimestampCompleted", dateStr+" "+timeStr);
+
+                                    updateTaskMap.put("Status", task_status);
+                                    UserColRef.document(model.getDocumentID()).set(updateTaskMap, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+
+                                            Toasty.success(context,"Todo-task marked as incomplete");
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toasty.error(context,"Something went wrong");
+                                        }
+                                    });
+//
+                                }
+                            })
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    holder.customCheckbox.setChecked(true);
+
+                                }
+                            })
+                            .show();
+
+
+                }
+            }
+        });
+
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i("onclick", "card");
 
-                DocumentSnapshot documentSnapshot=getSnapshots().getSnapshot(position);
-                model.setDocumentID(documentSnapshot.getId());
+//                DocumentSnapshot documentSnapshot=getSnapshots().getSnapshot(position);
+//                model.setDocumentID(documentSnapshot.getId());
 
                 String doc_id = String.valueOf(model.getDocumentID());
 
@@ -130,9 +255,62 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
             customCheckbox = itemView.findViewById(R.id.checkb);
             clTodoListItem = (ConstraintLayout) itemView;
             tvBenefits = itemView.findViewById(R.id.todo_benefits);
-
             //Circle
             circle_per = itemView.findViewById(R.id.circle_per_item);
+
+//            customCheckbox.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Log.i("onclick", "checkbox");
+//
+//                    if(customCheckbox.isChecked()){
+//                        new AlertDialog.Builder(context)
+//                                .setIcon(android.R.drawable.ic_dialog_alert)
+//                                .setTitle("Confirm Complete")
+//                                .setMessage("Are you sure you want to mark this task as completed?")
+//                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//
+//
+////
+//                                    }
+//                                })
+//                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        customCheckbox.setChecked(false);
+////                                        model.setStatus("Pending");
+//                                    }
+//                                })
+//                                .show();
+//
+//
+//                    }else{
+//                        new AlertDialog.Builder(context)
+//                                .setIcon(android.R.drawable.ic_dialog_alert)
+//                                .setTitle("Confirm Incomplete")
+//                                .setMessage("Are you sure you want to mark this task as incomplete?")
+//                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+////
+//                                    }
+//                                })
+//                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        customCheckbox.setChecked(true);
+////                                        model.setStatus("Completed");
+//                                    }
+//                                })
+//                                .show();
+//
+//
+//                    }
+//                }
+//            });
+
         }
     }
 
