@@ -639,7 +639,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
 
         new TapTargetSequence(this)
                 .targets(
-                        TapTarget.forView(fab,"Add Button","Click here to add new list")
+                        TapTarget.forView(fab,"Add Button","Click here to add a new list")
                                 .outerCircleColor(R.color.chip_5)
                                 .outerCircleAlpha(0.96f)
                                 .targetCircleColor(R.color.colorUncompletedBackground)
@@ -655,7 +655,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
                                 .tintTarget(true)
                                 .transparentTarget(true)
                                 .targetRadius(80),
-                        TapTarget.forView(mRecyclerView,"Recycler view","Swipe right to edit list and left to delete list")
+                        TapTarget.forView(mRecyclerView,"List","Swipe right to edit a list and left to delete a list")
                                 .outerCircleColor(R.color.chip_5)
                                 .outerCircleAlpha(0.96f)
                                 .targetCircleColor(R.color.colorUncompletedBackground)

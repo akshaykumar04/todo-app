@@ -517,7 +517,7 @@ public class TodoListActivity2 extends AppCompatActivity {
                                 .tintTarget(true)
                                 .transparentTarget(true)
                                 .targetRadius(80),
-                        TapTarget.forView(mRecyclerView,"Recycler view","Swipe left to delete list")
+                        TapTarget.forView(mRecyclerView,"To-do Task","Swipe left to delete a to-do task")
                                 .outerCircleColor(R.color.chip_5)
                                 .outerCircleAlpha(0.96f)
                                 .targetCircleColor(R.color.colorUncompletedBackground)
