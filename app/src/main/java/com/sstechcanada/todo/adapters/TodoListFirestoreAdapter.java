@@ -57,7 +57,10 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
     protected void onBindViewHolder(@NonNull TodoListFirestoreHolder holder, int position, @NonNull TodoTaskFirestore model) {
 
         holder.tvTextDesc.setText(model.getDescription());
-        holder.tvBenefits.setText(model.getBenefitsString());
+        if(model.getBenefitsString()!=null ||model.getBenefitsString()!="" ){
+            holder.tvBenefits.setText(model.getBenefitsString());
+        }
+
         holder.customCheckbox.setChecked(model.getStatus().equals("Completed"));
 
         //Circle
@@ -136,7 +139,7 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
     @Override
     public void onDataChanged() {
         super.onDataChanged();
-        if(getItemCount()<=2){
+        if(getItemCount()<=1){
             showPlaceHolder();
         } else{
             hidePlaceHolder();

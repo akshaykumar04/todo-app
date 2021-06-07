@@ -2,12 +2,14 @@ package com.sstechcanada.todo.activities;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -25,6 +27,7 @@ import androidx.databinding.DataBindingUtil;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.common.util.ArrayUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.chip.Chip;
@@ -55,6 +58,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -163,7 +167,52 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 
                 taskCompleted = todoTaskToAddOrEdit.getStatus();
 
-                mBinding.cbTaskCompleted.setChecked(taskCompleted.equals("Completed"));
+                mBinding.cbTaskCompleted.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        if(!mBinding.cbTaskCompleted.isChecked()){
+                            new AlertDialog.Builder(AddOrEditTaskActivity2.this)
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .setTitle("Confirm Incomplete")
+                                    .setMessage("Are you sure you want to mark this task as incomplete?")
+                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+//
+                                        }
+                                    })
+                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            mBinding.cbTaskCompleted.setChecked(true);
+                                        }
+                                    })
+                                    .show();
+
+                        }else{
+
+                            new AlertDialog.Builder(AddOrEditTaskActivity2.this)
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .setTitle("Confirm Complete")
+                                    .setMessage("Are you sure you want to mark this task as completed?")
+                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+//
+                                        }
+                                    })
+                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            mBinding.cbTaskCompleted.setChecked(false);
+                                        }
+                                    })
+                                    .show();
+                        }
+                    }
+                    });
+                        mBinding.cbTaskCompleted.setChecked(taskCompleted.equals("Completed"));
 
                 if(taskCompleted.equals("Completed")){
                     mBinding.timestampCompletedtextView.setText(todoTaskToAddOrEdit.getTimestampCompleted());
@@ -362,7 +411,13 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
     }
 
     private void uploadDataToFirestore() {
-        List<String> benefitsArrayFirestore = Arrays.asList(record);
+        List<String> benefitsArrayFirestore;
+        if( record!=null){
+            benefitsArrayFirestore = Arrays.asList(record);
+        }else{
+           benefitsArrayFirestore= Collections.<String>emptyList();  ;
+        }
+
         if(mAddOrEdit.equals(getString(R.string.add_new_task))){
 
             Map<String, Object> newTaskMap = new HashMap<>();
