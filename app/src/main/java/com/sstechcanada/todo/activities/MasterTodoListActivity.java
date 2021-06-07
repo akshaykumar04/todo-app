@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,6 +36,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -67,9 +70,11 @@ import java.util.Map;
 
 import es.dmoral.toasty.Toasty;
 
+import static com.sstechcanada.todo.activities.auth.LoginActivity.newUser;
 import static com.sstechcanada.todo.activities.auth.LoginActivity.userAccountDetails;
 
 public class MasterTodoListActivity extends AppCompatActivity {
+
     private static final String TAG = MasterTodoListActivity.class.getSimpleName();
     String userID;
     ImageView placeholderImage;
@@ -96,6 +101,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
     private MasterListGridViewAdapter gridAdapter;
     public static String listId,listName;
     public static String purchaseCode = "";
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +110,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
 
         mRecyclerView = findViewById(R.id.rv_todo_list);
         loadingProgressBar = findViewById(R.id.loadingProgressBar);
+        fab = findViewById(R.id.fab);
 
         listDrawable = new Integer[]{
                 R.drawable.master_list_default_icon, R.drawable.idea, R.drawable.ic_lock, R.drawable.ic_to_do_list,
@@ -113,6 +120,8 @@ public class MasterTodoListActivity extends AppCompatActivity {
         };
 
         showProgressBar();
+
+
 //        placeholderImage=findViewById(R.id.placeholderImage);
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
@@ -121,6 +130,11 @@ public class MasterTodoListActivity extends AppCompatActivity {
 //        lottieAnimationView = findViewById(R.id.placeholderImage);
 
         setUpFirestoreRecyclerView();
+
+        if(newUser){
+            callWalkThrough();
+        }
+
 
         //Limit Set
 
@@ -147,7 +161,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -619,6 +633,63 @@ public class MasterTodoListActivity extends AppCompatActivity {
         Toast.makeText(this, "Please press back again to exit", Toast.LENGTH_SHORT).show();
         mHandler.postDelayed(mRunnable, 2000);
 
+    }
+
+    public void callWalkThrough(){
+
+        new TapTargetSequence(this)
+                .targets(
+                        TapTarget.forView(fab,"Add Button","Click here to add new list")
+                                .outerCircleColor(R.color.chip_5)
+                                .outerCircleAlpha(0.96f)
+                                .targetCircleColor(R.color.colorUncompletedBackground)
+                                .titleTextSize(20)
+                                .titleTextColor(R.color.colorUncompletedBackground)
+                                .descriptionTextSize(10)
+                                .descriptionTextColor(R.color.black)
+                                .textColor(R.color.black)
+                                .textTypeface(Typeface.SANS_SERIF)
+                                .dimColor(R.color.black)
+                                .drawShadow(true)
+                                .cancelable(false)
+                                .tintTarget(true)
+                                .transparentTarget(true)
+                                .targetRadius(80),
+                        TapTarget.forView(mRecyclerView,"Recycler view","Swipe right to edit list and left to delete list")
+                                .outerCircleColor(R.color.chip_5)
+                                .outerCircleAlpha(0.96f)
+                                .targetCircleColor(R.color.colorUncompletedBackground)
+                                .titleTextSize(20)
+                                .titleTextColor(R.color.colorUncompletedBackground)
+                                .descriptionTextSize(10)
+                                .descriptionTextColor(R.color.black)
+                                .textColor(R.color.black)
+                                .textTypeface(Typeface.SANS_SERIF)
+                                .dimColor(R.color.black)
+                                .drawShadow(true)
+                                .cancelable(false)
+                                .tintTarget(true)
+                                .transparentTarget(true)
+                                .targetRadius(60)).listener(new TapTargetSequence.Listener() {
+            @Override
+            public void onSequenceFinish() {
+
+//                Toast.makeText(MasterTodoListActivity.this,"Sequence Finished",Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
+
+                Toast.makeText(MasterTodoListActivity.this,"Awesome, Now you can add your first list!",Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onSequenceCanceled(TapTarget lastTarget) {
+
+            }
+        }).start();
     }
 }
 

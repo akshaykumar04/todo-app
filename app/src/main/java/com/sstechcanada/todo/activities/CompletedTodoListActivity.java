@@ -6,10 +6,13 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,8 +21,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,6 +36,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.sstechcanada.todo.R;
@@ -45,6 +51,8 @@ import com.sstechcanada.todo.models.List;
 import com.sstechcanada.todo.models.TodoTask;
 import com.sstechcanada.todo.models.TodoTaskFirestore;
 import com.sstechcanada.todo.utils.NotificationUtils;
+import com.sstechcanada.todo.utils.SwipeController;
+import com.sstechcanada.todo.utils.SwipeControllerActions;
 
 import es.dmoral.toasty.Toasty;
 
@@ -153,7 +161,43 @@ public class CompletedTodoListActivity extends AppCompatActivity {
         todoListFirestoreAdapter=new TodoListFirestoreAdapter(options,this);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        SwipeController swipeController = new SwipeController(this, new SwipeControllerActions() {
+            @Override
+            public void onRightClicked(int position) {
+                Log.i("cluck", "right");
+
+                new AlertDialog.Builder(CompletedTodoListActivity.this)
+                        .setIcon(android.R.drawable.ic_menu_delete)
+                        .setTitle("Confirm Delete")
+                        .setMessage("Are you sure you want to delete this task?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                DocumentSnapshot documentSnapshot = todoListFirestoreAdapter.getSnapshots().getSnapshot(position);
+                                String id = documentSnapshot.getId();
+                                usersColRef.document(userID).collection("Lists").document(listId).collection("Todo").document(id).delete();
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+
+//                mAdapter.players.remove(position);
+//                mAdapter.notifyItemRemoved(position);
+//                mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
+            }
+        });
+        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
+        itemTouchhelper.attachToRecyclerView(mRecyclerView);
         mRecyclerView.setAdapter(todoListFirestoreAdapter);
+
+        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+                swipeController.onDraw(c);
+            }
+        });
+
         db_cnt = todoListFirestoreAdapter.getItemCount();
 
     }

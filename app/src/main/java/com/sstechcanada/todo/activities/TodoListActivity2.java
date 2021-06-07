@@ -6,8 +6,11 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Canvas;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,14 +22,18 @@ import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -34,6 +41,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.sstechcanada.todo.R;
@@ -44,18 +52,23 @@ import com.sstechcanada.todo.broadcast_receivers.DailyAlarmReceiver;
 import com.sstechcanada.todo.data.TodoListContract;
 import com.sstechcanada.todo.data.TodoListDbHelper;
 import com.sstechcanada.todo.databinding.ActivityTodoListBinding;
+import com.sstechcanada.todo.models.List;
 import com.sstechcanada.todo.models.TodoTask;
 import com.sstechcanada.todo.models.TodoTaskFirestore;
 import com.sstechcanada.todo.utils.NotificationUtils;
+import com.sstechcanada.todo.utils.SwipeController;
+import com.sstechcanada.todo.utils.SwipeControllerActions;
 
 import es.dmoral.toasty.Toasty;
 
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.listId;
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.listName;
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.purchaseCode;
+import static com.sstechcanada.todo.activities.auth.LoginActivity.newUser;
 import static com.sstechcanada.todo.activities.auth.LoginActivity.userAccountDetails;
 
 public class TodoListActivity2 extends AppCompatActivity {
+
     private static final String TAG = TodoListActivity.class.getSimpleName();
     private static final int ADD_TASK_REQUEST = 1;
     private static final int EDIT_TASK_REQUEST = 2;
@@ -77,8 +90,7 @@ public class TodoListActivity2 extends AppCompatActivity {
     private TodoListFirestoreAdapter todoListFirestoreAdapter;
     public static LottieAnimationView lottieAnimationView;
     ProgressBar loadingProgressBar;
-
-
+    FloatingActionButton fab;
 
 
     @Override
@@ -87,6 +99,7 @@ public class TodoListActivity2 extends AppCompatActivity {
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_todo_list);
         mRecyclerView = mBinding.rvTodoList;
         loadingProgressBar=mBinding.loadingProgressBar;
+        fab = mBinding.fab;
 
         if(Integer.valueOf(purchaseCode)!=0){
             Log.i("purchase code",purchaseCode);
@@ -111,6 +124,10 @@ public class TodoListActivity2 extends AppCompatActivity {
         userID=user.getUid();
 
         setUpFirestoreRecyclerView();
+
+        if(newUser){
+            callWalkThrough();
+        }
 
         //Limit Set
 
@@ -140,7 +157,7 @@ public class TodoListActivity2 extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton fab = mBinding.fab;
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -195,7 +212,43 @@ public class TodoListActivity2 extends AppCompatActivity {
         todoListFirestoreAdapter=new TodoListFirestoreAdapter(options,this);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+
+        SwipeController swipeController = new SwipeController(this, new SwipeControllerActions() {
+            @Override
+            public void onRightClicked(int position) {
+                Log.i("cluck", "right");
+
+                new AlertDialog.Builder(TodoListActivity2.this)
+                        .setIcon(android.R.drawable.ic_menu_delete)
+                        .setTitle("Confirm Delete")
+                        .setMessage("Are you sure you want to delete this task?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                DocumentSnapshot documentSnapshot = todoListFirestoreAdapter.getSnapshots().getSnapshot(position);
+                                String id = documentSnapshot.getId();
+                                usersColRef.document(userID).collection("Lists").document(listId).collection("Todo").document(id).delete();
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+
+//                mAdapter.players.remove(position);
+//                mAdapter.notifyItemRemoved(position);
+//                mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
+            }
+        });
+        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
+        itemTouchhelper.attachToRecyclerView(mRecyclerView);
         mRecyclerView.setAdapter(todoListFirestoreAdapter);
+
+        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+                swipeController.onDraw(c);
+            }
+        });
         db_cnt = todoListFirestoreAdapter.getItemCount();
         hideProgressBar();
 
@@ -443,5 +496,62 @@ public class TodoListActivity2 extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         startActivity(new Intent(TodoListActivity2.this,MasterTodoListActivity.class));
+    }
+
+    public void callWalkThrough(){
+
+        new TapTargetSequence(this)
+                .targets(
+                        TapTarget.forView(fab,"Add Button","Click here to add a new task")
+                                .outerCircleColor(R.color.chip_5)
+                                .outerCircleAlpha(0.96f)
+                                .targetCircleColor(R.color.colorUncompletedBackground)
+                                .titleTextSize(20)
+                                .titleTextColor(R.color.colorUncompletedBackground)
+                                .descriptionTextSize(10)
+                                .descriptionTextColor(R.color.black)
+                                .textColor(R.color.black)
+                                .textTypeface(Typeface.SANS_SERIF)
+                                .dimColor(R.color.black)
+                                .drawShadow(true)
+                                .cancelable(false)
+                                .tintTarget(true)
+                                .transparentTarget(true)
+                                .targetRadius(80),
+                        TapTarget.forView(mRecyclerView,"Recycler view","Swipe left to delete list")
+                                .outerCircleColor(R.color.chip_5)
+                                .outerCircleAlpha(0.96f)
+                                .targetCircleColor(R.color.colorUncompletedBackground)
+                                .titleTextSize(20)
+                                .titleTextColor(R.color.colorUncompletedBackground)
+                                .descriptionTextSize(10)
+                                .descriptionTextColor(R.color.black)
+                                .textColor(R.color.black)
+                                .textTypeface(Typeface.SANS_SERIF)
+                                .dimColor(R.color.black)
+                                .drawShadow(true)
+                                .cancelable(false)
+                                .tintTarget(true)
+                                .transparentTarget(true)
+                                .targetRadius(60)).listener(new TapTargetSequence.Listener() {
+            @Override
+            public void onSequenceFinish() {
+
+//                Toast.makeText(TodoListActivity2.this,"Sequence Finished",Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
+
+                Toast.makeText(TodoListActivity2.this,"You are all set now!",Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onSequenceCanceled(TapTarget lastTarget) {
+
+            }
+        }).start();
     }
 }

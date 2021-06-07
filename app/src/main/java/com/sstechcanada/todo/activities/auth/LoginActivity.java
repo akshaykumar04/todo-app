@@ -77,6 +77,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseUser user;
     private FloatingActionButton fabBack;
     private AdView bannerAd;
+    public static Boolean newUser=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -286,8 +287,8 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseUser firebaseUser = mAuth.getCurrentUser();
         DocumentReference documentReferenceCurrentReference=db.collection("Users").document(firebaseUser.getUid());
 
-        long creationTimestamp = mAuth.getCurrentUser().getMetadata().getCreationTimestamp();
-        long lastSignInTimestamp = mAuth.getCurrentUser().getMetadata().getLastSignInTimestamp();
+//        long creationTimestamp = mAuth.getCurrentUser().getMetadata().getCreationTimestamp();
+//        long lastSignInTimestamp = mAuth.getCurrentUser().getMetadata().getLastSignInTimestamp();
         db.collection("Users").whereEqualTo("Email",firebaseUser.getEmail()).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -295,10 +296,11 @@ public class LoginActivity extends AppCompatActivity {
                    Map<String, String> profile = new HashMap<>();
                    profile.put("Email", firebaseUser.getEmail());
                    profile.put("purchase_code", "0");
+                   newUser=true;
                    documentReferenceCurrentReference.set(profile).addOnSuccessListener(new OnSuccessListener<Void>() {
                        @Override
                        public void onSuccess(Void aVoid) {
-                           startActivity(new Intent(LoginActivity.this, MasterTodoListActivity.class));
+//                           startActivity(new Intent(LoginActivity.this, MasterTodoListActivity.class));
                            Toasty.success(getApplicationContext(), "Profile creation complete", Toast.LENGTH_SHORT).show();
                        }
                    }).addOnFailureListener(new OnFailureListener() {
