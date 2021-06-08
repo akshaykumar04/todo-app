@@ -10,7 +10,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -76,10 +75,17 @@ import static com.sstechcanada.todo.activities.auth.LoginActivity.userAccountDet
 public class MasterTodoListActivity extends AppCompatActivity {
 
     private static final String TAG = MasterTodoListActivity.class.getSimpleName();
+    public static int list_cnt = 0;
+    //    ArrayList<String>
+    public static Integer[] listDrawable;
+    public static String listId, listName;
+    public static String purchaseCode = "";
     String userID;
     ImageView placeholderImage;
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final CollectionReference usersColRef = db.collection("Users");
+    private final Handler mHandler = new Handler();
     private int list_limit = 15;
-    public static int list_cnt = 0;
     private RecyclerView mRecyclerView;
     private TodoListAdapter mTodoListAdapter;
     //    private MasterTodoListActivity mBinding;
@@ -89,19 +95,20 @@ public class MasterTodoListActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private DatabaseReference databaseReference;
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference usersColRef = db.collection("Users");
-    private MasterListFirestoreAdapter masterListFirestoreAdapter;
-    private GridView gridView;
     ProgressBar progressBar, loadingProgressBar;
     //    String
     int selectedDrawable, sdrawable;
-    //    ArrayList<String>
-    public static Integer[] listDrawable;
+    private MasterListFirestoreAdapter masterListFirestoreAdapter;
+    private GridView gridView;
     private MasterListGridViewAdapter gridAdapter;
-    public static String listId,listName;
-    public static String purchaseCode = "";
     FloatingActionButton fab;
+    private boolean doubleBackToExitPressedOnce;
+    private final Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            doubleBackToExitPressedOnce = false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,7 +138,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
 
         setUpFirestoreRecyclerView();
 
-        if(flagMasterListFirstRun){
+        if (flagMasterListFirstRun) {
             callWalkThrough();
         }
 
@@ -142,15 +149,13 @@ public class MasterTodoListActivity extends AppCompatActivity {
 
         AdView adView = findViewById(R.id.adView);
 
-        if(purchaseCode.equals("0")){
+        if (purchaseCode.equals("0")) {
 
             AdRequest adRequest = new AdRequest.Builder().build();
             adView.loadAd(adRequest);
-        }else{
+        } else {
             adView.setVisibility(View.GONE);
         }
-
-
 
 
         toolbar_profile = findViewById(R.id.profile_toolbar);
@@ -253,9 +258,9 @@ public class MasterTodoListActivity extends AppCompatActivity {
             });
         });
 
-        if(purchaseCode.equals("0")){
+        if (purchaseCode.equals("0")) {
             bannerAd.loadAd(new AdRequest.Builder().build());
-        }else{
+        } else {
             bannerAd.setVisibility(View.GONE);
         }
 
@@ -311,9 +316,9 @@ public class MasterTodoListActivity extends AppCompatActivity {
             });
         });
 
-        if(purchaseCode.equals("0")){
+        if (purchaseCode.equals("0")) {
             bannerAd.loadAd(new AdRequest.Builder().build());
-        }else{
+        } else {
             bannerAd.setVisibility(View.GONE);
         }
 
@@ -327,7 +332,6 @@ public class MasterTodoListActivity extends AppCompatActivity {
 //        ListDescriptionEditText.setText(oldListDescription);
 
     }
-
 
     public void loadImages(int iconPosition) {
         gridAdapter = new MasterListGridViewAdapter(listDrawable, MasterTodoListActivity.this);
@@ -476,7 +480,6 @@ public class MasterTodoListActivity extends AppCompatActivity {
         masterListFirestoreAdapter.stopListening();
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -504,6 +507,12 @@ public class MasterTodoListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+////        mSharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+//    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -527,12 +536,6 @@ public class MasterTodoListActivity extends AppCompatActivity {
         updateWidget();
 
     }
-
-//    @Override
-//    protected void onDestroy() {
-//        super.onDestroy();
-////        mSharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
-//    }
 
     private void deleteAllCheckedTasks() {
         // this is just for testing, later a service will do it periodically
@@ -593,7 +596,6 @@ public class MasterTodoListActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
-
     private void hideProgressBar() {
         if (loadingProgressBar.getVisibility() == View.VISIBLE) {
             loadingProgressBar.setVisibility(View.INVISIBLE);
@@ -601,16 +603,6 @@ public class MasterTodoListActivity extends AppCompatActivity {
         }
 
     }
-
-    private boolean doubleBackToExitPressedOnce;
-    private Handler mHandler = new Handler();
-
-    private final Runnable mRunnable = new Runnable() {
-        @Override
-        public void run() {
-            doubleBackToExitPressedOnce = false;
-        }
-    };
 
     @Override
     protected void onDestroy() {
@@ -630,16 +622,16 @@ public class MasterTodoListActivity extends AppCompatActivity {
         }
 
         this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Please press back again to exit", Toast.LENGTH_SHORT).show();
+        Toasty.info(this, "Please press back again to exit", Toast.LENGTH_SHORT).show();
         mHandler.postDelayed(mRunnable, 2000);
 
     }
 
-    public void callWalkThrough(){
+    public void callWalkThrough() {
 
         new TapTargetSequence(this)
                 .targets(
-                        TapTarget.forView(fab,"Add Button","Click here to add a new list")
+                        TapTarget.forView(fab, "Add Button", "Click here to add a new list")
                                 .outerCircleColor(R.color.chip_5)
                                 .outerCircleAlpha(0.96f)
                                 .targetCircleColor(R.color.colorUncompletedBackground)
@@ -648,14 +640,13 @@ public class MasterTodoListActivity extends AppCompatActivity {
                                 .descriptionTextSize(10)
                                 .descriptionTextColor(R.color.black)
                                 .textColor(R.color.black)
-                                .textTypeface(Typeface.SANS_SERIF)
                                 .dimColor(R.color.black)
                                 .drawShadow(true)
                                 .cancelable(false)
                                 .tintTarget(true)
                                 .transparentTarget(true)
                                 .targetRadius(80),
-                        TapTarget.forView(mRecyclerView,"List","Swipe right to edit a list and left to delete a list")
+                        TapTarget.forView(mRecyclerView, "List", "Swipe right to edit a list and left to delete a list")
                                 .outerCircleColor(R.color.chip_5)
                                 .outerCircleAlpha(0.96f)
                                 .targetCircleColor(R.color.colorUncompletedBackground)
@@ -664,7 +655,6 @@ public class MasterTodoListActivity extends AppCompatActivity {
                                 .descriptionTextSize(10)
                                 .descriptionTextColor(R.color.black)
                                 .textColor(R.color.black)
-                                .textTypeface(Typeface.SANS_SERIF)
                                 .dimColor(R.color.black)
                                 .drawShadow(true)
                                 .cancelable(false)
@@ -675,9 +665,9 @@ public class MasterTodoListActivity extends AppCompatActivity {
             public void onSequenceFinish() {
 
 //                Toast.makeText(MasterTodoListActivity.this,"Sequence Finished",Toast.LENGTH_SHORT).show();
-                Toast.makeText(MasterTodoListActivity.this,"Awesome, Now you can add your first list!",Toast.LENGTH_SHORT).show();
+                Toasty.success(MasterTodoListActivity.this, "Awesome, Now you can add your first list!", Toast.LENGTH_SHORT).show();
 
-                flagMasterListFirstRun=false;
+                flagMasterListFirstRun = false;
 
             }
 

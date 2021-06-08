@@ -14,6 +14,46 @@
       },
       "oauth_client": [
         {
+          "client_id": "444095359781-4ko511cc6voq5v7c8h0kg509mljtfoiv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sstechcanada.todo",
+            "certificate_hash": "9a1a0f92e7032f4fbdb9fd11ac362195e47aeab4"
+          }
+        },
+        {
+          "client_id": "444095359781-kc33ol3la2gd37uftc9uif8q7kjg149i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sstechcanada.todo",
+            "certificate_hash": "47d116104a71513187ad62f0b2ec547224723bdf"
+          }
+        },
+        {
+          "client_id": "444095359781-kmifna5qnj37hf0i0avhhqe0bpbbk06u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sstechcanada.todo",
+            "certificate_hash": "4e5c3db319ecd6f598902716165bbc3bcc992407"
+          }
+        },
+        {
+          "client_id": "444095359781-ol4fsdnau9s6jmvlblm7i7nem2fog0gc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sstechcanada.todo",
+            "certificate_hash": "61a5f7097543c9348f0dcf3e8988451947713c9b"
+          }
+        },
+        {
+          "client_id": "444095359781-ts37oaj2km6878rbmpvfsqut36jmo2mn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sstechcanada.todo",
+            "certificate_hash": "befc5c491e68ab640859561eb0380dae3e22e6df"
+          }
+        },
+        {
           "client_id": "444095359781-0ba38l4409062j9iu8almb2gt4md3q02.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -74,7 +74,7 @@ public class TodoListActivity2 extends AppCompatActivity {
     private static final int ID_TODOLIST_LOADER = 2018;
     String userID;
     private int list_limit = 15;
-    public static int db_cnt=0;
+    public static int db_cnt = 0;
     private RecyclerView mRecyclerView;
     private TodoListAdapter mTodoListAdapter;
     private ActivityTodoListBinding mBinding;
@@ -84,8 +84,8 @@ public class TodoListActivity2 extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private DatabaseReference databaseReference;
-    private FirebaseFirestore db=FirebaseFirestore.getInstance();
-    private CollectionReference usersColRef=db.collection("Users");
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final CollectionReference usersColRef = db.collection("Users");
     private TodoListFirestoreAdapter todoListFirestoreAdapter;
     public static LottieAnimationView lottieAnimationView;
     ProgressBar loadingProgressBar;
@@ -510,7 +510,6 @@ public class TodoListActivity2 extends AppCompatActivity {
                                 .descriptionTextSize(10)
                                 .descriptionTextColor(R.color.black)
                                 .textColor(R.color.black)
-                                .textTypeface(Typeface.SANS_SERIF)
                                 .dimColor(R.color.black)
                                 .drawShadow(true)
                                 .cancelable(false)
@@ -526,7 +525,6 @@ public class TodoListActivity2 extends AppCompatActivity {
                                 .descriptionTextSize(10)
                                 .descriptionTextColor(R.color.black)
                                 .textColor(R.color.black)
-                                .textTypeface(Typeface.SANS_SERIF)
                                 .dimColor(R.color.black)
                                 .drawShadow(true)
                                 .cancelable(false)
@@ -537,8 +535,8 @@ public class TodoListActivity2 extends AppCompatActivity {
             public void onSequenceFinish() {
 
 //                Toast.makeText(TodoListActivity2.this,"Sequence Finished",Toast.LENGTH_SHORT).show();
-                Toast.makeText(TodoListActivity2.this,"You are all set now!",Toast.LENGTH_SHORT).show();
-                flagTodoListFirstRun=false;
+                Toasty.success(TodoListActivity2.this, "You are all set now!", Toast.LENGTH_SHORT).show();
+                flagTodoListFirstRun = false;
 
             }
 
