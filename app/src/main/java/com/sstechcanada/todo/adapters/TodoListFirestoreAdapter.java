@@ -258,58 +258,6 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
             //Circle
             circle_per = itemView.findViewById(R.id.circle_per_item);
 
-//            customCheckbox.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Log.i("onclick", "checkbox");
-//
-//                    if(customCheckbox.isChecked()){
-//                        new AlertDialog.Builder(context)
-//                                .setIcon(android.R.drawable.ic_dialog_alert)
-//                                .setTitle("Confirm Complete")
-//                                .setMessage("Are you sure you want to mark this task as completed?")
-//                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog, int which) {
-//
-//
-////
-//                                    }
-//                                })
-//                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog, int which) {
-//                                        customCheckbox.setChecked(false);
-////                                        model.setStatus("Pending");
-//                                    }
-//                                })
-//                                .show();
-//
-//
-//                    }else{
-//                        new AlertDialog.Builder(context)
-//                                .setIcon(android.R.drawable.ic_dialog_alert)
-//                                .setTitle("Confirm Incomplete")
-//                                .setMessage("Are you sure you want to mark this task as incomplete?")
-//                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog, int which) {
-////
-//                                    }
-//                                })
-//                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog, int which) {
-//                                        customCheckbox.setChecked(true);
-////                                        model.setStatus("Completed");
-//                                    }
-//                                })
-//                                .show();
-//
-//
-//                    }
-//                }
-//            });
 
         }
     }

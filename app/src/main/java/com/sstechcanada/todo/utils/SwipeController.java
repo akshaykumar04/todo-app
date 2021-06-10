@@ -81,8 +81,7 @@ public class SwipeController extends ItemTouchHelper.Callback {
             } else {
                 setTouchListener(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             }
-        }
-        if (buttonShowedState == ButtonsState.GONE) {
+        }if (buttonShowedState == ButtonsState.GONE) {
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
         }
         currentItemViewHolder = viewHolder;

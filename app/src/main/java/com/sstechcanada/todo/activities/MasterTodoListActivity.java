@@ -430,9 +430,6 @@ public class MasterTodoListActivity extends AppCompatActivity {
                         .setNegativeButton("No", null)
                         .show();
 
-//                mAdapter.players.remove(position);
-//                mAdapter.notifyItemRemoved(position);
-//                mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
             }
 
             @Override

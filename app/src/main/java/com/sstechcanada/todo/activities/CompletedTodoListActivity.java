@@ -69,10 +69,10 @@ public class CompletedTodoListActivity extends AppCompatActivity {
     String userID;
     ImageView placeholderImage;
     private int list_limit = 15;
-    public static int db_cnt=0;
+    public static int db_cnt = 0;
     private RecyclerView mRecyclerView;
     private TodoListAdapter mTodoListAdapter;
-//    private ActivityCompletedTodoListBinding mBinding;
+    //    private ActivityCompletedTodoListBinding mBinding;
     private SharedPreferences mSharedPreferences, ll;
     private AppCompatImageView toolbar_profile;
     private TodoListDbHelper tld;
@@ -80,8 +80,8 @@ public class CompletedTodoListActivity extends AppCompatActivity {
     private FirebaseUser user;
     private DatabaseReference databaseReference;
     TextView ongoingTab;
-    private FirebaseFirestore db=FirebaseFirestore.getInstance();
-    private CollectionReference usersColRef=db.collection("Users");
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference usersColRef = db.collection("Users");
     private TodoListFirestoreAdapter todoListFirestoreAdapter;
     TextView textViewListName;
 
@@ -94,16 +94,14 @@ public class CompletedTodoListActivity extends AppCompatActivity {
 //        setContentView(view);
 
 
-
         mRecyclerView = findViewById(R.id.rv_todo_list);
 //        placeholderImage=findViewById(R.id.placeholderImage);
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
-        userID=user.getUid();
+        userID = user.getUid();
 
-        textViewListName=findViewById(R.id.listNameTextView);
-        lottieAnimationView=findViewById(R.id.placeholderImage);
-
+        textViewListName = findViewById(R.id.listNameTextView);
+        lottieAnimationView = findViewById(R.id.placeholderImage);
 
 
         setUpFirestoreRecyclerView();
@@ -114,13 +112,12 @@ public class CompletedTodoListActivity extends AppCompatActivity {
 
         AdView adView = findViewById(R.id.adView);
 
-        if(purchaseCode.equals("0")){
+        if (purchaseCode.equals("0")) {
             AdRequest adRequest = new AdRequest.Builder().build();
             adView.loadAd(adRequest);
-        }else{
+        } else {
             adView.setVisibility(View.GONE);
         }
-
 
 
         toolbar_profile = findViewById(R.id.profile_toolbar);
@@ -154,11 +151,11 @@ public class CompletedTodoListActivity extends AppCompatActivity {
     }
 
     private void setUpFirestoreRecyclerView() {
-        Query query =usersColRef.document(userID).collection("Lists").document(
-                listId).collection("Todo").whereEqualTo("Status","Completed").orderBy("priority", Query.Direction.DESCENDING);
+        Query query = usersColRef.document(userID).collection("Lists").document(
+                listId).collection("Todo").whereEqualTo("Status", "Completed").orderBy("priority", Query.Direction.DESCENDING);
 
-        FirestoreRecyclerOptions<TodoTaskFirestore> options =new FirestoreRecyclerOptions.Builder<TodoTaskFirestore>().setQuery(query,TodoTaskFirestore.class).build();
-        todoListFirestoreAdapter=new TodoListFirestoreAdapter(options,this);
+        FirestoreRecyclerOptions<TodoTaskFirestore> options = new FirestoreRecyclerOptions.Builder<TodoTaskFirestore>().setQuery(query, TodoTaskFirestore.class).build();
+        todoListFirestoreAdapter = new TodoListFirestoreAdapter(options, this);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -181,11 +178,25 @@ public class CompletedTodoListActivity extends AppCompatActivity {
                         })
                         .setNegativeButton("No", null)
                         .show();
+            }
 
 //                mAdapter.players.remove(position);
 //                mAdapter.notifyItemRemoved(position);
 //                mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
+
+            @Override
+            public void onLeftClicked(int position) {
+                DocumentSnapshot documentSnapshot = todoListFirestoreAdapter.getSnapshots().getSnapshot(position);
+                TodoTaskFirestore todoTask = documentSnapshot.toObject(TodoTaskFirestore.class);
+
+                Intent intent = new Intent(CompletedTodoListActivity.this, AddOrEditTaskActivity2.class);
+                intent.putExtra("Adding or editing", "Edit Task");
+                intent.putExtra("Todo",todoTask);
+                startActivity(intent);
+
+
             }
+
         });
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
         itemTouchhelper.attachToRecyclerView(mRecyclerView);
@@ -326,7 +337,6 @@ public class CompletedTodoListActivity extends AppCompatActivity {
             list_limit = 15;
         }
     }
-
 
 
 }

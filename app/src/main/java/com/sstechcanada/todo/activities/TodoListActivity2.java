@@ -52,6 +52,7 @@ import com.sstechcanada.todo.broadcast_receivers.DailyAlarmReceiver;
 import com.sstechcanada.todo.data.TodoListContract;
 import com.sstechcanada.todo.data.TodoListDbHelper;
 import com.sstechcanada.todo.databinding.ActivityTodoListBinding;
+import com.sstechcanada.todo.models.List;
 import com.sstechcanada.todo.models.TodoTask;
 import com.sstechcanada.todo.models.TodoTaskFirestore;
 import com.sstechcanada.todo.utils.NotificationUtils;
@@ -232,15 +233,27 @@ public class TodoListActivity2 extends AppCompatActivity {
                         })
                         .setNegativeButton("No", null)
                         .show();
+            }
 
 //                mAdapter.players.remove(position);
 //                mAdapter.notifyItemRemoved(position);
 //                mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
+            @Override
+            public void onLeftClicked(int position) {
+                DocumentSnapshot documentSnapshot = todoListFirestoreAdapter.getSnapshots().getSnapshot(position);
+                TodoTaskFirestore todoTask = documentSnapshot.toObject(TodoTaskFirestore.class);
+
+                Intent intent = new Intent(TodoListActivity2.this, AddOrEditTaskActivity2.class);
+                intent.putExtra("Adding or editing", "Edit Task");
+                intent.putExtra("Todo",todoTask);
+                startActivity(intent);
+
             }
         });
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
         itemTouchhelper.attachToRecyclerView(mRecyclerView);
         mRecyclerView.setAdapter(todoListFirestoreAdapter);
+        hideProgressBar();
 
         mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
@@ -248,8 +261,9 @@ public class TodoListActivity2 extends AppCompatActivity {
                 swipeController.onDraw(c);
             }
         });
+
         db_cnt = todoListFirestoreAdapter.getItemCount();
-        hideProgressBar();
+
 
     }
 
