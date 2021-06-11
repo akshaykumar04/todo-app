@@ -53,13 +53,16 @@ public class AppUpgradeActivity2 extends AppCompatActivity {
             @Override
             public void onProductPurchased(String productId, TransactionDetails details) {
                 
-                String pur_code = purchaseCode;
+
+         String pur_code = purchaseCode;
                 
                 if(productId.equals("1")) {
                     pur_code="1";
                 }else if(productId.equals("2")) {
                     pur_code="2";
                 }
+
+
                     
 
                 Map<String, String> purchaseCode = new HashMap<>();
