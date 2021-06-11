@@ -1,6 +1,5 @@
 package com.sstechcanada.todo.activities;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -10,13 +9,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
-import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
@@ -46,16 +42,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.auth.LoginActivity;
-import com.sstechcanada.todo.adapters.TodoListAdapter;
 import com.sstechcanada.todo.adapters.TodoListFirestoreAdapter;
 import com.sstechcanada.todo.broadcast_receivers.DailyAlarmReceiver;
-import com.sstechcanada.todo.data.TodoListContract;
-import com.sstechcanada.todo.data.TodoListDbHelper;
 import com.sstechcanada.todo.databinding.ActivityTodoListBinding;
-import com.sstechcanada.todo.models.List;
-import com.sstechcanada.todo.models.TodoTask;
 import com.sstechcanada.todo.models.TodoTaskFirestore;
-import com.sstechcanada.todo.utils.NotificationUtils;
 import com.sstechcanada.todo.utils.SwipeController;
 import com.sstechcanada.todo.utils.SwipeControllerActions;
 
@@ -69,41 +59,46 @@ import static com.sstechcanada.todo.activities.auth.LoginActivity.userAccountDet
 
 public class TodoListActivity2 extends AppCompatActivity {
 
-    private static final String TAG = TodoListActivity.class.getSimpleName();
+
     private static final int ADD_TASK_REQUEST = 1;
     private static final int EDIT_TASK_REQUEST = 2;
     private static final int ID_TODOLIST_LOADER = 2018;
-    String userID;
-    private int list_limit = 15;
     public static int db_cnt = 0;
+    public static LottieAnimationView lottieAnimationView;
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final CollectionReference usersColRef = db.collection("Users");
+    String userID;
+    ProgressBar loadingProgressBar;
+    FloatingActionButton fab;
+    private int list_limit = 15;
     private RecyclerView mRecyclerView;
-    private TodoListAdapter mTodoListAdapter;
     private ActivityTodoListBinding mBinding;
     private SharedPreferences mSharedPreferences, ll;
     private AppCompatImageView toolbar_profile;
-    private TodoListDbHelper tld;
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private DatabaseReference databaseReference;
-    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private final CollectionReference usersColRef = db.collection("Users");
     private TodoListFirestoreAdapter todoListFirestoreAdapter;
-    public static LottieAnimationView lottieAnimationView;
-    ProgressBar loadingProgressBar;
-    FloatingActionButton fab;
 
+    public static void showPlaceHolder() {
+        lottieAnimationView.setVisibility(View.VISIBLE);
+    }
+
+    public static void hidePlaceHolder() {
+        lottieAnimationView.setVisibility(View.INVISIBLE);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_todo_list);
         mRecyclerView = mBinding.rvTodoList;
-        loadingProgressBar=mBinding.loadingProgressBar;
+        loadingProgressBar = mBinding.loadingProgressBar;
         fab = mBinding.fab;
 
-        if(Integer.valueOf(purchaseCode)!=0){
-            Log.i("purchase code",purchaseCode);
-            Log.i("purchase code","purchaseCode");
+        if (Integer.valueOf(purchaseCode) != 0) {
+            Log.i("purchase code", purchaseCode);
+            Log.i("purchase code", "purchaseCode");
 
             mBinding.completedTab.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_check_circle_24, 0);
         }
@@ -111,7 +106,7 @@ public class TodoListActivity2 extends AppCompatActivity {
 
         showProgressBar();
 //        setContentView(R.layout.activity_todo_list);
-        lottieAnimationView=findViewById(R.id.placeholderImage);
+        lottieAnimationView = findViewById(R.id.placeholderImage);
 //        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 //        layoutManager.setReverseLayout(true);
 //        layoutManager.setStackFromEnd(true);
@@ -121,11 +116,11 @@ public class TodoListActivity2 extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
-        userID=user.getUid();
+        userID = user.getUid();
 
         setUpFirestoreRecyclerView();
 
-        if(flagTodoListFirstRun){
+        if (flagTodoListFirstRun) {
             callWalkThrough();
         }
 
@@ -134,14 +129,13 @@ public class TodoListActivity2 extends AppCompatActivity {
         setValue();
 
         AdView adView = mBinding.adView;
-        if(purchaseCode.equals("0")){
+        if (purchaseCode.equals("0")) {
 
             AdRequest adRequest = new AdRequest.Builder().build();
             adView.loadAd(adRequest);
-        }else{
+        } else {
             adView.setVisibility(View.GONE);
         }
-
 
 
 //        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
@@ -163,14 +157,14 @@ public class TodoListActivity2 extends AppCompatActivity {
             public void onClick(View view) {
                 db_cnt = todoListFirestoreAdapter.getItemCount();
                 Log.i("ItemCount", "FAB Clicked");
-                if(Integer.parseInt(userAccountDetails.get(1))>todoListFirestoreAdapter.getItemCount()){
+                if (Integer.parseInt(userAccountDetails.get(1)) > todoListFirestoreAdapter.getItemCount()) {
                     setValue();
                     if (isLogin()) {
                         Intent intent = new Intent(TodoListActivity2.this, AddOrEditTaskActivity2.class);
                         intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
                         startActivityForResult(intent, ADD_TASK_REQUEST);
                     }
-                }else{
+                } else {
                     if (isLogin()) {
                         Intent intent = new Intent(TodoListActivity2.this, AppUpgradeActivity3.class);
 //                        intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
@@ -191,9 +185,9 @@ public class TodoListActivity2 extends AppCompatActivity {
         //cancelAlarm();
 
         mBinding.completedTab.setOnClickListener(view -> {
-            if(Integer.valueOf(purchaseCode)!=0){
+            if (Integer.valueOf(purchaseCode) != 0) {
                 startActivity(new Intent(TodoListActivity2.this, CompletedTodoListActivity.class));
-            }else{
+            } else {
                 startActivity(new Intent(TodoListActivity2.this, AppUpgradeActivity3.class));
             }
 //            startActivity(new Intent(TodoListActivity2.this, AppUpgradeActivity.class));
@@ -202,14 +196,14 @@ public class TodoListActivity2 extends AppCompatActivity {
 
     private void setUpFirestoreRecyclerView() {
 //        listId=getIntent().getStringExtra("ListId");
-        Log.i("ListId","Setupdrecyasdf");
-        Log.i("ListId","n"+ listId);
+        Log.i("ListId", "Setupdrecyasdf");
+        Log.i("ListId", "n" + listId);
 
-        Query query =usersColRef.document(userID).collection("Lists").document(
-                listId).collection("Todo").whereEqualTo("Status","Pending").orderBy("priority", Query.Direction.DESCENDING);
+        Query query = usersColRef.document(userID).collection("Lists").document(
+                listId).collection("Todo").whereEqualTo("Status", "Pending").orderBy("priority", Query.Direction.DESCENDING);
 
-        FirestoreRecyclerOptions<TodoTaskFirestore> options =new FirestoreRecyclerOptions.Builder<TodoTaskFirestore>().setQuery(query,TodoTaskFirestore.class).build();
-        todoListFirestoreAdapter=new TodoListFirestoreAdapter(options,this);
+        FirestoreRecyclerOptions<TodoTaskFirestore> options = new FirestoreRecyclerOptions.Builder<TodoTaskFirestore>().setQuery(query, TodoTaskFirestore.class).build();
+        todoListFirestoreAdapter = new TodoListFirestoreAdapter(options, this);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -235,7 +229,7 @@ public class TodoListActivity2 extends AppCompatActivity {
                         .show();
             }
 
-//                mAdapter.players.remove(position);
+            //                mAdapter.players.remove(position);
 //                mAdapter.notifyItemRemoved(position);
 //                mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
             @Override
@@ -245,7 +239,7 @@ public class TodoListActivity2 extends AppCompatActivity {
 
                 Intent intent = new Intent(TodoListActivity2.this, AddOrEditTaskActivity2.class);
                 intent.putExtra("Adding or editing", "Edit Task");
-                intent.putExtra("Todo",todoTask);
+                intent.putExtra("Todo", todoTask);
                 startActivity(intent);
 
             }
@@ -267,6 +261,15 @@ public class TodoListActivity2 extends AppCompatActivity {
 
     }
 
+
+//    private void showHidePlaceholder() {
+//        if (db_cnt <= 2) {
+//            mBinding.placeholderImage.setVisibility(View.VISIBLE);
+//        } else {
+//            mBinding.placeholderImage.setVisibility(View.GONE);
+//        }
+//    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -280,22 +283,6 @@ public class TodoListActivity2 extends AppCompatActivity {
         todoListFirestoreAdapter.stopListening();
     }
 
-
-//    private void showHidePlaceholder() {
-//        if (db_cnt <= 2) {
-//            mBinding.placeholderImage.setVisibility(View.VISIBLE);
-//        } else {
-//            mBinding.placeholderImage.setVisibility(View.GONE);
-//        }
-//    }
-
-    public static void showPlaceHolder() {
-        lottieAnimationView.setVisibility(View.VISIBLE);
-    }
-    public static void hidePlaceHolder() {
-        lottieAnimationView.setVisibility(View.INVISIBLE);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -304,24 +291,6 @@ public class TodoListActivity2 extends AppCompatActivity {
         return false;
     }
 
-    @SuppressLint("NonConstantResourceId")
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.action_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
-                break;
-            case R.id.action_delete_test:
-                // later a service will take care of this
-                deleteAllCheckedTasks();
-                break;
-            case R.id.action_test_something:
-                // just a place for me to test whatever I'm testing at the moment
-                NotificationUtils.notifyUserOfDueAndOverdueTasks(this);
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
 //    @Override
 //    public void onClick(TodoTask todoTask, View view) {
@@ -437,14 +406,6 @@ public class TodoListActivity2 extends AppCompatActivity {
 //        mSharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    private void deleteAllCheckedTasks() {
-        // this is just for testing, later a service will do it periodically
-        Uri uri = TodoListContract.TodoListEntry.CONTENT_URI;
-        int deletedTasksCount = getContentResolver().delete(uri, "completed=?", new String[]{String.valueOf(TodoTask.TASK_COMPLETED)});
-        if (deletedTasksCount > 0) {
-            updateWidget();
-        }
-    }
 
     public void scheduleDailyDueCheckerAlarm() {
         Intent intent = new Intent(getApplicationContext(), DailyAlarmReceiver.class);
@@ -508,14 +469,14 @@ public class TodoListActivity2 extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(TodoListActivity2.this,MasterTodoListActivity.class));
+        startActivity(new Intent(TodoListActivity2.this, MasterTodoListActivity.class));
     }
 
-    public void callWalkThrough(){
+    public void callWalkThrough() {
 
         new TapTargetSequence(this)
                 .targets(
-                        TapTarget.forView(fab,"Add Button","Click here to add a new task")
+                        TapTarget.forView(fab, "Add Button", "Click here to add a new task")
                                 .outerCircleColor(R.color.chip_5)
                                 .outerCircleAlpha(0.96f)
                                 .targetCircleColor(R.color.colorUncompletedBackground)
@@ -530,7 +491,7 @@ public class TodoListActivity2 extends AppCompatActivity {
                                 .tintTarget(true)
                                 .transparentTarget(true)
                                 .targetRadius(80),
-                        TapTarget.forView(mRecyclerView,"To-do Task","Swipe left to delete a to-do task")
+                        TapTarget.forView(mRecyclerView, "To-do Task", "Swipe left to delete a to-do task")
                                 .outerCircleColor(R.color.chip_5)
                                 .outerCircleAlpha(0.96f)
                                 .targetCircleColor(R.color.colorUncompletedBackground)
@@ -556,7 +517,6 @@ public class TodoListActivity2 extends AppCompatActivity {
 
             @Override
             public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
-
 
 
             }

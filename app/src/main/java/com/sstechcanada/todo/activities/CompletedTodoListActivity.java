@@ -1,6 +1,5 @@
 package com.sstechcanada.todo.activities;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -10,12 +9,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -41,16 +38,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.auth.LoginActivity;
-import com.sstechcanada.todo.adapters.TodoListAdapter;
 import com.sstechcanada.todo.adapters.TodoListFirestoreAdapter;
 import com.sstechcanada.todo.broadcast_receivers.DailyAlarmReceiver;
-import com.sstechcanada.todo.data.TodoListContract;
-import com.sstechcanada.todo.data.TodoListDbHelper;
-import com.sstechcanada.todo.databinding.ActivityCompletedTodoListBinding;
-import com.sstechcanada.todo.models.List;
-import com.sstechcanada.todo.models.TodoTask;
 import com.sstechcanada.todo.models.TodoTaskFirestore;
-import com.sstechcanada.todo.utils.NotificationUtils;
 import com.sstechcanada.todo.utils.SwipeController;
 import com.sstechcanada.todo.utils.SwipeControllerActions;
 
@@ -62,28 +52,28 @@ import static com.sstechcanada.todo.activities.MasterTodoListActivity.purchaseCo
 import static com.sstechcanada.todo.activities.TodoListActivity2.lottieAnimationView;
 
 public class CompletedTodoListActivity extends AppCompatActivity {
-    private static final String TAG = TodoListActivity.class.getSimpleName();
+
     private static final int ADD_TASK_REQUEST = 1;
     private static final int EDIT_TASK_REQUEST = 2;
     private static final int ID_TODOLIST_LOADER = 2018;
+    public static int db_cnt = 0;
     String userID;
     ImageView placeholderImage;
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final CollectionReference usersColRef = db.collection("Users");
     private int list_limit = 15;
-    public static int db_cnt = 0;
     private RecyclerView mRecyclerView;
-    private TodoListAdapter mTodoListAdapter;
+
     //    private ActivityCompletedTodoListBinding mBinding;
     private SharedPreferences mSharedPreferences, ll;
     private AppCompatImageView toolbar_profile;
-    private TodoListDbHelper tld;
+
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private DatabaseReference databaseReference;
     TextView ongoingTab;
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference usersColRef = db.collection("Users");
-    private TodoListFirestoreAdapter todoListFirestoreAdapter;
     TextView textViewListName;
+    private TodoListFirestoreAdapter todoListFirestoreAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,7 +181,7 @@ public class CompletedTodoListActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(CompletedTodoListActivity.this, AddOrEditTaskActivity2.class);
                 intent.putExtra("Adding or editing", "Edit Task");
-                intent.putExtra("Todo",todoTask);
+                intent.putExtra("Todo", todoTask);
                 startActivity(intent);
 
 
@@ -235,24 +225,6 @@ public class CompletedTodoListActivity extends AppCompatActivity {
         return false;
     }
 
-    @SuppressLint("NonConstantResourceId")
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.action_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
-                break;
-            case R.id.action_delete_test:
-                // later a service will take care of this
-                deleteAllCheckedTasks();
-                break;
-            case R.id.action_test_something:
-                // just a place for me to test whatever I'm testing at the moment
-                NotificationUtils.notifyUserOfDueAndOverdueTasks(this);
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -284,14 +256,6 @@ public class CompletedTodoListActivity extends AppCompatActivity {
 //        mSharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    private void deleteAllCheckedTasks() {
-        // this is just for testing, later a service will do it periodically
-        Uri uri = TodoListContract.TodoListEntry.CONTENT_URI;
-        int deletedTasksCount = getContentResolver().delete(uri, "completed=?", new String[]{String.valueOf(TodoTask.TASK_COMPLETED)});
-        if (deletedTasksCount > 0) {
-            updateWidget();
-        }
-    }
 
     public void scheduleDailyDueCheckerAlarm() {
         Intent intent = new Intent(getApplicationContext(), DailyAlarmReceiver.class);

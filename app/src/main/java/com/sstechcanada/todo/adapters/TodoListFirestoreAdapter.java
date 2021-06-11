@@ -32,8 +32,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.AddOrEditTaskActivity2;
-import com.sstechcanada.todo.activities.TodoListActivity;
-import com.sstechcanada.todo.activities.TodoListActivity2;
 import com.sstechcanada.todo.custom_views.PriorityStarImageView;
 import com.sstechcanada.todo.models.TodoTaskFirestore;
 
@@ -51,16 +49,14 @@ import static com.sstechcanada.todo.activities.TodoListActivity2.showPlaceHolder
 
 public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskFirestore, TodoListFirestoreAdapter.TodoListFirestoreHolder> {
 
-    private FirebaseAuth mAuth= FirebaseAuth.getInstance();
-    private FirebaseUser user = mAuth.getCurrentUser();
-    String userID=user.getUid();
     Context context;
+    private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private final FirebaseUser user = mAuth.getCurrentUser();
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DatabaseReference databaseReference;
-
-    private FirebaseFirestore db=FirebaseFirestore.getInstance();
-    private CollectionReference usersColRef=db.collection("Users");
-
-    CollectionReference UserColRef=db.collection("Users").document(userID).collection("Lists").document(listId).collection("Todo");
+    private final CollectionReference usersColRef = db.collection("Users");
+    String userID = user.getUid();
+    CollectionReference UserColRef = db.collection("Users").document(userID).collection("Lists").document(listId).collection("Todo");
 
 
     /**
@@ -69,7 +65,7 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
      *
      * @param options
      */
-    public TodoListFirestoreAdapter(@NonNull FirestoreRecyclerOptions<TodoTaskFirestore> options,Context context) {
+    public TodoListFirestoreAdapter(@NonNull FirestoreRecyclerOptions<TodoTaskFirestore> options, Context context) {
         super(options);
         this.context = context;
     }
@@ -78,7 +74,7 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
     protected void onBindViewHolder(@NonNull TodoListFirestoreHolder holder, int position, @NonNull TodoTaskFirestore model) {
 
         holder.tvTextDesc.setText(model.getDescription());
-        if(model.getBenefitsString()!=null ||model.getBenefitsString()!="" ){
+        if (model.getBenefitsString() != null || model.getBenefitsString() != "") {
             holder.tvBenefits.setText(model.getBenefitsString());
         }
 
@@ -90,13 +86,13 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
         // Fetch the background from the TextView, which is a GradientDrawable.
         GradientDrawable magnitudeCircle = (GradientDrawable) holder.circle_per.getBackground();
         // Get the appropriate background color based on the current earthquake magnitude
-        int magnitudeColor = getMagnitudeColor(position%9);
+        int magnitudeColor = getMagnitudeColor(position % 9);
         // Set the color on the magnitude circle
         magnitudeCircle.setColor(magnitudeColor);
 //        holder.circle_per.setBackgroundColor(magnitudeColor);
         holder.tvBenefits.setTextColor(magnitudeColor);
 
-        DocumentSnapshot documentSnapshot=getSnapshots().getSnapshot(position);
+        DocumentSnapshot documentSnapshot = getSnapshots().getSnapshot(position);
         model.setDocumentID(documentSnapshot.getId());
 
 
@@ -105,7 +101,7 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
             public void onClick(View v) {
                 Log.i("onclick", "checkbox");
 
-                if(holder.customCheckbox.isChecked()){
+                if (holder.customCheckbox.isChecked()) {
 
                     new AlertDialog.Builder(context)
                             .setIcon(android.R.drawable.ic_dialog_alert)
@@ -116,25 +112,25 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
                                 public void onClick(DialogInterface dialog, int which) {
 
                                     Map<String, Object> updateTaskMap = new HashMap<>();
-                                        String task_status = "Completed";
-                                        Calendar calendar = Calendar.getInstance();
-                                        String dateStr = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime());
-                                        SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
-                                        Log.i("dateTime","TimestampCompleted"+ dateStr);
-                                        String timeStr = sdf.format(calendar.getTime());
-                                        updateTaskMap.put("TimestampCompleted", dateStr+" "+timeStr);
+                                    String task_status = "Completed";
+                                    Calendar calendar = Calendar.getInstance();
+                                    String dateStr = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime());
+                                    SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
+                                    Log.i("dateTime", "TimestampCompleted" + dateStr);
+                                    String timeStr = sdf.format(calendar.getTime());
+                                    updateTaskMap.put("TimestampCompleted", dateStr + " " + timeStr);
 
                                     updateTaskMap.put("Status", task_status);
                                     UserColRef.document(model.getDocumentID()).set(updateTaskMap, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
 
-                                            Toasty.success(context,"Todo-task marked as completed");
+                                            Toasty.success(context, "Todo-task marked as completed");
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
-                                            Toasty.error(context,"Something went wrong");
+                                            Toasty.error(context, "Something went wrong");
                                         }
                                     });
 //
@@ -150,7 +146,7 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
                             .show();
 
 
-                }else{
+                } else {
 
                     new AlertDialog.Builder(context)
                             .setIcon(android.R.drawable.ic_dialog_alert)
@@ -164,21 +160,21 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
                                     Calendar calendar = Calendar.getInstance();
                                     String dateStr = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime());
                                     SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
-                                    Log.i("dateTime","TimestampCompleted"+ dateStr);
+                                    Log.i("dateTime", "TimestampCompleted" + dateStr);
                                     String timeStr = sdf.format(calendar.getTime());
-                                    updateTaskMap.put("TimestampCompleted", dateStr+" "+timeStr);
+                                    updateTaskMap.put("TimestampCompleted", dateStr + " " + timeStr);
 
                                     updateTaskMap.put("Status", task_status);
                                     UserColRef.document(model.getDocumentID()).set(updateTaskMap, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
 
-                                            Toasty.success(context,"Todo-task marked as incomplete");
+                                            Toasty.success(context, "Todo-task marked as incomplete");
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
-                                            Toasty.error(context,"Something went wrong");
+                                            Toasty.error(context, "Something went wrong");
                                         }
                                     });
 //
@@ -209,7 +205,7 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
                 String doc_id = String.valueOf(model.getDocumentID());
 
                 TodoTaskFirestore todoTask = new TodoTaskFirestore(model.getDescription(),
-                       model.getPriority(),
+                        model.getPriority(),
                         model.getDueDate(),
                         model.getDocumentID(),
                         model.getStatus(),
@@ -221,7 +217,7 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
 
                 Intent intent = new Intent(v.getContext(), AddOrEditTaskActivity2.class);
                 intent.putExtra("Adding or editing", "Edit Task");
-                intent.putExtra("Todo",todoTask);
+                intent.putExtra("Todo", todoTask);
                 v.getContext().startActivity(intent);
 
             }
@@ -231,43 +227,17 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
     @NonNull
     @Override
     public TodoListFirestoreHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_todo_list,
-                parent,false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_todo_list,
+                parent, false);
         return new TodoListFirestoreHolder(v);
-    }
-
-    class TodoListFirestoreHolder extends RecyclerView.ViewHolder{
-        final AppCompatCheckBox cbTodoDescription;
-        TextView tvTodoDueDate, tvTextDesc, circle_per, tvBenefits;
-        final TextView tvTodoPriority;
-        final PriorityStarImageView ivTodoPriorityStar;
-        final ConstraintLayout clTodoListItem;
-        CardView cardView;
-        CheckBox customCheckbox;
-        public TodoListFirestoreHolder(@NonNull View itemView) {
-            super(itemView);
-            cardView=itemView.findViewById(R.id.materialCard);
-            cbTodoDescription = itemView.findViewById(R.id.cb_todo_description);
-            tvTextDesc = itemView.findViewById(R.id.tv_todo_desc);
-            tvTodoDueDate = itemView.findViewById(R.id.tv_todo_due_date);
-            tvTodoPriority = itemView.findViewById(R.id.tv_todo_priority);
-            ivTodoPriorityStar = itemView.findViewById(R.id.iv_todo_priority_star);
-            customCheckbox = itemView.findViewById(R.id.checkb);
-            clTodoListItem = (ConstraintLayout) itemView;
-            tvBenefits = itemView.findViewById(R.id.todo_benefits);
-            //Circle
-            circle_per = itemView.findViewById(R.id.circle_per_item);
-
-
-        }
     }
 
     @Override
     public void onDataChanged() {
         super.onDataChanged();
-        if(getItemCount()<=1){
+        if (getItemCount() <= 1) {
             showPlaceHolder();
-        } else{
+        } else {
             hidePlaceHolder();
         }
     }
@@ -311,6 +281,33 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
                 break;
         }
         return ContextCompat.getColor(context, magnitudeColorResourceId);
+    }
+
+    class TodoListFirestoreHolder extends RecyclerView.ViewHolder {
+        final AppCompatCheckBox cbTodoDescription;
+        final TextView tvTodoPriority;
+        final PriorityStarImageView ivTodoPriorityStar;
+        final ConstraintLayout clTodoListItem;
+        TextView tvTodoDueDate, tvTextDesc, circle_per, tvBenefits;
+        CardView cardView;
+        CheckBox customCheckbox;
+
+        public TodoListFirestoreHolder(@NonNull View itemView) {
+            super(itemView);
+            cardView = itemView.findViewById(R.id.materialCard);
+            cbTodoDescription = itemView.findViewById(R.id.cb_todo_description);
+            tvTextDesc = itemView.findViewById(R.id.tv_todo_desc);
+            tvTodoDueDate = itemView.findViewById(R.id.tv_todo_due_date);
+            tvTodoPriority = itemView.findViewById(R.id.tv_todo_priority);
+            ivTodoPriorityStar = itemView.findViewById(R.id.iv_todo_priority_star);
+            customCheckbox = itemView.findViewById(R.id.checkb);
+            clTodoListItem = (ConstraintLayout) itemView;
+            tvBenefits = itemView.findViewById(R.id.todo_benefits);
+            //Circle
+            circle_per = itemView.findViewById(R.id.circle_per_item);
+
+
+        }
     }
 }
 

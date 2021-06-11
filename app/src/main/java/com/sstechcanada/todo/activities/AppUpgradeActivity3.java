@@ -55,9 +55,9 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
     FloatingActionButton fabBack;
     ToggleButtonLayout toggle_button_layout;
     TextView tvListsCount;
-//    BillingProcessor bp;
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    String userID=mAuth.getCurrentUser().getUid();
+    //    BillingProcessor bp;
+    private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    String userID = mAuth.getCurrentUser().getUid();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String purchaseProductId="1";
     List<String> alreadyPurchasedList;
@@ -161,7 +161,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
 
                 }else{
                     Log.e("Error connecting to billing client", String.valueOf(billingResult.getResponseCode()));
-                    Toast.makeText(AppUpgradeActivity3.this,"Error connecting to billing client",Toast.LENGTH_SHORT).show();
+                    Toasty.error(AppUpgradeActivity3.this, "Error connecting to billing client", Toast.LENGTH_SHORT).show();
 
                 }
             }
@@ -181,7 +181,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
     private void loadAllSubscribePackage( ) {
         if(billingClient.isReady()){
             SkuDetailsParams params = SkuDetailsParams.newBuilder()
-                    .setSkusList(Arrays.asList("tier1" , "tier 2"))
+                    .setSkusList(Arrays.asList("tier1", "tier2"))
                     .setType(BillingClient.SkuType.SUBS)
                     .build();
 

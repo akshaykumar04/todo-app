@@ -25,9 +25,7 @@
             android:name=".activities.AppUpgradeActivity3"
             android:screenOrientation="portrait" />
 
-        <activity
-            android:name=".activities.TodoListActivity"
-            android:screenOrientation="portrait" />
+
         <activity android:name=".activities.SelectCategoriesDailog" >
 
             <!-- android:theme="@style/Theme.MaterialComponents.Light.Dialog" -->
@@ -42,56 +40,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.AddCategoryActivity"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activities.AddCategoryActivity2"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity android:name=".activities.auth.LoginActivity" />
-        <activity
-            android:name=".activities.SettingsActivity"
-            android:parentActivityName=".activities.TodoListActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.sstechcanada.todo.activities.TodoListActivity" />
-        </activity>
-        <activity
-            android:name=".activities.AddOrEditTaskActivity"
-            android:parentActivityName=".activities.TodoListActivity"
-            android:screenOrientation="portrait" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.sstechcanada.todo.activities.TodoListActivity" />
-        </activity>
+
         <activity
             android:name=".activities.AddOrEditTaskActivity2"
-            android:parentActivityName=".activities.TodoListActivity"
+            android:parentActivityName=".activities.TodoListActivity2"
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.sstechcanada.todo.activities.TodoListActivity" />
+                android:value="com.sstechcanada.todo.activities.TodoListActivity2" />
         </activity>
 
-        <provider
-            android:name=".data.TodoListProvider"
-            android:authorities="com.sstechcanada.todo"
-            android:exported="true" />
-
-        <receiver android:name=".widget.TodoListWidgetProvider" >
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/todo_list_widget_info" />
-        </receiver>
-
-        <service
-            android:name=".widget.TodoListWidgetRemoteViewsService"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <receiver
             android:name=".broadcast_receivers.DailyAlarmReceiver"

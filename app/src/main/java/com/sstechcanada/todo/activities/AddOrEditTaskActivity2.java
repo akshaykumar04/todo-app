@@ -1,15 +1,12 @@
 package com.sstechcanada.todo.activities;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -27,7 +24,6 @@ import androidx.databinding.DataBindingUtil;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.common.util.ArrayUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.chip.Chip;
@@ -46,8 +42,6 @@ import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.auth.LoginActivity;
 import com.sstechcanada.todo.adapters.GridViewAdapter;
 import com.sstechcanada.todo.custom_views.GridItemView;
-import com.sstechcanada.todo.data.TodoListContract;
-import com.sstechcanada.todo.data.TodoListDbHelper;
 import com.sstechcanada.todo.databinding.ActivityAddOrEditTaskBinding;
 import com.sstechcanada.todo.models.Category;
 import com.sstechcanada.todo.models.TodoTask;
@@ -81,6 +75,9 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
     LinearLayout addMoreCategories;
     String userID;
     String taskCompleted = "Pending";
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    CollectionReference benefitCollectionRef;
+    CollectionReference UserColRef;
     private ActivityAddOrEditTaskBinding mBinding;
     private String mTaskId = "-1";
     private String mAddOrEdit;
@@ -94,10 +91,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
     private AppCompatImageView toolbar_profile, toolbarBackIcon;
     private FirebaseAuth mAuth;
     //For Delete Status
-    private int status;;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference benefitCollectionRef;
-    CollectionReference UserColRef;
+    private int status;
     private String[] record;
     private String description;
 
@@ -139,10 +133,10 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
         toolBarTitle.setText("Add/Update Task");
 
         mAuth = FirebaseAuth.getInstance();
-        userID=mAuth.getCurrentUser().getUid();
-        benefitCollectionRef=db.collection("Users").document(userID).collection("Benefits");
-        UserColRef=db.collection("Users").document(userID).collection("Lists").document(listId).collection("Todo");
-        Log.i("ListId", "Add or edit: "+listId);
+        userID = mAuth.getCurrentUser().getUid();
+        benefitCollectionRef = db.collection("Users").document(userID).collection("Benefits");
+        UserColRef = db.collection("Users").document(userID).collection("Lists").document(listId).collection("Todo");
+        Log.i("ListId", "Add or edit: " + listId);
         loadBannerAd();
 
         long dueDate;
@@ -161,7 +155,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                 mBinding.rbNoDueDate.setChecked(true);
             } else {
                 todoTaskToAddOrEdit = bundle.getParcelable(getString(R.string.intent_todo_key));
-                selectedResult=todoTaskToAddOrEdit.getBenefitsString();
+                selectedResult = todoTaskToAddOrEdit.getBenefitsString();
                 mTaskId = todoTaskToAddOrEdit.getDocumentID();
                 mBinding.etTaskDescription.setText(todoTaskToAddOrEdit.getDescription());
 
@@ -171,7 +165,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
 
-                        if(!mBinding.cbTaskCompleted.isChecked()){
+                        if (!mBinding.cbTaskCompleted.isChecked()) {
                             new AlertDialog.Builder(AddOrEditTaskActivity2.this)
                                     .setIcon(android.R.drawable.ic_dialog_alert)
                                     .setTitle("Confirm Incomplete")
@@ -190,7 +184,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                                     })
                                     .show();
 
-                        }else{
+                        } else {
 
                             new AlertDialog.Builder(AddOrEditTaskActivity2.this)
                                     .setIcon(android.R.drawable.ic_dialog_alert)
@@ -211,10 +205,10 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                                     .show();
                         }
                     }
-                    });
-                        mBinding.cbTaskCompleted.setChecked(taskCompleted.equals("Completed"));
+                });
+                mBinding.cbTaskCompleted.setChecked(taskCompleted.equals("Completed"));
 
-                if(taskCompleted.equals("Completed")){
+                if (taskCompleted.equals("Completed")) {
                     mBinding.timestampCompletedtextView.setText(todoTaskToAddOrEdit.getTimestampCompleted());
                     mBinding.timestampCompletedtextView.setVisibility(View.VISIBLE);
                 }
@@ -250,14 +244,12 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                     savedInstanceState.getInt(getString(R.string.month_key)),
                     savedInstanceState.getInt(getString(R.string.day_key)));
 
-            if(taskCompleted.equals("Completed")){
+            if (taskCompleted.equals("Completed")) {
                 mBinding.cbTaskCompleted.setChecked(true);
                 mBinding.timestampCompletedtextView.setText(todoTaskToAddOrEdit.getTimestampCompleted());
-            }else{
+            } else {
                 mBinding.cbTaskCompleted.setChecked(false);
             }
-
-
 
 
         }
@@ -288,9 +280,9 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 //            String[] record;
 //            for (HashMap<String, String> user : userlist) {
 //                selectedResult = user.get(COLUMN_CATEGORY);
-                record = convertStringToArray(todoTaskToAddOrEdit.getBenefitsString());
-                category_count = record.length;
-                display_categories(record);
+            record = convertStringToArray(todoTaskToAddOrEdit.getBenefitsString());
+            category_count = record.length;
+            display_categories(record);
 //            }
         }
 
@@ -302,10 +294,10 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
     private void loadBannerAd() {
 
         AdView adView = findViewById(R.id.adView);
-        if(purchaseCode.equals("0")){
+        if (purchaseCode.equals("0")) {
             AdRequest adRequest = new AdRequest.Builder().build();
             adView.loadAd(adRequest);
-        }else{
+        } else {
             adView.setVisibility(View.GONE);
         }
 
@@ -412,38 +404,38 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 
     private void uploadDataToFirestore() {
         List<String> benefitsArrayFirestore;
-        if( record!=null){
+        if (record != null) {
             benefitsArrayFirestore = Arrays.asList(record);
-        }else{
-           benefitsArrayFirestore= Collections.<String>emptyList();  ;
+        } else {
+            benefitsArrayFirestore = Collections.emptyList();
         }
 
-        if(mAddOrEdit.equals(getString(R.string.add_new_task))){
+        if (mAddOrEdit.equals(getString(R.string.add_new_task))) {
 
             Map<String, Object> newTaskMap = new HashMap<>();
             newTaskMap.put("description", description);
             newTaskMap.put("priority", benefitsArrayFirestore.size());
             newTaskMap.put("Benefits", benefitsArrayFirestore);
-            String task_status = "Pending";;
+            String task_status = "Pending";
             newTaskMap.put("Status", task_status);
             newTaskMap.put("TimestampCompleted", " ");
 
             UserColRef.document().set(newTaskMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    Toasty.success(AddOrEditTaskActivity2.this,"New Todo-Item Successfully Added");
-                    Intent intent=new Intent(AddOrEditTaskActivity2.this, TodoListActivity2.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    Toasty.success(AddOrEditTaskActivity2.this, "New Todo-Item Successfully Added");
+                    Intent intent = new Intent(AddOrEditTaskActivity2.this, TodoListActivity2.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
-                                }
+                }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toasty.error(AddOrEditTaskActivity2.this,"Something went wrong");
+                    Toasty.error(AddOrEditTaskActivity2.this, "Something went wrong");
                 }
             });
 
-        }else {
+        } else {
             Map<String, Object> updateTaskMap = new HashMap<>();
             updateTaskMap.put("description", description);
             updateTaskMap.put("priority", benefitsArrayFirestore.size());
@@ -454,56 +446,30 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                 Calendar calendar = Calendar.getInstance();
                 String dateStr = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime());
                 SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
-                Log.i("dateTime","TimestampCompleted"+ dateStr);
+                Log.i("dateTime", "TimestampCompleted" + dateStr);
                 String timeStr = sdf.format(calendar.getTime());
-                updateTaskMap.put("TimestampCompleted", dateStr+" "+timeStr);
+                updateTaskMap.put("TimestampCompleted", dateStr + " " + timeStr);
             } else {
-                task_status = "Pending";;
+                task_status = "Pending";
             }
             updateTaskMap.put("Status", task_status);
             UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).set(updateTaskMap, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    Intent intent=new Intent(AddOrEditTaskActivity2.this, TodoListActivity2.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    Intent intent = new Intent(AddOrEditTaskActivity2.this, TodoListActivity2.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
-                    Toasty.success(AddOrEditTaskActivity2.this,"New Todo-Item Successfully Added");
+                    Toasty.success(AddOrEditTaskActivity2.this, "New Todo-Item Successfully Added");
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toasty.error(AddOrEditTaskActivity2.this,"Something went wrong");
+                    Toasty.error(AddOrEditTaskActivity2.this, "Something went wrong");
                 }
             });
         }
     }
 
-    private void insertOrUpdate(TodoTask todoTask) {
-        // I used to have this functionality in TodoListActivity's onActivityResult method, but
-        // then I couldn't reach it when editing a task directly from the App Widget
-        String id = String.valueOf(todoTask.getId());
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(TodoListContract.TodoListEntry.COLUMN_DESCRIPTION, todoTask.getDescription());
-        contentValues.put(TodoListContract.TodoListEntry.COLUMN_PRIORITY, todoTask.getPriority());
-        contentValues.put(TodoListContract.TodoListEntry.COLUMN_DUE_DATE, todoTask.getDueDate());
-        contentValues.put(TodoListContract.TodoListEntry.COLUMN_COMPLETED, todoTask.getCompleted());
-        contentValues.put(TodoListContract.TodoListEntry.COLUMN_CATEGORY, todoTask.getCategory());
-        contentValues.put(TodoListContract.TodoListEntry.COLUMN_CATEGORY_COUNT, todoTask.getCategory_count());
-        status = todoTask.getCompleted();
-
-        Log.d(TAG, todoTask.getDueDate() + "");
-
-        if (mAddOrEdit.equals(getString(R.string.add_new_task))) {
-            getContentResolver().insert(TodoListContract.TodoListEntry.CONTENT_URI, contentValues);
-
-        } else {
-            Uri uri = TodoListContract.TodoListEntry.CONTENT_URI.buildUpon().appendPath(id).build();
-            getContentResolver().update(uri, contentValues, "_id=?", new String[]{id});
-            if (todoTask.getCompleted() == 1) {
-                todoDeleteDialog(todoTask, id);
-            }
-        }
-    }
 
     @Override
     protected void onStart() {
@@ -547,9 +513,9 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 
         addMoreCategories.setOnClickListener(view -> startActivity(new Intent(AddOrEditTaskActivity2.this, AddCategoryActivity2.class)));
 
-        if(purchaseCode.equals("0")){
+        if (purchaseCode.equals("0")) {
             bannerAd.loadAd(new AdRequest.Builder().build());
-        }else{
+        } else {
             bannerAd.setVisibility(View.GONE);
         }
 
@@ -569,8 +535,8 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                 categories = new ArrayList<>();
                 selectedStrings = new ArrayList<>();
                 categories.clear();
-                for(DocumentSnapshot dataSnapshot:value){
-                    Category category = new Category(dataSnapshot.getId(),(String) dataSnapshot.get("category_name"));
+                for (DocumentSnapshot dataSnapshot : value) {
+                    Category category = new Category(dataSnapshot.getId(), (String) dataSnapshot.get("category_name"));
                     categories.add(category);
                 }
 
@@ -581,9 +547,9 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                 gridView.setVisibility(View.VISIBLE);
 
                 record = convertStringToArray(selectedResult);
-                for(int i=0;i<categories.size();i++){
-                    for(int j=0;j<record.length;j++){
-                        if(record[j].equals(categories.get(i).getCategoryName())) {
+                for (int i = 0; i < categories.size(); i++) {
+                    for (int j = 0; j < record.length; j++) {
+                        if (record[j].equals(categories.get(i).getCategoryName())) {
                             adapter.selectedPositions.add(i);
                             selectedStrings.add(record[j]);
                         }
@@ -596,8 +562,8 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 //                                selectedStrings.add(record[j]);
 //                            }
 ////
-                selectedResult="";
-                selectedResult=convertArrayToString(selectedStrings);
+                selectedResult = "";
+                selectedResult = convertArrayToString(selectedStrings);
 
                 progressBar.setVisibility(View.INVISIBLE);
                 addMoreCategories.setVisibility(View.VISIBLE);
@@ -680,33 +646,5 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 
     }
 
-    private void todoDeleteDialog(TodoTask todoTask, String tid) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Task will be deleted");
-        alert.setMessage("Marking this task as complete will permanently delete this task. \nAre you sure?");
-        alert.setCancelable(false);
-        alert.setPositiveButton(
-                "Yes",
-                (dialog, id) -> {
-                    deleteTodo(tid);
-                }
-        );
-        alert.setNegativeButton(
-                "No",
-                (dialog, id) -> {
-                    todoTask.setCompleted(0);
-                    insertOrUpdate(todoTask);
-                    dialog.dismiss();
-                }
-        );
-        alert.show();
-    }
-
-    private void deleteTodo(String tid) {
-        TodoListDbHelper todoListDbHelper = new TodoListDbHelper(AddOrEditTaskActivity2.this);
-        todoListDbHelper.deleteTodo(tid);
-        Toasty.error(this, "Task Deleted", Toast.LENGTH_SHORT, true).show();
-        finish();
-    }
 
 }
