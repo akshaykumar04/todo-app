@@ -59,7 +59,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     String userID = mAuth.getCurrentUser().getUid();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    String purchaseProductId="1";
+    String purchaseProductId="0";
     List<String> alreadyPurchasedList;
 
     BillingClient billingClient;
@@ -105,11 +105,11 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
             public Unit invoke(ToggleButtonLayout toggleButtonLayout, Toggle toggle, Boolean aBoolean) {
                 if (toggle.getId()==R.id.toggle_left) {
                     tvListsCount.setText(getString(R.string.create_up_to_3_to_do_lists));
-                    purchaseProductId="1";
+                    purchaseProductId="0";
 
                 }else if(toggle.getId()==R.id.toggle_right){
                     tvListsCount.setText(getString(R.string.create_up_to_3_to_do_lists));
-                    purchaseProductId="2";
+                    purchaseProductId="1";
 
                 }
 
