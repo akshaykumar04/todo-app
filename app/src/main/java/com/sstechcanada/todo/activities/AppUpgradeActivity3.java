@@ -108,7 +108,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                     purchaseProductId="0";
 
                 }else if(toggle.getId()==R.id.toggle_right){
-                    tvListsCount.setText(getString(R.string.create_up_to_3_to_do_lists));
+                    tvListsCount.setText(getString(R.string.create_up_to_20_to_do_lists));
                     purchaseProductId="1";
 
                 }
@@ -288,10 +288,12 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                 alreadyPurchasedList = new ArrayList<>();
                 if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
 
-                    if (purchase.getSkus().equals("tier1")) {
+
+
+                    if (purchase.getSkus().equals("tier1") || purchase.getOrderId().equals("tier1")) {
                         pur_code = "1";
 
-                    } else if (purchase.getSkus().equals("tier2")) {
+                    } else if (purchase.getSkus().equals("tier2")|| purchase.getOrderId().equals("tier2")) {
                         pur_code = "2";
 
                     }
