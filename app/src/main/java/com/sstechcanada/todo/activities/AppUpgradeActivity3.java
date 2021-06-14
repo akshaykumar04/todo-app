@@ -31,6 +31,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.savvyapps.togglebuttonlayout.Toggle;
 import com.savvyapps.togglebuttonlayout.ToggleButtonLayout;
 import com.sstechcanada.todo.R;
@@ -106,14 +107,10 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                 if (toggle.getId()==R.id.toggle_left) {
                     tvListsCount.setText(getString(R.string.create_up_to_3_to_do_lists));
                     purchaseProductId="0";
-
                 }else if(toggle.getId()==R.id.toggle_right){
                     tvListsCount.setText(getString(R.string.create_up_to_20_to_do_lists));
                     purchaseProductId="1";
-
                 }
-
-
                 return null;
             }
         });
@@ -137,10 +134,8 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
             public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
                 if(billingResult.getResponseCode()==BillingClient.BillingResponseCode.OK){
                     AppUpgradeActivity3.this.recreate();
-
                 }
             }
-
         };
 
         billingClient.startConnection(new BillingClientStateListener() {
@@ -152,9 +147,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                     List<Purchase> purchases=billingClient.queryPurchases(BillingClient.SkuType.SUBS).getPurchasesList();
 
                     if(purchases.size()>0){
-
                         handleItemAlreadyPurchase(purchases);
-
                     }else{
                         loadAllSubscribePackage();
                     }
@@ -166,10 +159,8 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                 }
             }
 
-
             @Override
             public void onBillingServiceDisconnected() {
-
                 Toast.makeText(AppUpgradeActivity3.this,"You are disconnected from Billing service ",Toast.LENGTH_SHORT).show();
                 // Try to restart the connection on the next request to
                 // Google Play by calling the startConnection() method.
@@ -179,6 +170,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
     }
 
     private void loadAllSubscribePackage( ) {
+
         if(billingClient.isReady()){
             SkuDetailsParams params = SkuDetailsParams.newBuilder()
                     .setSkusList(Arrays.asList("tier1", "tier2"))
@@ -219,9 +211,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                                 break;
                             default:
                                 break;
-
                         }
-
                     }else{
                         Log.e("Error connecting to billing client", String.valueOf(billingResult.getResponseCode()));
                         Toast.makeText(AppUpgradeActivity3.this,"Error connecting to billing client",Toast.LENGTH_SHORT).show();
@@ -237,7 +227,9 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
             alreadyPurchasedList=new ArrayList<>();
             if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED){
 
-                if (purchase.getSkus().equals("tier1")){
+                Toast.makeText(this,"already SKUS"+purchase.getSkus().toString(),Toast.LENGTH_LONG).show();
+
+                if (purchase.getSkus().equals("tier1") || purchase.getOrderId().equals("tier1")){
                     alreadyPurchasedList.add("1");
                     if(!purchase.isAcknowledged()){
                         AcknowledgePurchaseParams acknowledgePurchaseParams= AcknowledgePurchaseParams.newBuilder()
@@ -247,7 +239,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                         billingClient.acknowledgePurchase(acknowledgePurchaseParams,acknowledgePurchaseResponseListener );
                     }
 
-                }else if (purchase.getSkus().equals("tier2")){
+                }else if (purchase.getSkus().equals("tier2")|| purchase.getOrderId().equals("tier2")){
                     alreadyPurchasedList.add("2");
                     if(!purchase.isAcknowledged()){
                         AcknowledgePurchaseParams acknowledgePurchaseParams= AcknowledgePurchaseParams.newBuilder()
@@ -258,6 +250,8 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                     }
 
                 }
+
+                Toast.makeText(this,"already orderID"+purchase.getOrderId().toString(),Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -288,10 +282,12 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                 alreadyPurchasedList = new ArrayList<>();
                 if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
 
+                    Toast.makeText(this,"SKUS"+purchase.getSkus().toString(),Toast.LENGTH_LONG).show();
 
 
                     if (purchase.getSkus().equals("tier1") || purchase.getOrderId().equals("tier1")) {
                         pur_code = "1";
+
 
                     } else if (purchase.getSkus().equals("tier2")|| purchase.getOrderId().equals("tier2")) {
                         pur_code = "2";
@@ -305,10 +301,16 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                         return;
                     }
 
+                    Toast.makeText(this,"orderID"+purchase.getOrderId().toString(),Toast.LENGTH_SHORT).show();
+
                     if (!purchase.isAcknowledged()) {
                         AcknowledgePurchaseParams acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
                                 .setPurchaseToken(purchase.getPurchaseToken())
                                 .build();
+
+                        Toast.makeText(this,"is ackno",Toast.LENGTH_SHORT).show();
+
+                        Toast.makeText(this,"purcodw"+pur_code.toString(),Toast.LENGTH_LONG).show();
 
                         billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
                     }else {
@@ -317,10 +319,11 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                         Map<String, String> purchaseCode = new HashMap<>();
                         purchaseCode.put("purchase_code", pur_code);
 
-                        db.collection("Users").document(userID).set(purchaseCode).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        db.collection("Users").document(userID).set(purchaseCode, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 setPurchaseCode();
+                                Toast.makeText(AppUpgradeActivity3.this,"on success",Toast.LENGTH_LONG).show();
                                 Toasty.error(getApplicationContext(), "Package Upgraded", Toast.LENGTH_SHORT).show();
 
                             }
@@ -342,6 +345,9 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
     }
 
     public void setPurchaseCode() {
+
+        Toast.makeText(this,"set purchase",Toast.LENGTH_SHORT).show();
+
         db.collection("Users").document(userID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -353,7 +359,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                         Log.i("purchasecode", "new :" + documentSnapshot.get("masterListLimit").toString());
                         userAccountDetails.add(0, documentSnapshot.get("masterListLimit").toString());
                         userAccountDetails.add(1, documentSnapshot.get("todoItemLimit").toString());
-                      
+
                     }
                 });
             }
