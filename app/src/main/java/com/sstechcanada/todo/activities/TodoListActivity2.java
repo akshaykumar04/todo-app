@@ -32,6 +32,7 @@ import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -235,7 +236,20 @@ public class TodoListActivity2 extends AppCompatActivity {
             @Override
             public void onLeftClicked(int position) {
                 DocumentSnapshot documentSnapshot = todoListFirestoreAdapter.getSnapshots().getSnapshot(position);
-                TodoTaskFirestore todoTask = documentSnapshot.toObject(TodoTaskFirestore.class);
+                String id = documentSnapshot.getId();
+                TodoTaskFirestore task = documentSnapshot.toObject(TodoTaskFirestore.class);
+
+
+                TodoTaskFirestore todoTask = new TodoTaskFirestore(task.getDescription(),
+                        task.getPriority(),
+                        task.getDueDate(),
+                        id,
+                        task.getStatus(),
+                        task.getCategory(),
+                        2,
+                        task.getBenefits(),
+                        task.getBenefitsString(),
+                        task.getTimestampCompleted());
 
                 Intent intent = new Intent(TodoListActivity2.this, AddOrEditTaskActivity2.class);
                 intent.putExtra("Adding or editing", "Edit Task");

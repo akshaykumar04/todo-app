@@ -50,6 +50,11 @@ public class MasterListFirestoreAdapter extends FirestoreRecyclerAdapter<List, M
 
         try {
             holder.tv_todo_list_name.setText(model.getListName());
+//            if(model.getListName()!=null && (!model.getListName().equals(""))){
+//                listName=model.getListName();
+//            }else{
+//                listName="Untitled List";
+//            }
 //            holder.tv_todo_list_desc.setText(model.getListDescription());
 
             Drawable drawable = context.getResources().getDrawable(model.getImage());
@@ -75,7 +80,7 @@ public class MasterListFirestoreAdapter extends FirestoreRecyclerAdapter<List, M
                 if(model.getListName()!=null && (!model.getListName().equals(""))){
                     listName=model.getListName();
                 }else{
-                    listName="Unnamed List";
+                    listName="Untitled List";
                 }
                 v.getContext().startActivity(intent);
 

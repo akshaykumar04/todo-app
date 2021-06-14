@@ -453,6 +453,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                 task_status = "Pending";
             }
             updateTaskMap.put("Status", task_status);
+            Log.i("task456",todoTaskToAddOrEdit.getDocumentID() +"jjj");
             UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).set(updateTaskMap, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
