@@ -62,6 +62,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String purchaseProductId="0";
     List<String> alreadyPurchasedList;
+    String pur_code;
 
     BillingClient billingClient;
     AcknowledgePurchaseResponseListener acknowledgePurchaseResponseListener;
@@ -270,7 +271,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
         if (billingResult.getResponseCode() ==BillingClient.BillingResponseCode.OK && list !=null){
 
 //------ ---
-            String pur_code = purchaseCode;
+            pur_code = purchaseCode;
 //            if(purchaseProductId.equals("1")) {
 //                pur_code="1";
 //            }else if(purchaseProductId.equals("2")) {
@@ -285,11 +286,11 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                     Toast.makeText(this,"SKUS"+purchase.getSkus().toString(),Toast.LENGTH_LONG).show();
 
 
-                    if (purchase.getSkus().equals("tier1") || purchase.getOrderId().equals("tier1")) {
+                    if (purchase.getSkus().get(0).equals("tier1") || purchase.getOrderId().equals("0")) {
                         pur_code = "1";
 
 
-                    } else if (purchase.getSkus().equals("tier2")|| purchase.getOrderId().equals("tier2")) {
+                    } else if (purchase.getSkus().get(0).equals("tier2")|| purchase.getOrderId().equals("tier2")) {
                         pur_code = "2";
 
                     }
@@ -308,27 +309,17 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                                 .setPurchaseToken(purchase.getPurchaseToken())
                                 .build();
 
-                        Toast.makeText(this,"is ackno",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this,"is not  ackn if",Toast.LENGTH_SHORT).show();
 
-                        Toast.makeText(this,"purcodw"+pur_code.toString(),Toast.LENGTH_LONG).show();
+                        Toast.makeText(this,"purcode "+pur_code.toString(),Toast.LENGTH_LONG).show();
 
                         billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
                     }else {
                         // Grant entitlement to the user on item purchase
                         // restart activity
-                        Map<String, String> purchaseCode = new HashMap<>();
-                        purchaseCode.put("purchase_code", pur_code);
+                        Toast.makeText(this,"is ackno else",Toast.LENGTH_SHORT).show();
+                        setPurchaseCodeInDatabase();
 
-                        db.collection("Users").document(userID).set(purchaseCode, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                setPurchaseCode();
-                                Toast.makeText(AppUpgradeActivity3.this,"on success",Toast.LENGTH_LONG).show();
-                                Toasty.error(getApplicationContext(), "Package Upgraded", Toast.LENGTH_SHORT).show();
-
-                            }
-                        });
-                           this.recreate();
 
                     }
                 }
@@ -341,6 +332,37 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
         } else {
             Toast.makeText(AppUpgradeActivity3.this,"Error "+billingResult.getDebugMessage(),Toast.LENGTH_SHORT).show();
         }
+
+    }
+
+    AcknowledgePurchaseResponseListener ackPurchase = new AcknowledgePurchaseResponseListener() {
+        @Override
+        public void onAcknowledgePurchaseResponse(BillingResult billingResult) {
+            if(billingResult.getResponseCode()==BillingClient.BillingResponseCode.OK){
+                //if purchase is acknowledged
+                // Grant entitlement to the user. and restart activity
+                Toast.makeText(AppUpgradeActivity3.this,"is ackno listener",Toast.LENGTH_SHORT).show();
+                setPurchaseCodeInDatabase();
+            }
+        }
+    };
+
+    public void setPurchaseCodeInDatabase() {
+
+        Toast.makeText(this,"set purchase code in db",Toast.LENGTH_SHORT).show();
+
+        Map<String, String> purchaseCode = new HashMap<>();
+        purchaseCode.put("purchase_code", pur_code);
+
+        db.collection("Users").document(userID).set(purchaseCode, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                setPurchaseCode();
+                Toast.makeText(AppUpgradeActivity3.this,"on success",Toast.LENGTH_LONG).show();
+
+            }
+        });
+        this.recreate();
 
     }
 
@@ -359,6 +381,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                         Log.i("purchasecode", "new :" + documentSnapshot.get("masterListLimit").toString());
                         userAccountDetails.add(0, documentSnapshot.get("masterListLimit").toString());
                         userAccountDetails.add(1, documentSnapshot.get("todoItemLimit").toString());
+                        Toasty.error(getApplicationContext(), "Package Upgraded", Toast.LENGTH_SHORT).show();
 
                     }
                 });
@@ -377,9 +400,11 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
         super.onBackPressed();
     }
 
-    @Override
-    public void onDestroy() {
+    protected void onDestroy() {
         super.onDestroy();
+        if(billingClient!=null){
+            billingClient.endConnection();
+        }
     }
 
 
