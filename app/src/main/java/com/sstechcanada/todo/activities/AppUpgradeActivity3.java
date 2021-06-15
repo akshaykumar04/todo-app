@@ -17,14 +17,11 @@ import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.BillingResult;
-import com.android.billingclient.api.ConsumeResponseListener;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
 import com.android.billingclient.api.SkuDetailsResponseListener;
-import com.anjlab.android.iab.v3.BillingProcessor;
-import com.anjlab.android.iab.v3.TransactionDetails;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -50,6 +47,9 @@ import kotlin.jvm.functions.Function3;
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.purchaseCode;
 import static com.sstechcanada.todo.activities.auth.LoginActivity.userAccountDetails;
 
+//import com.anjlab.android.iab.v3.BillingProcessor;
+//import com.anjlab.android.iab.v3.TransactionDetails;
+
 public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesUpdatedListener {
 
     LottieAnimationView buttonUpgrade;
@@ -65,7 +65,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
     String pur_code;
 
     BillingClient billingClient;
-    AcknowledgePurchaseResponseListener acknowledgePurchaseResponseListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +134,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
             @Override
             public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
                 if(billingResult.getResponseCode()==BillingClient.BillingResponseCode.OK){
+                    Toast.makeText(AppUpgradeActivity3.this,"acknowlegment inside setupbillinglciend",Toast.LENGTH_SHORT).show();
                     AppUpgradeActivity3.this.recreate();
                 }
             }
@@ -232,6 +233,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
 
                 if (purchase.getSkus().equals("tier1") || purchase.getOrderId().equals("tier1")){
                     alreadyPurchasedList.add("1");
+                    pur_code="1";
                     if(!purchase.isAcknowledged()){
                         AcknowledgePurchaseParams acknowledgePurchaseParams= AcknowledgePurchaseParams.newBuilder()
                                 .setPurchaseToken(purchase.getPurchaseToken())
@@ -242,6 +244,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
 
                 }else if (purchase.getSkus().equals("tier2")|| purchase.getOrderId().equals("tier2")){
                     alreadyPurchasedList.add("2");
+                    pur_code="2";
                     if(!purchase.isAcknowledged()){
                         AcknowledgePurchaseParams acknowledgePurchaseParams= AcknowledgePurchaseParams.newBuilder()
                                 .setPurchaseToken(purchase.getPurchaseToken())
@@ -334,14 +337,13 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
         }
 
     }
-
-    AcknowledgePurchaseResponseListener ackPurchase = new AcknowledgePurchaseResponseListener() {
+    AcknowledgePurchaseResponseListener acknowledgePurchaseResponseListener = new AcknowledgePurchaseResponseListener() {
         @Override
         public void onAcknowledgePurchaseResponse(BillingResult billingResult) {
             if(billingResult.getResponseCode()==BillingClient.BillingResponseCode.OK){
                 //if purchase is acknowledged
                 // Grant entitlement to the user. and restart activity
-                Toast.makeText(AppUpgradeActivity3.this,"is ackno listener",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AppUpgradeActivity3.this,"is ackno listener",Toast.LENGTH_SHORT).show();
                 setPurchaseCodeInDatabase();
             }
         }
