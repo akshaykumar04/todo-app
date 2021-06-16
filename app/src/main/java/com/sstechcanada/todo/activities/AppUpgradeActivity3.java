@@ -140,7 +140,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
 
                     setPurchaseCodeInDatabase();
 
-                    AppUpgradeActivity3.this.recreate();
+//                    AppUpgradeActivity3.this.recreate();
                 }
             }
         };
@@ -284,25 +284,22 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                 if (purchase.getSkus().equals("tier1") || purchase.getOrderId().equals("tier1")) {
                     alreadyPurchasedList.add("1");
                     pur_code = "1";
-                    if (!purchase.isAcknowledged()) {
-                        AcknowledgePurchaseParams acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
-                                .setPurchaseToken(purchase.getPurchaseToken())
-                                .build();
-
-                        billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
-                    }
 
                 } else if (purchase.getSkus().equals("tier2") || purchase.getOrderId().equals("tier2")) {
                     alreadyPurchasedList.add("2");
                     pur_code = "2";
-                    if (!purchase.isAcknowledged()) {
-                        AcknowledgePurchaseParams acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
-                                .setPurchaseToken(purchase.getPurchaseToken())
-                                .build();
 
-                        billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
-                    }
 
+                }
+
+                if (!purchase.isAcknowledged()) {
+                    AcknowledgePurchaseParams acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
+                            .setPurchaseToken(purchase.getPurchaseToken())
+                            .build();
+
+                    billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
+                }else{
+                    setPurchaseCodeInDatabase();
                 }
 
                 Toast.makeText(this, "already orderID" + purchase.getOrderId().toString(), Toast.LENGTH_SHORT).show();
@@ -387,11 +384,8 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                 for (Purchase purchase : list) {
                     if (purchase.getSkus().get(0).equals("tier1") || purchase.getOrderId().equals("0")) {
                         pur_code = "1";
-
-
                     } else if (purchase.getSkus().get(0).equals("tier2") || purchase.getOrderId().equals("tier2")) {
                         pur_code = "2";
-
                     }
 
                     if (!purchase.isAcknowledged()) {
