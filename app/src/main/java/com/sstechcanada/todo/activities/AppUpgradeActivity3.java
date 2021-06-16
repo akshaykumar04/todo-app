@@ -136,9 +136,8 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
             @Override
             public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
                 if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                    Toast.makeText(AppUpgradeActivity3.this, "acknowlegment inside setupbillinglciend", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AppUpgradeActivity3.this, "acknowlegment inside setup billing cliend", Toast.LENGTH_SHORT).show();
 
-                    Toast.makeText(AppUpgradeActivity3.this, "is ackno listener", Toast.LENGTH_SHORT).show();
                     setPurchaseCodeInDatabase();
 
                     AppUpgradeActivity3.this.recreate();
@@ -161,7 +160,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                             alreadyPurchasedList = new ArrayList<>();
                             if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
 
-                                Toast.makeText(AppUpgradeActivity3.this, "SKUS" + purchase.getSkus().toString(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(AppUpgradeActivity3.this, "SKUS billing setup finished" + purchase.getSkus().toString(), Toast.LENGTH_LONG).show();
 
 
                                 if (purchase.getSkus().get(0).equals("tier1") || purchase.getOrderId().equals("0")) {
@@ -180,14 +179,12 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                                     return;
                                 }
 
-                                Toast.makeText(AppUpgradeActivity3.this, "orderID" + purchase.getOrderId().toString(), Toast.LENGTH_SHORT).show();
-
                                 if (!purchase.isAcknowledged()) {
                                     AcknowledgePurchaseParams acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
                                             .setPurchaseToken(purchase.getPurchaseToken())
                                             .build();
 
-                                    Toast.makeText(AppUpgradeActivity3.this, "is not  ackn if", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(AppUpgradeActivity3.this, "billing setup finished :is not  ackn if", Toast.LENGTH_SHORT).show();
 
                                     Toast.makeText(AppUpgradeActivity3.this, "purcode " + pur_code.toString(), Toast.LENGTH_LONG).show();
 
@@ -195,7 +192,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                                 } else {
                                     // Grant entitlement to the user on item purchase
                                     // restart activity
-                                    Toast.makeText(AppUpgradeActivity3.this, "is ackno else", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(AppUpgradeActivity3.this, "billing setup finished is ackno else", Toast.LENGTH_SHORT).show();
 //                                    setPurchaseCodeInDatabase();
                                     handleItemAlreadyPurchase(purchases);
 
@@ -282,7 +279,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
             alreadyPurchasedList = new ArrayList<>();
             if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
 
-                Toast.makeText(this, "already SKUS" + purchase.getSkus().toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "already purchases SKUS" + purchase.getSkus().toString(), Toast.LENGTH_LONG).show();
 
                 if (purchase.getSkus().equals("tier1") || purchase.getOrderId().equals("tier1")) {
                     alreadyPurchasedList.add("1");
@@ -339,7 +336,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                 alreadyPurchasedList = new ArrayList<>();
                 if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
 
-                    Toast.makeText(this, "SKUS" + purchase.getSkus().toString(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "onPurchasesUpdated SKUS" + purchase.getSkus().toString(), Toast.LENGTH_LONG).show();
 
 
                     if (purchase.getSkus().get(0).equals("tier1") || purchase.getOrderId().equals("0")) {
@@ -365,15 +362,15 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                                 .setPurchaseToken(purchase.getPurchaseToken())
                                 .build();
 
-                        Toast.makeText(this, "is not  ackn if", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "onPurchasesUpdated is not  ackn if", Toast.LENGTH_SHORT).show();
 
-                        Toast.makeText(this, "purcode " + pur_code.toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "onPurchasesUpdated purcode " + pur_code.toString(), Toast.LENGTH_LONG).show();
 
                         billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
                     } else {
                         // Grant entitlement to the user on item purchase
                         // restart activity
-                        Toast.makeText(this, "is ackno else", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "onPurchasesUpdated is ackno else", Toast.LENGTH_SHORT).show();
                         setPurchaseCodeInDatabase();
 
 
@@ -402,9 +399,9 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                                 .setPurchaseToken(purchase.getPurchaseToken())
                                 .build();
 
-                        Toast.makeText(this, "is not  ackn if", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "onPurchasesUpdated ITEM_ALREADY_OWNED is not  ackn if", Toast.LENGTH_SHORT).show();
 
-                        Toast.makeText(this, "purcode " + pur_code.toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "onPurchasesUpdated ITEM_ALREADY_OWNED purcode " + pur_code.toString(), Toast.LENGTH_LONG).show();
 
                         billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
 
