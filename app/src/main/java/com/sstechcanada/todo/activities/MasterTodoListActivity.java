@@ -31,6 +31,11 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.billingclient.api.AcknowledgePurchaseParams;
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingClientStateListener;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.Purchase;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetSequence;
@@ -46,6 +51,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.SetOptions;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.auth.LoginActivity;
 import com.sstechcanada.todo.adapters.MasterListFirestoreAdapter;
@@ -56,11 +62,13 @@ import com.sstechcanada.todo.models.List;
 import com.sstechcanada.todo.utils.SwipeController;
 import com.sstechcanada.todo.utils.SwipeControllerActions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import es.dmoral.toasty.Toasty;
 
+import static com.android.billingclient.api.BillingClient.SkuType.SUBS;
 import static com.sstechcanada.todo.activities.auth.LoginActivity.flagMasterListFirstRun;
 import static com.sstechcanada.todo.activities.auth.LoginActivity.userAccountDetails;
 
@@ -90,6 +98,11 @@ public class MasterTodoListActivity extends AppCompatActivity {
     int selectedDrawable, sdrawable;
     private MasterListFirestoreAdapter masterListFirestoreAdapter;
     private GridView gridView;
+    String purchaseProductId;
+    java.util.List<String> alreadyPurchasedList;
+    String pur_code;
+    BillingClient billingClient;
+
     private MasterListGridViewAdapter gridAdapter;
     FloatingActionButton fab;
     private boolean doubleBackToExitPressedOnce;
@@ -123,6 +136,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         userID = user.getUid();
+        checkSubscriptions();
         setPurchaseCode();
 //        lottieAnimationView = findViewById(R.id.placeholderImage);
 
@@ -179,6 +193,78 @@ public class MasterTodoListActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void checkSubscriptions(){
+
+         billingClient.startConnection(new BillingClientStateListener() {
+             @Override
+             public void onBillingServiceDisconnected() {
+
+             }
+
+             @Override
+             public void onBillingSetupFinished(BillingResult billingResult) {
+
+                 if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                     // The BillingClient is ready. You can query purchases here.
+                     java.util.List<Purchase> purchases = billingClient.queryPurchases(SUBS).getPurchasesList();
+                     handleItemAlreadyPurchase(purchases);
+                 }
+             }
+
+         });
+    }
+
+    private void handleItemAlreadyPurchase(java.util.List<Purchase> purchases) {
+
+        for (Purchase purchase : purchases) {
+            alreadyPurchasedList = new ArrayList<>();
+            pur_code="0";
+
+            if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED ){
+
+                Toast.makeText(this, "already purchases SKUS" + purchase.getSkus().toString(), Toast.LENGTH_LONG).show();
+
+                if (purchase.getSkus().contains("tier1") & purchase.isAcknowledged()) {
+                    alreadyPurchasedList.add("1");
+                    pur_code = "1";
+
+                } else if (purchase.getSkus().contains("tier2") & purchase.isAcknowledged()) {
+                    alreadyPurchasedList.add("2");
+                    pur_code = "2";
+
+                }
+            }
+        }
+        if(!purchaseCode.equals(pur_code)){
+            setPurchaseCodeInDatabase();
+        }
+
+        if (billingClient != null) {
+            billingClient.endConnection();
+        }
+
+
+    }
+
+    public void setPurchaseCodeInDatabase() {
+
+        Toast.makeText(this, "set purchase code in db", Toast.LENGTH_SHORT).show();
+
+        Map<String, String> purchaseCode = new HashMap<>();
+        purchaseCode.put("purchase_code", pur_code);
+
+        db.collection("Users").document(userID).set(purchaseCode, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                setPurchaseCode();
+                Toast.makeText(MasterTodoListActivity.this, "on success", Toast.LENGTH_LONG).show();
+            }
+        });
+        this.recreate();
+
+    }
+
 
     private void setPurchaseCode() {
         usersColRef.document(userID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {

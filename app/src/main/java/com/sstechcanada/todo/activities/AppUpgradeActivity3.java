@@ -62,7 +62,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     String userID = mAuth.getCurrentUser().getUid();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    String purchaseProductId = "0";
+    String purchaseProductId;
     List<String> alreadyPurchasedList;
     String pur_code;
 
@@ -132,27 +132,29 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
 
     public void setUpBillingClient() {
 
-        acknowledgePurchaseResponseListener = new AcknowledgePurchaseResponseListener() {
-            @Override
-            public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
-                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                    Toast.makeText(AppUpgradeActivity3.this, "acknowlegment inside setup billing cliend", Toast.LENGTH_SHORT).show();
-
-                    setPurchaseCodeInDatabase();
-
-//                    AppUpgradeActivity3.this.recreate();
-                }
-            }
-        };
+//        acknowledgePurchaseResponseListener = new AcknowledgePurchaseResponseListener() {
+//            @Override
+//            public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
+//                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+//                    Toast.makeText(AppUpgradeActivity3.this, "acknowlegment inside setup billing cliend", Toast.LENGTH_SHORT).show();
+//                    purchaseProductId="0";
+//                    setPurchaseCodeInDatabase();
+//
+////                    AppUpgradeActivity3.this.recreate();
+//                } else {
+//                Toast.makeText(AppUpgradeActivity3.this,"Not able to acknowledge the purchase", Toast.LENGTH_SHORT).show();
+//            }
+//            }
+//        };
 
         billingClient.startConnection(new BillingClientStateListener() {
             @Override
             public void onBillingSetupFinished(BillingResult billingResult) {
                 if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                     // The BillingClient is ready. You can query purchases here.
-
                     List<Purchase> purchases = billingClient.queryPurchases(SUBS).getPurchasesList();
 
+                    assert purchases != null;
                     if (purchases.size() > 0) {
 
                         for (Purchase purchase : purchases) {
@@ -163,14 +165,13 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                                 Toast.makeText(AppUpgradeActivity3.this, "SKUS billing setup finished" + purchase.getSkus().toString(), Toast.LENGTH_LONG).show();
 
 
-                                if (purchase.getSkus().get(0).equals("tier1") || purchase.getOrderId().equals("0")) {
-                                    pur_code = "1";
-
-
-                                } else if (purchase.getSkus().get(0).equals("tier2") || purchase.getOrderId().equals("tier2")) {
-                                    pur_code = "2";
-
-                                }
+//                                if (purchase.getSkus().get(0).equals("tier1") || purchase.getOrderId().equals("0")) {
+//                                    pur_code = "1";
+//
+//                                } else if (purchase.getSkus().get(0).equals("tier2") || purchase.getOrderId().equals("tier2")) {
+//                                    pur_code = "2";
+//
+//                                }
 
                                 if (!verifyValidSignature(purchase.getOriginalJson(), purchase.getSignature())) {
                                     // Invalid purchase
@@ -180,6 +181,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                                 }
 
                                 if (!purchase.isAcknowledged()) {
+
                                     AcknowledgePurchaseParams acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
                                             .setPurchaseToken(purchase.getPurchaseToken())
                                             .build();
@@ -211,6 +213,8 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                 }
             }
 
+
+
             @Override
             public void onBillingServiceDisconnected() {
                 Toast.makeText(AppUpgradeActivity3.this, "You are disconnected from Billing service ", Toast.LENGTH_SHORT).show();
@@ -218,6 +222,21 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                 // Google Play by calling the startConnection() method.
             }
         });
+
+        acknowledgePurchaseResponseListener = new AcknowledgePurchaseResponseListener() {
+            @Override
+            public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
+                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                    Toast.makeText(AppUpgradeActivity3.this, "acknowlegment  listener inside setup billing cliend", Toast.LENGTH_SHORT).show();
+                    purchaseProductId="0";
+                    setPurchaseCodeInDatabase();
+
+//                    AppUpgradeActivity3.this.recreate();
+                } else {
+                    Toast.makeText(AppUpgradeActivity3.this,"Not able to acknowledge the purchase", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
 
     }
 
@@ -234,6 +253,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                 public void onSkuDetailsResponse(@NonNull BillingResult billingResult, @Nullable List<SkuDetails> list) {
                     if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
 
+                        assert list != null;
                         BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
                                 .setSkuDetails(list.get(Integer.parseInt(purchaseProductId)))
                                 .build();
@@ -261,6 +281,9 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                             case BillingClient.BillingResponseCode.ITEM_UNAVAILABLE:
                                 Toast.makeText(AppUpgradeActivity3.this, "ITEM UNAVAILABLE", Toast.LENGTH_SHORT).show();
                                 break;
+                            case BillingClient.BillingResponseCode.OK:
+
+                                break;
                             default:
                                 break;
                         }
@@ -274,6 +297,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
     }
 
     private void handleItemAlreadyPurchase(List<Purchase> purchases) {
+        pur_code="0";
 
         for (Purchase purchase : purchases) {
             alreadyPurchasedList = new ArrayList<>();
@@ -281,14 +305,13 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
 
                 Toast.makeText(this, "already purchases SKUS" + purchase.getSkus().toString(), Toast.LENGTH_LONG).show();
 
-                if (purchase.getSkus().equals("tier1") || purchase.getOrderId().equals("tier1")) {
+                if (purchase.getSkus().contains("tier1") || purchase.getOrderId().equals("tier1")) {
                     alreadyPurchasedList.add("1");
                     pur_code = "1";
 
-                } else if (purchase.getSkus().equals("tier2") || purchase.getOrderId().equals("tier2")) {
+                } else if (purchase.getSkus().contains("tier2") || purchase.getOrderId().equals("tier2")) {
                     alreadyPurchasedList.add("2");
                     pur_code = "2";
-
 
                 }
 
@@ -299,7 +322,10 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
 
                     billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
                 }else{
-                    setPurchaseCodeInDatabase();
+
+                    if(!purchaseCode.equals(pur_code)){
+                        setPurchaseCodeInDatabase();
+                    }
                 }
 
                 Toast.makeText(this, "already orderID" + purchase.getOrderId().toString(), Toast.LENGTH_SHORT).show();
@@ -313,12 +339,29 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
             loadAllSubscribePackage();
         }
 
+        acknowledgePurchaseResponseListener = new AcknowledgePurchaseResponseListener() {
+            @Override
+            public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
+                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                    Toast.makeText(AppUpgradeActivity3.this, "acknowledgment listener inside handlepurchase", Toast.LENGTH_SHORT).show();
+                    purchaseProductId="0";
+                    setPurchaseCodeInDatabase();
+
+//                    AppUpgradeActivity3.this.recreate();
+                } else {
+                    Toast.makeText(AppUpgradeActivity3.this,"Not able to acknowledge the purchase", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
     }
 
     @Override
     public void onPurchasesUpdated(@NonNull BillingResult billingResult, @Nullable List<Purchase> list) {
+        Toast.makeText(this, "onPurchasesUpdated " , Toast.LENGTH_LONG).show();
 
         if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && list != null) {
+            Toast.makeText(this, "onPurchasesUpdated OK" , Toast.LENGTH_LONG).show();
 
 //------ ---
             pur_code = purchaseCode;
@@ -335,14 +378,10 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
 
                     Toast.makeText(this, "onPurchasesUpdated SKUS" + purchase.getSkus().toString(), Toast.LENGTH_LONG).show();
 
-
                     if (purchase.getSkus().get(0).equals("tier1") || purchase.getOrderId().equals("0")) {
                         pur_code = "1";
-
-
-                    } else if (purchase.getSkus().get(0).equals("tier2") || purchase.getOrderId().equals("tier2")) {
+                    } else if (purchase.getSkus().get(0).equals("tier2") || purchase.getOrderId().equals("1")) {
                         pur_code = "2";
-
                     }
 
                     if (!verifyValidSignature(purchase.getOriginalJson(), purchase.getSignature())) {
@@ -372,6 +411,8 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
 
 
                     }
+
+
                 }
             }
 
@@ -404,7 +445,10 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                         // Grant entitlement to the user on item purchase
                         // restart activity
                         Toast.makeText(this, "is ackno else", Toast.LENGTH_SHORT).show();
-                        setPurchaseCodeInDatabase();
+
+                        if(!purchaseCode.equals(pur_code)) {
+                            setPurchaseCodeInDatabase();
+                        }
 
 
                     }
@@ -416,6 +460,20 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
         } else {
             Toast.makeText(AppUpgradeActivity3.this, "Error " + billingResult.getDebugMessage(), Toast.LENGTH_SHORT).show();
         }
+        acknowledgePurchaseResponseListener = new AcknowledgePurchaseResponseListener() {
+            @Override
+            public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
+                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                    Toast.makeText(AppUpgradeActivity3.this, "acknowledgment inside on purchase updated ", Toast.LENGTH_SHORT).show();
+                    purchaseProductId="0";
+                    setPurchaseCodeInDatabase();
+
+//                    AppUpgradeActivity3.this.recreate();
+                } else {
+                    Toast.makeText(AppUpgradeActivity3.this,"Not able to acknowledge the purchase", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
 
     }
 //    AcknowledgePurchaseResponseListener acknowledgePurchaseResponseListener = new AcknowledgePurchaseResponseListener() {
@@ -442,7 +500,6 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
             public void onSuccess(Void aVoid) {
                 setPurchaseCode();
                 Toast.makeText(AppUpgradeActivity3.this, "on success", Toast.LENGTH_LONG).show();
-
             }
         });
         this.recreate();
@@ -464,7 +521,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                         Log.i("purchasecode", "new :" + documentSnapshot.get("masterListLimit").toString());
                         userAccountDetails.add(0, documentSnapshot.get("masterListLimit").toString());
                         userAccountDetails.add(1, documentSnapshot.get("todoItemLimit").toString());
-                        Toasty.error(getApplicationContext(), "Package Upgraded", Toast.LENGTH_SHORT).show();
+                        Toasty.success(getApplicationContext(), "Package Upgraded", Toast.LENGTH_SHORT).show();
 
                     }
                 });
