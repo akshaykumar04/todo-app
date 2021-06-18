@@ -24,6 +24,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
@@ -36,6 +37,7 @@ import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetSequence;
@@ -72,7 +74,7 @@ import static com.android.billingclient.api.BillingClient.SkuType.SUBS;
 import static com.sstechcanada.todo.activities.auth.LoginActivity.flagMasterListFirstRun;
 import static com.sstechcanada.todo.activities.auth.LoginActivity.userAccountDetails;
 
-public class MasterTodoListActivity extends AppCompatActivity {
+public class MasterTodoListActivity extends AppCompatActivity implements PurchasesUpdatedListener {
 
     private static final String TAG = MasterTodoListActivity.class.getSimpleName();
     public static int list_cnt = 0;
@@ -123,7 +125,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
         fab = findViewById(R.id.fab);
 
         billingClient = BillingClientSetup.getInstance(this,
-                null);
+                this::onPurchasesUpdated);
 
         listDrawable = new Integer[]{
                 R.drawable.master_list_default_icon, R.drawable.idea, R.drawable.ic_lock, R.drawable.ic_to_do_list,
@@ -733,6 +735,11 @@ public class MasterTodoListActivity extends AppCompatActivity {
 
             }
         }).start();
+    }
+
+    @Override
+    public void onPurchasesUpdated(@NonNull BillingResult billingResult, @Nullable java.util.List<Purchase> list) {
+
     }
 }
 
