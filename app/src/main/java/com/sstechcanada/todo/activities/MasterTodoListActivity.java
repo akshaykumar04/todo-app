@@ -122,6 +122,9 @@ public class MasterTodoListActivity extends AppCompatActivity {
         loadingProgressBar = findViewById(R.id.loadingProgressBar);
         fab = findViewById(R.id.fab);
 
+        billingClient = BillingClientSetup.getInstance(this,
+                null);
+
         listDrawable = new Integer[]{
                 R.drawable.master_list_default_icon, R.drawable.idea, R.drawable.ic_lock, R.drawable.ic_to_do_list,
                 R.drawable.circle_per_item, R.drawable.sport, R.drawable.movie, R.drawable.globe, R.drawable.music,
