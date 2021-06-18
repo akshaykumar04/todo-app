@@ -136,8 +136,8 @@ public class MasterTodoListActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         userID = user.getUid();
-        checkSubscriptions();
         setPurchaseCode();
+
 //        lottieAnimationView = findViewById(R.id.placeholderImage);
 
         setUpFirestoreRecyclerView();
@@ -279,6 +279,7 @@ public class MasterTodoListActivity extends AppCompatActivity {
                         userAccountDetails.add(0, documentSnapshot.get("masterListLimit").toString());
                         userAccountDetails.add(1, documentSnapshot.get("todoItemLimit").toString());
                         hideProgressBar();
+                        checkSubscriptions();
                     }
                 });
             }
