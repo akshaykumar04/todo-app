@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.billingclient.api.AcknowledgePurchaseParams;
+import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingResult;
@@ -64,6 +65,7 @@ import com.sstechcanada.todo.models.List;
 import com.sstechcanada.todo.utils.SwipeController;
 import com.sstechcanada.todo.utils.SwipeControllerActions;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -104,6 +106,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Purchas
     java.util.List<String> alreadyPurchasedList;
     String pur_code;
     BillingClient billingClient;
+    AcknowledgePurchaseResponseListener acknowledgePurchaseResponseListener;
 
     private MasterListGridViewAdapter gridAdapter;
     FloatingActionButton fab;
@@ -739,7 +742,134 @@ public class MasterTodoListActivity extends AppCompatActivity implements Purchas
 
     @Override
     public void onPurchasesUpdated(@NonNull BillingResult billingResult, @Nullable java.util.List<Purchase> list) {
+        Toast.makeText(this, "onPurchasesUpdated " , Toast.LENGTH_LONG).show();
 
+        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && list != null) {
+            Toast.makeText(this, "onPurchasesUpdated OK" , Toast.LENGTH_LONG).show();
+
+//------ ---
+            pur_code = purchaseCode;
+//            if(purchaseProductId.equals("1")) {
+//                pur_code="1";
+//            }else if(purchaseProductId.equals("2")) {
+//                pur_code="2";
+//            }
+//------ ---
+
+            for (Purchase purchase : list) {
+                alreadyPurchasedList = new ArrayList<>();
+                if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
+
+                    Toast.makeText(this, "onPurchasesUpdated SKUS" + purchase.getSkus().toString(), Toast.LENGTH_LONG).show();
+
+                    if (purchase.getSkus().get(0).equals("tier1") || purchase.getOrderId().equals("0")) {
+                        pur_code = "1";
+                    } else if (purchase.getSkus().get(0).equals("tier2") || purchase.getOrderId().equals("1")) {
+                        pur_code = "2";
+                    }
+
+                    if (!verifyValidSignature(purchase.getOriginalJson(), purchase.getSignature())) {
+                        // Invalid purchase
+                        // show error to user
+                        Toast.makeText(getApplicationContext(), "Error : invalid Purchase", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    Toast.makeText(this, "orderID" + purchase.getOrderId().toString(), Toast.LENGTH_SHORT).show();
+
+                    if (!purchase.isAcknowledged()) {
+                        AcknowledgePurchaseParams acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
+                                .setPurchaseToken(purchase.getPurchaseToken())
+                                .build();
+
+                        Toast.makeText(this, "onPurchasesUpdated is not  ackn if", Toast.LENGTH_SHORT).show();
+
+                        Toast.makeText(this, "onPurchasesUpdated purcode " + pur_code.toString(), Toast.LENGTH_LONG).show();
+
+                        billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
+                    } else {
+                        // Grant entitlement to the user on item purchase
+                        // restart activity
+                        Toast.makeText(this, "onPurchasesUpdated is ackno else", Toast.LENGTH_SHORT).show();
+                        setPurchaseCodeInDatabase();
+
+
+                    }
+
+
+                }
+            }
+
+
+        } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
+            Purchase.PurchasesResult queryAlreadyPurchasesResult = billingClient.queryPurchases(SUBS);
+            java.util.List<Purchase> alreadyPurchases = queryAlreadyPurchasesResult.getPurchasesList();
+            if (alreadyPurchases != null) {
+
+                for (Purchase purchase : list) {
+                    if (purchase.getSkus().get(0).equals("tier1") || purchase.getOrderId().equals("0")) {
+                        pur_code = "1";
+                    } else if (purchase.getSkus().get(0).equals("tier2") || purchase.getOrderId().equals("tier2")) {
+                        pur_code = "2";
+                    }
+
+                    if (!purchase.isAcknowledged()) {
+                        AcknowledgePurchaseParams acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
+                                .setPurchaseToken(purchase.getPurchaseToken())
+                                .build();
+
+                        Toast.makeText(this, "onPurchasesUpdated ITEM_ALREADY_OWNED is not  ackn if", Toast.LENGTH_SHORT).show();
+
+                        Toast.makeText(this, "onPurchasesUpdated ITEM_ALREADY_OWNED purcode " + pur_code.toString(), Toast.LENGTH_LONG).show();
+
+                        billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
+
+
+                    } else {
+                        // Grant entitlement to the user on item purchase
+                        // restart activity
+                        Toast.makeText(this, "is ackno else", Toast.LENGTH_SHORT).show();
+
+                        if(!purchaseCode.equals(pur_code)) {
+                            setPurchaseCodeInDatabase();
+                        }
+
+
+                    }
+                }
+
+            }
+        } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.USER_CANCELED) {
+            Toast.makeText(MasterTodoListActivity.this, "The request was cancelled", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(MasterTodoListActivity.this, "Error " + billingResult.getDebugMessage(), Toast.LENGTH_SHORT).show();
+        }
+        acknowledgePurchaseResponseListener = new AcknowledgePurchaseResponseListener() {
+            @Override
+            public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
+                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                    Toast.makeText(MasterTodoListActivity.this, "acknowledgment inside on purchase updated ", Toast.LENGTH_SHORT).show();
+                    purchaseProductId="0";
+                    setPurchaseCodeInDatabase();
+
+//                    AppUpgradeActivity3.this.recreate();
+                } else {
+                    Toast.makeText(MasterTodoListActivity.this,"Not able to acknowledge the purchase", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
+    }
+
+    private boolean verifyValidSignature(String signedData, String signature) {
+        try {
+            // To get key go to Developer Console > Select your app > Development Tools > Services & APIs.
+            String base64Key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnDatsVXJEFzzwnOEBiE5wSffxr+dEazc3zbf5t5jK1NKYPlfBbeN2M8ZEA38YRt0pQ0WfnXGcJ0mauXH/0xtXdo9Hv6uyzn3W73W6RxTbc5fk2950Tn0fqHkTh6wZoEJBaLn5OnhUy6GE0Yf5VM4oj3HeY5li6ESi8PggUMeYmMcvLzcOsQ8rh4G2KBWqXcYOTMREyfFXp6jJLXHDrJqeeSAEnP/aGLPPyi2NRy5S7dp8qPIkjDYt6yU+FICSBcDAPPWO1jNZrWH43ObcDF4KNdp5CAf/HT5GLcwZv+CUvQGgtuOyiN193NE9wpV5jpA2BgV7FxENqe9T1NIPk8AMwIDAQAB";
+
+            return Security.verifyPurchase(base64Key, signedData, signature);
+        } catch (IOException e) {
+            return false;
+        }
     }
 }
 

@@ -58,6 +58,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
     ToggleButtonLayout toggle_button_layout;
     TextView tvListsCount;
     AcknowledgePurchaseResponseListener acknowledgePurchaseResponseListener;
+
     //    BillingProcessor bp;
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     String userID = mAuth.getCurrentUser().getUid();
