@@ -244,6 +244,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Purchas
                 }
             }
         }
+
         if(!purchaseCode.equals(pur_code)){
             setPurchaseCodeInDatabase();
         }
@@ -270,7 +271,6 @@ public class MasterTodoListActivity extends AppCompatActivity implements Purchas
             }
         });
         this.recreate();
-
     }
 
 
