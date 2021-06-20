@@ -82,6 +82,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
         toggle_button_layout = findViewById(R.id.toggle_button_layout);
         tvListsCount = findViewById(R.id.tvListsCount);
 
+        alreadyPurchasedList = new ArrayList<>();
 
         billingClient = BillingClientSetup.getInstance(this,
                 this);
@@ -173,8 +174,8 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                     assert purchases != null;
                     if (purchases.size() > 0) {
 
+
                         for (Purchase purchase : purchases) {
-                            alreadyPurchasedList = new ArrayList<>();
 
                             if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
 
@@ -319,6 +320,8 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
                     }
                 }
             });
+        }else{
+
         }
     }
 
