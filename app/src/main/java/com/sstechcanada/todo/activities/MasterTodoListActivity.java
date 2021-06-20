@@ -324,7 +324,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Purchas
             }
         });
 
-        this.recreate();
+//        this.recreate();
     }
 
     public void addNewListAlert() {
