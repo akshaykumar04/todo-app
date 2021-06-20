@@ -9,7 +9,7 @@ android {
         applicationId "com.sstechcanada.todo"
         minSdkVersion 24
         targetSdkVersion 30
-        versionCode 8
+        versionCode 9
         versionName "1.0"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
