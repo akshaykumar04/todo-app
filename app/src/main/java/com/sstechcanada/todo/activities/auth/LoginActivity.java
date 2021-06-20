@@ -304,6 +304,8 @@ public class LoginActivity extends AppCompatActivity {
                        public void onSuccess(Void aVoid) {
 //                           startActivity(new Intent(LoginActivity.this, MasterTodoListActivity.class));
                            Toasty.success(getApplicationContext(), "Profile creation complete", Toast.LENGTH_SHORT).show();
+                           startActivity(new Intent(LoginActivity.this, MasterTodoListActivity.class));
+
                        }
                    }).addOnFailureListener(new OnFailureListener() {
                        @Override

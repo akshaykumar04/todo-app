@@ -37,6 +37,8 @@ import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.ConsumeParams;
+import com.android.billingclient.api.ConsumeResponseListener;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -187,7 +189,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Purchas
                     Log.i("purchasecode", "masterlist items :" + (masterListFirestoreAdapter.getItemCount()));
                     setValue();
                     if (isLogin()) {
-                        addNewlistAlert();
+                        addNewListAlert();
                     }
                 } else {
                     if (isLogin()) {
@@ -216,14 +218,14 @@ public class MasterTodoListActivity extends AppCompatActivity implements Purchas
                  if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                      // The BillingClient is ready. You can query purchases here.
                      java.util.List<Purchase> purchases = billingClient.queryPurchases(SUBS).getPurchasesList();
-                     handleItemAlreadyPurchase(purchases);
+                     handleItemsAlreadyPurchase(purchases);
                  }
              }
 
          });
     }
 
-    private void handleItemAlreadyPurchase(java.util.List<Purchase> purchases) {
+    private void handleItemsAlreadyPurchase(java.util.List<Purchase> purchases) {
 
         for (Purchase purchase : purchases) {
             alreadyPurchasedList = new ArrayList<>();
@@ -233,15 +235,39 @@ public class MasterTodoListActivity extends AppCompatActivity implements Purchas
 
                 Toast.makeText(this, "already purchases SKUS" + purchase.getSkus().toString(), Toast.LENGTH_LONG).show();
 
-                if (purchase.getSkus().contains("tier1") & purchase.isAcknowledged()) {
-                    alreadyPurchasedList.add("1");
-                    pur_code = "1";
+                ConsumeParams consumeParams = ConsumeParams.newBuilder().setPurchaseToken(purchase.getPurchaseToken()).build();
 
-                } else if (purchase.getSkus().contains("tier2") & purchase.isAcknowledged()) {
-                    alreadyPurchasedList.add("2");
-                    pur_code = "2";
+                ConsumeResponseListener consumeResponseListener= new ConsumeResponseListener() {
+                    @Override
+                    public void onConsumeResponse(@NonNull BillingResult billingResult, @NonNull String s) {
+                        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                            Toast.makeText(MasterTodoListActivity.this, "consume params inside on purchase updated ", Toast.LENGTH_SHORT).show();
 
-                }
+                            if (purchase.getSkus().contains("tier1") ) {
+                                alreadyPurchasedList.add("1");
+                                pur_code = "1";
+
+                            } else if (purchase.getSkus().contains("tier2") ) {
+                                alreadyPurchasedList.add("2");
+                                pur_code = "2";
+
+                            }
+
+                            if(!purchaseCode.equals(pur_code)) {
+                                setPurchaseCodeInDatabase();
+                            }
+
+//                    AppUpgradeActivity3.this.recreate();
+                        } else {
+                            Toast.makeText(MasterTodoListActivity.this,"Not OK consume params the purchase", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                };
+
+                billingClient.consumeAsync(consumeParams,consumeResponseListener);
+
+
             }
         }
 
@@ -270,7 +296,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Purchas
                 Toast.makeText(MasterTodoListActivity.this, "on success", Toast.LENGTH_LONG).show();
             }
         });
-        this.recreate();
+
     }
 
 
@@ -297,9 +323,11 @@ public class MasterTodoListActivity extends AppCompatActivity implements Purchas
 
             }
         });
+
+        this.recreate();
     }
 
-    public void addNewlistAlert() {
+    public void addNewListAlert() {
         LayoutInflater inflater = getLayoutInflater();
         View alertLayout = inflater.inflate(R.layout.add_list_dialog, null);
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -772,7 +800,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Purchas
                         // Invalid purchase
                         // show error to user
                         Toast.makeText(getApplicationContext(), "Error : invalid Purchase", Toast.LENGTH_SHORT).show();
-                        return;
+                        continue;
                     }
 
                     Toast.makeText(this, "orderID" + purchase.getOrderId().toString(), Toast.LENGTH_SHORT).show();
