@@ -32,7 +32,6 @@ import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -167,7 +166,7 @@ public class TodoListActivity2 extends AppCompatActivity {
                     }
                 } else {
                     if (isLogin()) {
-                        Intent intent = new Intent(TodoListActivity2.this, AppUpgradeActivity3.class);
+                        Intent intent = new Intent(TodoListActivity2.this, AppUpgradeActivity2.class);
 //                        intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
                         startActivity(intent);
                     }
@@ -189,7 +188,7 @@ public class TodoListActivity2 extends AppCompatActivity {
             if (Integer.valueOf(purchaseCode) != 0) {
                 startActivity(new Intent(TodoListActivity2.this, CompletedTodoListActivity.class));
             } else {
-                startActivity(new Intent(TodoListActivity2.this, AppUpgradeActivity3.class));
+                startActivity(new Intent(TodoListActivity2.this, AppUpgradeActivity2.class));
             }
 //            startActivity(new Intent(TodoListActivity2.this, AppUpgradeActivity.class));
         });

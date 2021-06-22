@@ -194,7 +194,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Purchas
                 } else {
                     if (isLogin()) {
                         Toasty.info(getApplicationContext(), getString(R.string.upgrade_master_list), Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(MasterTodoListActivity.this, AppUpgradeActivity3.class);
+                        Intent intent = new Intent(MasterTodoListActivity.this, AppUpgradeActivity2.class);
 //                        intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
                         startActivity(intent);
                     }
@@ -663,7 +663,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Purchas
         } else if (list_limit <= list_cnt) {
             //Limit Check
             Toasty.warning(this, getString(R.string.upgrade_master_list), Toast.LENGTH_LONG, true).show();
-            startActivity(new Intent(MasterTodoListActivity.this, AppUpgradeActivity3.class));
+            startActivity(new Intent(MasterTodoListActivity.this, AppUpgradeActivity2.class));
             return false;
         }
         return true;

@@ -17,8 +17,6 @@ import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.BillingResult;
-import com.android.billingclient.api.ConsumeParams;
-import com.android.billingclient.api.ConsumeResponseListener;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetails;
@@ -49,8 +47,6 @@ import kotlin.jvm.functions.Function3;
 import static com.android.billingclient.api.BillingClient.SkuType.SUBS;
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.purchaseCode;
 import static com.sstechcanada.todo.activities.auth.LoginActivity.userAccountDetails;
-
-//import com.anjlab.android.iab.v3.BillingProcessor;
 //import com.anjlab.android.iab.v3.TransactionDetails;
 
 public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesUpdatedListener {
