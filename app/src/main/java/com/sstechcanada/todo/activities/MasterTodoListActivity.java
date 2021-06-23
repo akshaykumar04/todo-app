@@ -183,10 +183,15 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
                     }
                 } else {
                     if (isLogin()) {
-                        Toasty.info(getApplicationContext(), getString(R.string.upgrade_master_list), Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(MasterTodoListActivity.this, AppUpgradeActivity2.class);
+                        Toasty.info(getApplicationContext(), getString(R.string.upgrade_master_list), Toast.LENGTH_SHORT).show();
+                        if(!purchaseCode.equals("2")){
+                            Intent intent = new Intent(MasterTodoListActivity.this, AppUpgradeActivity2.class);
 //                        intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
-                        startActivity(intent);
+                            startActivity(intent);
+                        }else if (purchaseCode.equals("2")){
+                            Toasty.info(getApplicationContext(), "Sorry, You cannot add more to-do list. You have reached the max-limit!", Toast.LENGTH_SHORT).show();
+                        }
+
                     }
 
                 }
