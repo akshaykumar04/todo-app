@@ -54,7 +54,7 @@ import static com.sstechcanada.todo.activities.MasterTodoListActivity.purchaseCo
 
 public class LoginActivity extends AppCompatActivity {
 
-    public static final String PREF = "USER DATA";
+    public static final String SHAREDPREF = "UserSharedPrefFile";
     public static final String LIST_LIMIT = "LIST_LIMIT";
     private static final String TAG = "MainActivity";
     private static final int RC_SIGN_IN = 9001;
@@ -79,6 +79,7 @@ public class LoginActivity extends AppCompatActivity {
     private AdView bannerAd;
     public static Boolean flagMasterListFirstRun=false;
     public static Boolean flagTodoListFirstRun=false;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +103,7 @@ public class LoginActivity extends AppCompatActivity {
         }else{
             bannerAd.setVisibility(View.GONE);
         }
+        setUpSharedPref();
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();
@@ -237,6 +239,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void signOut() {
         // Firebase sign out
+
         mAuth.signOut();
         // Google sign out
         mGoogleSignInClient.signOut().addOnCompleteListener(this,
@@ -297,8 +300,12 @@ public class LoginActivity extends AppCompatActivity {
                    Map<String, String> profile = new HashMap<>();
                    profile.put("Email", firebaseUser.getEmail());
                    profile.put("purchase_code", "0");
-                   flagMasterListFirstRun=true;
-                   flagTodoListFirstRun=true;
+//                   flagMasterListFirstRun=true;
+//                   flagTodoListFirstRun=true;
+                   editor.putBoolean("flagMasterListFirstRun", true);
+                   editor.putBoolean("flagTodoListFirstRun", true);
+
+                   editor.apply();
                    documentReferenceCurrentReference.set(profile).addOnSuccessListener(new OnSuccessListener<Void>() {
                        @Override
                        public void onSuccess(Void aVoid) {
@@ -378,7 +385,12 @@ public class LoginActivity extends AppCompatActivity {
 //            }
 //        });
     }
-
+    public void setUpSharedPref(){
+        editor = getSharedPreferences(SHAREDPREF, MODE_PRIVATE).edit();
+        editor.putBoolean("flagMasterListFirstRun", false);
+        editor.putBoolean("flagTodoListFirstRun", false);
+        editor.apply();
+    }
     @Override
     public void onBackPressed() {
         super.onBackPressed();

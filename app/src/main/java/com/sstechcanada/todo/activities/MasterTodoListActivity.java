@@ -66,7 +66,7 @@ import java.util.Map;
 
 import es.dmoral.toasty.Toasty;
 
-import static com.sstechcanada.todo.activities.auth.LoginActivity.flagMasterListFirstRun;
+import static com.sstechcanada.todo.activities.auth.LoginActivity.SHAREDPREF;
 import static com.sstechcanada.todo.activities.auth.LoginActivity.userAccountDetails;
 
 public class MasterTodoListActivity extends AppCompatActivity implements BillingProcessor.IBillingHandler {
@@ -105,6 +105,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
     FloatingActionButton fab;
     private boolean doubleBackToExitPressedOnce;
     BillingProcessor bp;
+    SharedPreferences.Editor editor;
     private final Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
@@ -120,6 +121,8 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
         mRecyclerView = findViewById(R.id.rv_todo_list);
         loadingProgressBar = findViewById(R.id.loadingProgressBar);
         fab = findViewById(R.id.fab);
+        SharedPreferences prefs = getSharedPreferences(SHAREDPREF, MODE_PRIVATE);
+        editor = getSharedPreferences(SHAREDPREF, MODE_PRIVATE).edit();
 
         listDrawable = new Integer[]{
                 R.drawable.master_list_default_icon, R.drawable.idea, R.drawable.ic_lock, R.drawable.ic_to_do_list,
@@ -142,7 +145,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
 
         setUpFirestoreRecyclerView();
 
-        if (flagMasterListFirstRun) {
+        if (prefs.getBoolean("flagMasterListFirstRun",false)){
             callWalkThrough();
         }
 
@@ -664,8 +667,9 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
 //                Toast.makeText(MasterTodoListActivity.this,"Sequence Finished",Toast.LENGTH_SHORT).show();
                 Toasty.success(MasterTodoListActivity.this, "Awesome, Now you can add your first list!", Toast.LENGTH_SHORT).show();
 
-                flagMasterListFirstRun = false;
-
+//                flagMasterListFirstRun = false;
+                editor.putBoolean("flagMasterListFirstRun", false);
+                editor.apply();
             }
 
             @Override
@@ -676,7 +680,8 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
 
             @Override
             public void onSequenceCanceled(TapTarget lastTarget) {
-
+                editor.putBoolean("flagTodoListFirstRun", false);
+                editor.apply();
             }
         }).start();
     }

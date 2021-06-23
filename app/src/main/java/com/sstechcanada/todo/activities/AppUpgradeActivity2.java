@@ -192,17 +192,18 @@ public class AppUpgradeActivity2 extends AppCompatActivity implements BillingPro
 
         Toast.makeText(this, "set purchase code in db", Toast.LENGTH_SHORT).show();
 
-        Map<String, String> purchaseCode = new HashMap<>();
+        Map<String, String> purchaseCodeMap = new HashMap<>();
         if(product_Id.equals("tier1")){
             pur_code="1";
         }else if(product_Id.equals("tier2")){
             pur_code="2";
         }
-        purchaseCode.put("purchase_code", pur_code);
+        purchaseCodeMap.put("purchase_code", pur_code);
 
         db.collection("Users").document(userID).set(purchaseCode, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
+                purchaseCode=pur_code;
                 setPurchaseCode();
                 Toast.makeText(AppUpgradeActivity2.this, "on success", Toast.LENGTH_LONG).show();
             }
@@ -226,6 +227,9 @@ public class AppUpgradeActivity2 extends AppCompatActivity implements BillingPro
                         userAccountDetails.add(0, documentSnapshot.get("masterListLimit").toString());
                         userAccountDetails.add(1, documentSnapshot.get("todoItemLimit").toString());
                         Toasty.success(getApplicationContext(), "Package Upgraded", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(AppUpgradeActivity2.this, MasterTodoListActivity.class);
+//                        intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
+                        startActivity(intent);
 
                     }
                 });

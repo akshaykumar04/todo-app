@@ -54,7 +54,7 @@ import es.dmoral.toasty.Toasty;
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.listId;
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.listName;
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.purchaseCode;
-import static com.sstechcanada.todo.activities.auth.LoginActivity.flagTodoListFirstRun;
+import static com.sstechcanada.todo.activities.auth.LoginActivity.SHAREDPREF;
 import static com.sstechcanada.todo.activities.auth.LoginActivity.userAccountDetails;
 
 public class TodoListActivity2 extends AppCompatActivity {
@@ -79,6 +79,7 @@ public class TodoListActivity2 extends AppCompatActivity {
     private FirebaseUser user;
     private DatabaseReference databaseReference;
     private TodoListFirestoreAdapter todoListFirestoreAdapter;
+    SharedPreferences.Editor editor;
 
     public static void showPlaceHolder() {
         lottieAnimationView.setVisibility(View.VISIBLE);
@@ -103,7 +104,8 @@ public class TodoListActivity2 extends AppCompatActivity {
             mBinding.completedTab.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_check_circle_24, 0);
         }
 
-
+        SharedPreferences prefs = getSharedPreferences(SHAREDPREF, MODE_PRIVATE);
+        editor = getSharedPreferences(SHAREDPREF, MODE_PRIVATE).edit();
         showProgressBar();
 //        setContentView(R.layout.activity_todo_list);
         lottieAnimationView = findViewById(R.id.placeholderImage);
@@ -120,7 +122,7 @@ public class TodoListActivity2 extends AppCompatActivity {
 
         setUpFirestoreRecyclerView();
 
-        if (flagTodoListFirstRun) {
+        if (prefs.getBoolean("flagTodoListFirstRun",false)) {
             callWalkThrough();
         }
 
@@ -166,9 +168,14 @@ public class TodoListActivity2 extends AppCompatActivity {
                     }
                 } else {
                     if (isLogin()) {
-                        Intent intent = new Intent(TodoListActivity2.this, AppUpgradeActivity2.class);
+                        Toasty.info(getApplicationContext(), getString(R.string.upgrade_master_list), Toast.LENGTH_SHORT).show();
+                        if(!purchaseCode.equals("2")){
+                            Intent intent = new Intent(TodoListActivity2.this, AppUpgradeActivity2.class);
 //                        intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
-                        startActivity(intent);
+                            startActivity(intent);
+                        }else if (purchaseCode.equals("2")){
+                            Toasty.info(getApplicationContext(), "Sorry, You cannot add more to-do items. You have reached the max-limit!", Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                 }
@@ -524,8 +531,9 @@ public class TodoListActivity2 extends AppCompatActivity {
 
 //                Toast.makeText(TodoListActivity2.this,"Sequence Finished",Toast.LENGTH_SHORT).show();
                 Toasty.success(TodoListActivity2.this, "You are all set now!", Toast.LENGTH_SHORT).show();
-                flagTodoListFirstRun = false;
-
+//                flagTodoListFirstRun = false;
+                editor.putBoolean("flagTodoListFirstRun", false);
+                editor.apply();
             }
 
             @Override
@@ -536,7 +544,8 @@ public class TodoListActivity2 extends AppCompatActivity {
 
             @Override
             public void onSequenceCanceled(TapTarget lastTarget) {
-
+                editor.putBoolean("flagTodoListFirstRun", false);
+                editor.apply();
             }
         }).start();
     }
