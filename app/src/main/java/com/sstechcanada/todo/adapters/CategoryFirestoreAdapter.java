@@ -10,14 +10,13 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -33,6 +32,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.models.Category;
+
 import es.dmoral.toasty.Toasty;
 
 import static com.sstechcanada.todo.activities.AddCategoryActivity2.hideProgressbar;
@@ -65,7 +65,7 @@ public class CategoryFirestoreAdapter extends FirestoreRecyclerAdapter<Category,
         model.setCategoryId(documentSnapshot.getId());
 
 
-        holder.constraintLayoutCat.setOnClickListener(new View.OnClickListener() {
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showUpdateDialog(model.getCategoryId(),model.getCategory_name(),v);
@@ -293,16 +293,17 @@ public class CategoryFirestoreAdapter extends FirestoreRecyclerAdapter<Category,
     static class CategoryFirestoreHolder extends RecyclerView.ViewHolder {
 
         private final TextView textViewName;
-        ImageView catDelete;
-        CardView cardView;
-        ConstraintLayout constraintLayoutCat;
+        ImageView catDelete,catEdit;
+        MaterialCardView cardView;
+//        ConstraintLayout constraintLayoutCat;
 
         public CategoryFirestoreHolder(@NonNull View itemView) {
             super(itemView);
             cardView = itemView.findViewById(R.id.catCard);
             catDelete=itemView.findViewById(R.id.catDelete);
+            catEdit=itemView.findViewById(R.id.catEdit);
             textViewName = itemView.findViewById(R.id.textViewName);
-            constraintLayoutCat=itemView.findViewById(R.id.constraintLayoutCat);
+//            constraintLayoutCat=itemView.findViewById(R.id.constraintLayoutCat);
 
         }
     }

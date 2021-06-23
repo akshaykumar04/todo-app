@@ -37,15 +37,13 @@
                 android:id="@+id/textViewName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:layout_weight="7"
-                android:paddingLeft="4dp"
                 android:fontFamily="@font/raleway_semibold"
+                android:paddingLeft="4dp"
                 android:text="Benefit Name"
                 android:textColor="@color/textHeadings"
-                android:inputType="textCapSentences"
-                android:textSize="15sp"
-                android:layout_gravity="center_vertical"
-               />
+                android:textSize="15sp" />
 
             <ImageView
                 android:id="@+id/catEdit"
