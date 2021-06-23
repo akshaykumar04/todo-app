@@ -6,10 +6,12 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +23,7 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -70,6 +73,17 @@ public class AddCategoryActivity2 extends AppCompatActivity {
     CollectionReference benefitCollectionRef;
     CollectionReference UserColRef;
     CategoryFirestoreAdapter categoryFirestoreAdapter;
+    public static ProgressBar progressBar;
+
+
+
+    public static void showProgressbar() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    public static void hideProgressbar() {
+        progressBar.setVisibility(View.INVISIBLE);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +95,7 @@ public class AddCategoryActivity2 extends AppCompatActivity {
         benefitCollectionRef=db.collection("Users").document(userID).collection("Benefits");
         UserColRef=db.collection("Users").document(userID).collection("Lists");
         editTextName = findViewById(R.id.editTextName);
+        progressBar=findViewById(R.id.progressCat);
         recyclerViewCat = findViewById(R.id.listViewCategory);
         toolbarBackIcon = findViewById(R.id.arrow_back);
         toolbarBackIcon.setVisibility(View.VISIBLE);

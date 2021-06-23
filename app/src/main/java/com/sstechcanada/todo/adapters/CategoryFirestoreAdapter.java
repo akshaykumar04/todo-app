@@ -1,10 +1,12 @@
 package com.sstechcanada.todo.adapters;
+import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,6 +31,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.models.Category;
 import es.dmoral.toasty.Toasty;
+
+import static com.sstechcanada.todo.activities.AddCategoryActivity2.hideProgressbar;
+import static com.sstechcanada.todo.activities.AddCategoryActivity2.showProgressbar;
 
 public class CategoryFirestoreAdapter extends FirestoreRecyclerAdapter<Category, CategoryFirestoreAdapter.CategoryFirestoreHolder> {
 
@@ -128,14 +133,12 @@ public class CategoryFirestoreAdapter extends FirestoreRecyclerAdapter<Category,
                     R.string.no,
                     (dialog, id) -> dialog.dismiss());
             alert.show();
-
         });
-
     }
 
-
-
     private void updateCategory(String id, String name,String oldName) {
+        showProgressbar();
+        ((Activity)context).getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         //getting the specified category reference
         DocumentReference documentReferenceBenefitReference=benefitCollectionRef.document(id);
 
@@ -155,6 +158,8 @@ public class CategoryFirestoreAdapter extends FirestoreRecyclerAdapter<Category,
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toasty.error(context, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                hideProgressbar();
+                ((Activity)context).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             }
         });
 //        Category category = new Category(id, name);
@@ -195,25 +200,39 @@ public class CategoryFirestoreAdapter extends FirestoreRecyclerAdapter<Category,
                         }
                     });
                 }
+                hideProgressbar();
+                ((Activity)context).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                hideProgressbar();
+                ((Activity)context).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             }
         });
     }
 
 
+
+
+
     private void deleteCategory(String id,String categoryName) {
+        showProgressbar();
+        ((Activity)context).getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         //getting the specified category reference
         DocumentReference documentReferenceBenefitReference=benefitCollectionRef.document(id);
         //removing category
         documentReferenceBenefitReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toasty.success(context, "Benefit Deleted", Toast.LENGTH_SHORT).show();
                 deleteCategoryFromEachTodo(categoryName);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toasty.error(context, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                hideProgressbar();
+                ((Activity)context).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             }
         });
 
@@ -242,6 +261,8 @@ public class CategoryFirestoreAdapter extends FirestoreRecyclerAdapter<Category,
                                     }
                                 });
                             }
+
+                            Toasty.success(context, "Benefit Deleted", Toast.LENGTH_SHORT).show();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -250,6 +271,14 @@ public class CategoryFirestoreAdapter extends FirestoreRecyclerAdapter<Category,
                         }
                     });
                 }
+                hideProgressbar();
+                ((Activity)context).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                hideProgressbar();
+                ((Activity)context).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             }
         });
     }
