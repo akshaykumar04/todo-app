@@ -10,16 +10,19 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -58,25 +61,20 @@ public class CategoryFirestoreAdapter extends FirestoreRecyclerAdapter<Category,
     @Override
     protected void onBindViewHolder(@NonNull CategoryFirestoreHolder holder, int position, @NonNull Category model) {
         holder.textViewName.setText(model.getCategory_name());
+        DocumentSnapshot documentSnapshot=getSnapshots().getSnapshot(position);
+        model.setCategoryId(documentSnapshot.getId());
 
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
+
+        holder.constraintLayoutCat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DocumentSnapshot documentSnapshot=getSnapshots().getSnapshot(position);
-                model.setCategoryId(documentSnapshot.getId());
-
-                String doc_id = String.valueOf(model.getCategoryId());
-
-                showUpdateDialog(doc_id,model.getCategory_name(),v);
-
+                showUpdateDialog(model.getCategoryId(),model.getCategory_name(),v);
             }
         });
 
         holder.catDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DocumentSnapshot documentSnapshot=getSnapshots().getSnapshot(position);
-                model.setCategoryId(documentSnapshot.getId());
                 String doc_id = String.valueOf(model.getCategoryId());
 
                 Log.i("onclick", "delete");
@@ -292,19 +290,22 @@ public class CategoryFirestoreAdapter extends FirestoreRecyclerAdapter<Category,
     }
 
 
-    class CategoryFirestoreHolder extends RecyclerView.ViewHolder {
+    static class CategoryFirestoreHolder extends RecyclerView.ViewHolder {
 
         private final TextView textViewName;
         ImageView catDelete;
         CardView cardView;
+        ConstraintLayout constraintLayoutCat;
 
         public CategoryFirestoreHolder(@NonNull View itemView) {
             super(itemView);
             cardView = itemView.findViewById(R.id.catCard);
             catDelete=itemView.findViewById(R.id.catDelete);
             textViewName = itemView.findViewById(R.id.textViewName);
+            constraintLayoutCat=itemView.findViewById(R.id.constraintLayoutCat);
 
         }
     }
 }
+
 
