@@ -163,9 +163,6 @@ public class AppUpgradeActivity2 extends AppCompatActivity implements BillingPro
                 }else if(purchaseCode.equals("1")){
 
                     if (toggle.getId() == R.id.toggle_left) {
-//                        tvListsCount.setText(getString(R.string.create_up_to_3_to_do_lists));
-//                        purchaseProductId = "tier1";
-//                        pur_code = "1";
                         toggle_button_layout.setToggled(R.id.toggle_right, true);
                         Toasty.success(getApplicationContext(), "You are already subscribed to Tier 1", Toast.LENGTH_SHORT).show();
                         tvListsCount.setText(getString(R.string.create_up_to_20_to_do_lists));
@@ -190,7 +187,7 @@ public class AppUpgradeActivity2 extends AppCompatActivity implements BillingPro
 
     public void setPurchaseCodeInDatabase(String product_Id) {
 
-        Toast.makeText(this, "set purchase code in db", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "set purchase code in db", Toast.LENGTH_SHORT).show();
 
         Map<String, String> purchaseCodeMap = new HashMap<>();
         if(product_Id.equals("tier1")){
@@ -205,7 +202,7 @@ public class AppUpgradeActivity2 extends AppCompatActivity implements BillingPro
             public void onSuccess(Void aVoid) {
                 purchaseCode=pur_code;
                 setPurchaseCode();
-                Toast.makeText(AppUpgradeActivity2.this, "on success", Toast.LENGTH_LONG).show();
+//                Toast.makeText(AppUpgradeActivity2.this, "on success", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -213,7 +210,7 @@ public class AppUpgradeActivity2 extends AppCompatActivity implements BillingPro
 
     public void setPurchaseCode() {
 
-        Toast.makeText(this, "set purchase", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "set purchase", Toast.LENGTH_SHORT).show();
 
         db.collection("Users").document(userID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
