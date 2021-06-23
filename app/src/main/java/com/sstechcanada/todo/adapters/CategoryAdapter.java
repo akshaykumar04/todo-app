@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sstechcanada.todo.R;
@@ -26,6 +28,26 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
         this.categories = categories;
     }
 
+//    @Override
+//    public boolean hasStableIds() {
+//        return super.hasStableIds();
+//    }
+
+    @Override
+    public long getItemId(int position) {
+        return super.getItemId(position);
+    }
+
+    @Nullable
+    @Override
+    public Category getItem(int position) {
+        return super.getItem(position);
+    }
+
+    @Override
+    public int getCount() {
+        return categories.size();
+    }
 
 
     @Override
