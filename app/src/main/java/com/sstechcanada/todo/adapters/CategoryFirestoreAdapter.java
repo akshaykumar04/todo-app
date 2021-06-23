@@ -211,9 +211,6 @@ public class CategoryFirestoreAdapter extends FirestoreRecyclerAdapter<Category,
     }
 
 
-
-
-
     private void deleteCategory(String id,String categoryName) {
         showProgressbar();
         ((Activity)context).getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
