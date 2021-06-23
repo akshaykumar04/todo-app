@@ -680,7 +680,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
             boolean purchaseResult = bp.loadOwnedPurchasesFromGoogle();
 
 
-            Toast.makeText(MasterTodoListActivity.this, "IsUserSubscribed Function", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MasterTodoListActivity.this, "IsUserSubscribed Function: "+purchaseResult, Toast.LENGTH_SHORT).show();
             String purchaseID = "";
             if (user != null) {
                 if (purchaseCode.equals("1")) {
