@@ -676,7 +676,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
 
 
     public void isUserSubscribed(String purchaseCode) {
-        Toasty.info(this,"IsUserSubscribed");
+        Toast.makeText(MasterTodoListActivity.this, "IsUserSubscribed", Toast.LENGTH_SHORT).show();
         String purchaseID="";
         if (user != null) {
             if(purchaseCode.equals("1")){
@@ -686,12 +686,15 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
             }
 
             if (bp.isSubscribed(purchaseID)) {
-                Toasty.info(this,"User is subscribe to "+ purchaseID);
+
+                Toast.makeText(MasterTodoListActivity.this, "User is subscribe to "+ purchaseID, Toast.LENGTH_SHORT).show();
             } else {
                 refreshPurchaseCodeInDatabase();
-                Toasty.info(this,"user is not subscribed");
+
+                Toast.makeText(MasterTodoListActivity.this, "user is not subscribed "+ purchaseID, Toast.LENGTH_SHORT).show();
+
             }
-            Toasty.info(this,"user iobject not null");
+            Toast.makeText(MasterTodoListActivity.this, "user iobject not null"+ purchaseID, Toast.LENGTH_SHORT).show();
         }
     }
     public void refreshPurchaseCodeInDatabase() {
