@@ -676,25 +676,41 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
 
 
     public void isUserSubscribed(String purchaseCode) {
-        Toast.makeText(MasterTodoListActivity.this, "IsUserSubscribed", Toast.LENGTH_SHORT).show();
-        String purchaseID="";
-        if (user != null) {
-            if(purchaseCode.equals("1")){
-                 purchaseID="tier1";
-            }else if(purchaseCode.equals("2")){
-                 purchaseID="tier2";
+        try {
+            boolean purchaseResult = bp.loadOwnedPurchasesFromGoogle();
+
+
+            Toast.makeText(MasterTodoListActivity.this, "IsUserSubscribed Function", Toast.LENGTH_SHORT).show();
+            String purchaseID = "";
+            if (user != null) {
+                if (purchaseCode.equals("1")) {
+                    purchaseID = "tier1";
+                } else if (purchaseCode.equals("2")) {
+                    purchaseID = "tier2";
+                }
+//            if (bp.isSubscribed(purchaseID)) {
+//                Toast.makeText(MasterTodoListActivity.this, "User is subscribe to "+ purchaseID, Toast.LENGTH_SHORT).show();
+//            } else {
+//                refreshPurchaseCodeInDatabase();
+//                Toast.makeText(MasterTodoListActivity.this, "user is not subscribed "+ purchaseID, Toast.LENGTH_SHORT).show();
+//            }
+                if (purchaseResult) {
+                    TransactionDetails subscriptionTransactionDetails = bp.getSubscriptionTransactionDetails(purchaseID);
+                    if (subscriptionTransactionDetails != null) {
+                        //User is still subscribed
+                        Toast.makeText(MasterTodoListActivity.this, "user is still subscribed in", Toast.LENGTH_SHORT).show();
+                    } else {
+                        //Not subscribed
+                        refreshPurchaseCodeInDatabase();
+                        Toast.makeText(MasterTodoListActivity.this, "user is not subscribed", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                Toast.makeText(MasterTodoListActivity.this, "user iobject not null" + purchaseID, Toast.LENGTH_SHORT).show();
             }
+        }catch(Exception e){
+            Toast.makeText(MasterTodoListActivity.this, "Exception in "+e, Toast.LENGTH_SHORT).show();
 
-            if (bp.isSubscribed(purchaseID)) {
-
-                Toast.makeText(MasterTodoListActivity.this, "User is subscribe to "+ purchaseID, Toast.LENGTH_SHORT).show();
-            } else {
-                refreshPurchaseCodeInDatabase();
-
-                Toast.makeText(MasterTodoListActivity.this, "user is not subscribed "+ purchaseID, Toast.LENGTH_SHORT).show();
-
-            }
-            Toast.makeText(MasterTodoListActivity.this, "user iobject not null"+ purchaseID, Toast.LENGTH_SHORT).show();
         }
     }
     public void refreshPurchaseCodeInDatabase() {
@@ -731,7 +747,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
 
     @Override
     public void onBillingInitialized() {
-
+//      isUserSubscribed();
     }
 }
 
