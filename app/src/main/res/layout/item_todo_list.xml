@@ -7,24 +7,20 @@
     android:layout_width="match_parent"
     android:layout_height="60dp"
     android:layout_marginStart="16dp"
-    android:layout_marginLeft="16dp"
     android:layout_marginTop="8dp"
     android:layout_marginEnd="16dp"
-    android:layout_marginRight="16dp"
     android:layout_marginBottom="8dp"
-    android:paddingRight="8dp"
     app:cardCornerRadius="40dp"
     app:cardElevation="5dp"
+    android:padding="2dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent">
 
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
 
             <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/cb_todo_description"
@@ -104,6 +100,7 @@
                 android:textColor="@color/circle1"
                 android:textSize="9sp"
                 android:textStyle="italic"
+                app:layout_constraintVertical_bias="1"
                 app:layout_constraintStart_toStartOf="@id/tv_todo_desc"
                 app:layout_constraintTop_toBottomOf="@id/tv_todo_desc"
                 tools:text="benefits">
@@ -120,7 +117,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.488" />
+                 />
 
 
 
@@ -147,16 +144,16 @@
 <!--        tools:layout_editor_absoluteY="6dp"-->
 <!--        tools:text="@string/high_priority" />-->
 
-<!--    <com.sstechcanada.todo.custom_views.PriorityStarImageView-->
-<!--        android:id="@+id/iv_todo_priority_star"-->
-<!--        android:layout_width="24dp"-->
-<!--        android:layout_height="24dp"-->
-<!--        android:layout_marginEnd="4dp"-->
-<!--        android:layout_marginRight="4dp"-->
-<!--        android:visibility="gone"-->
-<!--        app:layout_constraintBottom_toTopOf="@+id/tv_todo_priority"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/tv_todo_priority" />-->
+    <com.sstechcanada.todo.custom_views.PriorityStarImageView
+        android:id="@+id/iv_todo_priority_star"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/tv_todo_priority"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_todo_priority" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
