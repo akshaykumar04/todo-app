@@ -125,13 +125,17 @@ public class AppUpgradeActivity2 extends AppCompatActivity implements BillingPro
     @Override
     protected void onStart() {
         super.onStart();
+
         if(purchaseCode.equals("0")){
             toggle_button_layout.setToggled(R.id.toggle_left, true);
+            purchaseProductId = "tier1";
+            pur_code="1";
         } else if(purchaseCode.equals("1")){
 
             toggle_button_layout.setToggled(R.id.toggle_right, true);
+            purchaseProductId = "tier2";
+            pur_code="2";
 
-            toggle_button_layout.setAllowDeselection(false);
         }else if(purchaseCode.equals("2")){
             toggle_button_layout.setEnabled(false);
         }
@@ -144,16 +148,38 @@ public class AppUpgradeActivity2 extends AppCompatActivity implements BillingPro
         toggle_button_layout.setOnToggledListener(new Function3<ToggleButtonLayout, Toggle, Boolean, Unit>() {
             @Override
             public Unit invoke(ToggleButtonLayout toggleButtonLayout, Toggle toggle, Boolean aBoolean) {
-                if (toggle.getId() == R.id.toggle_left) {
-                    tvListsCount.setText(getString(R.string.create_up_to_3_to_do_lists));
-                    purchaseProductId = "tier1";
-                    pur_code="1";
+                if(purchaseCode.equals("0")) {
+                    if (toggle.getId() == R.id.toggle_left) {
+                        tvListsCount.setText(getString(R.string.create_up_to_3_to_do_lists));
+                        purchaseProductId = "tier1";
+                        pur_code = "1";
 
-                } else if (toggle.getId() == R.id.toggle_right) {
-                    tvListsCount.setText(getString(R.string.create_up_to_3_to_do_lists));
-                    purchaseProductId = "tier2";
-                    pur_code="2";
+                    } else if (toggle.getId() == R.id.toggle_right) {
+                        tvListsCount.setText(getString(R.string.create_up_to_20_to_do_lists));
+                        purchaseProductId = "tier2";
+                        pur_code = "2";
 
+                    }
+                }else if(purchaseCode.equals("1")){
+
+                    if (toggle.getId() == R.id.toggle_left) {
+//                        tvListsCount.setText(getString(R.string.create_up_to_3_to_do_lists));
+//                        purchaseProductId = "tier1";
+//                        pur_code = "1";
+                        toggle_button_layout.setToggled(R.id.toggle_right, true);
+                        Toasty.success(getApplicationContext(), "You are already subscribed to Tier 1", Toast.LENGTH_SHORT).show();
+                        tvListsCount.setText(getString(R.string.create_up_to_20_to_do_lists));
+                        purchaseProductId = "tier2";
+                        pur_code = "2";
+
+                    } else if (toggle.getId() == R.id.toggle_right) {
+                        tvListsCount.setText(getString(R.string.create_up_to_20_to_do_lists));
+                        purchaseProductId = "tier2";
+                        pur_code = "2";
+
+                    }
+                }else{
+//                    IN Tier2
                 }
                 return null;
             }
