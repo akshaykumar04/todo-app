@@ -8,10 +8,14 @@
         android:layout_height="match_parent"
         android:background="@color/toolbar_background">
 
+
         <include
+            android:id="@+id/include2"
             layout="@layout/act_bar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+
 
 
         <RelativeLayout
@@ -75,6 +79,8 @@
                 android:layout_marginBottom="16dp" />
 
 
+
+
             <com.google.android.gms.ads.AdView
                 android:id="@+id/adView"
                 android:layout_width="wrap_content"
@@ -90,6 +96,16 @@
 
 
         </RelativeLayout>
+
+        <ProgressBar
+            android:id="@+id/progressCat"
+            android:visibility="invisible"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
