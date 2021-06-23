@@ -551,7 +551,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                 record = convertStringToArray(selectedResult);
                 for (int i = 0; i < categories.size(); i++) {
                     for (int j = 0; j < record.length; j++) {
-                        if (record[j].equals(categories.get(i).getCategoryName())) {
+                        if (record[j].equals(categories.get(i).getCategory_name())) {
                             adapter.selectedPositions.add(i);
                             selectedStrings.add(record[j]);
                         }
