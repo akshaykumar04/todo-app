@@ -675,16 +675,24 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
     }
 
 
-    public boolean isUserSubscribed(String purchaseCode) {
-
-
-        if (user != null)
-            if (bp.isSubscribed(purchaseCode)) {
-                return true;
-            }else{
-                refreshPurchaseCodeInDatabase();
+    public void isUserSubscribed(String purchaseCode) {
+        Toasty.info(this,"IsUserSubscribed");
+        String purchaseID="";
+        if (user != null) {
+            if(purchaseCode.equals("1")){
+                 purchaseID="tier1";
+            }else if(purchaseCode.equals("2")){
+                 purchaseID="tier2";
             }
-        return false;
+
+            if (bp.isSubscribed(purchaseID)) {
+                Toasty.info(this,"User is subscribe to "+ purchaseID);
+            } else {
+                refreshPurchaseCodeInDatabase();
+                Toasty.info(this,"user is not subscribed");
+            }
+            Toasty.info(this,"user iobject not null");
+        }
     }
     public void refreshPurchaseCodeInDatabase() {
 

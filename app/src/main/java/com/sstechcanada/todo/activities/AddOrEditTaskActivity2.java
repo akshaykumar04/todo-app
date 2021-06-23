@@ -94,6 +94,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
     private int status;
     private String[] record;
     private String description;
+    AlertDialog alertDialog;
 
 
     public static String convertArrayToString(ArrayList<String> array) {
@@ -521,8 +522,8 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
         }
 
 
-        AlertDialog dialog = alert.create();
-        dialog.show();
+        alertDialog = alert.create();
+        alertDialog.show();
     }
 
     public void loadCategories() {
@@ -647,5 +648,11 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if ( alertDialog!=null && alertDialog.isShowing() ){
+            alertDialog.dismiss();
+        }
+    }
 }
