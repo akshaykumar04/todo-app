@@ -35,7 +35,8 @@
         app:layout_constraintTop_toBottomOf="@+id/textUpgradeDesc"
         app:menu="@menu/toggles"
         app:multipleSelection="false"
-        app:selectedColor="@color/toggleSelected" />
+        app:selectedColor="@color/toggleSelected"
+        />
 
 
     <com.airbnb.lottie.LottieAnimationView

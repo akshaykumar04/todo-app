@@ -122,8 +122,24 @@ public class AppUpgradeActivity2 extends AppCompatActivity implements BillingPro
         setupPriceToggle();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(purchaseCode.equals("0")){
+            toggle_button_layout.setToggled(R.id.toggle_left, true);
+        } else if(purchaseCode.equals("1")){
+
+            toggle_button_layout.setToggled(R.id.toggle_right, true);
+
+            toggle_button_layout.setAllowDeselection(false);
+        }else if(purchaseCode.equals("2")){
+            toggle_button_layout.setEnabled(false);
+        }
+
+    }
+
     private void setupPriceToggle() {
-        toggle_button_layout.setToggled(R.id.toggle_left, true);
+//        toggle_button_layout.setToggled(R.id.toggle_left, true);
 
         toggle_button_layout.setOnToggledListener(new Function3<ToggleButtonLayout, Toggle, Boolean, Unit>() {
             @Override
@@ -212,6 +228,11 @@ public class AppUpgradeActivity2 extends AppCompatActivity implements BillingPro
 
     @Override
     public void onBillingInitialized() {
+
+        if(bp.isSubscribed(purchaseProductId) ){
+            Toasty.info(this,"Already subscribed");
+            return;
+        }
 
         Log.d(TAG, "onBillingInitialized: ");
         ArrayList<String> productIdList = new ArrayList<>();

@@ -41,6 +41,7 @@ import com.android.billingclient.api.ConsumeParams;
 import com.android.billingclient.api.ConsumeResponseListener;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
+import com.anjlab.android.iab.v3.BillingProcessor;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetSequence;
@@ -78,7 +79,7 @@ import static com.android.billingclient.api.BillingClient.SkuType.SUBS;
 import static com.sstechcanada.todo.activities.auth.LoginActivity.flagMasterListFirstRun;
 import static com.sstechcanada.todo.activities.auth.LoginActivity.userAccountDetails;
 
-public class MasterTodoListActivity extends AppCompatActivity implements PurchasesUpdatedListener {
+public class MasterTodoListActivity extends AppCompatActivity {
 
     private static final String TAG = MasterTodoListActivity.class.getSimpleName();
     public static int list_cnt = 0;
@@ -113,6 +114,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Purchas
     private MasterListGridViewAdapter gridAdapter;
     FloatingActionButton fab;
     private boolean doubleBackToExitPressedOnce;
+    BillingProcessor bp;
     private final Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
@@ -139,14 +141,15 @@ public class MasterTodoListActivity extends AppCompatActivity implements Purchas
                 R.drawable.shopping_cart,
         };
 
-        showProgressBar();
+
 
 
 //        placeholderImage=findViewById(R.id.placeholderImage);
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         userID = user.getUid();
-        setPurchaseCode();
+
+        getPurchaseCode();
 
 //        lottieAnimationView = findViewById(R.id.placeholderImage);
 
@@ -204,103 +207,14 @@ public class MasterTodoListActivity extends AppCompatActivity implements Purchas
         });
     }
 
-    private void checkSubscriptions(){
-
-         billingClient.startConnection(new BillingClientStateListener() {
-             @Override
-             public void onBillingServiceDisconnected() {
-
-             }
-
-             @Override
-             public void onBillingSetupFinished(BillingResult billingResult) {
-
-                 if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                     // The BillingClient is ready. You can query purchases here.
-                     java.util.List<Purchase> purchases = billingClient.queryPurchases(SUBS).getPurchasesList();
-                     handleItemsAlreadyPurchase(purchases);
-                 }
-             }
-
-         });
-    }
-
-    private void handleItemsAlreadyPurchase(java.util.List<Purchase> purchases) {
-
-        for (Purchase purchase : purchases) {
-            alreadyPurchasedList = new ArrayList<>();
-            pur_code="0";
-
-            if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED ){
-
-                Toast.makeText(this, "already purchases SKUS" + purchase.getSkus().toString(), Toast.LENGTH_LONG).show();
-
-                ConsumeParams consumeParams = ConsumeParams.newBuilder().setPurchaseToken(purchase.getPurchaseToken()).build();
-
-                ConsumeResponseListener consumeResponseListener= new ConsumeResponseListener() {
-                    @Override
-                    public void onConsumeResponse(@NonNull BillingResult billingResult, @NonNull String s) {
-                        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                            Toast.makeText(MasterTodoListActivity.this, "consume params inside on purchase updated ", Toast.LENGTH_SHORT).show();
-
-                            if (purchase.getSkus().contains("tier1") ) {
-                                alreadyPurchasedList.add("1");
-                                pur_code = "1";
-
-                            } else if (purchase.getSkus().contains("tier2") ) {
-                                alreadyPurchasedList.add("2");
-                                pur_code = "2";
-
-                            }
-
-                            if(!purchaseCode.equals(pur_code)) {
-                                setPurchaseCodeInDatabase();
-                            }
-
-//                    AppUpgradeActivity3.this.recreate();
-                        } else {
-                            Toast.makeText(MasterTodoListActivity.this,"Not OK consume params the purchase", Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-                };
-
-                billingClient.consumeAsync(consumeParams,consumeResponseListener);
 
 
-            }
-        }
-
-        if(!purchaseCode.equals(pur_code)){
-            setPurchaseCodeInDatabase();
-        }
-
-        if (billingClient != null) {
-            billingClient.endConnection();
-        }
 
 
-    }
-
-    public void setPurchaseCodeInDatabase() {
-
-        Toast.makeText(this, "set purchase code in db", Toast.LENGTH_SHORT).show();
-
-        Map<String, String> purchaseCode = new HashMap<>();
-        purchaseCode.put("purchase_code", pur_code);
-
-        db.collection("Users").document(userID).set(purchaseCode, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                setPurchaseCode();
-                Toast.makeText(MasterTodoListActivity.this, "on success", Toast.LENGTH_LONG).show();
-            }
-        });
-
-    }
 
 
-    private void setPurchaseCode() {
+    private void getPurchaseCode() {
+        showProgressBar();
         usersColRef.document(userID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -312,8 +226,13 @@ public class MasterTodoListActivity extends AppCompatActivity implements Purchas
                         Log.i("purchasecode", "new :" + documentSnapshot.get("masterListLimit").toString());
                         userAccountDetails.add(0, documentSnapshot.get("masterListLimit").toString());
                         userAccountDetails.add(1, documentSnapshot.get("todoItemLimit").toString());
+                        bp = new BillingProcessor(MasterTodoListActivity.this, "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnDatsVXJEFzzwnOEBiE5wSffxr+dEazc3zbf5t5jK1NKYPlfBbeN2M8ZEA38YRt0pQ0WfnXGcJ0mauXH/0xtXdo9Hv6uyzn3W73W6RxTbc5fk2950Tn0fqHkTh6wZoEJBaLn5OnhUy6GE0Yf5VM4oj3HeY5li6ESi8PggUMeYmMcvLzcOsQ8rh4G2KBWqXcYOTMREyfFXp6jJLXHDrJqeeSAEnP/aGLPPyi2NRy5S7dp8qPIkjDYt6yU+FICSBcDAPPWO1jNZrWH43ObcDF4KNdp5CAf/HT5GLcwZv+CUvQGgtuOyiN193NE9wpV5jpA2BgV7FxENqe9T1NIPk8AMwIDAQAB", AppUpgradeActivity2.this);
+                        bp.initialize();
+                        if(!purchaseCode.equals("0")) {
+                            isUserSubscribed(purchaseCode);
+                        }
                         hideProgressBar();
-                        checkSubscriptions();
+//                        checkSubscriptions();
                     }
                 });
             }
@@ -768,137 +687,35 @@ public class MasterTodoListActivity extends AppCompatActivity implements Purchas
         }).start();
     }
 
-    @Override
-    public void onPurchasesUpdated(@NonNull BillingResult billingResult, @Nullable java.util.List<Purchase> list) {
-        Toast.makeText(this, "onPurchasesUpdated " , Toast.LENGTH_LONG).show();
 
-        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && list != null) {
-            Toast.makeText(this, "onPurchasesUpdated OK" , Toast.LENGTH_LONG).show();
-
-//------ ---
-            pur_code = purchaseCode;
-//            if(purchaseProductId.equals("1")) {
-//                pur_code="1";
-//            }else if(purchaseProductId.equals("2")) {
-//                pur_code="2";
-//            }
-//------ ---
-
-            for (Purchase purchase : list) {
-                alreadyPurchasedList = new ArrayList<>();
-                if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
-
-                    Toast.makeText(this, "onPurchasesUpdated SKUS" + purchase.getSkus().toString(), Toast.LENGTH_LONG).show();
-
-                    if (purchase.getSkus().get(0).equals("tier1") || purchase.getOrderId().equals("0")) {
-                        pur_code = "1";
-                    } else if (purchase.getSkus().get(0).equals("tier2") || purchase.getOrderId().equals("1")) {
-                        pur_code = "2";
-                    }
-
-                    if (!verifyValidSignature(purchase.getOriginalJson(), purchase.getSignature())) {
-                        // Invalid purchase
-                        // show error to user
-                        Toast.makeText(getApplicationContext(), "Error : invalid Purchase", Toast.LENGTH_SHORT).show();
-                        continue;
-                    }
-
-                    Toast.makeText(this, "orderID" + purchase.getOrderId().toString(), Toast.LENGTH_SHORT).show();
-
-                    if (!purchase.isAcknowledged()) {
-                        AcknowledgePurchaseParams acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
-                                .setPurchaseToken(purchase.getPurchaseToken())
-                                .build();
-
-                        Toast.makeText(this, "onPurchasesUpdated is not  ackn if", Toast.LENGTH_SHORT).show();
-
-                        Toast.makeText(this, "onPurchasesUpdated purcode " + pur_code.toString(), Toast.LENGTH_LONG).show();
-
-                        billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
-                    } else {
-                        // Grant entitlement to the user on item purchase
-                        // restart activity
-                        Toast.makeText(this, "onPurchasesUpdated is ackno else", Toast.LENGTH_SHORT).show();
-                        setPurchaseCodeInDatabase();
+    public boolean isUserSubscribed(String purchaseCode) {
 
 
-                    }
-
-
-                }
+        if (user != null)
+            if (bp.isSubscribed(purchaseCode)) {
+                return true;
+            }else{
+                refreshPurchaseCodeInDatabase();
             }
+        return false;
+    }
+    public void refreshPurchaseCodeInDatabase() {
 
+        Toast.makeText(this, "set purchase code in db", Toast.LENGTH_SHORT).show();
 
-        } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
-            Purchase.PurchasesResult queryAlreadyPurchasesResult = billingClient.queryPurchases(SUBS);
-            java.util.List<Purchase> alreadyPurchases = queryAlreadyPurchasesResult.getPurchasesList();
-            if (alreadyPurchases != null) {
+        Map<String, String> purchaseCode = new HashMap<>();
+        purchaseCode.put("purchase_code", "0");
 
-                for (Purchase purchase : list) {
-                    if (purchase.getSkus().get(0).equals("tier1") || purchase.getOrderId().equals("0")) {
-                        pur_code = "1";
-                    } else if (purchase.getSkus().get(0).equals("tier2") || purchase.getOrderId().equals("tier2")) {
-                        pur_code = "2";
-                    }
-
-                    if (!purchase.isAcknowledged()) {
-                        AcknowledgePurchaseParams acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
-                                .setPurchaseToken(purchase.getPurchaseToken())
-                                .build();
-
-                        Toast.makeText(this, "onPurchasesUpdated ITEM_ALREADY_OWNED is not  ackn if", Toast.LENGTH_SHORT).show();
-
-                        Toast.makeText(this, "onPurchasesUpdated ITEM_ALREADY_OWNED purcode " + pur_code.toString(), Toast.LENGTH_LONG).show();
-
-                        billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
-
-
-                    } else {
-                        // Grant entitlement to the user on item purchase
-                        // restart activity
-                        Toast.makeText(this, "is ackno else", Toast.LENGTH_SHORT).show();
-
-                        if(!purchaseCode.equals(pur_code)) {
-                            setPurchaseCodeInDatabase();
-                        }
-
-
-                    }
-                }
-
-            }
-        } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.USER_CANCELED) {
-            Toast.makeText(MasterTodoListActivity.this, "The request was cancelled", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(MasterTodoListActivity.this, "Error " + billingResult.getDebugMessage(), Toast.LENGTH_SHORT).show();
-        }
-        acknowledgePurchaseResponseListener = new AcknowledgePurchaseResponseListener() {
+        db.collection("Users").document(userID).set(purchaseCode, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
-            public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
-                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                    Toast.makeText(MasterTodoListActivity.this, "acknowledgment inside on purchase updated ", Toast.LENGTH_SHORT).show();
-                    purchaseProductId="0";
-                    setPurchaseCodeInDatabase();
-
-//                    AppUpgradeActivity3.this.recreate();
-                } else {
-                    Toast.makeText(MasterTodoListActivity.this,"Not able to acknowledge the purchase", Toast.LENGTH_SHORT).show();
-                }
+            public void onSuccess(Void aVoid) {
+                getPurchaseCode();
+                Toast.makeText(MasterTodoListActivity.this, "on success", Toast.LENGTH_LONG).show();
             }
-        };
+        });
 
     }
 
-    private boolean verifyValidSignature(String signedData, String signature) {
-        try {
-            // To get key go to Developer Console > Select your app > Development Tools > Services & APIs.
-            String base64Key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnDatsVXJEFzzwnOEBiE5wSffxr+dEazc3zbf5t5jK1NKYPlfBbeN2M8ZEA38YRt0pQ0WfnXGcJ0mauXH/0xtXdo9Hv6uyzn3W73W6RxTbc5fk2950Tn0fqHkTh6wZoEJBaLn5OnhUy6GE0Yf5VM4oj3HeY5li6ESi8PggUMeYmMcvLzcOsQ8rh4G2KBWqXcYOTMREyfFXp6jJLXHDrJqeeSAEnP/aGLPPyi2NRy5S7dp8qPIkjDYt6yU+FICSBcDAPPWO1jNZrWH43ObcDF4KNdp5CAf/HT5GLcwZv+CUvQGgtuOyiN193NE9wpV5jpA2BgV7FxENqe9T1NIPk8AMwIDAQAB";
-
-            return Security.verifyPurchase(base64Key, signedData, signature);
-        } catch (IOException e) {
-            return false;
-        }
-    }
 }
 
 
