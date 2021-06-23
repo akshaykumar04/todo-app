@@ -285,10 +285,11 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
 
     class TodoListFirestoreHolder extends RecyclerView.ViewHolder {
         final AppCompatCheckBox cbTodoDescription;
-        final TextView tvTodoPriority;
-        final PriorityStarImageView ivTodoPriorityStar;
-        final ConstraintLayout clTodoListItem;
-        TextView tvTodoDueDate, tvTextDesc, circle_per, tvBenefits;
+//        final TextView tvTodoPriority;
+//        final PriorityStarImageView ivTodoPriorityStar;
+//        final ConstraintLayout clTodoListItem;
+//        TextView tvTodoDueDate
+        TextView tvTextDesc, circle_per, tvBenefits;
         CardView cardView;
         CheckBox customCheckbox;
 
@@ -297,11 +298,11 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
             cardView = itemView.findViewById(R.id.materialCard);
             cbTodoDescription = itemView.findViewById(R.id.cb_todo_description);
             tvTextDesc = itemView.findViewById(R.id.tv_todo_desc);
-            tvTodoDueDate = itemView.findViewById(R.id.tv_todo_due_date);
-            tvTodoPriority = itemView.findViewById(R.id.tv_todo_priority);
-            ivTodoPriorityStar = itemView.findViewById(R.id.iv_todo_priority_star);
+//            tvTodoDueDate = itemView.findViewById(R.id.tv_todo_due_date);
+//            tvTodoPriority = itemView.findViewById(R.id.tv_todo_priority);
+//            ivTodoPriorityStar = itemView.findViewById(R.id.iv_todo_priority_star);
             customCheckbox = itemView.findViewById(R.id.checkb);
-            clTodoListItem = (ConstraintLayout) itemView;
+//            clTodoListItem = (ConstraintLayout) itemView;
             tvBenefits = itemView.findViewById(R.id.todo_benefits);
             //Circle
             circle_per = itemView.findViewById(R.id.circle_per_item);
