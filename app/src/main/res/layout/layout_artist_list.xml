@@ -8,6 +8,7 @@
     android:padding="2dp">
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/catCard"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginStart="4dp"

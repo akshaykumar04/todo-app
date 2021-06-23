@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -54,10 +55,20 @@
                 android:fontFamily="@font/raleway_semibold"
                 android:text="@string/Categories" />
 
-            <ListView
+<!--            <ListView-->
+<!--                android:id="@+id/listViewCategory"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="0dp"-->
+<!--                android:layout_above="@+id/adView"-->
+<!--                android:layout_below="@+id/textView1"-->
+<!--                android:layout_marginTop="16dp"-->
+<!--                android:layout_marginBottom="16dp" />-->
+
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/listViewCategory"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                tools:listitem="@layout/layout_artist_list"
                 android:layout_above="@+id/adView"
                 android:layout_below="@+id/textView1"
                 android:layout_marginTop="16dp"

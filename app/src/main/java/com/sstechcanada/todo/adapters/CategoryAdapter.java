@@ -49,17 +49,35 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
         return categories.size();
     }
 
+    static class ViewHolder {
+        private TextView textViewName;
+    }
+
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = context.getLayoutInflater();
-        @SuppressLint({"ViewHolder", "InflateParams"}) View listViewItem = inflater.inflate(R.layout.layout_artist_list, null, true);
 
-        TextView textViewName = (TextView) listViewItem.findViewById(R.id.textViewName);
+        ViewHolder holder;
+
+        if (convertView == null) {
+            LayoutInflater inflater = context.getLayoutInflater();
+            convertView = inflater.inflate(R.layout.layout_artist_list, null);
+            holder = new ViewHolder();
+            holder. textViewName = (TextView) convertView.findViewById(R.id.textViewName);
+            convertView.setTag(holder);
+
+        }else{
+            holder = (ViewHolder) convertView.getTag();
+        }
+
+//        LayoutInflater inflater = context.getLayoutInflater();
+//        @SuppressLint({"ViewHolder", "InflateParams"}) View listViewItem = inflater.inflate(R.layout.layout_artist_list, null, true);
+//
+//        textViewName = (TextView) listViewItem.findViewById(R.id.textViewName);
 
         Category category = categories.get(position);
-        textViewName.setText(category.getCategoryName());
+        holder.textViewName.setText(category.getCategory_name());
 
-        return listViewItem;
+        return convertView;
     }
 }
