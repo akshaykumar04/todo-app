@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:fontFamily="@font/raleway_semibold"
+            android:drawableLeft="@drawable/ic_outline_edit_24"
             android:text="Update" />
 
         <Button
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginLeft="10dp"
-            android:fontFamily="@font/raleway_semibold"
+            android:drawableLeft="@drawable/ic_outline_delete_forever_24"
             android:text="Delete" />
 
     </LinearLayout>
