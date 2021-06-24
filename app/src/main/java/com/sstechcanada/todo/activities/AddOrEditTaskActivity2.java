@@ -366,6 +366,8 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 
         if (description.equals("")) {
             Toasty.warning(this, getString(R.string.description_cannot_be_empty), Toast.LENGTH_SHORT, true).show();
+            loadingProgressBarUpdate.setVisibility(View.GONE);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 //        } else if (chipGroup.getChildCount() == 0) {
 //            Toasty.warning(this, getString(R.string.category_cannot_be_empty), Toast.LENGTH_SHORT, true).show();
         } else {
