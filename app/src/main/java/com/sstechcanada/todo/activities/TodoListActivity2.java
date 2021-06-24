@@ -168,13 +168,14 @@ public class TodoListActivity2 extends AppCompatActivity {
                     }
                 } else {
                     if (isLogin()) {
-                        Toasty.info(getApplicationContext(), getString(R.string.upgrade_master_list), Toast.LENGTH_SHORT).show();
+
                         if(!purchaseCode.equals("2")){
                             Intent intent = new Intent(TodoListActivity2.this, AppUpgradeActivity2.class);
 //                        intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
+                            Toasty.info(getApplicationContext(), getString(R.string.upgrade_master_list), Toast.LENGTH_SHORT).show();
                             startActivity(intent);
                         }else if (purchaseCode.equals("2")){
-                            Toasty.info(getApplicationContext(), "Sorry, You cannot add more to-do items. You have reached the max-limit!", Toast.LENGTH_SHORT).show();
+                            Toasty.warning(getApplicationContext(), "Sorry, You cannot add more to-do items. You have reached the max-limit!", Toast.LENGTH_LONG).show();
                         }
                     }
 
@@ -457,12 +458,13 @@ public class TodoListActivity2 extends AppCompatActivity {
             Toasty.warning(this, getString(R.string.login_first), Toast.LENGTH_LONG).show();
             startActivity(new Intent(TodoListActivity2.this, LoginActivity.class));
             return false;
-        } else if (list_limit <= db_cnt) {
-            //Limit Check
-            Toasty.info(this, getString(R.string.upgrade_todo_list), Toast.LENGTH_LONG, true).show();
-            startActivity(new Intent(TodoListActivity2.this, AppUpgradeActivity3.class));
-            return false;
         }
+//        else if (list_limit <= db_cnt) {
+//            //Limit Check
+//            Toasty.info(this, getString(R.string.upgrade_todo_list), Toast.LENGTH_LONG, true).show();
+//            startActivity(new Intent(TodoListActivity2.this, AppUpgradeActivity2.class));
+//            return false;
+//        }
         return true;
     }
 

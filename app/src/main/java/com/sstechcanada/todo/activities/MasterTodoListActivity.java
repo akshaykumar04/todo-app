@@ -186,13 +186,13 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
                     }
                 } else {
                     if (isLogin()) {
-                        Toasty.info(getApplicationContext(), getString(R.string.upgrade_master_list), Toast.LENGTH_SHORT).show();
                         if(!purchaseCode.equals("2")){
+                            Toasty.info(getApplicationContext(), getString(R.string.upgrade_master_list), Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(MasterTodoListActivity.this, AppUpgradeActivity2.class);
 //                        intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
                             startActivity(intent);
                         }else if (purchaseCode.equals("2")){
-                            Toasty.info(getApplicationContext(), "Sorry, You cannot add more to-do list. You have reached the max-limit!", Toast.LENGTH_SHORT).show();
+                            Toasty.warning(getApplicationContext(), "Sorry, You cannot add more to-do list. You have reached the max-limit!", Toast.LENGTH_LONG).show();
                         }
 
                     }
@@ -573,16 +573,20 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
     public boolean isLogin() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
-            Toasty.warning(this, getString(R.string.login_first), Toast.LENGTH_LONG).show();
+            Toasty.warning(this, getString(R.string.login_first), Toast.LENGTH_SHORT).show();
             startActivity(new Intent(MasterTodoListActivity.this, LoginActivity.class));
             return false;
-        } else if (list_limit <= list_cnt) {
-            //Limit Check
-            Toasty.warning(this, getString(R.string.upgrade_master_list), Toast.LENGTH_LONG, true).show();
-            startActivity(new Intent(MasterTodoListActivity.this, AppUpgradeActivity2.class));
-            return false;
         }
-        return true;
+//        else if (list_limit <= list_cnt) {
+//            //Limit Check
+//            Toasty.warning(this, getString(R.string.upgrade_master_list), Toast.LENGTH_LONG, true).show();
+//            startActivity(new Intent(MasterTodoListActivity.this, AppUpgradeActivity2.class));
+//            return false;
+//        }
+        else{
+            return true;
+        }
+//        return true;
     }
 
     public void setValue() {
