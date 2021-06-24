@@ -188,8 +188,6 @@ public class CategoryFirestoreAdapter extends FirestoreRecyclerAdapter<Category,
                                     }
                                 });
                             }
-
-                            Toasty.success(context, "Benefit Updated", Toast.LENGTH_SHORT).show();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -198,6 +196,7 @@ public class CategoryFirestoreAdapter extends FirestoreRecyclerAdapter<Category,
                         }
                     });
                 }
+                Toasty.success(context, "Benefit Updated", Toast.LENGTH_SHORT).show();
                 hideProgressbar();
                 ((Activity)context).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             }
@@ -257,7 +256,7 @@ public class CategoryFirestoreAdapter extends FirestoreRecyclerAdapter<Category,
                                 });
                             }
 
-                            Toasty.success(context, "Benefit Deleted", Toast.LENGTH_SHORT).show();
+
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -266,6 +265,7 @@ public class CategoryFirestoreAdapter extends FirestoreRecyclerAdapter<Category,
                         }
                     });
                 }
+                Toasty.success(context, "Benefit Deleted", Toast.LENGTH_SHORT).show();
                 hideProgressbar();
                 ((Activity)context).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             }
