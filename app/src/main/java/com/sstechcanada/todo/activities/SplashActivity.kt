@@ -9,7 +9,7 @@ import com.sstechcanada.todo.activities.auth.LoginActivity
 import com.sstechcanada.todo.utils.SaveSharedPreference
 
 class SplashActivity : AppCompatActivity() {
-    private var TIME_OUT: Long = 2000
+    private var TIME_OUT: Long = 2100
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
