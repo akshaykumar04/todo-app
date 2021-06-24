@@ -1,4 +1,5 @@
 package com.sstechcanada.todo.adapters;
+
 import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
@@ -32,6 +33,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.models.Category;
+
+import java.util.Arrays;
+import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 
@@ -243,10 +247,14 @@ public class CategoryFirestoreAdapter extends FirestoreRecyclerAdapter<Category,
                         @Override
                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                             for(DocumentSnapshot documentSnapshotInner:queryDocumentSnapshots){
-                                UserColRef.document(documentSnapshot.getId()).collection("Todo").document(documentSnapshotInner.getId()).update("Benefits", FieldValue.arrayRemove(categoryToBeDeletedName),"priority",FieldValue.increment(-1)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                UserColRef.document(documentSnapshot.getId()).collection("Todo").document(documentSnapshotInner.getId()).update("Benefits", FieldValue.arrayRemove(categoryToBeDeletedName)).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         Log.i("DeletionLogs", "Benefit Deleted From Each To-Do!");
+                                        int sizeOfBenefitArray=((List<String>)documentSnapshotInner.get("Benefits")).size();
+                                        List<String> list=(List<String>)documentSnapshotInner.get("Benefits");
+                                        Log.i("DeletionLogs", "Benefit Array Size!"+sizeOfBenefitArray+" "+ Arrays.toString(list.toArray()));
+                                        UserColRef.document(documentSnapshot.getId()).collection("Todo").document(documentSnapshotInner.getId()).update("priority",sizeOfBenefitArray-1);
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
