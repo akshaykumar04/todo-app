@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".activities.AppUpgradeActivity">
 
+    <ProgressBar
+        android:id="@+id/loadingProgressBarUpgrade"
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        android:layout_marginTop="-5dp"
+        android:indeterminate="true"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:indeterminateTint="@color/colorTab"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabBack"
         android:layout_width="wrap_content"
@@ -161,5 +175,7 @@
         app:lottie_autoPlay="true"
         app:lottie_fileName="go-premium.json"
         app:lottie_loop="true" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

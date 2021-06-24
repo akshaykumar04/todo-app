@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -95,6 +96,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
     private String[] record;
     private String description;
     AlertDialog alertDialog;
+    ProgressBar loadingProgressBarUpdate;
 
 
     public static String convertArrayToString(ArrayList<String> array) {
@@ -126,6 +128,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
         toolbar_profile = findViewById(R.id.profile_toolbar);
         toolbar_profile.setOnClickListener(view -> startActivity(new Intent(AddOrEditTaskActivity2.this, LoginActivity.class)));
         toolbarBackIcon = findViewById(R.id.arrow_back);
+        loadingProgressBarUpdate=findViewById(R.id.loadingProgressBarUpdate);
         toolbarBackIcon.setVisibility(View.VISIBLE);
         toolbarBackIcon.setOnClickListener(view -> {
             super.onBackPressed();
@@ -351,6 +354,9 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
     }
 
     public void addOrUpdateTask(View view) {
+        loadingProgressBarUpdate.setVisibility(View.VISIBLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
         description = mBinding.etTaskDescription.getText().toString().trim();
         int priority = category_count;
         int isCompleted = TodoTask.TASK_NOT_COMPLETED;
@@ -392,7 +398,8 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 //            TodoTask todoTask = new TodoTask(description, selectedResult, category_count, priority, dueDate, mTaskId, isCompleted);
 //            insertOrUpdate(todoTask);
 //            uploadDataToFirestore();
-//
+
+
             Intent returnIntent = new Intent();
             setResult(Activity.RESULT_OK, returnIntent);
 
@@ -424,7 +431,9 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
             UserColRef.document().set(newTaskMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    Toasty.success(AddOrEditTaskActivity2.this, "New Todo-Item Successfully Added");
+                    loadingProgressBarUpdate.setVisibility(View.GONE);
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    Toasty.success(AddOrEditTaskActivity2.this, "New Todo-Item Successfully Added",Toasty.LENGTH_SHORT).show();
                     Intent intent = new Intent(AddOrEditTaskActivity2.this, TodoListActivity2.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
@@ -432,7 +441,9 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toasty.error(AddOrEditTaskActivity2.this, "Something went wrong");
+                    loadingProgressBarUpdate.setVisibility(View.GONE);
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    Toasty.error(AddOrEditTaskActivity2.this, "Something went wrong",Toasty.LENGTH_SHORT).show();
                 }
             });
 
@@ -458,15 +469,20 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
             UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).set(updateTaskMap, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
+                    loadingProgressBarUpdate.setVisibility(View.GONE);
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    Toasty.success(AddOrEditTaskActivity2.this, "Todo-Item Successfully Updated",Toasty.LENGTH_SHORT).show();
                     Intent intent = new Intent(AddOrEditTaskActivity2.this, TodoListActivity2.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
-                    Toasty.success(AddOrEditTaskActivity2.this, "New Todo-Item Successfully Added");
+
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toasty.error(AddOrEditTaskActivity2.this, "Something went wrong");
+                    loadingProgressBarUpdate.setVisibility(View.GONE);
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    Toasty.error(AddOrEditTaskActivity2.this, "Something went wrong",Toasty.LENGTH_SHORT).show();
                 }
             });
         }

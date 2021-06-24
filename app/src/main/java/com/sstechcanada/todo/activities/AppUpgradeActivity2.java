@@ -1,9 +1,12 @@
 package com.sstechcanada.todo.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +54,7 @@ public class AppUpgradeActivity2 extends AppCompatActivity implements BillingPro
     String purchaseProductId = "1";
     private List<SkuDetails> purchaseTransactionDetails = null;
     String pur_code=purchaseCode;
+    ProgressBar loadingProgressBarUpgrade;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +65,7 @@ public class AppUpgradeActivity2 extends AppCompatActivity implements BillingPro
         fabBack = findViewById(R.id.fabBack);
         toggle_button_layout = findViewById(R.id.toggle_button_layout);
         tvListsCount = findViewById(R.id.tvListsCount);
+        loadingProgressBarUpgrade=findViewById(R.id.loadingProgressBarUpgrade);
 
 //        bp = new BillingProcessor(this, "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnDatsVXJEFzzwnOEBiE5wSffxr+dEazc3zbf5t5jK1NKYPlfBbeN2M8ZEA38YRt0pQ0WfnXGcJ0mauXH/0xtXdo9Hv6uyzn3W73W6RxTbc5fk2950Tn0fqHkTh6wZoEJBaLn5OnhUy6GE0Yf5VM4oj3HeY5li6ESi8PggUMeYmMcvLzcOsQ8rh4G2KBWqXcYOTMREyfFXp6jJLXHDrJqeeSAEnP/aGLPPyi2NRy5S7dp8qPIkjDYt6yU+FICSBcDAPPWO1jNZrWH43ObcDF4KNdp5CAf/HT5GLcwZv+CUvQGgtuOyiN193NE9wpV5jpA2BgV7FxENqe9T1NIPk8AMwIDAQAB", null, new BillingProcessor.IBillingHandler() {
 //            @Override
@@ -224,6 +229,9 @@ public class AppUpgradeActivity2 extends AppCompatActivity implements BillingPro
                         userAccountDetails.add(0, documentSnapshot.get("masterListLimit").toString());
                         userAccountDetails.add(1, documentSnapshot.get("todoItemLimit").toString());
                         Toasty.success(getApplicationContext(), "Package Upgraded", Toast.LENGTH_SHORT).show();
+                        loadingProgressBarUpgrade.setVisibility(View.GONE);
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
                         Intent intent = new Intent(AppUpgradeActivity2.this, MasterTodoListActivity.class);
                         startActivity(intent);
 
@@ -282,7 +290,8 @@ public class AppUpgradeActivity2 extends AppCompatActivity implements BillingPro
     @Override
     public void onProductPurchased(String productId, TransactionDetails details) {
         Log.d(TAG, "onProductPurchased: "+productId);
-
+        loadingProgressBarUpgrade.setVisibility(View.VISIBLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         setPurchaseCodeInDatabase(productId);
 
     }
