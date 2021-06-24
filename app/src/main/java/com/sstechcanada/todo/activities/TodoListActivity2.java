@@ -514,7 +514,7 @@ public class TodoListActivity2 extends AppCompatActivity {
                                 .tintTarget(true)
                                 .transparentTarget(true)
                                 .targetRadius(80),
-                        TapTarget.forView(mBinding.buttonTapTargetView, "To-do Task", "Swipe left to delete a to-do task")
+                        TapTarget.forView(mBinding.buttonTapTargetView, "To-do Task", "Swipe right to edit a to-do task and left to delete a to-do task")
                                 .outerCircleColor(R.color.chip_5)
                                 .outerCircleAlpha(0.96f)
                                 .targetCircleColor(R.color.colorUncompletedBackground)
