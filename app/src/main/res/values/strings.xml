@@ -88,5 +88,6 @@
     <string name="create_up_to_20_to_do_lists">create up to 20 to do lists</string>
     <string name="create_up_to_3_to_do_lists">create up to 3 to do lists</string>
     <string name="title_add_benefit">Add Benefits</string>
+    <string name="tap_target_Ok">OK</string>
 
 </resources>

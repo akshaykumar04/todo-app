@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -76,7 +77,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
     //    ArrayList<String>
     public static Integer[] listDrawable;
     public static String listId, listName;
-    public static String purchaseCode = "";
+    public static String purchaseCode = "0";
     String userID;
     ImageView placeholderImage;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -100,6 +101,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
     String pur_code;
     BillingClient billingClient;
     AcknowledgePurchaseResponseListener acknowledgePurchaseResponseListener;
+    private Button buttonTapTargetView;
 
     private MasterListGridViewAdapter gridAdapter;
     FloatingActionButton fab;
@@ -121,6 +123,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
         mRecyclerView = findViewById(R.id.rv_todo_list);
         loadingProgressBar = findViewById(R.id.loadingProgressBar);
         fab = findViewById(R.id.fab);
+        buttonTapTargetView=findViewById(R.id.buttonTapTargetView);
         SharedPreferences prefs = getSharedPreferences(SHAREDPREF, MODE_PRIVATE);
         editor = getSharedPreferences(SHAREDPREF, MODE_PRIVATE).edit();
 
@@ -145,7 +148,9 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
 
         setUpFirestoreRecyclerView();
 
-        if (prefs.getBoolean("flagMasterListFirstRun",false)){
+        if (prefs.getBoolean("flagMasterListFirstRun",true)){
+            buttonTapTargetView.setVisibility(View.INVISIBLE);
+
             callWalkThrough();
         }
 
@@ -650,7 +655,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
                                 .tintTarget(true)
                                 .transparentTarget(true)
                                 .targetRadius(80),
-                        TapTarget.forView(mRecyclerView, "List", "Swipe right to edit a list and left to delete a list")
+                        TapTarget.forView(buttonTapTargetView, "List", "Swipe right to edit a list and left to delete a list")
                                 .outerCircleColor(R.color.chip_5)
                                 .outerCircleAlpha(0.96f)
                                 .targetCircleColor(R.color.colorUncompletedBackground)
@@ -669,9 +674,10 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
             public void onSequenceFinish() {
 
 //                Toast.makeText(MasterTodoListActivity.this,"Sequence Finished",Toast.LENGTH_SHORT).show();
-                Toasty.success(MasterTodoListActivity.this, "Awesome, Now you can add your first list!", Toast.LENGTH_SHORT).show();
+                Toasty.success(MasterTodoListActivity.this, "Awesome!", Toast.LENGTH_SHORT).show();
 
 //                flagMasterListFirstRun = false;
+                buttonTapTargetView.setVisibility(View.GONE);
                 editor.putBoolean("flagMasterListFirstRun", false);
                 editor.apply();
             }
@@ -684,7 +690,8 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
 
             @Override
             public void onSequenceCanceled(TapTarget lastTarget) {
-                editor.putBoolean("flagTodoListFirstRun", false);
+                buttonTapTargetView.setVisibility(View.GONE);
+                editor.putBoolean("flagMasterListFirstRun", false);
                 editor.apply();
             }
         }).start();

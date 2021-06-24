@@ -122,7 +122,8 @@ public class TodoListActivity2 extends AppCompatActivity {
 
         setUpFirestoreRecyclerView();
 
-        if (prefs.getBoolean("flagTodoListFirstRun",false)) {
+        if (prefs.getBoolean("flagTodoListFirstRun",true)) {
+            mBinding.buttonTapTargetView.setVisibility(View.INVISIBLE);
             callWalkThrough();
         }
 
@@ -513,7 +514,7 @@ public class TodoListActivity2 extends AppCompatActivity {
                                 .tintTarget(true)
                                 .transparentTarget(true)
                                 .targetRadius(80),
-                        TapTarget.forView(mRecyclerView, "To-do Task", "Swipe left to delete a to-do task")
+                        TapTarget.forView(mBinding.buttonTapTargetView, "To-do Task", "Swipe left to delete a to-do task")
                                 .outerCircleColor(R.color.chip_5)
                                 .outerCircleAlpha(0.96f)
                                 .targetCircleColor(R.color.colorUncompletedBackground)
@@ -534,6 +535,7 @@ public class TodoListActivity2 extends AppCompatActivity {
 //                Toast.makeText(TodoListActivity2.this,"Sequence Finished",Toast.LENGTH_SHORT).show();
                 Toasty.success(TodoListActivity2.this, "You are all set now!", Toast.LENGTH_SHORT).show();
 //                flagTodoListFirstRun = false;
+                mBinding.buttonTapTargetView.setVisibility(View.GONE);
                 editor.putBoolean("flagTodoListFirstRun", false);
                 editor.apply();
             }
@@ -547,6 +549,7 @@ public class TodoListActivity2 extends AppCompatActivity {
             @Override
             public void onSequenceCanceled(TapTarget lastTarget) {
                 editor.putBoolean("flagTodoListFirstRun", false);
+                mBinding.buttonTapTargetView.setVisibility(View.GONE);
                 editor.apply();
             }
         }).start();

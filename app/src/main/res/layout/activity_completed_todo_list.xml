@@ -37,7 +37,7 @@
             android:id="@+id/listNameTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
+            android:layout_marginStart="22dp"
             android:fontFamily="@font/raleway_medium"
             android:text="List"
             android:textColor="@color/black"
@@ -45,7 +45,7 @@
             android:textStyle="normal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/include"/>
+            app:layout_constraintTop_toBottomOf="@id/include" />
 
         <LinearLayout
             android:id="@+id/tabBar"

@@ -103,7 +103,7 @@ public class LoginActivity extends AppCompatActivity {
         }else{
             bannerAd.setVisibility(View.GONE);
         }
-        setUpSharedPref();
+//        setUpSharedPref();
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();
