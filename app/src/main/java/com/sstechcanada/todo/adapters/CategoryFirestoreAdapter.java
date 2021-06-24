@@ -34,7 +34,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.models.Category;
 
-import java.util.Arrays;
 import java.util.List;
 
 import es.dmoral.toasty.Toasty;
@@ -247,21 +246,26 @@ public class CategoryFirestoreAdapter extends FirestoreRecyclerAdapter<Category,
                         @Override
                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                             for(DocumentSnapshot documentSnapshotInner:queryDocumentSnapshots){
-                                UserColRef.document(documentSnapshot.getId()).collection("Todo").document(documentSnapshotInner.getId()).update("Benefits", FieldValue.arrayRemove(categoryToBeDeletedName)).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Log.i("DeletionLogs", "Benefit Deleted From Each To-Do!");
-                                        int sizeOfBenefitArray=((List<String>)documentSnapshotInner.get("Benefits")).size();
-                                        List<String> list=(List<String>)documentSnapshotInner.get("Benefits");
-                                        Log.i("DeletionLogs", "Benefit Array Size!"+sizeOfBenefitArray+" "+ Arrays.toString(list.toArray()));
-                                        UserColRef.document(documentSnapshot.getId()).collection("Todo").document(documentSnapshotInner.getId()).update("priority",sizeOfBenefitArray-1);
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.i("DeletionLogs","Benefit Not Deleted From Each To-Do!");
-                                    }
-                                });
+                                List<String> benefitsList=(List<String>)documentSnapshotInner.get("Benefits");
+                                if(benefitsList.contains(categoryToBeDeletedName)){
+
+                                    UserColRef.document(documentSnapshot.getId()).collection("Todo").document(documentSnapshotInner.getId()).update("Benefits", FieldValue.arrayRemove(categoryToBeDeletedName),"priority",FieldValue.increment(-1)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.i("DeletionLogs", "Benefit Deleted From Each To-Do!");
+
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.i("DeletionLogs","Benefit Not Deleted From Each To-Do!");
+                                        }
+                                    });
+
+                                }
+
+
+
                             }
 
 
