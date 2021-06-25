@@ -435,7 +435,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                 public void onSuccess(Void aVoid) {
                     loadingProgressBarUpdate.setVisibility(View.GONE);
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    Toasty.success(AddOrEditTaskActivity2.this, "New Todo-Item Successfully Added",Toasty.LENGTH_SHORT).show();
+                    Toasty.success(AddOrEditTaskActivity2.this, "New list item Added successfully",Toasty.LENGTH_SHORT).show();
                     Intent intent = new Intent(AddOrEditTaskActivity2.this, TodoListActivity2.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
@@ -473,7 +473,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                 public void onSuccess(Void aVoid) {
                     loadingProgressBarUpdate.setVisibility(View.GONE);
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    Toasty.success(AddOrEditTaskActivity2.this, "Todo-Item Successfully Updated",Toasty.LENGTH_SHORT).show();
+                    Toasty.success(AddOrEditTaskActivity2.this, "List item updated successfully",Toasty.LENGTH_SHORT).show();
                     Intent intent = new Intent(AddOrEditTaskActivity2.this, TodoListActivity2.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
