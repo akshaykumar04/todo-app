@@ -38,6 +38,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.sstechcanada.todo.R;
@@ -293,23 +294,24 @@ public class LoginActivity extends AppCompatActivity {
 
 //        long creationTimestamp = mAuth.getCurrentUser().getMetadata().getCreationTimestamp();
 //        long lastSignInTimestamp = mAuth.getCurrentUser().getMetadata().getLastSignInTimestamp();
-        db.collection("Users").whereEqualTo("Email",firebaseUser.getEmail()).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        db.collection("Users").whereEqualTo(FieldPath.documentId(),firebaseUser.getUid()).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-               if(queryDocumentSnapshots.size()==0){
+               if(queryDocumentSnapshots.size()==(0)){
                    Map<String, String> profile = new HashMap<>();
                    profile.put("Email", firebaseUser.getEmail());
                    profile.put("purchase_code", "0");
 //                   flagMasterListFirstRun=true;
 //                   flagTodoListFirstRun=true;
-                   editor.putBoolean("flagMasterListFirstRun", true);
-                   editor.putBoolean("flagTodoListFirstRun", true);
+//                   editor.putBoolean("flagMasterListFirstRun", true);
+//                   editor.putBoolean("flagTodoListFirstRun", true);
 
-                   editor.apply();
+//                   editor.apply();
                    documentReferenceCurrentReference.set(profile).addOnSuccessListener(new OnSuccessListener<Void>() {
                        @Override
                        public void onSuccess(Void aVoid) {
 //                           startActivity(new Intent(LoginActivity.this, MasterTodoListActivity.class));
+                           Log.d("Usercreation", "Usercreation:success");
                            Toasty.success(getApplicationContext(), "Profile creation complete", Toast.LENGTH_SHORT).show();
                            startActivity(new Intent(LoginActivity.this, MasterTodoListActivity.class));
 
@@ -317,11 +319,13 @@ public class LoginActivity extends AppCompatActivity {
                    }).addOnFailureListener(new OnFailureListener() {
                        @Override
                        public void onFailure(@NonNull Exception e) {
+                           Log.d("Usercreation", "Usercreation:success");
                            Toasty.error(getApplicationContext(), "Error in profile creation", Toast.LENGTH_SHORT).show();
                        }
                    });
 
                }else{
+                   Log.d("Usercreation", "Usercreation:already complete");
                     startActivity(new Intent(LoginActivity.this, MasterTodoListActivity.class));
                }
             }
@@ -387,9 +391,9 @@ public class LoginActivity extends AppCompatActivity {
     }
     public void setUpSharedPref(){
         editor = getSharedPreferences(SHAREDPREF, MODE_PRIVATE).edit();
-        editor.putBoolean("flagMasterListFirstRun", false);
-        editor.putBoolean("flagTodoListFirstRun", false);
-        editor.apply();
+//        editor.putBoolean("flagMasterListFirstRun", false);
+//        editor.putBoolean("flagTodoListFirstRun", false);
+//        editor.apply();
     }
     @Override
     public void onBackPressed() {
