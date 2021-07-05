@@ -655,7 +655,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
                                 .tintTarget(true)
                                 .transparentTarget(true)
                                 .targetRadius(80),
-                        TapTarget.forView(buttonTapTargetView, "List", "1: Swipe left and click on the pencil icon to update a list. \n2: Swipe right and click on the garbage can icon to delete a list.")
+                        TapTarget.forView(buttonTapTargetView, "List", "1: Swipe right and click on the pencil icon to update a list. \n2: Swipe left and click on the garbage can icon to delete a list.")
                                 .outerCircleColor(R.color.chip_5)
                                 .outerCircleAlpha(0.96f)
                                 .targetCircleColor(R.color.colorUncompletedBackground)
