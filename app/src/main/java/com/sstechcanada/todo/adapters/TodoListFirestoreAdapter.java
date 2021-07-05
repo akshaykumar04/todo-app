@@ -10,12 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,7 +32,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.AddOrEditTaskActivity2;
-import com.sstechcanada.todo.custom_views.PriorityStarImageView;
+import com.sstechcanada.todo.activities.AppUpgradeActivity2;
 import com.sstechcanada.todo.models.TodoTaskFirestore;
 
 import java.text.DateFormat;
@@ -44,6 +44,7 @@ import java.util.Map;
 import es.dmoral.toasty.Toasty;
 
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.listId;
+import static com.sstechcanada.todo.activities.MasterTodoListActivity.purchaseCode;
 import static com.sstechcanada.todo.activities.TodoListActivity2.hidePlaceHolder;
 import static com.sstechcanada.todo.activities.TodoListActivity2.showPlaceHolder;
 
@@ -202,23 +203,33 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
 //                DocumentSnapshot documentSnapshot=getSnapshots().getSnapshot(position);
 //                model.setDocumentID(documentSnapshot.getId());
 
-                String doc_id = String.valueOf(model.getDocumentID());
+                 if(purchaseCode.equals("0") && position>=9) {
 
-                TodoTaskFirestore todoTask = new TodoTaskFirestore(model.getDescription(),
-                        model.getPriority(),
-                        model.getDueDate(),
-                        model.getDocumentID(),
-                        model.getStatus(),
-                        model.getCategory(),
-                        2,
-                        model.getBenefits(),
-                        model.getBenefitsString(),
-                        model.getTimestampCompleted());
+                     Log.d("subscriptionFeature", "subscription expired!");
+                     Toasty.warning(context, "Your subscription expired! Renew subscription to continue using premium features", Toast.LENGTH_SHORT).show();
+                     Intent intent = new Intent(v.getContext(), AppUpgradeActivity2.class);
+//                        intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
+                     v.getContext().startActivity(intent);
+                 }else {
 
-                Intent intent = new Intent(v.getContext(), AddOrEditTaskActivity2.class);
-                intent.putExtra("Adding or editing", "Edit Task");
-                intent.putExtra("Todo", todoTask);
-                v.getContext().startActivity(intent);
+                     String doc_id = String.valueOf(model.getDocumentID());
+
+                     TodoTaskFirestore todoTask = new TodoTaskFirestore(model.getDescription(),
+                             model.getPriority(),
+                             model.getDueDate(),
+                             model.getDocumentID(),
+                             model.getStatus(),
+                             model.getCategory(),
+                             2,
+                             model.getBenefits(),
+                             model.getBenefitsString(),
+                             model.getTimestampCompleted());
+
+                     Intent intent = new Intent(v.getContext(), AddOrEditTaskActivity2.class);
+                     intent.putExtra("Adding or editing", "Edit Task");
+                     intent.putExtra("Todo", todoTask);
+                     v.getContext().startActivity(intent);
+                 }
 
             }
         });
