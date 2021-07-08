@@ -20,14 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/adView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="4dp"
-        app:adSize="BANNER"
-        app:adUnitId="@string/banner_ad_test" />
+
 
 
     <LinearLayout
@@ -36,6 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="4dp"
+        android:layout_marginBottom="8dp"
         android:orientation="horizontal"
         android:padding="4dp"
         android:visibility="visible">
@@ -46,7 +40,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:fontFamily="@font/raleway_semibold"
-            android:text="Add More"
+            android:text="Click here to add or edit benefits"
             android:textAlignment="center"
             android:textSize="16sp" />
 
@@ -61,6 +55,14 @@
 
 
     </LinearLayout>
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="4dp"
+        app:adSize="BANNER"
+        app:adUnitId="@string/banner_ad_test" />
 
 
 </LinearLayout>

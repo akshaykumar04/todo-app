@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -22,12 +23,15 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sstechcanada.todo.R;
-import com.sstechcanada.todo.activities.MasterTodoListActivity;
+import com.sstechcanada.todo.activities.AppUpgradeActivity2;
 import com.sstechcanada.todo.activities.TodoListActivity2;
 import com.sstechcanada.todo.models.List;
 
+import es.dmoral.toasty.Toasty;
+
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.listId;
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.listName;
+import static com.sstechcanada.todo.activities.MasterTodoListActivity.purchaseCode;
 
 public class MasterListFirestoreAdapter extends FirestoreRecyclerAdapter<List, MasterListFirestoreAdapter.MasterListFirestoreHolder> {
 
@@ -56,7 +60,6 @@ public class MasterListFirestoreAdapter extends FirestoreRecyclerAdapter<List, M
 //                listName="Untitled List";
 //            }
 //            holder.tv_todo_list_desc.setText(model.getListDescription());
-
             Drawable drawable = context.getResources().getDrawable(model.getImage());
             if(drawable!=null ){
                 holder.list_default_icon.setBackground(drawable);
@@ -70,26 +73,29 @@ public class MasterListFirestoreAdapter extends FirestoreRecyclerAdapter<List, M
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(purchaseCode.equals("0") && position!=0){
 
-                DocumentSnapshot documentSnapshot=getSnapshots().getSnapshot(position);
-                model.setListId(documentSnapshot.getId());
-                listId= model.getListId();
-                Log.i("ListId", "Firestore: "+listId);
-                Intent intent = new Intent(v.getContext(), TodoListActivity2.class);
-                intent.putExtra("ListId",listId);
-                if(model.getListName()!=null && (!model.getListName().equals(""))){
-                    listName=model.getListName();
+                    Log.d("subscriptionFeature","subscription expired!");
+                    Toasty.warning(context, "Your subscription expired! Renew subscription to continue using premium features", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(v.getContext(), AppUpgradeActivity2.class);
+//                        intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
+                    v.getContext().startActivity(intent);
                 }else{
-                    listName="Untitled List";
+                    DocumentSnapshot documentSnapshot=getSnapshots().getSnapshot(position);
+                    model.setListId(documentSnapshot.getId());
+                    listId= model.getListId();
+                    Log.i("ListId", "Firestore: "+listId);
+                    Intent intent = new Intent(v.getContext(), TodoListActivity2.class);
+                    intent.putExtra("ListId",listId);
+                    if(model.getListName()!=null && (!model.getListName().equals(""))){
+                        listName=model.getListName();
+                    }else{
+                        listName="Untitled List";
+                    }
+                    v.getContext().startActivity(intent);
                 }
-                v.getContext().startActivity(intent);
-
             }
         });
-
-
-
-
     }
 
     @NonNull
