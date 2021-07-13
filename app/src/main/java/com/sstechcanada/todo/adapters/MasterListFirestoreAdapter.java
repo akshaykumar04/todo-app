@@ -32,6 +32,7 @@ import es.dmoral.toasty.Toasty;
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.listId;
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.listName;
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.purchaseCode;
+import static com.sstechcanada.todo.activities.auth.LoginActivity.userAccountDetails;
 
 public class MasterListFirestoreAdapter extends FirestoreRecyclerAdapter<List, MasterListFirestoreAdapter.MasterListFirestoreHolder> {
 
@@ -73,7 +74,7 @@ public class MasterListFirestoreAdapter extends FirestoreRecyclerAdapter<List, M
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(purchaseCode.equals("0") && position!=0){
+                if(purchaseCode.equals("0") && position+1>(Integer.parseInt(userAccountDetails.get(0)))){
 
                     Log.d("subscriptionFeature","subscription expired!");
                     Toasty.warning(context, "Your subscription expired! Renew subscription to continue using premium features", Toast.LENGTH_SHORT).show();
