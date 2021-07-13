@@ -47,6 +47,7 @@ import static com.sstechcanada.todo.activities.MasterTodoListActivity.listId;
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.purchaseCode;
 import static com.sstechcanada.todo.activities.TodoListActivity2.hidePlaceHolder;
 import static com.sstechcanada.todo.activities.TodoListActivity2.showPlaceHolder;
+import static com.sstechcanada.todo.activities.auth.LoginActivity.userAccountDetails;
 
 public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskFirestore, TodoListFirestoreAdapter.TodoListFirestoreHolder> {
 
@@ -203,7 +204,7 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
 //                DocumentSnapshot documentSnapshot=getSnapshots().getSnapshot(position);
 //                model.setDocumentID(documentSnapshot.getId());
 
-                 if(purchaseCode.equals("0") && position>=9) {
+                 if(purchaseCode.equals("0") && position+1>(Integer.parseInt(userAccountDetails.get(1)))) {
 
                      Log.d("subscriptionFeature", "subscription expired!");
                      Toasty.warning(context, "Your subscription expired! Renew subscription to continue using premium features", Toast.LENGTH_SHORT).show();
