@@ -175,10 +175,11 @@ public class CategoryFirestoreAdapter extends FirestoreRecyclerAdapter<Category,
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for(DocumentSnapshot documentSnapshot:queryDocumentSnapshots){
 
-                    UserColRef.document(documentSnapshot.getId()).collection("Todo").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    UserColRef.document(documentSnapshot.getId()).collection("Todo").whereArrayContains("Benefits",oldCategoryName).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                         @Override
                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                             for(DocumentSnapshot documentSnapshotInner:queryDocumentSnapshots){
+
                                 UserColRef.document(documentSnapshot.getId()).collection("Todo").document(documentSnapshotInner.getId()).update("Benefits", FieldValue.arrayRemove(oldCategoryName),"Benefits",FieldValue.arrayUnion(categoryNameToBeUpdated)).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
