@@ -34,8 +34,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.models.Category;
 
-import java.util.List;
-
 import es.dmoral.toasty.Toasty;
 
 import static com.sstechcanada.todo.activities.AddCategoryActivity2.hideProgressbar;
@@ -243,12 +241,12 @@ public class CategoryFirestoreAdapter extends FirestoreRecyclerAdapter<Category,
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for(DocumentSnapshot documentSnapshot:queryDocumentSnapshots){
                     Log.i("DeletionLogs", "B"+documentSnapshot.getId());
-                    UserColRef.document(documentSnapshot.getId()).collection("Todo").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    UserColRef.document(documentSnapshot.getId()).collection("Todo").whereArrayContains("Benefits",categoryToBeDeletedName).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                         @Override
                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                             for(DocumentSnapshot documentSnapshotInner:queryDocumentSnapshots){
-                                List<String> benefitsList=(List<String>)documentSnapshotInner.get("Benefits");
-                                if(benefitsList.contains(categoryToBeDeletedName)){
+//                                List<String> benefitsList=(List<String>)documentSnapshotInner.get("Benefits");
+//                                if(benefitsList.contains(categoryToBeDeletedName)){
 
                                     UserColRef.document(documentSnapshot.getId()).collection("Todo").document(documentSnapshotInner.getId()).update("Benefits", FieldValue.arrayRemove(categoryToBeDeletedName),"priority",FieldValue.increment(-1)).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
@@ -270,7 +268,7 @@ public class CategoryFirestoreAdapter extends FirestoreRecyclerAdapter<Category,
                             }
 
 
-                        }
+//                        }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
