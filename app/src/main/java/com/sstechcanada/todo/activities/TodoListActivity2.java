@@ -201,6 +201,25 @@ public class TodoListActivity2 extends AppCompatActivity {
             }
 //            startActivity(new Intent(TodoListActivity2.this, AppUpgradeActivity.class));
         });
+
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
+        {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
+            {
+                if (dy > 12 ||dy<0 && fab.isShown())
+                {
+                    fab.hide();
+                }
+                if (dy < -12 && !fab.isShown()) {
+                    fab.show();
+                }
+                if (!recyclerView.canScrollVertically(-1)) {
+                    fab.show();
+                }
+            }
+
+        });
     }
 
     private void setUpFirestoreRecyclerView() {
@@ -554,4 +573,5 @@ public class TodoListActivity2 extends AppCompatActivity {
             }
         }).start();
     }
+
 }
