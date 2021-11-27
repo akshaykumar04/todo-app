@@ -210,6 +210,7 @@
             <CheckBox
                 android:id="@+id/cb_task_completed"
                 android:layout_width="0dp"
+                android:layout_marginStart="3dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:button="@drawable/custom_checkbox"
@@ -234,6 +235,26 @@
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="@+id/cb_task_completed"
                 app:layout_constraintTop_toBottomOf="@+id/cb_task_completed" />
+
+            <TextView
+                android:id="@+id/deleteTodoItem"
+                style="@style/AddEditTaskRadioButtonLabels"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="36dp"
+                android:drawableStart="@drawable/ic_outline_delete_forever_24"
+                android:drawablePadding="7dp"
+                android:gravity="center_vertical"
+                android:drawableTint="@color/colorOverdue"
+                android:fontFamily="@font/raleway"
+                android:includeFontPadding="true"
+                android:text="Delete Item"
+                android:textColor="@color/colorOverdue"
+                android:textSize="14sp"
+                android:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cb_task_completed" />
+
 
             <com.google.android.material.chip.ChipGroup
                android:id="@+id/chipGroup"

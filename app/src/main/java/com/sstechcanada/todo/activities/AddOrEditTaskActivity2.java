@@ -97,6 +97,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
     private String description;
     AlertDialog alertDialog;
     ProgressBar loadingProgressBarUpdate;
+    private TextView deleteItem;
 
 
     public static String convertArrayToString(ArrayList<String> array) {
@@ -293,6 +294,27 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
         MobileAds.initialize(this, initializationStatus -> {
         });
 
+        deleteItem = findViewById(R.id.deleteTodoItem);
+        deleteItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteTodoItem();
+            }
+        });
+
+    }
+
+    private void deleteTodoItem() {
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_menu_delete)
+                .setTitle("Confirm Delete")
+                .setMessage("Are you sure you want to delete this task?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
+                    finish();
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 
     private void loadBannerAd() {

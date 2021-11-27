@@ -245,13 +245,10 @@ public class TodoListActivity2 extends AppCompatActivity {
                         .setIcon(android.R.drawable.ic_menu_delete)
                         .setTitle("Confirm Delete")
                         .setMessage("Are you sure you want to delete this task?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                DocumentSnapshot documentSnapshot = todoListFirestoreAdapter.getSnapshots().getSnapshot(position);
-                                String id = documentSnapshot.getId();
-                                usersColRef.document(userID).collection("Lists").document(listId).collection("Todo").document(id).delete();
-                            }
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            DocumentSnapshot documentSnapshot = todoListFirestoreAdapter.getSnapshots().getSnapshot(position);
+                            String id = documentSnapshot.getId();
+                            usersColRef.document(userID).collection("Lists").document(listId).collection("Todo").document(id).delete();
                         })
                         .setNegativeButton("No", null)
                         .show();
