@@ -38,7 +38,7 @@ class AppUpgradeActivity : AppCompatActivity() {
     }
 
     private fun setupPriceToggle() {
-        toggle_button_layout.setToggled(R.id.toggle_left, true)
+        toggle_button_layout.setToggled(R.id.toggle_right, true)
         toggle_button_layout.onToggledListener = { toggleButton: ToggleButtonLayout, toggle: Toggle, b: Boolean ->
 
             when (toggle.id) {
