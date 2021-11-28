@@ -116,7 +116,7 @@ public class AppUpgradeActivity3 extends AppCompatActivity implements PurchasesU
     }
 
     private void setupPriceToggle() {
-        toggle_button_layout.setToggled(R.id.toggle_left, true);
+        toggle_button_layout.setToggled(R.id.toggle_right, true);
 
         toggle_button_layout.setOnToggledListener(new Function3<ToggleButtonLayout, Toggle, Boolean, Unit>() {
             @Override

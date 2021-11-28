@@ -132,12 +132,14 @@ public class AppUpgradeActivity2 extends AppCompatActivity implements BillingPro
         super.onStart();
 
         if(purchaseCode.equals("0")){
-            toggle_button_layout.setToggled(R.id.toggle_left, true);
-            purchaseProductId = "tier1";
-            pur_code="1";
+            toggle_button_layout.setToggled(R.id.toggle_right, true);
+            tvListsCount.setText(getString(R.string.create_up_to_20_to_do_lists));
+            purchaseProductId = "tier2";
+            pur_code="2";
         } else if(purchaseCode.equals("1")){
 
             toggle_button_layout.setToggled(R.id.toggle_right, true);
+            tvListsCount.setText(getString(R.string.create_up_to_20_to_do_lists));
             purchaseProductId = "tier2";
             pur_code="2";
 
@@ -148,7 +150,6 @@ public class AppUpgradeActivity2 extends AppCompatActivity implements BillingPro
     }
 
     private void setupPriceToggle() {
-//        toggle_button_layout.setToggled(R.id.toggle_left, true);
 
         toggle_button_layout.setOnToggledListener(new Function3<ToggleButtonLayout, Toggle, Boolean, Unit>() {
             @Override
