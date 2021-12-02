@@ -66,6 +66,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import es.dmoral.toasty.Toasty;
+import hotchemi.android.rate.AppRate;
+import hotchemi.android.rate.OnClickButtonListener;
 
 import static com.sstechcanada.todo.activities.auth.LoginActivity.SHAREDPREF;
 import static com.sstechcanada.todo.activities.auth.LoginActivity.userAccountDetails;
@@ -135,7 +137,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
         };
 
 
-
+        openRatingPopup();
 
 //        placeholderImage=findViewById(R.id.placeholderImage);
         mAuth = FirebaseAuth.getInstance();
@@ -205,6 +207,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
                 }
             }
         });
+
     }
 
 
@@ -748,6 +751,24 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
             }
         });
 
+    }
+
+    public void openRatingPopup() {
+        AppRate.with(this)
+                .setInstallDays(0) // default 10, 0 means install day.
+                .setLaunchTimes(10) // default 10
+                .setRemindInterval(2) // default 1
+                .setShowLaterButton(true) // default true
+                .setDebug(false) // default false
+                .setOnClickButtonListener(new OnClickButtonListener() { // callback listener.
+                    @Override
+                    public void onClickButton(int which) {
+                        Log.d(MasterTodoListActivity.class.getName(), Integer.toString(which));
+                    }
+                })
+                .monitor();
+
+        AppRate.showRateDialogIfMeetsConditions(this);
     }
 
     @Override
