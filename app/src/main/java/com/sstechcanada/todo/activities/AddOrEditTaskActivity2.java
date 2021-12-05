@@ -335,17 +335,15 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                     if (purchaseCode.equals("0")) {
                         if (mRewardedAd != null) {
                             Activity activityContext = AddOrEditTaskActivity2.this;
-                            mRewardedAd.show(activityContext, new OnUserEarnedRewardListener() {
-                                @Override
-                                public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
-                                    // Handle the reward.
-                                    Log.d(TAG, "The user earned the reward.");
-                                    UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
-                                    Toasty.error(AddOrEditTaskActivity2.this, "Item Deleted",Toast.LENGTH_SHORT).show();
-                                }
+                            mRewardedAd.show(activityContext, rewardItem -> {
+                                // Handle the reward.
+                                Log.d(TAG, "The user earned the reward.");
+                                UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
+                                Toasty.error(AddOrEditTaskActivity2.this, "Item Deleted",Toast.LENGTH_SHORT).show();
                             });
                         } else {
                             Log.d(TAG, "The rewarded ad wasn't ready yet.");
+                            Toasty.info(AddOrEditTaskActivity2.this, "Please wait while the Ad is loading",Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
@@ -725,6 +723,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                     public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                         // Handle the error.
                         Log.d(TAG, loadAdError.getMessage());
+                        mBinding.deleteTodoItem.setVisibility(View.INVISIBLE);
                         mRewardedAd = null;
                     }
 
