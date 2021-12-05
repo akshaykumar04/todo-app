@@ -22,9 +22,14 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.cardview.widget.CardView;
 import androidx.databinding.DataBindingUtil;
 
+import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.chip.Chip;
@@ -98,6 +103,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
     AlertDialog alertDialog;
     ProgressBar loadingProgressBarUpdate;
     private TextView deleteItem;
+    private InterstitialAd mInterstitialAd;
 
 
     public static String convertArrayToString(ArrayList<String> array) {
@@ -129,7 +135,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
         toolbar_profile = findViewById(R.id.profile_toolbar);
         toolbar_profile.setOnClickListener(view -> startActivity(new Intent(AddOrEditTaskActivity2.this, LoginActivity.class)));
         toolbarBackIcon = findViewById(R.id.arrow_back);
-        loadingProgressBarUpdate=findViewById(R.id.loadingProgressBarUpdate);
+        loadingProgressBarUpdate = findViewById(R.id.loadingProgressBarUpdate);
         toolbarBackIcon.setVisibility(View.VISIBLE);
         toolbarBackIcon.setOnClickListener(view -> {
             super.onBackPressed();
@@ -142,7 +148,12 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
         benefitCollectionRef = db.collection("Users").document(userID).collection("Benefits");
         UserColRef = db.collection("Users").document(userID).collection("Lists").document(listId).collection("Todo");
         Log.i("ListId", "Add or edit: " + listId);
-        loadBannerAd();
+
+        if (purchaseCode.equals("0")) {
+            loadBannerAds();
+            loadFullScreenAds();
+            loadRewardedAds();
+        }
 
         long dueDate;
 
@@ -198,7 +209,11 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-//
+                                            if (purchaseCode.equals("0")) {
+                                                if (mInterstitialAd != null) {
+                                                    mInterstitialAd.show(AddOrEditTaskActivity2.this);
+                                                }
+                                            }
                                         }
                                     })
                                     .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -319,7 +334,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                 .show();
     }
 
-    private void loadBannerAd() {
+    private void loadBannerAds() {
 
         AdView adView = findViewById(R.id.adView);
         if (purchaseCode.equals("0")) {
@@ -459,7 +474,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                 public void onSuccess(Void aVoid) {
                     loadingProgressBarUpdate.setVisibility(View.GONE);
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    Toasty.success(AddOrEditTaskActivity2.this, "New list item Added successfully",Toasty.LENGTH_SHORT).show();
+                    Toasty.success(AddOrEditTaskActivity2.this, "New list item Added successfully", Toasty.LENGTH_SHORT).show();
                     Intent intent = new Intent(AddOrEditTaskActivity2.this, TodoListActivity2.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
@@ -469,7 +484,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                 public void onFailure(@NonNull Exception e) {
                     loadingProgressBarUpdate.setVisibility(View.GONE);
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    Toasty.error(AddOrEditTaskActivity2.this, "Something went wrong",Toasty.LENGTH_SHORT).show();
+                    Toasty.error(AddOrEditTaskActivity2.this, "Something went wrong", Toasty.LENGTH_SHORT).show();
                 }
             });
 
@@ -491,13 +506,13 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                 task_status = "Pending";
             }
             updateTaskMap.put("Status", task_status);
-            Log.i("task456",todoTaskToAddOrEdit.getDocumentID() +"jjj");
+            Log.i("task456", todoTaskToAddOrEdit.getDocumentID() + "jjj");
             UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).set(updateTaskMap, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     loadingProgressBarUpdate.setVisibility(View.GONE);
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    Toasty.success(AddOrEditTaskActivity2.this, "List item updated successfully",Toasty.LENGTH_SHORT).show();
+                    Toasty.success(AddOrEditTaskActivity2.this, "List item updated successfully", Toasty.LENGTH_SHORT).show();
                     Intent intent = new Intent(AddOrEditTaskActivity2.this, TodoListActivity2.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
@@ -508,7 +523,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                 public void onFailure(@NonNull Exception e) {
                     loadingProgressBarUpdate.setVisibility(View.GONE);
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    Toasty.error(AddOrEditTaskActivity2.this, "Something went wrong",Toasty.LENGTH_SHORT).show();
+                    Toasty.error(AddOrEditTaskActivity2.this, "Something went wrong", Toasty.LENGTH_SHORT).show();
                 }
             });
         }
@@ -634,19 +649,53 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 
     }
 
-//    private void loadAd() {
-//
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        InterstitialAd.load(this, getResources().getString(R.string.interstitial_ad_unit_test_id), adRequest, new InterstitialAdLoadCallback() {
-//            @Override
-//            public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-//                super.onAdLoaded(interstitialAd);
-//                mInterstitialAd = interstitialAd;
-//                mInterstitialAd.show(AddOrEditTaskActivity.this);
-//            }
-//        });
-//
-//    }
+    private void loadFullScreenAds() {
+        AdRequest adRequest = new AdRequest.Builder().build();
+//ca-app-pub-3111421321050812/5967628112 our
+        //test ca-app-pub-3940256099942544/1033173712
+        InterstitialAd.load(this, "ca-app-pub-3111421321050812/5967628112", adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialAd = interstitialAd;
+
+                        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                // Called when fullscreen content is dismissed.
+                                Log.d("TAG", "The ad was dismissed.");
+                            }
+
+                            @Override
+                            public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                                // Called when fullscreen content failed to show.
+                                Log.d("TAG", "The ad failed to show.");
+                            }
+
+                            @Override
+                            public void onAdShowedFullScreenContent() {
+                                // Called when fullscreen content is shown.
+                                // Make sure to set your reference to null so you don't
+                                // show it a second time.
+                                mInterstitialAd = null;
+                                Log.d("TAG", "The ad was shown.");
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        mInterstitialAd = null;
+                    }
+                });
+    }
+
+    private void loadRewardedAds() {
+
+    }
 
     void display_categories(String[] record) {
         int[] colors = new int[]{
@@ -693,7 +742,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if ( alertDialog!=null && alertDialog.isShowing() ){
+        if (alertDialog != null && alertDialog.isShowing()) {
             alertDialog.dismiss();
         }
     }
