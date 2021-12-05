@@ -28,8 +28,12 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.OnUserEarnedRewardListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.gms.ads.rewarded.RewardItem;
+import com.google.android.gms.ads.rewarded.RewardedAd;
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.chip.Chip;
@@ -104,6 +108,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
     ProgressBar loadingProgressBarUpdate;
     private TextView deleteItem;
     private InterstitialAd mInterstitialAd;
+    private RewardedAd mRewardedAd;
 
 
     public static String convertArrayToString(ArrayList<String> array) {
@@ -327,8 +332,25 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                 .setTitle("Confirm Delete")
                 .setMessage("Are you sure you want to delete this task?")
                 .setPositiveButton("Yes", (dialog, which) -> {
-                    UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
-                    finish();
+                    if (purchaseCode.equals("0")) {
+                        if (mRewardedAd != null) {
+                            Activity activityContext = AddOrEditTaskActivity2.this;
+                            mRewardedAd.show(activityContext, new OnUserEarnedRewardListener() {
+                                @Override
+                                public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
+                                    // Handle the reward.
+                                    Log.d(TAG, "The user earned the reward.");
+                                    UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
+                                    Toasty.error(AddOrEditTaskActivity2.this, "Item Deleted",Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        } else {
+                            Log.d(TAG, "The rewarded ad wasn't ready yet.");
+                        }
+                    } else {
+                        UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
+                        finish();
+                    }
                 })
                 .setNegativeButton("No", null)
                 .show();
@@ -694,6 +716,46 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
     }
 
     private void loadRewardedAds() {
+        AdRequest adRequest = new AdRequest.Builder().build();
+//test ca-app-pub-3940256099942544/5224354917
+        // our ca-app-pub-3111421321050812/7739858878
+        RewardedAd.load(this, "ca-app-pub-3111421321050812/7739858878",
+                adRequest, new RewardedAdLoadCallback() {
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error.
+                        Log.d(TAG, loadAdError.getMessage());
+                        mRewardedAd = null;
+                    }
+
+                    @Override
+                    public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
+                        mRewardedAd = rewardedAd;
+                        Log.d(TAG, "Ad was loaded.");
+                        mRewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                            @Override
+                            public void onAdShowedFullScreenContent() {
+                                // Called when ad is shown.
+                                Log.d(TAG, "Ad was shown.");
+                            }
+
+                            @Override
+                            public void onAdFailedToShowFullScreenContent(AdError adError) {
+                                // Called when ad fails to show.
+                                Log.d(TAG, "Ad failed to show.");
+                            }
+
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                // Called when ad is dismissed.
+                                // Set the ad reference to null so you don't show the ad a second time.
+                                finish();
+                                Log.d(TAG, "Ad was dismissed.");
+                                mRewardedAd = null;
+                            }
+                        });
+                    }
+                });
 
     }
 
