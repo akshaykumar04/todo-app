@@ -122,6 +122,7 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
 
+        googleSignInButton.setSize(SignInButton.SIZE_WIDE);
         googleSignInButton.setOnClickListener(v -> signIn());
         signOutButton.setOnClickListener(v -> showSignOutDialog());
 

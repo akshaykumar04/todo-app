@@ -756,7 +756,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
     public void openRatingPopup() {
         AppRate.with(this)
                 .setInstallDays(0) // default 10, 0 means install day.
-                .setLaunchTimes(10) // default 10
+                .setLaunchTimes(25) // default 10
                 .setRemindInterval(2) // default 1
                 .setShowLaterButton(true) // default true
                 .setDebug(false) // default false

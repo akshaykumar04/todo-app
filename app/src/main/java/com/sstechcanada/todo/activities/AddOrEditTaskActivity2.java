@@ -265,8 +265,10 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
             mBinding.btnAddOrUpdateTask.setText(R.string.add_task);
             mBinding.tvCompletionLabel.setVisibility(View.INVISIBLE);
             mBinding.cbTaskCompleted.setVisibility(View.INVISIBLE);
+            mBinding.deleteTodoItem.setVisibility(View.INVISIBLE);
         } else {
             mBinding.btnAddOrUpdateTask.setText(R.string.update_task);
+            mBinding.deleteTodoItem.setVisibility(View.VISIBLE);
         }
         chipGroup = findViewById(R.id.chipGroup);
         addCategories = findViewById(R.id.addCategories);

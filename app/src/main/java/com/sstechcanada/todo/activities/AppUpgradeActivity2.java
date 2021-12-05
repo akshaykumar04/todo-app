@@ -17,6 +17,12 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.SkuDetails;
 import com.anjlab.android.iab.v3.TransactionDetails;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -55,6 +61,7 @@ public class AppUpgradeActivity2 extends AppCompatActivity implements BillingPro
     private List<SkuDetails> purchaseTransactionDetails = null;
     String pur_code=purchaseCode;
     ProgressBar loadingProgressBarUpgrade;
+    private InterstitialAd mInterstitialAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,14 +124,9 @@ public class AppUpgradeActivity2 extends AppCompatActivity implements BillingPro
         bp = new BillingProcessor(this, "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnDatsVXJEFzzwnOEBiE5wSffxr+dEazc3zbf5t5jK1NKYPlfBbeN2M8ZEA38YRt0pQ0WfnXGcJ0mauXH/0xtXdo9Hv6uyzn3W73W6RxTbc5fk2950Tn0fqHkTh6wZoEJBaLn5OnhUy6GE0Yf5VM4oj3HeY5li6ESi8PggUMeYmMcvLzcOsQ8rh4G2KBWqXcYOTMREyfFXp6jJLXHDrJqeeSAEnP/aGLPPyi2NRy5S7dp8qPIkjDYt6yU+FICSBcDAPPWO1jNZrWH43ObcDF4KNdp5CAf/HT5GLcwZv+CUvQGgtuOyiN193NE9wpV5jpA2BgV7FxENqe9T1NIPk8AMwIDAQAB", AppUpgradeActivity2.this);
         bp.initialize();
 
-
-        fabBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AppUpgradeActivity2.super.onBackPressed();
-            }
-        });
+        fabBack.setOnClickListener(v -> onBackPressed());
         setupPriceToggle();
+        loadFullScreenAd();
     }
 
     @Override
@@ -250,6 +252,9 @@ public class AppUpgradeActivity2 extends AppCompatActivity implements BillingPro
 
     @Override
     public void onBackPressed() {
+        if (mInterstitialAd != null) {
+            mInterstitialAd.show(AppUpgradeActivity2.this);
+        }
         super.onBackPressed();
     }
 
@@ -312,6 +317,50 @@ public class AppUpgradeActivity2 extends AppCompatActivity implements BillingPro
         if (!bp.handleActivityResult(requestCode, resultCode, data)) {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    private void loadFullScreenAd() {
+        AdRequest adRequest = new AdRequest.Builder().build();
+//ca-app-pub-3111421321050812/5967628112 our
+        //test ca-app-pub-3940256099942544/1033173712
+        InterstitialAd.load(this,"ca-app-pub-3111421321050812/5967628112", adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialAd = interstitialAd;
+
+                        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
+//                            @Override
+//                            public void onAdDismissedFullScreenContent() {
+//                                // Called when fullscreen content is dismissed.
+//                                Log.d("TAG", "The ad was dismissed.");
+//                            }
+//
+//                            @Override
+//                            public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+//                                // Called when fullscreen content failed to show.
+//                                Log.d("TAG", "The ad failed to show.");
+//                            }
+
+                            @Override
+                            public void onAdShowedFullScreenContent() {
+                                // Called when fullscreen content is shown.
+                                // Make sure to set your reference to null so you don't
+                                // show it a second time.
+                                mInterstitialAd = null;
+                                Log.d("TAG", "The ad was shown.");
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        mInterstitialAd = null;
+                    }
+                });
     }
 }
 

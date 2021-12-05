@@ -190,6 +190,7 @@
                android:fontFamily="@font/raleway_semibold"
                android:onClick="addOrUpdateTask"
                android:text="@string/add_task"
+               android:elevation="24dp"
                android:textColor="@android:color/white"
                app:layout_constraintBottom_toTopOf="@+id/adView"
                app:layout_constraintEnd_toEndOf="parent"
@@ -251,7 +252,7 @@
                 android:text="Delete Item"
                 android:textColor="@color/colorOverdue"
                 android:textSize="14sp"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cb_task_completed" />
 
@@ -353,7 +354,7 @@
 
             <com.google.android.gms.ads.AdView
                 android:id="@+id/adView"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"

@@ -91,10 +91,11 @@
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="85dp"
         android:gravity="center_vertical"
+        android:layout_marginHorizontal="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -115,9 +116,10 @@
 
     <Button
         android:id="@+id/sign_out_button"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="85dp"
+        android:layout_marginHorizontal="80dp"
+        android:layout_marginBottom="100dp"
         android:padding="8dp"
         android:text="@string/logout"
         android:visibility="gone"
