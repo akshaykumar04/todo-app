@@ -327,31 +327,45 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
     }
 
     private void deleteTodoItem() {
-        new AlertDialog.Builder(this)
-                .setIcon(android.R.drawable.ic_menu_delete)
-                .setTitle("Confirm Delete")
-                .setMessage("Are you sure you want to delete this task?")
-                .setPositiveButton("Yes", (dialog, which) -> {
-                    if (purchaseCode.equals("0")) {
-                        if (mRewardedAd != null) {
-                            Activity activityContext = AddOrEditTaskActivity2.this;
-                            mRewardedAd.show(activityContext, rewardItem -> {
-                                // Handle the reward.
-                                Log.d(TAG, "The user earned the reward.");
-                                UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
-                                Toasty.error(AddOrEditTaskActivity2.this, "Item Deleted",Toast.LENGTH_SHORT).show();
-                            });
-                        } else {
-                            Log.d(TAG, "The rewarded ad wasn't ready yet.");
-                            Toasty.info(AddOrEditTaskActivity2.this, "Please wait while the Ad is loading",Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
-                        finish();
-                    }
-                })
-                .setNegativeButton("No", null)
-                .show();
+       if (purchaseCode.equals("0")) {
+           new AlertDialog.Builder(this)
+                   .setIcon(android.R.drawable.ic_menu_delete)
+                   .setTitle("Confirm Delete")
+                   .setMessage("You need to watch an Ad to delete this task, Are you sure?")
+                   .setPositiveButton("Yes", (dialog, which) -> {
+                       if (purchaseCode.equals("0")) {
+                           if (mRewardedAd != null) {
+                               Activity activityContext = AddOrEditTaskActivity2.this;
+                               mRewardedAd.show(activityContext, rewardItem -> {
+                                   // Handle the reward.
+                                   Log.d(TAG, "The user earned the reward.");
+                                   UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
+                                   Toasty.error(AddOrEditTaskActivity2.this, "Task Deleted",Toast.LENGTH_SHORT).show();
+                               });
+                           } else {
+                               Log.d(TAG, "The rewarded ad wasn't ready yet.");
+                               Toasty.info(AddOrEditTaskActivity2.this, "Please wait while the Ad is loading",Toast.LENGTH_SHORT).show();
+                           }
+                       } else {
+                           UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
+                           finish();
+                       }
+                   })
+                   .setNegativeButton("No", null)
+                   .show();
+       } else {
+           new AlertDialog.Builder(this)
+                   .setIcon(android.R.drawable.ic_menu_delete)
+                   .setTitle("Confirm Delete")
+                   .setMessage("Are you sure you want to delete this task?")
+                   .setPositiveButton("Yes", (dialog, which) -> {
+                       UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
+                       Toasty.error(AddOrEditTaskActivity2.this, "Task Deleted",Toast.LENGTH_SHORT).show();
+                       finish();
+                   })
+                   .setNegativeButton("No", null)
+                   .show();
+       }
     }
 
     private void loadBannerAds() {
