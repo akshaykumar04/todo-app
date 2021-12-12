@@ -331,7 +331,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
            new AlertDialog.Builder(this)
                    .setIcon(android.R.drawable.ic_menu_delete)
                    .setTitle("Confirm Delete")
-                   .setMessage("You need to watch an Ad to delete this task, Are you sure?")
+                   .setMessage("In this free version of the app, an ad appears when you delete a list item. Continue?")
                    .setPositiveButton("Yes", (dialog, which) -> {
                        if (purchaseCode.equals("0")) {
                            if (mRewardedAd != null) {

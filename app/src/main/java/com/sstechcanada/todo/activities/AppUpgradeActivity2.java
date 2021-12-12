@@ -73,6 +73,7 @@ public class AppUpgradeActivity2 extends AppCompatActivity implements BillingPro
         toggle_button_layout = findViewById(R.id.toggle_button_layout);
         tvListsCount = findViewById(R.id.tvListsCount);
         loadingProgressBarUpgrade=findViewById(R.id.loadingProgressBarUpgrade);
+        setupPriceToggle();
 
 //        bp = new BillingProcessor(this, "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnDatsVXJEFzzwnOEBiE5wSffxr+dEazc3zbf5t5jK1NKYPlfBbeN2M8ZEA38YRt0pQ0WfnXGcJ0mauXH/0xtXdo9Hv6uyzn3W73W6RxTbc5fk2950Tn0fqHkTh6wZoEJBaLn5OnhUy6GE0Yf5VM4oj3HeY5li6ESi8PggUMeYmMcvLzcOsQ8rh4G2KBWqXcYOTMREyfFXp6jJLXHDrJqeeSAEnP/aGLPPyi2NRy5S7dp8qPIkjDYt6yU+FICSBcDAPPWO1jNZrWH43ObcDF4KNdp5CAf/HT5GLcwZv+CUvQGgtuOyiN193NE9wpV5jpA2BgV7FxENqe9T1NIPk8AMwIDAQAB", null, new BillingProcessor.IBillingHandler() {
 //            @Override
