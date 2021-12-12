@@ -18,6 +18,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -86,6 +87,7 @@ public class MasterListFirestoreAdapter extends FirestoreRecyclerAdapter<List, M
                     model.setListId(documentSnapshot.getId());
                     listId= model.getListId();
                     Log.i("ListId", "Firestore: "+listId);
+                    FirebaseCrashlytics.getInstance().log(this.getClass().getSimpleName()+"listId = "+listId);
                     Intent intent = new Intent(v.getContext(), TodoListActivity2.class);
                     intent.putExtra("ListId",listId);
                     if(model.getListName()!=null && (!model.getListName().equals(""))){

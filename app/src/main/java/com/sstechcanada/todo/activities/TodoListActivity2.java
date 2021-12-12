@@ -5,7 +5,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
@@ -18,7 +17,6 @@ import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
@@ -31,16 +29,12 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetSequence;
-import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.FullScreenContentCallback;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.interstitial.InterstitialAd;
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -233,7 +227,8 @@ public class TodoListActivity2 extends AppCompatActivity {
 //        listId=getIntent().getStringExtra("ListId");
         Log.i("ListId", "Setupdrecyasdf");
         Log.i("ListId", "n" + listId);
-
+        FirebaseCrashlytics.getInstance().log(this.getClass().getSimpleName()+"listId = "+listId);
+        FirebaseCrashlytics.getInstance().log(this.getClass().getSimpleName()+"UserId = "+userID);
         Query query = usersColRef.document(userID).collection("Lists").document(
                 listId).collection("Todo").whereEqualTo("Status", "Pending").orderBy("priority", Query.Direction.DESCENDING);
 
