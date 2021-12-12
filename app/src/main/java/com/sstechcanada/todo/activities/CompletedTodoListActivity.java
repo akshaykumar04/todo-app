@@ -31,6 +31,7 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -141,6 +142,8 @@ public class CompletedTodoListActivity extends AppCompatActivity {
     }
 
     private void setUpFirestoreRecyclerView() {
+        FirebaseCrashlytics.getInstance().log(this.getClass().getSimpleName()+"listId = "+listId);
+        FirebaseCrashlytics.getInstance().log(this.getClass().getSimpleName()+"UserId = "+userID);
         Query query = usersColRef.document(userID).collection("Lists").document(
                 listId).collection("Todo").whereEqualTo("Status", "Completed").orderBy("priority", Query.Direction.DESCENDING);
 
