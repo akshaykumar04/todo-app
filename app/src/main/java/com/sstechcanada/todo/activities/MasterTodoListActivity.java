@@ -39,8 +39,13 @@ import com.anjlab.android.iab.v3.TransactionDetails;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetSequence;
+import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -104,6 +109,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
     BillingClient billingClient;
     AcknowledgePurchaseResponseListener acknowledgePurchaseResponseListener;
     private Button buttonTapTargetView;
+    private InterstitialAd mInterstitialAd;
 
     private MasterListGridViewAdapter gridAdapter;
     FloatingActionButton fab;
@@ -164,7 +170,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
         AdView adView = findViewById(R.id.adView);
 
         if (purchaseCode.equals("0")) {
-
+            loadFullScreenAds();
             AdRequest adRequest = new AdRequest.Builder().build();
             adView.loadAd(adRequest);
         } else {
@@ -463,9 +469,28 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                DocumentSnapshot documentSnapshot = masterListFirestoreAdapter.getSnapshots().getSnapshot(position);
-                                String id = documentSnapshot.getId();
-                                usersColRef.document(userID).collection("Lists").document(id).delete();
+
+                                if (purchaseCode.equals("0")) {
+                                    if (mInterstitialAd != null) {
+                                        mInterstitialAd.show(MasterTodoListActivity.this);
+                                        DocumentSnapshot documentSnapshot = masterListFirestoreAdapter.getSnapshots().getSnapshot(position);
+                                        String id = documentSnapshot.getId();
+                                        usersColRef.document(userID).collection("Lists").document(id).delete();
+                                    } else {
+                                        DocumentSnapshot documentSnapshot = masterListFirestoreAdapter.getSnapshots().getSnapshot(position);
+                                        String id = documentSnapshot.getId();
+                                        usersColRef.document(userID).collection("Lists").document(id).delete();
+                                    }
+
+                                } else {
+                                    DocumentSnapshot documentSnapshot = masterListFirestoreAdapter.getSnapshots().getSnapshot(position);
+                                    String id = documentSnapshot.getId();
+                                    usersColRef.document(userID).collection("Lists").document(id).delete();
+                                    Toasty.error(MasterTodoListActivity.this, "List Deleted",Toast.LENGTH_SHORT).show();
+                                }
+
+
+
                             }
                         })
                         .setNegativeButton("No", null)
@@ -500,6 +525,52 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
 
         list_cnt = masterListFirestoreAdapter.getItemCount();
 
+    }
+
+    private void loadFullScreenAds() {
+        AdRequest adRequest = new AdRequest.Builder().build();
+//ca-app-pub-3111421321050812/5967628112 our
+        //test ca-app-pub-3940256099942544/1033173712
+        InterstitialAd.load(this, "ca-app-pub-3111421321050812/5967628112", adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialAd = interstitialAd;
+
+                        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                // Called when fullscreen content is dismissed.
+                                Log.d("TAG", "The ad was dismissed.");
+
+                            }
+
+                            @Override
+                            public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                                // Called when fullscreen content failed to show.
+                                Log.d("TAG", "The ad failed to show.");
+                            }
+
+                            @Override
+                            public void onAdShowedFullScreenContent() {
+                                // Called when fullscreen content is shown.
+                                // Make sure to set your reference to null so you don't
+                                // show it a second time.
+                                Toasty.error(MasterTodoListActivity.this, "List Deleted",Toast.LENGTH_SHORT).show();
+                                mInterstitialAd = null;
+                                Log.d("TAG", "The ad was shown.");
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        mInterstitialAd = null;
+                    }
+                });
     }
 
     @Override

@@ -145,6 +145,7 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
 
                                 }
                             })
+                            .setCancelable(false)
                             .show();
 
 
@@ -189,6 +190,7 @@ public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskF
 
                                 }
                             })
+                            .setCancelable(false)
                             .show();
 
 

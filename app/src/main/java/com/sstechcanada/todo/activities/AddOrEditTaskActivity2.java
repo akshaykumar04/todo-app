@@ -158,7 +158,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
         if (purchaseCode.equals("0")) {
             loadBannerAds();
             loadFullScreenAds();
-            loadRewardedAds();
+//            loadRewardedAds();
         }
 
         long dueDate;
@@ -328,45 +328,61 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
     }
 
     private void deleteTodoItem() {
-       if (purchaseCode.equals("0")) {
-           new AlertDialog.Builder(this)
-                   .setIcon(android.R.drawable.ic_menu_delete)
-                   .setTitle("Confirm Delete")
-                   .setMessage("In this free version of the app, an ad appears when you delete a list item. Continue?")
-                   .setPositiveButton("Yes", (dialog, which) -> {
-                       if (purchaseCode.equals("0")) {
-                           if (mRewardedAd != null) {
-                               Activity activityContext = AddOrEditTaskActivity2.this;
-                               mRewardedAd.show(activityContext, rewardItem -> {
-                                   // Handle the reward.
-                                   Log.d(TAG, "The user earned the reward.");
-                                   UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
-                                   Toasty.error(AddOrEditTaskActivity2.this, "Task Deleted",Toast.LENGTH_SHORT).show();
-                               });
-                           } else {
-                               Log.d(TAG, "The rewarded ad wasn't ready yet.");
-                               Toasty.info(AddOrEditTaskActivity2.this, "Please wait while the Ad is loading",Toast.LENGTH_SHORT).show();
-                           }
-                       } else {
-                           UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
-                           finish();
-                       }
-                   })
-                   .setNegativeButton("No", null)
-                   .show();
-       } else {
+        loadFullScreenAds();
+//       if (purchaseCode.equals("0")) {
+//           new AlertDialog.Builder(this)
+//                   .setIcon(android.R.drawable.ic_menu_delete)
+//                   .setTitle("Confirm Delete")
+//                   .setMessage("In this free version of the app, an ad appears when you delete a list item. Continue?")
+//                   .setPositiveButton("Yes", (dialog, which) -> {
+//                       if (purchaseCode.equals("0")) {
+//                           if (mRewardedAd != null) {
+//                               Activity activityContext = AddOrEditTaskActivity2.this;
+//                               mRewardedAd.show(activityContext, rewardItem -> {
+//                                   // Handle the reward.
+//                                   Log.d(TAG, "The user earned the reward.");
+//                                   UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
+//                                   Toasty.error(AddOrEditTaskActivity2.this, "Task Deleted",Toast.LENGTH_SHORT).show();
+//                               });
+//                           } else {
+//                               Log.d(TAG, "The rewarded ad wasn't ready yet.");
+//                               Toasty.info(AddOrEditTaskActivity2.this, "Please wait while the Ad is loading",Toast.LENGTH_SHORT).show();
+//                           }
+//                       } else {
+//                           UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
+//                           finish();
+//                       }
+//                   })
+//                   .setNegativeButton("No", null)
+//                   .show();
+//       } else {
            new AlertDialog.Builder(this)
                    .setIcon(android.R.drawable.ic_menu_delete)
                    .setTitle("Confirm Delete")
                    .setMessage("Are you sure you want to delete this task?")
                    .setPositiveButton("Yes", (dialog, which) -> {
-                       UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
-                       Toasty.error(AddOrEditTaskActivity2.this, "Task Deleted",Toast.LENGTH_SHORT).show();
-                       finish();
+                       if (purchaseCode.equals("0")) {
+                           if (mInterstitialAd != null) {
+                               mInterstitialAd.show(AddOrEditTaskActivity2.this);
+                               UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
+                               Toasty.error(AddOrEditTaskActivity2.this, "Task Deleted",Toast.LENGTH_SHORT).show();
+                               finish();
+                           } else {
+                               UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
+                               Toasty.error(AddOrEditTaskActivity2.this, "Task Deleted",Toast.LENGTH_SHORT).show();
+                               finish();
+                           }
+
+                       } else {
+                           UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
+                           Toasty.error(AddOrEditTaskActivity2.this, "Task Deleted",Toast.LENGTH_SHORT).show();
+                           finish();
+                       }
+
                    })
                    .setNegativeButton("No", null)
                    .show();
-       }
+//       }
     }
 
     private void loadBannerAds() {
