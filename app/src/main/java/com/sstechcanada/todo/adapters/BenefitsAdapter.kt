@@ -2,7 +2,7 @@ package com.sstechcanada.todo.adapters
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
-import com.sstechcanada.todo.adapters.CategoryFirestoreAdapter.CategoryFirestoreHolder
+import com.sstechcanada.todo.adapters.BenefitsAdapter.CategoryFirestoreHolder
 import com.google.firebase.auth.FirebaseAuth
 import com.sstechcanada.todo.R
 import android.content.DialogInterface
@@ -24,7 +24,7 @@ import com.sstechcanada.todo.models.Category
 import kotlinx.android.synthetic.main.layout_artist_list.view.*
 
 
-class CategoryFirestoreAdapter(options: FirestoreRecyclerOptions<Category?>, var context: Context) :
+class BenefitsAdapter(options: FirestoreRecyclerOptions<Category?>, var context: Context) :
     FirestoreRecyclerAdapter<Category, CategoryFirestoreHolder>(options) {
 
     private var mCallbacks: Callbacks? = null

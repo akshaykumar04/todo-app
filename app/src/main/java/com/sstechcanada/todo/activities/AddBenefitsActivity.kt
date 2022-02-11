@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.CollectionReference
-import com.sstechcanada.todo.adapters.CategoryFirestoreAdapter
+import com.sstechcanada.todo.adapters.BenefitsAdapter
 import android.os.Bundle
 import com.sstechcanada.todo.R
 import android.content.Intent
@@ -23,14 +23,14 @@ import kotlinx.android.synthetic.main.act_bar.*
 import kotlinx.android.synthetic.main.activity_category.*
 import java.util.HashMap
 
-class AddCategoryActivity : AppCompatActivity(),
-    CategoryFirestoreAdapter.Callbacks {
+class AddBenefitsActivity : AppCompatActivity(),
+    BenefitsAdapter.Callbacks {
     var userID: String? = null
     private var mAuth: FirebaseAuth? = null
     var db = FirebaseFirestore.getInstance()
     private var benefitCollectionRef: CollectionReference? = null
     private var userColRef: CollectionReference? = null
-    private var categoryFirestoreAdapter: CategoryFirestoreAdapter? = null
+    private var benefitsAdapter: BenefitsAdapter? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_category)
@@ -41,11 +41,11 @@ class AddCategoryActivity : AppCompatActivity(),
         arrow_back.visibility = View.VISIBLE
         arrow_back.setOnClickListener { super.onBackPressed() }
         setUpRecyclerView()
-        categoryFirestoreAdapter?.setCallbacks(this@AddCategoryActivity)
+        benefitsAdapter?.setCallbacks(this@AddBenefitsActivity)
         toolbarTitle.text = getString(R.string.add_benefit)
         profile_toolbar.setOnClickListener {
             startActivity(
-                Intent(this@AddCategoryActivity, LoginActivity::class.java)
+                Intent(this@AddBenefitsActivity, LoginActivity::class.java)
             )
         }
         buttonAddCategory.setOnClickListener { addCategory() }
@@ -63,20 +63,20 @@ class AddCategoryActivity : AppCompatActivity(),
                 it, Category::class.java
             ).build()
         }
-        categoryFirestoreAdapter = options?.let { CategoryFirestoreAdapter(it, this) }
+        benefitsAdapter = options?.let { BenefitsAdapter(it, this) }
         listViewCategory.setHasFixedSize(true)
         listViewCategory.layoutManager = LinearLayoutManager(this)
-        listViewCategory.adapter = categoryFirestoreAdapter
+        listViewCategory.adapter = benefitsAdapter
     }
 
     override fun onStart() {
         super.onStart()
-        categoryFirestoreAdapter!!.startListening()
+        benefitsAdapter!!.startListening()
     }
 
     override fun onStop() {
         super.onStop()
-        categoryFirestoreAdapter!!.stopListening()
+        benefitsAdapter!!.stopListening()
     }
 
     private fun addCategory() {

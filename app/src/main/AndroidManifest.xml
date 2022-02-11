@@ -41,7 +41,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.AddCategoryActivity"
+            android:name=".activities.AddBenefitsActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity android:name=".activities.auth.LoginActivity" />
