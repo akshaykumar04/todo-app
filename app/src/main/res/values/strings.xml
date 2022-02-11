@@ -82,10 +82,10 @@
     <string name="upgrade_todo_list">Upgrade your membership to create todo items</string>
     <string name="banner_ad_id">ca-app-pub-3111421321050812/4092511181</string>
     <string name="banner_ad_test">ca-app-pub-3111421321050812/4092511181</string>
-    <string name="_0_99_month">$ 0.99 / month</string>
-    <string name="_9_99_month">$ 9.99 / month</string>
-    <string name="create_up_to_20_to_do_lists">create up to 20 to do lists</string>
-    <string name="create_up_to_3_to_do_lists">create up to 3 to do lists</string>
+    <string name="_0_99_month">Tier 1</string>
+    <string name="_9_99_month">Tier 2</string>
+    <string name="create_up_to_20_to_do_lists">CREATE UP TO 20 LISTS</string>
+    <string name="create_up_to_3_to_do_lists">CREATE UP TO 3 LISTS</string>
     <string name="title_add_benefit">Add Benefits</string>
     <string name="tap_target_Ok">OK</string>
 
@@ -95,5 +95,6 @@
     <string name="rate_dialog_cancel">Remind Me Later</string>
     <string name="rate_dialog_no">No, Thanks</string>
     <string name="add_benefit">Add Benefits</string>
+    <string name="text_update_button_bottom">You won\'t be charged yet. Click this button to see prices in your local currency.</string>
 
 </resources>

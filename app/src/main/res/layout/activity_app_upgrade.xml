@@ -41,7 +41,9 @@
         android:layout_margin="16dp"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
+        android:paddingHorizontal="20dp"
         app:allowDeselection="false"
+        android:textAlignment="center"
         app:dividerColor="@android:color/darker_gray"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
@@ -205,6 +207,17 @@
         app:lottie_fileName="go-premium.json"
         app:lottie_loop="true" />
 
-
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="28dp"
+        android:fontFamily="@font/poppins_semibold"
+        android:paddingHorizontal="32dp"
+        android:text="@string/text_update_button_bottom"
+        android:textAlignment="center"
+        android:textSize="11sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

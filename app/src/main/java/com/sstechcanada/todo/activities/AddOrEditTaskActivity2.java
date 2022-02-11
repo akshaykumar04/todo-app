@@ -525,7 +525,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                 public void onSuccess(Void aVoid) {
                     loadingProgressBarUpdate.setVisibility(View.GONE);
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    Toasty.success(AddOrEditTaskActivity2.this, "New list item Added successfully", Toasty.LENGTH_SHORT).show();
+                    Toasty.success(AddOrEditTaskActivity2.this, "New list item added successfully", Toasty.LENGTH_SHORT).show();
                     Intent intent = new Intent(AddOrEditTaskActivity2.this, TodoListActivity2.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
