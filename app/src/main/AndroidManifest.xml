@@ -32,7 +32,8 @@
         </activity>
         <activity
             android:name=".activities.SplashActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -40,7 +41,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.AddCategoryActivity2"
+            android:name=".activities.AddCategoryActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity android:name=".activities.auth.LoginActivity" />

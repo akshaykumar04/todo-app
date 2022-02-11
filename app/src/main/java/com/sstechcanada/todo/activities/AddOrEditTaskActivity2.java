@@ -621,7 +621,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 //            loadAd(); //disabled full screen ads as requested
         });
 
-        addMoreCategories.setOnClickListener(view -> startActivity(new Intent(AddOrEditTaskActivity2.this, AddCategoryActivity2.class)));
+        addMoreCategories.setOnClickListener(view -> startActivity(new Intent(AddOrEditTaskActivity2.this, AddCategoryActivity.class)));
 
         if (purchaseCode.equals("0")) {
             bannerAd.loadAd(new AdRequest.Builder().build());

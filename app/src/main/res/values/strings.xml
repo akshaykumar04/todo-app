@@ -94,5 +94,6 @@
     <string name="rate_dialog_ok">Rate It Now</string>
     <string name="rate_dialog_cancel">Remind Me Later</string>
     <string name="rate_dialog_no">No, Thanks</string>
+    <string name="add_benefit">Add Benefits</string>
 
 </resources>
