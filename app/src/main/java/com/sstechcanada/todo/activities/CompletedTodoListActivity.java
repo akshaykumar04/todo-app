@@ -293,7 +293,7 @@ public class CompletedTodoListActivity extends AppCompatActivity {
         } else if (list_limit <= db_cnt) {
             //Limit Check
             Toasty.info(this, getString(R.string.upgrade_master_list), Toast.LENGTH_LONG, true).show();
-            startActivity(new Intent(CompletedTodoListActivity.this, AppUpgradeActivity.class));
+            startActivity(new Intent(CompletedTodoListActivity.this, AppUpgradeActivity2.class));
             return false;
         }
         return true;
