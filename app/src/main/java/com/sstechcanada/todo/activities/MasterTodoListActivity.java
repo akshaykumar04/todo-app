@@ -131,7 +131,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
         mRecyclerView = findViewById(R.id.rv_todo_list);
         loadingProgressBar = findViewById(R.id.loadingProgressBar);
         fab = findViewById(R.id.fab);
-        buttonTapTargetView=findViewById(R.id.buttonTapTargetView);
+        buttonTapTargetView = findViewById(R.id.buttonTapTargetView);
         SharedPreferences prefs = getSharedPreferences(SHAREDPREF, MODE_PRIVATE);
         editor = getSharedPreferences(SHAREDPREF, MODE_PRIVATE).edit();
 
@@ -156,7 +156,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
 
         setUpFirestoreRecyclerView();
 
-        if (prefs.getBoolean("flagMasterListFirstRun",true)){
+        if (prefs.getBoolean("flagMasterListFirstRun", true)) {
             buttonTapTargetView.setVisibility(View.INVISIBLE);
 
             callWalkThrough();
@@ -199,12 +199,12 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
                     }
                 } else {
                     if (isLogin()) {
-                        if(!purchaseCode.equals("2")){
+                        if (!purchaseCode.equals("2")) {
                             Toasty.info(getApplicationContext(), getString(R.string.upgrade_master_list), Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(MasterTodoListActivity.this, AppUpgradeActivity2.class);
 //                        intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
                             startActivity(intent);
-                        }else if (purchaseCode.equals("2")){
+                        } else if (purchaseCode.equals("2")) {
                             Toasty.warning(getApplicationContext(), "Sorry, You cannot add more to-do list. You have reached the max-limit!", Toast.LENGTH_LONG).show();
                         }
 
@@ -215,11 +215,6 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
         });
 
     }
-
-
-
-
-
 
 
     private void getPurchaseCode() {
@@ -236,10 +231,10 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
                         userAccountDetails.add(0, documentSnapshot.get("masterListLimit").toString());
                         userAccountDetails.add(1, documentSnapshot.get("todoItemLimit").toString());
 
-                        if(!purchaseCode.equals("0")) {
+                        if (!purchaseCode.equals("0")) {
                             bp = new BillingProcessor(MasterTodoListActivity.this, "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnDatsVXJEFzzwnOEBiE5wSffxr+dEazc3zbf5t5jK1NKYPlfBbeN2M8ZEA38YRt0pQ0WfnXGcJ0mauXH/0xtXdo9Hv6uyzn3W73W6RxTbc5fk2950Tn0fqHkTh6wZoEJBaLn5OnhUy6GE0Yf5VM4oj3HeY5li6ESi8PggUMeYmMcvLzcOsQ8rh4G2KBWqXcYOTMREyfFXp6jJLXHDrJqeeSAEnP/aGLPPyi2NRy5S7dp8qPIkjDYt6yU+FICSBcDAPPWO1jNZrWH43ObcDF4KNdp5CAf/HT5GLcwZv+CUvQGgtuOyiN193NE9wpV5jpA2BgV7FxENqe9T1NIPk8AMwIDAQAB", MasterTodoListActivity.this);
                             bp.initialize();
-                        }else{
+                        } else {
                             hideProgressBar();
                         }
 
@@ -486,9 +481,8 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
                                     DocumentSnapshot documentSnapshot = masterListFirestoreAdapter.getSnapshots().getSnapshot(position);
                                     String id = documentSnapshot.getId();
                                     usersColRef.document(userID).collection("Lists").document(id).delete();
-                                    Toasty.error(MasterTodoListActivity.this, "List Deleted",Toast.LENGTH_SHORT).show();
+                                    Toasty.error(MasterTodoListActivity.this, "List Deleted", Toast.LENGTH_SHORT).show();
                                 }
-
 
 
                             }
@@ -558,7 +552,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
                                 // Called when fullscreen content is shown.
                                 // Make sure to set your reference to null so you don't
                                 // show it a second time.
-                                Toasty.error(MasterTodoListActivity.this, "List Deleted",Toast.LENGTH_SHORT).show();
+                                Toasty.error(MasterTodoListActivity.this, "List Deleted", Toast.LENGTH_SHORT).show();
                                 mInterstitialAd = null;
                                 Log.d("TAG", "The ad was shown.");
                             }
@@ -662,7 +656,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
 //            startActivity(new Intent(MasterTodoListActivity.this, AppUpgradeActivity2.class));
 //            return false;
 //        }
-        else{
+        else {
             return true;
         }
 //        return true;
@@ -801,12 +795,13 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
 //                Toast.makeText(MasterTodoListActivity.this, "Inside billing +user iobject not null" + purchaseID, Toast.LENGTH_SHORT).show();
             }
             hideProgressBar();
-        }catch(Exception e){
+        } catch (Exception e) {
 //            Toast.makeText(MasterTodoListActivity.this, "Inside billing +Exception in "+e, Toast.LENGTH_SHORT).show();
             hideProgressBar();
         }
 
     }
+
     public void refreshPurchaseCodeInDatabase() {
 
 //        Toast.makeText(this, "set purchase code in db", Toast.LENGTH_SHORT).show();
@@ -825,21 +820,22 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
     }
 
     public void openRatingPopup() {
+        // callback listener.
         AppRate.with(this)
-                .setInstallDays(0) // default 10, 0 means install day.
+                .setInstallDays(1) // default 10, 0 means install day.
                 .setLaunchTimes(25) // default 10
                 .setRemindInterval(2) // default 1
-                .setShowLaterButton(true) // default true
+                .setShowLaterButton(true)
+                .setTitle(getString(R.string.will_you_rate_us_5_stars))// default true
                 .setDebug(false) // default false
-                .setOnClickButtonListener(new OnClickButtonListener() { // callback listener.
-                    @Override
-                    public void onClickButton(int which) {
-                        Log.d(MasterTodoListActivity.class.getName(), Integer.toString(which));
-                    }
-                })
+                .setOnClickButtonListener(which -> Log.d(MasterTodoListActivity.class.getName(), Integer.toString(which)))
                 .monitor();
 
         AppRate.showRateDialogIfMeetsConditions(this);
+
+        //Show Dialog Instantly
+        //AppRate.with(this).showRateDialog(this);
+
     }
 
     @Override

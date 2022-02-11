@@ -96,5 +96,6 @@
     <string name="rate_dialog_no">No, Thanks</string>
     <string name="add_benefit">Add Benefits</string>
     <string name="text_update_button_bottom">You won\'t be charged yet. Click this button to see prices in your local currency.</string>
+    <string name="will_you_rate_us_5_stars">Will you rate us 5 stars on Google Play?</string>
 
 </resources>
