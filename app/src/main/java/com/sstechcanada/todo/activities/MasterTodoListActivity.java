@@ -64,6 +64,7 @@ import com.sstechcanada.todo.adapters.MasterListGridViewAdapter;
 import com.sstechcanada.todo.broadcast_receivers.DailyAlarmReceiver;
 import com.sstechcanada.todo.custom_views.MasterIconGridItemView;
 import com.sstechcanada.todo.models.List;
+import com.sstechcanada.todo.utils.Constants;
 import com.sstechcanada.todo.utils.SwipeController;
 import com.sstechcanada.todo.utils.SwipeControllerActions;
 
@@ -144,7 +145,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
 
 
         openRatingPopup();
-
+        fetchIntent();
 //        placeholderImage=findViewById(R.id.placeholderImage);
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
@@ -836,6 +837,12 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
         //Show Dialog Instantly
         //AppRate.with(this).showRateDialog(this);
 
+    }
+
+    private void fetchIntent() {
+        if (getIntent().hasExtra(Constants.TODO_RATE_APP)) {
+            AppRate.with(this).showRateDialog(this);
+        }
     }
 
     @Override
