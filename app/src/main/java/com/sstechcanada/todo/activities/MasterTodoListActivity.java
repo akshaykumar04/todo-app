@@ -149,7 +149,9 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
 //        placeholderImage=findViewById(R.id.placeholderImage);
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
-        userID = user.getUid();
+        if (user != null) {
+            userID = user.getUid();
+        }
 
         getPurchaseCode();
 
@@ -180,38 +182,30 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
 
 
         toolbar_profile = findViewById(R.id.profile_toolbar);
-        toolbar_profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MasterTodoListActivity.this, LoginActivity.class));
-            }
-        });
+        toolbar_profile.setOnClickListener(view -> startActivity(new Intent(MasterTodoListActivity.this, LoginActivity.class)));
 
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (Integer.parseInt(userAccountDetails.get(0)) > masterListFirestoreAdapter.getItemCount()) {
-                    Log.i("purchasecode", "masterlist limit :" + (userAccountDetails.get(0)));
-                    Log.i("purchasecode", "masterlist items :" + (masterListFirestoreAdapter.getItemCount()));
-                    setValue();
-                    if (isLogin()) {
-                        addNewListAlert();
-                    }
-                } else {
-                    if (isLogin()) {
-                        if (!purchaseCode.equals("2")) {
-                            Toasty.info(getApplicationContext(), getString(R.string.upgrade_master_list), Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(MasterTodoListActivity.this, AppUpgradeActivity2.class);
+        fab.setOnClickListener(view -> {
+            if (Integer.parseInt(userAccountDetails.get(0)) > masterListFirestoreAdapter.getItemCount()) {
+                Log.i("purchasecode", "masterlist limit :" + (userAccountDetails.get(0)));
+                Log.i("purchasecode", "masterlist items :" + (masterListFirestoreAdapter.getItemCount()));
+                setValue();
+                if (isLogin()) {
+                    addNewListAlert();
+                }
+            } else {
+                if (isLogin()) {
+                    if (!purchaseCode.equals("2")) {
+                        Toasty.info(getApplicationContext(), getString(R.string.upgrade_master_list), Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(MasterTodoListActivity.this, AppUpgradeActivity2.class);
 //                        intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
-                            startActivity(intent);
-                        } else if (purchaseCode.equals("2")) {
-                            Toasty.warning(getApplicationContext(), "Sorry, You cannot add more to-do list. You have reached the max-limit!", Toast.LENGTH_LONG).show();
-                        }
-
+                        startActivity(intent);
+                    } else if (purchaseCode.equals("2")) {
+                        Toasty.warning(getApplicationContext(), "Sorry, You cannot add more to-do list. You have reached the max-limit!", Toast.LENGTH_LONG).show();
                     }
 
                 }
+
             }
         });
 
@@ -220,29 +214,23 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
 
     private void getPurchaseCode() {
         showProgressBar();
-        usersColRef.document(userID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                purchaseCode = documentSnapshot.get("purchase_code").toString();
-                db.collection("UserTiers").document(purchaseCode).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        Log.i("purchasecode", "purchase code :" + purchaseCode);
-                        Log.i("purchasecode", "new :" + documentSnapshot.get("masterListLimit").toString());
-                        userAccountDetails.add(0, documentSnapshot.get("masterListLimit").toString());
-                        userAccountDetails.add(1, documentSnapshot.get("todoItemLimit").toString());
+        usersColRef.document(userID).get().addOnSuccessListener(documentSnapshot -> {
+            purchaseCode = documentSnapshot.get("purchase_code").toString();
+            db.collection("UserTiers").document(purchaseCode).get().addOnSuccessListener(documentSnapshot1 -> {
+                Log.i("purchasecode", "purchase code :" + purchaseCode);
+                Log.i("purchasecode", "new :" + documentSnapshot1.get("masterListLimit").toString());
+                userAccountDetails.add(0, documentSnapshot1.get("masterListLimit").toString());
+                userAccountDetails.add(1, documentSnapshot1.get("todoItemLimit").toString());
 
-                        if (!purchaseCode.equals("0")) {
-                            bp = new BillingProcessor(MasterTodoListActivity.this, "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnDatsVXJEFzzwnOEBiE5wSffxr+dEazc3zbf5t5jK1NKYPlfBbeN2M8ZEA38YRt0pQ0WfnXGcJ0mauXH/0xtXdo9Hv6uyzn3W73W6RxTbc5fk2950Tn0fqHkTh6wZoEJBaLn5OnhUy6GE0Yf5VM4oj3HeY5li6ESi8PggUMeYmMcvLzcOsQ8rh4G2KBWqXcYOTMREyfFXp6jJLXHDrJqeeSAEnP/aGLPPyi2NRy5S7dp8qPIkjDYt6yU+FICSBcDAPPWO1jNZrWH43ObcDF4KNdp5CAf/HT5GLcwZv+CUvQGgtuOyiN193NE9wpV5jpA2BgV7FxENqe9T1NIPk8AMwIDAQAB", MasterTodoListActivity.this);
-                            bp.initialize();
-                        } else {
-                            hideProgressBar();
-                        }
+                if (!purchaseCode.equals("0")) {
+                    bp = new BillingProcessor(MasterTodoListActivity.this, "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnDatsVXJEFzzwnOEBiE5wSffxr+dEazc3zbf5t5jK1NKYPlfBbeN2M8ZEA38YRt0pQ0WfnXGcJ0mauXH/0xtXdo9Hv6uyzn3W73W6RxTbc5fk2950Tn0fqHkTh6wZoEJBaLn5OnhUy6GE0Yf5VM4oj3HeY5li6ESi8PggUMeYmMcvLzcOsQ8rh4G2KBWqXcYOTMREyfFXp6jJLXHDrJqeeSAEnP/aGLPPyi2NRy5S7dp8qPIkjDYt6yU+FICSBcDAPPWO1jNZrWH43ObcDF4KNdp5CAf/HT5GLcwZv+CUvQGgtuOyiN193NE9wpV5jpA2BgV7FxENqe9T1NIPk8AMwIDAQAB", MasterTodoListActivity.this);
+                    bp.initialize();
+                } else {
+                    hideProgressBar();
+                }
 
 //                        checkSubscriptions();
-                    }
-                });
-            }
+            });
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
@@ -810,12 +798,10 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
         Map<String, String> purchaseCode = new HashMap<>();
         purchaseCode.put("purchase_code", "0");
 
-        db.collection("Users").document(userID).set(purchaseCode, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                getPurchaseCode();
+        db.collection("Users").document(userID).set(purchaseCode,
+                SetOptions.merge()).addOnSuccessListener(aVoid -> {
+            getPurchaseCode();
 //                Toast.makeText(MasterTodoListActivity.this, "on success", Toast.LENGTH_LONG).show();
-            }
         });
 
     }

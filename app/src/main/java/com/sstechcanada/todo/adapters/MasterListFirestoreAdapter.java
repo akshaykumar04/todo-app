@@ -39,7 +39,7 @@ public class MasterListFirestoreAdapter extends FirestoreRecyclerAdapter<List, M
 
     private FirebaseAuth mAuth= FirebaseAuth.getInstance();
     private FirebaseUser user = mAuth.getCurrentUser();
-    String userID=user.getUid();
+    String userID= user != null ? user.getUid() : null;
     Context context;
     private DatabaseReference databaseReference;
 

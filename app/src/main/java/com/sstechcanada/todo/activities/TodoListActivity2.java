@@ -128,7 +128,9 @@ public class TodoListActivity2 extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
-        userID = user.getUid();
+        if (user != null) {
+            userID = user.getUid();
+        }
 
         if (prefs.getBoolean("flagTodoListFirstRun",true)) {
             mBinding.buttonTapTargetView.setVisibility(View.INVISIBLE);
@@ -205,7 +207,7 @@ public class TodoListActivity2 extends AppCompatActivity {
             }
 //            startActivity(new Intent(TodoListActivity2.this, AppUpgradeActivity.class));
         });
-        
+
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
         {
             @Override
@@ -305,16 +307,19 @@ public class TodoListActivity2 extends AppCompatActivity {
                 TodoTaskFirestore task = documentSnapshot.toObject(TodoTaskFirestore.class);
 
 
-                TodoTaskFirestore todoTask = new TodoTaskFirestore(task.getDescription(),
-                        task.getPriority(),
-                        task.getDueDate(),
-                        id,
-                        task.getStatus(),
-                        task.getCategory(),
-                        2,
-                        task.getBenefits(),
-                        task.getBenefitsString(),
-                        task.getTimestampCompleted());
+                TodoTaskFirestore todoTask = null;
+                if (task != null) {
+                    todoTask = new TodoTaskFirestore(task.getDescription(),
+                            task.getPriority(),
+                            task.getDueDate(),
+                            id,
+                            task.getStatus(),
+                            task.getCategory(),
+                            2,
+                            task.getBenefits(),
+                            task.getBenefitsString(),
+                            task.getTimestampCompleted());
+                }
 
                 Intent intent = new Intent(TodoListActivity2.this, AddOrEditTaskActivity2.class);
                 intent.putExtra("Adding or editing", "Edit Task");

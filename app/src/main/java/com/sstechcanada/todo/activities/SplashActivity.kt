@@ -14,7 +14,6 @@ import com.sstechcanada.todo.R
 import com.sstechcanada.todo.activities.auth.LoginActivity
 import com.sstechcanada.todo.utils.Constants
 import com.sstechcanada.todo.utils.SaveSharedPreference
-import com.sstechcanada.todo.utils.ViewUtils
 
 class SplashActivity : AppCompatActivity() {
     private var TIME_OUT: Long = 2100
