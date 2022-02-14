@@ -88,13 +88,14 @@ public class MasterListFirestoreAdapter extends FirestoreRecyclerAdapter<List, M
                     listId= model.getListId();
                     Log.i("ListId", "Firestore: "+listId);
                     FirebaseCrashlytics.getInstance().log(this.getClass().getSimpleName()+"listId = "+listId);
-                    Intent intent = new Intent(v.getContext(), TodoListActivity2.class);
+                    Intent intent = new Intent(context, TodoListActivity2.class);
                     intent.putExtra("ListId",listId);
                     if(model.getListName()!=null && (!model.getListName().equals(""))){
                         listName=model.getListName();
                     }else{
                         listName="Untitled List";
                     }
+                    intent.putExtra("ListName", listName);
                     v.getContext().startActivity(intent);
                 }
             }

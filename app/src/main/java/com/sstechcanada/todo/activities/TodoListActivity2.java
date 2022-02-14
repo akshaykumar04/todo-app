@@ -54,6 +54,7 @@ import com.sstechcanada.todo.databinding.ActivityTodoListBinding;
 import com.sstechcanada.todo.models.TodoTaskFirestore;
 import com.sstechcanada.todo.utils.SwipeController;
 import com.sstechcanada.todo.utils.SwipeControllerActions;
+import com.sstechcanada.todo.utils.ViewUtils;
 
 import es.dmoral.toasty.Toasty;
 
@@ -87,6 +88,7 @@ public class TodoListActivity2 extends AppCompatActivity {
     private TodoListFirestoreAdapter todoListFirestoreAdapter;
     SharedPreferences.Editor editor;
     private InterstitialAd mInterstitialAd;
+    private String listId, listName;
 
     public static void showPlaceHolder() {
         lottieAnimationView.setVisibility(View.VISIBLE);
@@ -111,6 +113,7 @@ public class TodoListActivity2 extends AppCompatActivity {
             mBinding.completedTab.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_check_circle_24, 0);
         }
 
+
         SharedPreferences prefs = getSharedPreferences(SHAREDPREF, MODE_PRIVATE);
         editor = getSharedPreferences(SHAREDPREF, MODE_PRIVATE).edit();
         showProgressBar();
@@ -127,17 +130,11 @@ public class TodoListActivity2 extends AppCompatActivity {
         user = mAuth.getCurrentUser();
         userID = user.getUid();
 
-        setUpFirestoreRecyclerView();
-
         if (prefs.getBoolean("flagTodoListFirstRun",true)) {
             mBinding.buttonTapTargetView.setVisibility(View.INVISIBLE);
             callWalkThrough();
         }
-
-        //Limit Set
-
-        setValue();
-
+        setupObservers();
         AdView adView = mBinding.adView;
         if (purchaseCode.equals("0")) {
             loadFullScreenAds();
@@ -208,7 +205,7 @@ public class TodoListActivity2 extends AppCompatActivity {
             }
 //            startActivity(new Intent(TodoListActivity2.this, AppUpgradeActivity.class));
         });
-
+        
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
         {
             @Override
@@ -228,6 +225,21 @@ public class TodoListActivity2 extends AppCompatActivity {
 
         });
 
+    }
+
+    private void setupObservers() {
+        fetchIntent();
+        //Limit Set
+        setValue();
+    }
+
+    private void fetchIntent() {
+        if (getIntent().getExtras() != null) {
+            listName = getIntent().getStringExtra("ListName");
+            listId = getIntent().getStringExtra("ListId");
+            ViewUtils.INSTANCE.showToast(this, listName + listId);
+        }
+        setUpFirestoreRecyclerView();
     }
 
     private void setUpFirestoreRecyclerView() {
@@ -340,14 +352,14 @@ public class TodoListActivity2 extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        todoListFirestoreAdapter.startListening();
+        if (todoListFirestoreAdapter != null) todoListFirestoreAdapter.startListening();
         mBinding.listNameTextView.setText(listName);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        todoListFirestoreAdapter.stopListening();
+        if (todoListFirestoreAdapter != null) todoListFirestoreAdapter.stopListening();
     }
 
     @Override
