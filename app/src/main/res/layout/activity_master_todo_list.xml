@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="#ffffff"
+    tools:context="com.sstechcanada.todo.activities.MasterTodoListActivity"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <include
+        android:id="@+id/include"
+        layout="@layout/act_bar" />
+
+    <ProgressBar
+        android:id="@+id/loadingProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        android:layout_marginTop="-5dp"
+        android:indeterminate="true"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:indeterminateTint="@color/colorTab"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/include" />
+
+    <LinearLayout
+        android:id="@+id/TopLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loadingProgressBar">
+
+      <com.airbnb.lottie.LottieAnimationView
+          android:id="@+id/TopImage"
+          android:layout_width="match_parent"
+          android:layout_height="200dp"
+          android:layout_gravity="center_vertical"
+          android:layout_marginBottom="16dp"
+          android:visibility="visible"
+          android:elevation="4dp"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/include"
+          app:lottie_autoPlay="true"
+          app:lottie_fileName="master_list.json"
+          app:lottie_loop="true" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="14dp"
+            android:fontFamily="@font/raleway_semibold"
+            android:text="Choose/Make List"
+            android:textColor="@color/black"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_todo_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:visibility="visible"
+        app:layout_anchorGravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/adView"
+        app:layout_constraintTop_toBottomOf="@id/TopLinearLayout" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:contentDescription="@string/add_new_task"
+        android:src="@drawable/ic_fab_add"
+        app:layout_constraintBottom_toTopOf="@+id/adView"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        app:adSize="SMART_BANNER"
+        app:adUnitId="@string/banner_ad_test"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/buttonTapTargetView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="411dp"
+        android:layout_marginEnd="411dp"
+        android:text="OK"
+        android:textColor="#fff"
+        android:visibility="gone"
+        android:background="@drawable/circular_button"
+        app:layout_constraintBottom_toBottomOf="@+id/rv_todo_list"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/TopLinearLayout" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

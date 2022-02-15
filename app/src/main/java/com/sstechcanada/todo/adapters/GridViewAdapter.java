@@ -39,7 +39,7 @@ public class GridViewAdapter extends BaseAdapter {
     public Object getItem(int position) {
         Category category = categories.get(position);
 //        return strings[position];
-        return category.getCategoryName();
+        return category.getCategory_name();
     }
 
     @Override
@@ -51,7 +51,7 @@ public class GridViewAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         GridItemView customView = (convertView == null) ? new GridItemView(activity) : (GridItemView) convertView;
         Category category = categories.get(position);
-        customView.display(category.getCategoryName(), selectedPositions.contains(position));
+        customView.display(category.getCategory_name(), selectedPositions.contains(position));
 //        customView.display(strings[position], selectedPositions.contains(position));
         return customView;
     }

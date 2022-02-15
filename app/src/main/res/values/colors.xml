@@ -5,11 +5,13 @@
     <color name="textHeadings">#446DFF</color>
     <color name="colorPrimaryLight">#C8E6C9</color>
     <color name="colorAccent">#9C27B0</color>
+    <color name="black">#000000</color>
     <color name="colorOverdue">#E53935</color>
     <color name="colorCompleted">#9E9E9E</color>
     <color name="colorCompletedBackground">#EEEEEE</color>
     <color name="colorUncompletedBackground">#FFFFFF</color>
     <color name="colorNormalWidgetText">#757575</color>
+    <color name="colorTab">#446DFF</color>
 
     <color name="chip_1">#EC9690</color>
     <color name="chip_2">#ED8EAE</color>
@@ -25,15 +27,16 @@
     <color name="discp_border">#D6D4D3</color>
     <color name="discp_text">#7E7D7C</color>
 
-    <color name="circle1">#FB8880</color>
-    <color name="circle2">#FF82AD</color>
-    <color name="circle3">#E67EF8</color>
-    <color name="circle4">#A97DF8</color>
-    <color name="circle5">#7B8DF3</color>
-    <color name="circle6">#7DF882</color>
-    <color name="circle7">#F0FB7F</color>
-    <color name="circle8">#F8D97C</color>
-    <color name="circle9">#F69A7D</color>
+    <color name="circle1">#FF7043</color>
+    <color name="circle2">#EC407A</color>
+    <color name="circle3">#AB47BC</color>
+    <color name="circle4">#7E57C2</color>
+    <color name="circle5">#5C6BC0</color>
+    <color name="circle6">#42A5F5</color>
+    <color name="circle7">#26A69A</color>
+    <color name="circle8">#FFA726</color>
+    <color name="circle9">#66BB6A</color>
 
     <color name="toolbar_background">#FFFFFF</color>
+    <color name="toggleSelected">#7C446DFF</color>
 </resources>

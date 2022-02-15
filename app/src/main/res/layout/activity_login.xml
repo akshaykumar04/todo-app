@@ -7,6 +7,20 @@
     android:background="#ffffff"
     tools:context=".activities.auth.LoginActivity">
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabBack"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/ic_left_arrow"
+        android:visibility="gone"
+        android:tint="@color/colorTab"
+        app:backgroundTint="#ffffff"
+        app:fabSize="mini"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
@@ -14,9 +28,10 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="64dp"
         android:layout_marginEnd="8dp"
+        android:textColor="@color/textHeadings"
         android:fontFamily="@font/raleway_semibold"
-        android:text="To Do List Maker"
-        android:textSize="32sp"
+        android:text="@string/app_name"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -31,23 +46,25 @@
         android:layout_marginEnd="50dp"
         android:layout_marginRight="50dp"
         android:fontFamily="@font/raleway_medium"
-        android:text="Items Sorted By The Number Of Benefits"
-        android:textSize="18sp"
+        android:text="@string/items_sorted_by_the_number_of_benefits"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-    <ImageView
+    <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/imageView"
-        android:layout_width="869px"
-        android:layout_height="710px"
+        android:layout_width="401dp"
+        android:layout_height="435dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:src="@drawable/placeholder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="task-list.json"
+        app:lottie_loop="true" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/myCardView"
@@ -74,13 +91,15 @@
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="85dp"
         android:gravity="center_vertical"
+        android:layout_marginHorizontal="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <TextView
         android:id="@+id/signupText"
@@ -89,7 +108,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="24dp"
-        android:text="Don't you have an account? Create"
+        android:text="@string/don_t_you_have_an_account_create"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -97,11 +116,12 @@
 
     <Button
         android:id="@+id/sign_out_button"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="85dp"
+        android:layout_marginHorizontal="80dp"
+        android:layout_marginBottom="100dp"
         android:padding="8dp"
-        android:text="Logout"
+        android:text="@string/logout"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -125,7 +145,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:fontFamily="@font/raleway_medium"
-        android:text="TextView"
+        android:text="@string/akshay_kumar"
         android:textSize="22sp"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
@@ -138,7 +158,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:fontFamily="@font/raleway_semibold"
-        android:text="Free User"
+        android:text="@string/free_user"
         android:textColor="@color/textHeadings"
         android:textSize="14sp"
         android:visibility="invisible"
@@ -152,12 +172,25 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:fontFamily="@font/raleway_medium"
-        android:text="user@email.com"
+        android:text="@string/user_email_com"
         android:textSize="14sp"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_userType" />
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        app:adSize="SMART_BANNER"
+        app:adUnitId="@string/banner_ad_test"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

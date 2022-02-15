@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffff"
+        tools:viewBindingIgnore="true"
+        tools:context="com.sstechcanada.todo.activities.CompletedTodoListActivity">
+
+        <include
+            android:id="@+id/include"
+            layout="@layout/act_bar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/placeholderImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"
+            android:elevation="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/include"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="placeholder.json"
+            app:lottie_loop="true" />
+
+        <TextView
+            android:id="@+id/listNameTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="22dp"
+            android:fontFamily="@font/raleway_medium"
+            android:text="List"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="normal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/include" />
+
+        <LinearLayout
+            android:id="@+id/tabBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:background="@drawable/tab_bg"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/listNameTextView">
+
+            <TextView
+                android:id="@+id/ongoingTab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_to_do_list"
+                android:drawablePadding="10dp"
+                android:fontFamily="@font/raleway"
+                android:paddingHorizontal="18dp"
+                android:paddingVertical="8dp"
+                android:text="Ongoing"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textColor="@color/textHeadings"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorTab" />
+
+            <TextView
+                android:id="@+id/completedTab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/colorTab"
+                android:drawableRight="@drawable/ic_baseline_check_circle_24"
+                android:drawablePadding="10dp"
+                android:fontFamily="@font/raleway"
+                android:paddingHorizontal="18dp"
+                android:paddingVertical="8dp"
+                android:text="completed"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textColor="#ffffff"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_todo_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="12dp"
+            android:visibility="visible"
+            app:layout_anchor="@+id/placeholderImage"
+            app:layout_anchorGravity="center"
+            app:layout_constraintBottom_toTopOf="@+id/adView"
+            app:layout_constraintTop_toBottomOf="@id/tabBar" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="16dp"
+            android:contentDescription="@string/add_new_task"
+            android:src="@drawable/ic_fab_add"
+            app:layout_constraintBottom_toTopOf="@+id/adView"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="4dp"
+            app:adSize="BANNER"
+            app:adUnitId="@string/banner_ad_test"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.438"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -3,39 +3,161 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFffff"
+        android:background="#ffffff"
         tools:context="com.sstechcanada.todo.activities.TodoListActivity">
-        <include layout = "@layout/act_bar"/>
 
-        <ImageView
+        <include
+            android:id="@+id/include"
+            layout="@layout/act_bar" />
+
+        <ProgressBar
+            android:id="@+id/loadingProgressBar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="15dp"
+            android:layout_marginTop="-5dp"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/colorTab"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/include" />
+
+        <TextView
+            android:id="@+id/listNameTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="22dp"
+            android:fontFamily="@font/raleway_medium"
+            android:text="List"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="normal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/include" />
+
+        <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/placeholderImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="40dp"
-            android:visibility="invisible"
             android:layout_gravity="center_vertical"
-            app:srcCompat="@drawable/placeholder" />
+            android:layout_marginBottom="16dp"
+            android:elevation="4dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/include"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="placeholder.json"
+            app:lottie_loop="true" />
+
+        <LinearLayout
+            android:id="@+id/tabBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:background="@drawable/tab_bg"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/listNameTextView">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/colorTab"
+                android:drawableLeft="@drawable/ic_to_do_list"
+                android:drawablePadding="10dp"
+                android:fontFamily="@font/raleway"
+                android:paddingHorizontal="18dp"
+                android:paddingVertical="8dp"
+                android:text="Ongoing"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textColor="#ffffff"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorTab" />
+
+            <TextView
+                android:id="@+id/completedTab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableRight="@drawable/ic_lock"
+                android:drawablePadding="10dp"
+                android:fontFamily="@font/raleway"
+                android:paddingHorizontal="18dp"
+                android:paddingVertical="8dp"
+                android:text="completed"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textColor="@color/textHeadings"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/buttonTapTargetView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OK"
+            android:textColor="#fff"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/rv_todo_list"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/rv_todo_list" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_todo_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="12dp"
             android:visibility="visible"
             app:layout_anchor="@+id/placeholderImage"
             app:layout_anchorGravity="center"
-            android:layout_marginTop="?attr/actionBarSize"/>
+            app:layout_constraintBottom_toTopOf="@+id/adView"
+            app:layout_constraintTop_toBottomOf="@id/tabBar"
+            app:layout_constraintVertical_bias="0.0"
+            tools:layout_editor_absoluteX="0dp" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|bottom"
-                android:src="@drawable/ic_fab_add"
-                android:contentDescription="@string/add_new_task"
-                android:layout_margin="16dp"/>
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="16dp"
+            app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
+            android:contentDescription="@string/add_new_task"
+            android:src="@drawable/ic_fab_add"
+            app:layout_constraintBottom_toTopOf="@+id/adView"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="4dp"
+            app:adSize="BANNER"
+            app:adUnitId="@string/banner_ad_test"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.438"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -5,16 +5,26 @@
     android:id="@+id/toolbar"
     android:background="@color/toolbar_background"
     android:layout_width="match_parent"
-    android:padding="4dp"
     android:layout_height="?attr/actionBarSize">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/arrow_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_left_arrow"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/colorTab" />
+
         <TextView
             android:id="@+id/toolbarTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@+id/profile_toolbar"
             android:fontFamily="@font/raleway_semibold"
@@ -24,18 +34,22 @@
             android:textColor="#000000"
             android:textSize="22sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/arrow_back"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/profile_toolbar"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_margin="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="16dp"
             android:background="@color/toolbar_background"
             android:src="@drawable/user_blue"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.986"
+            app:layout_constraintStart_toEndOf="@+id/toolbarTitle"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
