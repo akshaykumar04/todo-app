@@ -15,9 +15,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-
-
-
         <RelativeLayout
             android:id="@+id/activity_main"
             android:layout_width="match_parent"
@@ -32,20 +29,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
-                android:inputType="textCapSentences"
-                android:fontFamily="@font/raleway_medium"
                 android:background="@drawable/disc_edit_text"
-                android:padding="10dp"
-                android:maxLines="1"
+                android:fontFamily="@font/raleway_medium"
+                android:hint="Enter Benefits name"
+                android:inputType="textCapSentences"
                 android:maxLength="18"
-                android:hint="Enter Benefits name" />
+                android:maxLines="1"
+                android:padding="10dp" />
 
 
             <Button
                 android:id="@+id/buttonAddCategory"
                 android:layout_width="match_parent"
-                android:layout_below="@id/editTextName"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/editTextName"
                 android:layout_marginTop="20dp"
                 android:fontFamily="@font/raleway_semibold"
                 android:text="Add" />
@@ -55,30 +52,30 @@
                 android:id="@+id/textView1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:textSize="20sp"
                 android:layout_below="@id/buttonAddCategory"
+                android:layout_marginTop="20dp"
                 android:fontFamily="@font/raleway_semibold"
-                android:text="@string/Categories" />
+                android:text="@string/Categories"
+                android:textSize="20sp" />
 
-<!--            <ListView-->
-<!--                android:id="@+id/listViewCategory"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="0dp"-->
-<!--                android:layout_above="@+id/adView"-->
-<!--                android:layout_below="@+id/textView1"-->
-<!--                android:layout_marginTop="16dp"-->
-<!--                android:layout_marginBottom="16dp" />-->
+            <!--            <ListView-->
+            <!--                android:id="@+id/listViewCategory"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="0dp"-->
+            <!--                android:layout_above="@+id/adView"-->
+            <!--                android:layout_below="@+id/textView1"-->
+            <!--                android:layout_marginTop="16dp"-->
+            <!--                android:layout_marginBottom="16dp" />-->
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/listViewCategory"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                tools:listitem="@layout/layout_artist_list"
                 android:layout_above="@+id/adView"
                 android:layout_below="@+id/textView1"
                 android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp" />
+                android:layout_marginBottom="16dp"
+                tools:listitem="@layout/layout_artist_list" />
 
 
             <com.google.android.gms.ads.AdView
@@ -98,16 +95,15 @@
 
         <ProgressBar
             android:id="@+id/progressCat"
-            android:visibility="invisible"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
 </layout>

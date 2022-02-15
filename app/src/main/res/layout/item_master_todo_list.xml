@@ -11,7 +11,7 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
+    android:layout_height="@dimen/_48sdp"
     android:layout_marginStart="16dp"
     android:layout_marginLeft="16dp"
     android:layout_marginTop="8dp"
@@ -27,9 +27,9 @@
 
         <TextView
             android:id="@+id/list_default_icon"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="8dp"
+            android:layout_width="@dimen/_24sdp"
+            android:layout_height="@dimen/_24sdp"
+            android:layout_marginStart="@dimen/_12sdp"
             android:background="@drawable/master_list_default_icon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -38,7 +38,7 @@
 
         <TextView
             android:id="@+id/tv_todo_list_name"
-            android:layout_width="250dp"
+            android:layout_width="@dimen/_220sdp"
             android:layout_height="22dp"
             android:layout_marginStart="16dp"
             android:ellipsize="end"
@@ -46,9 +46,10 @@
             android:maxLines="1"
             android:text="Todo List Name"
             android:textColor="@color/textHeadings"
-            android:textSize="16sp"
+            android:textSize="@dimen/_12ssp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/circle_per_item"
             app:layout_constraintStart_toEndOf="@+id/list_default_icon"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -75,14 +76,12 @@
         <TextView
             android:id="@+id/circle_per_item"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_todo_list_name"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintVertical_bias="0.484"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="20dp"
+            android:layout_marginEnd="@dimen/_12sdp"
             android:backgroundTint="@color/textHeadings"
             android:background="@drawable/ic_baseline_navigate_next_24" />
 

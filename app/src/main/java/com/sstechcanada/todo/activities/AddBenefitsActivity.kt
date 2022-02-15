@@ -1,5 +1,6 @@
 package com.sstechcanada.todo.activities
 
+import android.R.attr
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -8,6 +9,7 @@ import com.sstechcanada.todo.adapters.BenefitsAdapter
 import android.os.Bundle
 import com.sstechcanada.todo.R
 import android.content.Intent
+import android.util.Log
 import android.view.View
 import android.widget.*
 import com.sstechcanada.todo.activities.auth.LoginActivity
@@ -15,13 +17,22 @@ import com.google.android.gms.ads.AdView
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.firestore.SetOptions
 import es.dmoral.toasty.Toasty
 import com.google.firebase.firestore.Query
+import com.google.firebase.messaging.FirebaseMessaging
 import com.sstechcanada.todo.models.Category
 import kotlinx.android.synthetic.main.act_bar.*
 import kotlinx.android.synthetic.main.activity_category.*
 import java.util.HashMap
+import android.R.attr.label
+
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import kotlinx.android.synthetic.main.item_grid.*
+
 
 class AddBenefitsActivity : AppCompatActivity(),
     BenefitsAdapter.Callbacks {
@@ -54,6 +65,12 @@ class AddBenefitsActivity : AppCompatActivity(),
             val adRequest = AdRequest.Builder().build()
             adView.loadAd(adRequest)
         }
+
+        toolbarTitle.setOnLongClickListener{
+            getFcmToken()
+            return@setOnLongClickListener true
+        }
+
     }
 
     private fun setUpRecyclerView() {
@@ -113,6 +130,26 @@ class AddBenefitsActivity : AppCompatActivity(),
             //if the value is not given displaying a toast
             Toasty.warning(this, "Please enter a name", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun getFcmToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("FCM", "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+
+            // Log and toast
+            val msg = getString(R.string.msg_token_fmt, token)
+            Log.d("FCM", msg)
+            Toast.makeText(baseContext, "FCM Token Copied to Clipboard", Toast.LENGTH_SHORT).show()
+            val clipboard: ClipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("label", msg)
+            clipboard.setPrimaryClip(clip)
+        })
     }
 
     override fun showProgressBar() {

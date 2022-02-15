@@ -79,5 +79,9 @@ dependencies {
     //Rate app
     implementation 'com.github.hotchemi:android-rate:1.0.1'
 
+    //sdp/ssp
+    implementation 'com.intuit.sdp:sdp-android:1.0.6'
+    implementation 'com.intuit.ssp:ssp-android:1.0.6'
+
 
 }

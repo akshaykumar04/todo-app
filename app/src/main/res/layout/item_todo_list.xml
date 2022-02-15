@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/materialCard"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
+    android:layout_height="@dimen/_48sdp"
     android:layout_marginStart="16dp"
     android:layout_marginTop="8dp"
     android:layout_marginEnd="16dp"
@@ -73,7 +73,7 @@
 
             <TextView
                 android:id="@+id/tv_todo_desc"
-                android:layout_width="250dp"
+                android:layout_width="@dimen/_220sdp"
                 android:layout_height="22dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
@@ -82,7 +82,7 @@
                 android:maxLines="1"
                 android:text="Todo Description"
                 android:textColor="@color/textHeadings"
-                android:textSize="16sp"
+                android:textSize="@dimen/_12ssp"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/circle_per_item"
@@ -90,13 +90,12 @@
 
             <TextView
                 android:id="@+id/todo_benefits"
-                android:layout_width="250dp"
+                android:layout_width="@dimen/_220sdp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
                 android:fontFamily="@font/raleway_semibold"
                 android:maxLines="1"
                 android:textColor="@color/circle1"
-                android:textSize="9sp"
+                android:textSize="@dimen/_8ssp"
                 android:textStyle="italic"
                 app:layout_constraintStart_toStartOf="@id/tv_todo_desc"
                 app:layout_constraintTop_toBottomOf="@id/tv_todo_desc"

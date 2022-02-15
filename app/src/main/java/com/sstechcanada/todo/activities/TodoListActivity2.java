@@ -239,7 +239,6 @@ public class TodoListActivity2 extends AppCompatActivity {
         if (getIntent().getExtras() != null) {
             listName = getIntent().getStringExtra("ListName");
             listId = getIntent().getStringExtra("ListId");
-            ViewUtils.INSTANCE.showToast(this, listName + listId);
         }
         setUpFirestoreRecyclerView();
     }
