@@ -9,7 +9,6 @@ object Constants {
     //App Screens
     const val UPGRADE_SCREEN = "upgrade_screen"
     const val TODO_LISTS_SCREEN = "todo_list_screen"
-    const val TODO_ITEMS_SCREEN = "todo_items_screen"
     const val TODO_BENEFITS_SCREEN = "todo_benefits_screen"
     const val TODO_PROFILE_SCREEN = "todo_profile_screen"
     const val TODO_RATE_APP = "todo_rate_app"

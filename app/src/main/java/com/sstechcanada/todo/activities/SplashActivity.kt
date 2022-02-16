@@ -55,10 +55,6 @@ class SplashActivity : AppCompatActivity() {
                     startActivity(Intent(this, MasterTodoListActivity::class.java))
                     finish()
                 }
-                Constants.TODO_ITEMS_SCREEN -> {
-                    startActivity(Intent(this, AddOrEditTaskActivity2::class.java))
-                    finish()
-                }
                 Constants.TODO_BENEFITS_SCREEN -> {
                     startActivity(Intent(this, AddBenefitsActivity::class.java))
                 }
