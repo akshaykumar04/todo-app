@@ -45,8 +45,8 @@ import es.dmoral.toasty.Toasty;
 
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.listId;
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.purchaseCode;
-import static com.sstechcanada.todo.activities.TodoListActivity2.hidePlaceHolder;
-import static com.sstechcanada.todo.activities.TodoListActivity2.showPlaceHolder;
+import static com.sstechcanada.todo.activities.TodoListActivity.hidePlaceHolder;
+import static com.sstechcanada.todo.activities.TodoListActivity.showPlaceHolder;
 import static com.sstechcanada.todo.activities.auth.LoginActivity.userAccountDetails;
 
 public class TodoListFirestoreAdapter extends FirestoreRecyclerAdapter<TodoTaskFirestore, TodoListFirestoreAdapter.TodoListFirestoreHolder> {

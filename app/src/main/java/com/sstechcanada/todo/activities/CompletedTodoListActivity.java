@@ -50,7 +50,7 @@ import es.dmoral.toasty.Toasty;
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.listId;
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.listName;
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.purchaseCode;
-import static com.sstechcanada.todo.activities.TodoListActivity2.lottieAnimationView;
+import static com.sstechcanada.todo.activities.TodoListActivity.lottieAnimationView;
 
 public class CompletedTodoListActivity extends AppCompatActivity {
 
@@ -136,7 +136,7 @@ public class CompletedTodoListActivity extends AppCompatActivity {
 
         ongoingTab = findViewById(R.id.ongoingTab);
         ongoingTab.setOnClickListener(view -> {
-            startActivity(new Intent(CompletedTodoListActivity.this, TodoListActivity2.class));
+            onBackPressed();
         });
 
     }

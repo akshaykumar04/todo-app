@@ -25,7 +25,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.AppUpgradeActivity2;
-import com.sstechcanada.todo.activities.TodoListActivity2;
+import com.sstechcanada.todo.activities.TodoListActivity;
 import com.sstechcanada.todo.models.List;
 
 import es.dmoral.toasty.Toasty;
@@ -88,7 +88,7 @@ public class MasterListFirestoreAdapter extends FirestoreRecyclerAdapter<List, M
                     listId= model.getListId();
                     Log.i("ListId", "Firestore: "+listId);
                     FirebaseCrashlytics.getInstance().log(this.getClass().getSimpleName()+"listId = "+listId);
-                    Intent intent = new Intent(context, TodoListActivity2.class);
+                    Intent intent = new Intent(context, TodoListActivity.class);
                     intent.putExtra("ListId",listId);
                     if(model.getListName()!=null && (!model.getListName().equals(""))){
                         listName=model.getListName();
