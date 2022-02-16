@@ -10,10 +10,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.sstechcanada.todo.BuildConfig
+import com.sstechcanada.todo.BuildConfig.VERSION_NAME
 import com.sstechcanada.todo.R
 import com.sstechcanada.todo.activities.auth.LoginActivity
 import com.sstechcanada.todo.utils.Constants
 import com.sstechcanada.todo.utils.SaveSharedPreference
+import kotlinx.android.synthetic.main.activity_splash.*
 
 class SplashActivity : AppCompatActivity() {
     private var TIME_OUT: Long = 2100
@@ -31,6 +34,7 @@ class SplashActivity : AppCompatActivity() {
             fetchIntentData()
         }, TIME_OUT)
 
+        textViewVersion.text = "Version: $VERSION_NAME";
     }
 
 
