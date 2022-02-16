@@ -520,23 +520,19 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
             newTaskMap.put("Status", task_status);
             newTaskMap.put("TimestampCompleted", " ");
 
-            UserColRef.document().set(newTaskMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    loadingProgressBarUpdate.setVisibility(View.GONE);
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    Toasty.success(AddOrEditTaskActivity2.this, "New list item added successfully", Toasty.LENGTH_SHORT).show();
-                    Intent intent = new Intent(AddOrEditTaskActivity2.this, TodoListActivity2.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    loadingProgressBarUpdate.setVisibility(View.GONE);
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    Toasty.error(AddOrEditTaskActivity2.this, "Something went wrong", Toasty.LENGTH_SHORT).show();
-                }
+            UserColRef.document().set(newTaskMap).addOnSuccessListener(aVoid -> {
+                loadingProgressBarUpdate.setVisibility(View.GONE);
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                Toasty.success(AddOrEditTaskActivity2.this, "New list item added successfully", Toasty.LENGTH_SHORT).show();
+//                Intent intent = new Intent(AddOrEditTaskActivity2.this, TodoListActivity.class);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                startActivity(intent);
+                finish();
+                onBackPressed();
+            }).addOnFailureListener(e -> {
+                loadingProgressBarUpdate.setVisibility(View.GONE);
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                Toasty.error(AddOrEditTaskActivity2.this, "Something went wrong", Toasty.LENGTH_SHORT).show();
             });
 
         } else {
@@ -564,10 +560,11 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                     loadingProgressBarUpdate.setVisibility(View.GONE);
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     Toasty.success(AddOrEditTaskActivity2.this, "List item updated successfully", Toasty.LENGTH_SHORT).show();
-                    Intent intent = new Intent(AddOrEditTaskActivity2.this, TodoListActivity2.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-
+//                    Intent intent = new Intent(AddOrEditTaskActivity2.this, TodoListActivity.class);
+//                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                    startActivity(intent);
+                    finish();
+                    onBackPressed();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
