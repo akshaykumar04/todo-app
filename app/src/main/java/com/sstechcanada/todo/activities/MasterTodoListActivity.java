@@ -1,11 +1,7 @@
 package com.sstechcanada.todo.activities;
 
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
@@ -46,8 +42,6 @@ import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -61,7 +55,6 @@ import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.auth.LoginActivity;
 import com.sstechcanada.todo.adapters.MasterListFirestoreAdapter;
 import com.sstechcanada.todo.adapters.MasterListGridViewAdapter;
-import com.sstechcanada.todo.broadcast_receivers.DailyAlarmReceiver;
 import com.sstechcanada.todo.custom_views.MasterIconGridItemView;
 import com.sstechcanada.todo.models.List;
 import com.sstechcanada.todo.utils.Constants;
@@ -73,7 +66,6 @@ import java.util.Map;
 
 import es.dmoral.toasty.Toasty;
 import hotchemi.android.rate.AppRate;
-import hotchemi.android.rate.OnClickButtonListener;
 
 import static com.sstechcanada.todo.activities.auth.LoginActivity.SHAREDPREF;
 import static com.sstechcanada.todo.activities.auth.LoginActivity.userAccountDetails;
@@ -231,11 +223,8 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
 
 //                        checkSubscriptions();
             });
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+        }).addOnFailureListener(e -> {
 
-            }
         });
 
 //        this.recreate();
@@ -272,17 +261,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
             newList.put("positionImage", sdrawable);
 //            newList.put("ListDescription", description);
 
-            usersColRef.document(userID).collection("Lists").document().set(newList).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    Toasty.success(MasterTodoListActivity.this, "New List Successfully Added");
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toasty.error(MasterTodoListActivity.this, "Something went wrong");
-                }
-            });
+            usersColRef.document(userID).collection("Lists").document().set(newList).addOnSuccessListener(aVoid -> Toasty.success(MasterTodoListActivity.this, "New List Successfully Added")).addOnFailureListener(e -> Toasty.error(MasterTodoListActivity.this, "Something went wrong"));
         });
 
         if (purchaseCode.equals("0")) {
@@ -330,17 +309,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
             list.put("positionImage", sdrawable);
 //            list.put("ListDescription", description);
 
-            usersColRef.document(userID).collection("Lists").document(documentSnapshotId).update(list).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    Toasty.success(MasterTodoListActivity.this, "List Successfully Edited");
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toasty.error(MasterTodoListActivity.this, "Something went wrong");
-                }
-            });
+            usersColRef.document(userID).collection("Lists").document(documentSnapshotId).update(list).addOnSuccessListener(aVoid -> Toasty.success(MasterTodoListActivity.this, "List Successfully Edited")).addOnFailureListener(e -> Toasty.error(MasterTodoListActivity.this, "Something went wrong"));
         });
 
         if (purchaseCode.equals("0")) {
@@ -392,11 +361,6 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
                 ((MasterIconGridItemView) v).display(true);
                 gridAdapter.selectedPosition = position;
 
-//                for(int i=0;i<listDrawable.length;i++) {
-//                    Log.i("gridView", String.valueOf(i));
-//                    ((MasterIconGridItemView) v).display(i == position);
-//
-//                }
             }
 
         });
@@ -404,36 +368,6 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
     }
 
     private void setUpFirestoreRecyclerView() {
-//        ItemTouchHelper mIth = new ItemTouchHelper(
-//                new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN,
-//                        ItemTouchHelper.LEFT) {
-//                    public boolean onMove(RecyclerView mRecyclerView,
-//                                          RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-//                        final int fromPos = viewHolder.getAdapterPosition();
-//                        final int toPos = target.getAdapterPosition();
-//                        // move item in `fromPos` to `toPos` in adapter.
-//                        return true;// true if moved, false otherwise
-//                    }
-//                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-//                        // remove from adapter
-//                    }
-//
-//                    @Override
-//                    public int convertToAbsoluteDirection(int flags, int layoutDirection) {
-//                        if (swipeBack) {
-//                            swipeBack = false;
-//                            return 0;
-//                        }
-//                        return super.convertToAbsoluteDirection(flags, layoutDirection);
-//                    }
-//
-//                    @Override
-//                    public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-//                        super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-//                    }
-//
-//                });
-
 
         Query query = usersColRef.document(userID).collection("Lists");
         FirestoreRecyclerOptions<List> options = new FirestoreRecyclerOptions.Builder<List>().setQuery(query, List.class).build();
@@ -450,31 +384,28 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
                         .setIcon(android.R.drawable.ic_menu_delete)
                         .setTitle("Confirm Delete")
                         .setMessage("Are you sure you want to delete this list?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                        .setPositiveButton("Yes", (dialog, which) -> {
 
-                                if (purchaseCode.equals("0")) {
-                                    if (mInterstitialAd != null) {
-                                        mInterstitialAd.show(MasterTodoListActivity.this);
-                                        DocumentSnapshot documentSnapshot = masterListFirestoreAdapter.getSnapshots().getSnapshot(position);
-                                        String id = documentSnapshot.getId();
-                                        usersColRef.document(userID).collection("Lists").document(id).delete();
-                                    } else {
-                                        DocumentSnapshot documentSnapshot = masterListFirestoreAdapter.getSnapshots().getSnapshot(position);
-                                        String id = documentSnapshot.getId();
-                                        usersColRef.document(userID).collection("Lists").document(id).delete();
-                                    }
-
+                            if (purchaseCode.equals("0")) {
+                                if (mInterstitialAd != null) {
+                                    mInterstitialAd.show(MasterTodoListActivity.this);
+                                    DocumentSnapshot documentSnapshot = masterListFirestoreAdapter.getSnapshots().getSnapshot(position);
+                                    String id = documentSnapshot.getId();
+                                    usersColRef.document(userID).collection("Lists").document(id).delete();
                                 } else {
                                     DocumentSnapshot documentSnapshot = masterListFirestoreAdapter.getSnapshots().getSnapshot(position);
                                     String id = documentSnapshot.getId();
                                     usersColRef.document(userID).collection("Lists").document(id).delete();
-                                    Toasty.error(MasterTodoListActivity.this, "List Deleted", Toast.LENGTH_SHORT).show();
                                 }
 
-
+                            } else {
+                                DocumentSnapshot documentSnapshot = masterListFirestoreAdapter.getSnapshots().getSnapshot(position);
+                                String id = documentSnapshot.getId();
+                                usersColRef.document(userID).collection("Lists").document(id).delete();
+                                Toasty.error(MasterTodoListActivity.this, "List Deleted", Toast.LENGTH_SHORT).show();
                             }
+
+
                         })
                         .setNegativeButton("No", null)
                         .show();
@@ -607,45 +538,13 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
 
     }
 
-
-    public void scheduleDailyDueCheckerAlarm() {
-        Intent intent = new Intent(getApplicationContext(), DailyAlarmReceiver.class);
-
-        final PendingIntent pendingIntent = PendingIntent.getBroadcast(this,
-                DailyAlarmReceiver.REQUEST_CODE,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-        long firstMillis = System.currentTimeMillis(); // alarm is set right away
-
-        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        // First parameter is the type: ELAPSED_REALTIME, ELAPSED_REALTIME_WAKEUP, RTC_WAKEUP
-        // Interval can be INTERVAL_FIFTEEN_MINUTES, INTERVAL_HALF_HOUR, INTERVAL_HOUR, INTERVAL_DAY
-        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis,
-                AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
-    }
-
-    public void cancelAlarm() {
-        Intent intent = new Intent(getApplicationContext(), DailyAlarmReceiver.class);
-        final PendingIntent pIntent = PendingIntent.getBroadcast(this, DailyAlarmReceiver.REQUEST_CODE,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        alarm.cancel(pIntent);
-    }
-
     public boolean isLogin() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
             Toasty.warning(this, getString(R.string.login_first), Toast.LENGTH_SHORT).show();
             startActivity(new Intent(MasterTodoListActivity.this, LoginActivity.class));
             return false;
-        }
-//        else if (list_limit <= list_cnt) {
-//            //Limit Check
-//            Toasty.warning(this, getString(R.string.upgrade_master_list), Toast.LENGTH_LONG, true).show();
-//            startActivity(new Intent(MasterTodoListActivity.this, AppUpgradeActivity2.class));
-//            return false;
-//        }
-        else {
+        } else {
             return true;
         }
 //        return true;

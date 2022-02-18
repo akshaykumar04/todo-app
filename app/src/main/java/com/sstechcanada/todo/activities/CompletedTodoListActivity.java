@@ -1,10 +1,7 @@
 package com.sstechcanada.todo.activities;
 
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -40,7 +37,6 @@ import com.google.firebase.firestore.Query;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.auth.LoginActivity;
 import com.sstechcanada.todo.adapters.TodoListFirestoreAdapter;
-import com.sstechcanada.todo.broadcast_receivers.DailyAlarmReceiver;
 import com.sstechcanada.todo.models.TodoTaskFirestore;
 import com.sstechcanada.todo.utils.SwipeController;
 import com.sstechcanada.todo.utils.SwipeControllerActions;
@@ -80,20 +76,14 @@ public class CompletedTodoListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_completed_todo_list);
-//        mBinding = ActivityCompletedTodoListBinding.inflate(getLayoutInflater());
-//        View view = mBinding.getRoot();
-//        setContentView(view);
-
 
         mRecyclerView = findViewById(R.id.rv_todo_list);
-//        placeholderImage=findViewById(R.id.placeholderImage);
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         userID = user.getUid();
 
         textViewListName = findViewById(R.id.listNameTextView);
         lottieAnimationView = findViewById(R.id.placeholderImage);
-
 
         setUpFirestoreRecyclerView();
 
@@ -112,32 +102,22 @@ public class CompletedTodoListActivity extends AppCompatActivity {
 
 
         toolbar_profile = findViewById(R.id.profile_toolbar);
-        toolbar_profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(CompletedTodoListActivity.this, LoginActivity.class));
-            }
-        });
+        toolbar_profile.setOnClickListener(view -> startActivity(new Intent(CompletedTodoListActivity.this, LoginActivity.class)));
 
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                db_cnt = todoListFirestoreAdapter.getItemCount();
+        fab.setOnClickListener(view -> {
+            db_cnt = todoListFirestoreAdapter.getItemCount();
 //                Log.i("ItemCount", String.valueOf(db_cnt));
-                setValue();
-                if (isLogin()) {
-                    Intent intent = new Intent(CompletedTodoListActivity.this, AddOrEditTaskActivity2.class);
-                    intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
-                    startActivityForResult(intent, ADD_TASK_REQUEST);
-                }
+            setValue();
+            if (isLogin()) {
+                Intent intent = new Intent(CompletedTodoListActivity.this, AddOrEditTaskActivity2.class);
+                intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
+                startActivityForResult(intent, ADD_TASK_REQUEST);
             }
         });
 
         ongoingTab = findViewById(R.id.ongoingTab);
-        ongoingTab.setOnClickListener(view -> {
-            onBackPressed();
-        });
+        ongoingTab.setOnClickListener(view -> onBackPressed());
 
     }
 
@@ -172,10 +152,6 @@ public class CompletedTodoListActivity extends AppCompatActivity {
                         .setNegativeButton("No", null)
                         .show();
             }
-
-//                mAdapter.players.remove(position);
-//                mAdapter.notifyItemRemoved(position);
-//                mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
 
             @Override
             public void onLeftClicked(int position) {
@@ -257,31 +233,6 @@ public class CompletedTodoListActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 //        mSharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
-    }
-
-
-    public void scheduleDailyDueCheckerAlarm() {
-        Intent intent = new Intent(getApplicationContext(), DailyAlarmReceiver.class);
-
-        final PendingIntent pendingIntent = PendingIntent.getBroadcast(this,
-                DailyAlarmReceiver.REQUEST_CODE,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-        long firstMillis = System.currentTimeMillis(); // alarm is set right away
-
-        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        // First parameter is the type: ELAPSED_REALTIME, ELAPSED_REALTIME_WAKEUP, RTC_WAKEUP
-        // Interval can be INTERVAL_FIFTEEN_MINUTES, INTERVAL_HALF_HOUR, INTERVAL_HOUR, INTERVAL_DAY
-        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis,
-                AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
-    }
-
-    public void cancelAlarm() {
-        Intent intent = new Intent(getApplicationContext(), DailyAlarmReceiver.class);
-        final PendingIntent pIntent = PendingIntent.getBroadcast(this, DailyAlarmReceiver.REQUEST_CODE,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        alarm.cancel(pIntent);
     }
 
     public boolean isLogin() {
