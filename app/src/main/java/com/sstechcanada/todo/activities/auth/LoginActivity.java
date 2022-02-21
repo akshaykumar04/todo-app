@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -277,6 +278,7 @@ public class LoginActivity extends AppCompatActivity {
             } else {
                 userType.setText(R.string.premium_user);
             }
+            Glide.with(this).load(User.getPhotoUrl()).into(dp);
             updateUI(User);
         } else {
             googleSignInButton.setVisibility(View.VISIBLE);

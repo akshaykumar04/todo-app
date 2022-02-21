@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -102,6 +103,7 @@ public class CompletedTodoListActivity extends AppCompatActivity {
 
 
         toolbar_profile = findViewById(R.id.profile_toolbar);
+        Glide.with(this).load(mAuth.getCurrentUser().getPhotoUrl()).into(toolbar_profile);
         toolbar_profile.setOnClickListener(view -> startActivity(new Intent(CompletedTodoListActivity.this, LoginActivity.class)));
 
         FloatingActionButton fab = findViewById(R.id.fab);

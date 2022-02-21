@@ -36,12 +36,14 @@ import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
+import com.bumptech.glide.Glide
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.getkeepsafe.taptargetview.TapTargetSequence
 import com.getkeepsafe.taptargetview.TapTarget
 import com.google.android.gms.ads.*
 import com.google.firebase.firestore.Query
 import com.sstechcanada.todo.databinding.ActivityTodoListBinding
+import kotlinx.android.synthetic.main.act_bar.*
 import kotlinx.android.synthetic.main.activity_todo_list.*
 
 class TodoListActivity : AppCompatActivity() {
@@ -101,6 +103,7 @@ class TodoListActivity : AppCompatActivity() {
             adView?.visibility = View.GONE
         }
         toolbar_profile = findViewById(R.id.profile_toolbar)
+        Glide.with(this).load(mAuth?.currentUser?.photoUrl).into(profile_toolbar)
         toolbar_profile?.setOnClickListener {
             startActivity(
                 Intent(

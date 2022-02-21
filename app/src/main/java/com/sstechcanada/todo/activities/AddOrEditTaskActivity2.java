@@ -20,6 +20,7 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.cardview.widget.CardView;
 import androidx.databinding.DataBindingUtil;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -146,6 +147,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
         benefitCollectionRef = db.collection("Users").document(userID).collection("Benefits");
         UserColRef = db.collection("Users").document(userID).collection("Lists").document(listId).collection("Todo");
         Log.i("ListId", "Add or edit: " + listId);
+        Glide.with(this).load(mAuth.getCurrentUser().getPhotoUrl()).into(toolbar_profile);
 
         if (purchaseCode.equals("0")) {
             loadBannerAds();

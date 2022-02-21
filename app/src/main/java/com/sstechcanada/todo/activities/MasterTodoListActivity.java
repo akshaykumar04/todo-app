@@ -32,6 +32,7 @@ import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
 import com.android.billingclient.api.BillingClient;
 import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.TransactionDetails;
+import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetSequence;
@@ -174,6 +175,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
 
 
         toolbar_profile = findViewById(R.id.profile_toolbar);
+        Glide.with(this).load(mAuth.getCurrentUser().getPhotoUrl()).into(toolbar_profile);
         toolbar_profile.setOnClickListener(view -> startActivity(new Intent(MasterTodoListActivity.this, LoginActivity.class)));
 
 

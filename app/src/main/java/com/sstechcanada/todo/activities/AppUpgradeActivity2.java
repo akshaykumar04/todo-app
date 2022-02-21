@@ -45,7 +45,7 @@ public class AppUpgradeActivity2 extends AppCompatActivity implements BillingPro
     LottieAnimationView buttonUpgrade;
     FloatingActionButton fabBack;
     ToggleButtonLayout toggle_button_layout;
-    TextView tvListsCount;
+    TextView tvListsCount, list2, list3, list4, list5;
     BillingProcessor bp;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     String userID = mAuth.getCurrentUser().getUid();
@@ -65,6 +65,10 @@ public class AppUpgradeActivity2 extends AppCompatActivity implements BillingPro
         fabBack = findViewById(R.id.fabBack);
         toggle_button_layout = findViewById(R.id.toggle_button_layout);
         tvListsCount = findViewById(R.id.tvListsCount);
+        list2 = findViewById(R.id.list2);
+        list3 = findViewById(R.id.list3);
+        list4 = findViewById(R.id.list4);
+        list5 = findViewById(R.id.list5);
         loadingProgressBarUpgrade=findViewById(R.id.loadingProgressBarUpgrade);
         setupPriceToggle();
 
@@ -87,7 +91,6 @@ public class AppUpgradeActivity2 extends AppCompatActivity implements BillingPro
             purchaseProductId = "tier2";
             pur_code="2";
         } else if(purchaseCode.equals("1")){
-
             toggle_button_layout.setToggled(R.id.toggle_right, true);
             tvListsCount.setText(getString(R.string.create_up_to_20_to_do_lists));
             purchaseProductId = "tier2";
@@ -107,12 +110,17 @@ public class AppUpgradeActivity2 extends AppCompatActivity implements BillingPro
                     tvListsCount.setText(getString(R.string.create_up_to_3_to_do_lists));
                     purchaseProductId = "tier1";
                     pur_code = "1";
+                    toggleListPointsVisibility(true);
 
                 } else if (toggle.getId() == R.id.toggle_right) {
                     tvListsCount.setText(getString(R.string.create_up_to_20_to_do_lists));
                     purchaseProductId = "tier2";
                     pur_code = "2";
+                    toggleListPointsVisibility(true);
 
+                } else if (toggle.getId() == R.id.toggle_remove_ads) {
+                    tvListsCount.setText(R.string.removes_ads_completely);
+                    toggleListPointsVisibility(false);
                 }
             }else if(purchaseCode.equals("1")){
 
@@ -122,13 +130,19 @@ public class AppUpgradeActivity2 extends AppCompatActivity implements BillingPro
                     tvListsCount.setText(getString(R.string.create_up_to_20_to_do_lists));
                     purchaseProductId = "tier2";
                     pur_code = "2";
+                    toggleListPointsVisibility(true);
 
                 } else if (toggle.getId() == R.id.toggle_right) {
                     tvListsCount.setText(getString(R.string.create_up_to_20_to_do_lists));
                     purchaseProductId = "tier2";
                     pur_code = "2";
+                    toggleListPointsVisibility(true);
 
+                } else if (toggle.getId() == R.id.toggle_remove_ads) {
+                    tvListsCount.setText(R.string.removes_ads_completely);
+                    toggleListPointsVisibility(false);
                 }
+
             }else{
 //                    IN Tier2
             }
@@ -136,6 +150,22 @@ public class AppUpgradeActivity2 extends AppCompatActivity implements BillingPro
         });
 
 
+    }
+
+    private void toggleListPointsVisibility(Boolean visibility) {
+        if (visibility) {
+            list2.setVisibility(View.VISIBLE);
+            list3.setVisibility(View.VISIBLE);
+            list4.setVisibility(View.VISIBLE);
+            list5.setVisibility(View.VISIBLE);
+            buttonUpgrade.setVisibility(View.VISIBLE);
+        } else {
+            list2.setVisibility(View.INVISIBLE);
+            list3.setVisibility(View.INVISIBLE);
+            list4.setVisibility(View.INVISIBLE);
+            list5.setVisibility(View.INVISIBLE);
+            buttonUpgrade.setVisibility(View.INVISIBLE);
+        }
     }
 
     public void setPurchaseCodeInDatabase(String product_Id) {
