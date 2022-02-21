@@ -1,7 +1,6 @@
 package com.sstechcanada.todo.activities;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,13 +14,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.cardview.widget.CardView;
 import androidx.databinding.DataBindingUtil;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -32,8 +31,6 @@ import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
 import com.google.android.material.chip.ChipGroup;
@@ -42,10 +39,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.auth.LoginActivity;
@@ -135,7 +129,6 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_add_or_edit_task);
 
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar_profile = findViewById(R.id.profile_toolbar);
         toolbar_profile.setOnClickListener(view -> startActivity(new Intent(AddOrEditTaskActivity2.this, LoginActivity.class)));
         toolbarBackIcon = findViewById(R.id.arrow_back);
@@ -149,16 +142,16 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         userID = mAuth.getCurrentUser().getUid();
-        FirebaseCrashlytics.getInstance().log(this.getClass().getSimpleName()+"listId = "+listId);
-        FirebaseCrashlytics.getInstance().log(this.getClass().getSimpleName()+"UserId = "+userID);
+        FirebaseCrashlytics.getInstance().log(this.getClass().getSimpleName() + "listId = " + listId);
+        FirebaseCrashlytics.getInstance().log(this.getClass().getSimpleName() + "UserId = " + userID);
         benefitCollectionRef = db.collection("Users").document(userID).collection("Benefits");
         UserColRef = db.collection("Users").document(userID).collection("Lists").document(listId).collection("Todo");
         Log.i("ListId", "Add or edit: " + listId);
+        Glide.with(this).load(mAuth.getCurrentUser().getPhotoUrl()).into(toolbar_profile);
 
         if (purchaseCode.equals("0")) {
             loadBannerAds();
             loadFullScreenAds();
-//            loadRewardedAds();
         }
 
         long dueDate;
@@ -171,8 +164,6 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
             mAddOrEdit = bundle.getString(getString(R.string.intent_adding_or_editing_key));
 
             if (mAddOrEdit.equals(getString(R.string.add_new_task))) {
-                // when adding a task, default to high priority and no due date
-//               ADDING NEW TASK
                 mBinding.rbHighPriority.setChecked(true);
                 mBinding.rbNoDueDate.setChecked(true);
             } else {
@@ -183,53 +174,33 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 
                 taskCompleted = todoTaskToAddOrEdit.getStatus();
 
-                mBinding.cbTaskCompleted.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+                mBinding.cbTaskCompleted.setOnClickListener(v -> {
 
-                        if (!mBinding.cbTaskCompleted.isChecked()) {
-                            new AlertDialog.Builder(AddOrEditTaskActivity2.this)
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .setTitle("Confirm Incomplete")
-                                    .setMessage("Are you sure you want to mark this task as incomplete?")
-                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-//
-                                        }
-                                    })
-                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            mBinding.cbTaskCompleted.setChecked(true);
-                                        }
-                                    })
-                                    .show();
+                    if (!mBinding.cbTaskCompleted.isChecked()) {
+                        new AlertDialog.Builder(AddOrEditTaskActivity2.this)
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setTitle("Confirm Incomplete")
+                                .setMessage("Are you sure you want to mark this task as incomplete?")
+                                .setPositiveButton("Yes", (dialog, which) -> {
+                                })
+                                .setNegativeButton("No", (dialog, which) -> mBinding.cbTaskCompleted.setChecked(true))
+                                .show();
 
-                        } else {
+                    } else {
 
-                            new AlertDialog.Builder(AddOrEditTaskActivity2.this)
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .setTitle("Confirm Complete")
-                                    .setMessage("Are you sure you want to mark this task as completed?")
-                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            if (purchaseCode.equals("0")) {
-                                                if (mInterstitialAd != null) {
-                                                    mInterstitialAd.show(AddOrEditTaskActivity2.this);
-                                                }
-                                            }
+                        new AlertDialog.Builder(AddOrEditTaskActivity2.this)
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setTitle("Confirm Complete")
+                                .setMessage("Are you sure you want to mark this task as completed?")
+                                .setPositiveButton("Yes", (dialog, which) -> {
+                                    if (purchaseCode.equals("0")) {
+                                        if (mInterstitialAd != null) {
+                                            mInterstitialAd.show(AddOrEditTaskActivity2.this);
                                         }
-                                    })
-                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            mBinding.cbTaskCompleted.setChecked(false);
-                                        }
-                                    })
-                                    .show();
-                        }
+                                    }
+                                })
+                                .setNegativeButton("No", (dialog, which) -> mBinding.cbTaskCompleted.setChecked(false))
+                                .show();
                     }
                 });
                 mBinding.cbTaskCompleted.setChecked(taskCompleted.equals("Completed"));
@@ -238,8 +209,6 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                     mBinding.timestampCompletedtextView.setText(todoTaskToAddOrEdit.getTimestampCompleted());
                     mBinding.timestampCompletedtextView.setVisibility(View.VISIBLE);
                 }
-
-                selectPriorityRadioButton(todoTaskToAddOrEdit.getPriority());
 
                 dueDate = todoTaskToAddOrEdit.getDueDate();
                 Log.d(TAG, "Due date in millis " + dueDate);
@@ -258,7 +227,6 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
             mAddOrEdit = savedInstanceState.getString(getString(R.string.add_or_edit_key));
             mTaskId = savedInstanceState.getString(getString(R.string.id_key));
             mBinding.etTaskDescription.setText(savedInstanceState.getString(getString(R.string.task_description_key)));
-            selectPriorityRadioButton(savedInstanceState.getInt(getString(R.string.priority_key)));
             boolean noDueDate = savedInstanceState.getBoolean(getString(R.string.no_due_date_key));
 
             if (noDueDate) {
@@ -294,95 +262,52 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
         chipGroup = findViewById(R.id.chipGroup);
         addCategories = findViewById(R.id.addCategories);
         addCategories.setOnClickListener(view -> {
-//                Intent intent = new Intent(AddOrEditTaskActivity.this,
-//                        SelectCategoriesDailog.class);
-//                startActivity(intent);
-
             selectCategoriesAlert();
         });
 
         //Grid View End
         if (todoTaskToAddOrEdit != null) {
-//            TodoListDbHelper todoListDbHelper = new TodoListDbHelper(AddOrEditTaskActivity2.this);
-//            ArrayList<HashMap<String, String>> userlist = todoListDbHelper.getUser(mTaskId);
-//            String[] record;
-//            for (HashMap<String, String> user : userlist) {
-//                selectedResult = user.get(COLUMN_CATEGORY);
             record = convertStringToArray(todoTaskToAddOrEdit.getBenefitsString());
             category_count = record.length;
             display_categories(record);
-//            }
         }
 
         MobileAds.initialize(this, initializationStatus -> {
         });
 
         deleteItem = findViewById(R.id.deleteTodoItem);
-        deleteItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                deleteTodoItem();
-            }
-        });
+        deleteItem.setOnClickListener(view -> deleteTodoItem());
 
     }
 
     private void deleteTodoItem() {
         loadFullScreenAds();
-//       if (purchaseCode.equals("0")) {
-//           new AlertDialog.Builder(this)
-//                   .setIcon(android.R.drawable.ic_menu_delete)
-//                   .setTitle("Confirm Delete")
-//                   .setMessage("In this free version of the app, an ad appears when you delete a list item. Continue?")
-//                   .setPositiveButton("Yes", (dialog, which) -> {
-//                       if (purchaseCode.equals("0")) {
-//                           if (mRewardedAd != null) {
-//                               Activity activityContext = AddOrEditTaskActivity2.this;
-//                               mRewardedAd.show(activityContext, rewardItem -> {
-//                                   // Handle the reward.
-//                                   Log.d(TAG, "The user earned the reward.");
-//                                   UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
-//                                   Toasty.error(AddOrEditTaskActivity2.this, "Task Deleted",Toast.LENGTH_SHORT).show();
-//                               });
-//                           } else {
-//                               Log.d(TAG, "The rewarded ad wasn't ready yet.");
-//                               Toasty.info(AddOrEditTaskActivity2.this, "Please wait while the Ad is loading",Toast.LENGTH_SHORT).show();
-//                           }
-//                       } else {
-//                           UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
-//                           finish();
-//                       }
-//                   })
-//                   .setNegativeButton("No", null)
-//                   .show();
-//       } else {
-           new AlertDialog.Builder(this)
-                   .setIcon(android.R.drawable.ic_menu_delete)
-                   .setTitle("Confirm Delete")
-                   .setMessage("Are you sure you want to delete this task?")
-                   .setPositiveButton("Yes", (dialog, which) -> {
-                       if (purchaseCode.equals("0")) {
-                           if (mInterstitialAd != null) {
-                               mInterstitialAd.show(AddOrEditTaskActivity2.this);
-                               UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
-                               Toasty.error(AddOrEditTaskActivity2.this, "Task Deleted",Toast.LENGTH_SHORT).show();
-                               finish();
-                           } else {
-                               UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
-                               Toasty.error(AddOrEditTaskActivity2.this, "Task Deleted",Toast.LENGTH_SHORT).show();
-                               finish();
-                           }
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_menu_delete)
+                .setTitle("Confirm Delete")
+                .setMessage("Are you sure you want to delete this task?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    if (purchaseCode.equals("0")) {
+                        if (mInterstitialAd != null) {
+                            mInterstitialAd.show(AddOrEditTaskActivity2.this);
+                            UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
+                            Toasty.error(AddOrEditTaskActivity2.this, "Task Deleted", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
+                            Toasty.error(AddOrEditTaskActivity2.this, "Task Deleted", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
 
-                       } else {
-                           UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
-                           Toasty.error(AddOrEditTaskActivity2.this, "Task Deleted",Toast.LENGTH_SHORT).show();
-                           finish();
-                       }
+                    } else {
+                        UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
+                        Toasty.error(AddOrEditTaskActivity2.this, "Task Deleted", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
 
-                   })
-                   .setNegativeButton("No", null)
-                   .show();
-//       }
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 
     private void loadBannerAds() {
@@ -397,28 +322,6 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 
 
     }
-
-    private void selectPriorityRadioButton(int priority) {
-//        switch (priority) {
-//            case TodoTask.HIGH_PRIORITY:
-//                mBinding.rbHighPriority.setChecked(true);
-//                break;
-//            case TodoTask.MEDIUM_PRIORITY:
-//                mBinding.rbMediumPriority.setChecked(true);
-//                break;
-//            case TodoTask.LOW_PRIORITY:
-//                mBinding.rbLowPriority.setChecked(true);
-//        }
-    }
-
-//    private void addChip(String pItem, ChipGroup pChipGroup) {
-//        Chip lChip = new Chip(this);
-//        lChip.setText(pItem);
-//        lChip.setTextColor(getResources().getColor(R.color.colorAccent));
-//        lChip.setChipBackgroundColor(getResources().getColorStateList(R.color.design_default_color_primary));
-//
-//        pChipGroup.addView(lChip, pChipGroup.getChildCount() - 1);
-//    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -458,8 +361,6 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
             Toasty.warning(this, getString(R.string.description_cannot_be_empty), Toast.LENGTH_SHORT, true).show();
             loadingProgressBarUpdate.setVisibility(View.GONE);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//        } else if (chipGroup.getChildCount() == 0) {
-//            Toasty.warning(this, getString(R.string.category_cannot_be_empty), Toast.LENGTH_SHORT, true).show();
         } else {
             //Making First Char Capital
             description = description.substring(0, 1).toUpperCase() + description.substring(1);
@@ -486,18 +387,9 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
             } else {
                 isCompleted = TodoTask.TASK_NOT_COMPLETED;
             }
-//          aDDING TO SQLITE
-//            TodoTask todoTask = new TodoTask(description, selectedResult, category_count, priority, dueDate, mTaskId, isCompleted);
-//            insertOrUpdate(todoTask);
-//            uploadDataToFirestore();
-
 
             Intent returnIntent = new Intent();
             setResult(Activity.RESULT_OK, returnIntent);
-
-//            if (mAddOrEdit.equals(getString(R.string.add_new_task)) || isCompleted == 0) {
-//                finish();
-//            }
         }
 
     }
@@ -524,9 +416,6 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                 loadingProgressBarUpdate.setVisibility(View.GONE);
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 Toasty.success(AddOrEditTaskActivity2.this, "New list item added successfully", Toasty.LENGTH_SHORT).show();
-//                Intent intent = new Intent(AddOrEditTaskActivity2.this, TodoListActivity.class);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                startActivity(intent);
                 finish();
                 onBackPressed();
             }).addOnFailureListener(e -> {
@@ -554,25 +443,16 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
             }
             updateTaskMap.put("Status", task_status);
             Log.i("task456", todoTaskToAddOrEdit.getDocumentID() + "jjj");
-            UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).set(updateTaskMap, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    loadingProgressBarUpdate.setVisibility(View.GONE);
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    Toasty.success(AddOrEditTaskActivity2.this, "List item updated successfully", Toasty.LENGTH_SHORT).show();
-//                    Intent intent = new Intent(AddOrEditTaskActivity2.this, TodoListActivity.class);
-//                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                    startActivity(intent);
-                    finish();
-                    onBackPressed();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    loadingProgressBarUpdate.setVisibility(View.GONE);
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    Toasty.error(AddOrEditTaskActivity2.this, "Something went wrong", Toasty.LENGTH_SHORT).show();
-                }
+            UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).set(updateTaskMap, SetOptions.merge()).addOnSuccessListener(aVoid -> {
+                loadingProgressBarUpdate.setVisibility(View.GONE);
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                Toasty.success(AddOrEditTaskActivity2.this, "List item updated successfully", Toasty.LENGTH_SHORT).show();
+                finish();
+                onBackPressed();
+            }).addOnFailureListener(e -> {
+                loadingProgressBarUpdate.setVisibility(View.GONE);
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                Toasty.error(AddOrEditTaskActivity2.this, "Something went wrong", Toasty.LENGTH_SHORT).show();
             });
         }
     }
@@ -600,22 +480,16 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
         // disallow cancel of AlertDialog on click of back button and outside touch
         alert.setCancelable(false);
         alert.setNegativeButton("Cancel", (dialog, which) -> {
-//                Toast.makeText(getBaseContext(), "Cancel clicked", Toast.LENGTH_SHORT).show();
         });
         alert.setPositiveButton("Done", (dialog, which) -> {
             selectedResult = convertArrayToString(selectedStrings);
             category_count = selectedStrings.size();
-//                if (!selectedResult.equals("")) {
             record = convertStringToArray(selectedResult);
-            // Calling Display Category
             display_categories(record);
-//                }
             if (todoTaskToAddOrEdit != null) {
 
                 todoTaskToAddOrEdit.setBenefitsString(selectedResult);
-//                todoTaskToAddOrEdit.setCategory_count();
             }
-//            loadAd(); //disabled full screen ads as requested
         });
 
         addMoreCategories.setOnClickListener(view -> startActivity(new Intent(AddOrEditTaskActivity2.this, AddBenefitsActivity.class)));
@@ -633,50 +507,37 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 
     public void loadCategories() {
 
-//        databaseCategories = FirebaseDatabase.getInstance().getReference("categories");
-//        databaseCategories = FirebaseDatabase.getInstance().getReference(userID).child("benefits");
+        benefitCollectionRef.addSnapshotListener((value, error) -> {
+            categories = new ArrayList<>();
+            selectedStrings = new ArrayList<>();
+            categories.clear();
+            for (DocumentSnapshot dataSnapshot : value) {
+                Category category = new Category(dataSnapshot.getId(), (String) dataSnapshot.get("category_name"));
+                categories.add(category);
+            }
 
-        benefitCollectionRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                categories = new ArrayList<>();
-                selectedStrings = new ArrayList<>();
-                categories.clear();
-                for (DocumentSnapshot dataSnapshot : value) {
-                    Category category = new Category(dataSnapshot.getId(), (String) dataSnapshot.get("category_name"));
-                    categories.add(category);
-                }
+            //iterating through all the nodes
 
-                //iterating through all the nodes
+            adapter = new GridViewAdapter(categories, AddOrEditTaskActivity2.this);
+            gridView.setAdapter(adapter);
+            gridView.setVisibility(View.VISIBLE);
 
-                adapter = new GridViewAdapter(categories, AddOrEditTaskActivity2.this);
-                gridView.setAdapter(adapter);
-                gridView.setVisibility(View.VISIBLE);
-
-                record = convertStringToArray(selectedResult);
-                for (int i = 0; i < categories.size(); i++) {
-                    for (int j = 0; j < record.length; j++) {
-                        if (record[j].equals(categories.get(i).getCategory_name())) {
-                            adapter.selectedPositions.add(i);
-                            selectedStrings.add(record[j]);
-                        }
+            record = convertStringToArray(selectedResult);
+            for (int i = 0; i < categories.size(); i++) {
+                for (int j = 0; j < record.length; j++) {
+                    if (record[j].equals(categories.get(i).getCategory_name())) {
+                        adapter.selectedPositions.add(i);
+                        selectedStrings.add(record[j]);
                     }
                 }
-//                        for(int j=0;j<record.length;j++){
-//                                int k;
-//                                k=categories.indexOf(record[j]);
-//                                adapter.selectedPositions.add(k);
-//                                selectedStrings.add(record[j]);
-//                            }
-////
-                selectedResult = "";
-                selectedResult = convertArrayToString(selectedStrings);
-
-                progressBar.setVisibility(View.INVISIBLE);
-                addMoreCategories.setVisibility(View.VISIBLE);
-
-
             }
+            selectedResult = "";
+            selectedResult = convertArrayToString(selectedStrings);
+
+            progressBar.setVisibility(View.INVISIBLE);
+            addMoreCategories.setVisibility(View.VISIBLE);
+
+
         });
 
 
@@ -692,7 +553,6 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                 selectedStrings.add((String) parent.getItemAtPosition(position));
             }
 
-//                Toast.makeText(AddOrEditTaskActivity.this, convertArrayToString(selectedStrings), Toast.LENGTH_SHORT).show();
         });
 
     }

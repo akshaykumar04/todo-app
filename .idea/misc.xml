@@ -6,9 +6,14 @@
         <entry key="../../../../../layout/custom_preview.xml" value="0.2351851851851852" />
         <entry key="app/src/main/res/drawable/ic_lock.xml" value="0.14427083333333332" />
         <entry key="app/src/main/res/layout/act_bar.xml" value="0.1408514492753623" />
+        <entry key="app/src/main/res/layout/activity_add_or_edit_task.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_app_upgrade.xml" value="0.32923832923832924" />
         <entry key="app/src/main/res/layout/activity_category.xml" value="0.12183383991894631" />
+        <entry key="app/src/main/res/layout/activity_select_categories_dailog.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_splash.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_todo_list.xml" value="0.1" />
         <entry key="app/src/main/res/layout/item_todo_list.xml" value="0.45" />
+        <entry key="app/src/main/res/menu/todo_list_menu.xml" value="0.15855263157894736" />
       </map>
     </option>
   </component>

@@ -31,6 +31,7 @@ import android.R.attr.label
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_grid.*
 
 
@@ -49,6 +50,7 @@ class AddBenefitsActivity : AppCompatActivity(),
         userID = mAuth!!.currentUser!!.uid
         benefitCollectionRef = db.collection("Users").document(userID!!).collection("Benefits")
         userColRef = db.collection("Users").document(userID!!).collection("Lists")
+
         arrow_back.visibility = View.VISIBLE
         arrow_back.setOnClickListener { super.onBackPressed() }
         setUpRecyclerView()
@@ -59,6 +61,7 @@ class AddBenefitsActivity : AppCompatActivity(),
                 Intent(this@AddBenefitsActivity, LoginActivity::class.java)
             )
         }
+        Glide.with(this).load(mAuth?.currentUser?.photoUrl).into(profile_toolbar)
         buttonAddCategory.setOnClickListener { addCategory() }
         if (MasterTodoListActivity.purchaseCode == "0") {
             val adView = findViewById<AdView>(R.id.adView)

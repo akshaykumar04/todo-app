@@ -57,10 +57,7 @@ public class SelectCategoriesDailog extends AppCompatActivity {
 
                 adapter = new GridViewAdapter(categories, SelectCategoriesDailog.this);
                 gridView.setAdapter(adapter);
-//                //creating adapter
-//                CategoryAdapter categotyAdapter = new CategoryAdapter(AddCategoryActivity.this, categories);
-//                //attaching adapter to the listview
-//                listViewCategory.setAdapter(categotyAdapter);
+
             }
 
 

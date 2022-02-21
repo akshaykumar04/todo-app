@@ -158,31 +158,4 @@ public class TodoTaskFirestore implements Parcelable {
         parcel.writeString(benefitsString);
         parcel.writeString(TimestampCompleted);
     }
-
-
-//    public TodoTaskFirestore(String description, int priority, long dueDate, String documentID, int completed,String benefitsString,ArrayList<String> Benefits) {
-//        this.description = description;
-//        this.priority = priority;
-//        this.dueDate = dueDate;
-//        this.documentID = documentID;
-//        this.completed = completed;
-//        this.benefitsString = benefitsString;
-//        this.Benefits=Benefits;
-//    }
-
-
-//    @Override
-//    public void writeToParcel(Parcel dest, int flags) {
-//
-//    }
-
-
-
-    //creator - used when un-parceling our parcle (creating the object)
-
-
-
-
-
-
 }

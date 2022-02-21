@@ -8,4 +8,10 @@
     <item
         android:id="@+id/toggle_right"
         android:title="@string/_9_99_month" />
+
+    <item
+        android:id="@+id/toggle_remove_ads"
+        android:title="@string/remove_ads" />
+
+
 </menu>
