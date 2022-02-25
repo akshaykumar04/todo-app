@@ -14,6 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
         <activity
+            android:name=".activities.auth.AccountSettingActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.auth.ProfileActivity"
             android:exported="false" />
         <activity
@@ -48,7 +51,7 @@
             android:screenOrientation="portrait" />
         <activity android:name=".activities.auth.LoginActivity" />
         <activity
-            android:name=".activities.AddOrEditTaskActivity2"
+            android:name=".activities.AddOrEditTaskActivity"
             android:parentActivityName=".activities.TodoListActivity"
             android:screenOrientation="portrait">
             <meta-data

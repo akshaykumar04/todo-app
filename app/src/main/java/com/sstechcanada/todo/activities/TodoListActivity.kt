@@ -119,7 +119,7 @@ class TodoListActivity : AppCompatActivity() {
             if (LoginActivity.userAccountDetails[1].toInt() > todoListFirestoreAdapter!!.itemCount) {
                 setValue()
                 if (isLogin) {
-                    val intent = Intent(this@TodoListActivity, AddOrEditTaskActivity2::class.java)
+                    val intent = Intent(this@TodoListActivity, AddOrEditTaskActivity::class.java)
                     intent.putExtra(
                         getString(R.string.intent_adding_or_editing_key),
                         getString(R.string.add_new_task)
@@ -288,7 +288,7 @@ class TodoListActivity : AppCompatActivity() {
                         task.timestampCompleted
                     )
                 }
-                val intent = Intent(this@TodoListActivity, AddOrEditTaskActivity2::class.java)
+                val intent = Intent(this@TodoListActivity, AddOrEditTaskActivity::class.java)
                 intent.putExtra("Adding or editing", "Edit Task")
                 intent.putExtra("Todo", todoTask)
                 startActivity(intent)

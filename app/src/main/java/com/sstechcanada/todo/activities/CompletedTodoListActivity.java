@@ -113,7 +113,7 @@ public class CompletedTodoListActivity extends AppCompatActivity {
 //                Log.i("ItemCount", String.valueOf(db_cnt));
             setValue();
             if (isLogin()) {
-                Intent intent = new Intent(CompletedTodoListActivity.this, AddOrEditTaskActivity2.class);
+                Intent intent = new Intent(CompletedTodoListActivity.this, AddOrEditTaskActivity.class);
                 intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
                 startActivityForResult(intent, ADD_TASK_REQUEST);
             }
@@ -161,7 +161,7 @@ public class CompletedTodoListActivity extends AppCompatActivity {
                 DocumentSnapshot documentSnapshot = todoListFirestoreAdapter.getSnapshots().getSnapshot(position);
                 TodoTaskFirestore todoTask = documentSnapshot.toObject(TodoTaskFirestore.class);
 
-                Intent intent = new Intent(CompletedTodoListActivity.this, AddOrEditTaskActivity2.class);
+                Intent intent = new Intent(CompletedTodoListActivity.this, AddOrEditTaskActivity.class);
                 intent.putExtra("Adding or editing", "Edit Task");
                 intent.putExtra("Todo", todoTask);
                 startActivity(intent);

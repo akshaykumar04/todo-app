@@ -46,8 +46,8 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun initOnClicks() {
-        btnSignOut.setOnClickListener { showSignOutDialog() }
         fabBack.setOnClickListener { onBackPressed() }
+        cardSignOut.setOnClickListener { showSignOutDialog() }
     }
 
     private fun setupFirebaseLogin() {

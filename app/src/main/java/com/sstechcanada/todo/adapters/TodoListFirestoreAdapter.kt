@@ -19,7 +19,7 @@ import com.sstechcanada.todo.activities.auth.LoginActivity
 import android.widget.Toast
 import android.content.Intent
 import android.util.Log
-import com.sstechcanada.todo.activities.AddOrEditTaskActivity2
+import com.sstechcanada.todo.activities.AddOrEditTaskActivity
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View
@@ -176,7 +176,7 @@ class TodoListFirestoreAdapter(
                     model.benefitsString,
                     model.timestampCompleted
                 )
-                val intent = Intent(context, AddOrEditTaskActivity2::class.java)
+                val intent = Intent(context, AddOrEditTaskActivity::class.java)
                 intent.putExtra("Adding or editing", "Edit Task")
                 intent.putExtra("Todo", todoTask)
                 context.startActivity(intent)
