@@ -128,7 +128,7 @@ class TodoListActivity : AppCompatActivity() {
             } else {
                 if (isLogin) {
                     if (MasterTodoListActivity.purchaseCode != "2") {
-                        val intent = Intent(this@TodoListActivity, AppUpgradeActivity2::class.java)
+                        val intent = Intent(this@TodoListActivity, AppUpgradeActivity::class.java)
                         //                        intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
                         Toasty.info(
                             applicationContext,
@@ -150,7 +150,7 @@ class TodoListActivity : AppCompatActivity() {
             if (Integer.valueOf(MasterTodoListActivity.purchaseCode) != 0) {
                 startActivity(Intent(this@TodoListActivity, CompletedTodoListActivity::class.java))
             } else {
-                startActivity(Intent(this@TodoListActivity, AppUpgradeActivity2::class.java))
+                startActivity(Intent(this@TodoListActivity, AppUpgradeActivity::class.java))
             }
         }
         rv_todo_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {

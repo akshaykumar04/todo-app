@@ -22,7 +22,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activities.AppUpgradeActivity2"
+            android:name=".activities.AppUpgradeActivity"
             android:screenOrientation="portrait" />
 
 

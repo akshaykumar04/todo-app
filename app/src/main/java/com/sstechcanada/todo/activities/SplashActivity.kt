@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.sstechcanada.todo.BuildConfig
 import com.sstechcanada.todo.BuildConfig.VERSION_NAME
 import com.sstechcanada.todo.R
 import com.sstechcanada.todo.activities.auth.LoginActivity
@@ -76,7 +75,7 @@ class SplashActivity : AppCompatActivity() {
                     finish()
                 }
                 Constants.UPGRADE_SCREEN -> {
-                    startActivity(Intent(this, AppUpgradeActivity2::class.java))
+                    startActivity(Intent(this, AppUpgradeActivity::class.java))
                 }
                 else -> {
                     startActivity(Intent(this, MasterTodoListActivity::class.java))

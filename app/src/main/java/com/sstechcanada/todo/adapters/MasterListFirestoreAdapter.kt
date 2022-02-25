@@ -12,7 +12,6 @@ import es.dmoral.toasty.Toasty
 import android.widget.Toast
 import android.content.Intent
 import android.util.Log
-import com.sstechcanada.todo.activities.AppUpgradeActivity2
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.sstechcanada.todo.activities.TodoListActivity
 import android.view.ViewGroup
@@ -22,6 +21,7 @@ import com.sstechcanada.todo.R
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import com.sstechcanada.todo.activities.AppUpgradeActivity
 import com.sstechcanada.todo.models.List
 import java.lang.Exception
 
@@ -52,7 +52,7 @@ class MasterListFirestoreAdapter(options: FirestoreRecyclerOptions<List?>, var c
                         "Your subscription expired! Renew subscription to continue using premium features",
                         Toast.LENGTH_SHORT
                     ).show()
-                    val intent = Intent(context, AppUpgradeActivity2::class.java)
+                    val intent = Intent(context, AppUpgradeActivity::class.java)
                     //                        intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
                     context.startActivity(intent)
                 } else {
