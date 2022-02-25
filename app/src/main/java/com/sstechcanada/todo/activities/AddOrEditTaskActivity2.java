@@ -43,6 +43,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.auth.LoginActivity;
+import com.sstechcanada.todo.activities.auth.ProfileActivity;
 import com.sstechcanada.todo.adapters.GridViewAdapter;
 import com.sstechcanada.todo.custom_views.GridItemView;
 import com.sstechcanada.todo.databinding.ActivityAddOrEditTaskBinding;
@@ -130,7 +131,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_add_or_edit_task);
 
         toolbar_profile = findViewById(R.id.profile_toolbar);
-        toolbar_profile.setOnClickListener(view -> startActivity(new Intent(AddOrEditTaskActivity2.this, LoginActivity.class)));
+        toolbar_profile.setOnClickListener(view -> startActivity(new Intent(AddOrEditTaskActivity2.this, ProfileActivity.class)));
         toolbarBackIcon = findViewById(R.id.arrow_back);
         loadingProgressBarUpdate = findViewById(R.id.loadingProgressBarUpdate);
         toolbarBackIcon.setVisibility(View.VISIBLE);

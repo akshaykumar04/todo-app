@@ -37,6 +37,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.auth.LoginActivity;
+import com.sstechcanada.todo.activities.auth.ProfileActivity;
 import com.sstechcanada.todo.adapters.TodoListFirestoreAdapter;
 import com.sstechcanada.todo.models.TodoTaskFirestore;
 import com.sstechcanada.todo.utils.SwipeController;
@@ -104,7 +105,7 @@ public class CompletedTodoListActivity extends AppCompatActivity {
 
         toolbar_profile = findViewById(R.id.profile_toolbar);
         Glide.with(this).load(mAuth.getCurrentUser().getPhotoUrl()).into(toolbar_profile);
-        toolbar_profile.setOnClickListener(view -> startActivity(new Intent(CompletedTodoListActivity.this, LoginActivity.class)));
+        toolbar_profile.setOnClickListener(view -> startActivity(new Intent(CompletedTodoListActivity.this, ProfileActivity.class)));
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {

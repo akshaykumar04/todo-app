@@ -42,6 +42,7 @@ import com.getkeepsafe.taptargetview.TapTargetSequence
 import com.getkeepsafe.taptargetview.TapTarget
 import com.google.android.gms.ads.*
 import com.google.firebase.firestore.Query
+import com.sstechcanada.todo.activities.auth.ProfileActivity
 import com.sstechcanada.todo.databinding.ActivityTodoListBinding
 import kotlinx.android.synthetic.main.act_bar.*
 import kotlinx.android.synthetic.main.activity_todo_list.*
@@ -108,7 +109,7 @@ class TodoListActivity : AppCompatActivity() {
             startActivity(
                 Intent(
                     this@TodoListActivity,
-                    LoginActivity::class.java
+                    ProfileActivity::class.java
                 )
             )
         }
