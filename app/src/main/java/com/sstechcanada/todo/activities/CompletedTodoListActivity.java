@@ -37,6 +37,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.auth.LoginActivity;
+import com.sstechcanada.todo.activities.auth.ProfileActivity;
 import com.sstechcanada.todo.adapters.TodoListFirestoreAdapter;
 import com.sstechcanada.todo.models.TodoTaskFirestore;
 import com.sstechcanada.todo.utils.SwipeController;
@@ -104,7 +105,7 @@ public class CompletedTodoListActivity extends AppCompatActivity {
 
         toolbar_profile = findViewById(R.id.profile_toolbar);
         Glide.with(this).load(mAuth.getCurrentUser().getPhotoUrl()).into(toolbar_profile);
-        toolbar_profile.setOnClickListener(view -> startActivity(new Intent(CompletedTodoListActivity.this, LoginActivity.class)));
+        toolbar_profile.setOnClickListener(view -> startActivity(new Intent(CompletedTodoListActivity.this, ProfileActivity.class)));
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
@@ -112,7 +113,7 @@ public class CompletedTodoListActivity extends AppCompatActivity {
 //                Log.i("ItemCount", String.valueOf(db_cnt));
             setValue();
             if (isLogin()) {
-                Intent intent = new Intent(CompletedTodoListActivity.this, AddOrEditTaskActivity2.class);
+                Intent intent = new Intent(CompletedTodoListActivity.this, AddOrEditTaskActivity.class);
                 intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
                 startActivityForResult(intent, ADD_TASK_REQUEST);
             }
@@ -160,7 +161,7 @@ public class CompletedTodoListActivity extends AppCompatActivity {
                 DocumentSnapshot documentSnapshot = todoListFirestoreAdapter.getSnapshots().getSnapshot(position);
                 TodoTaskFirestore todoTask = documentSnapshot.toObject(TodoTaskFirestore.class);
 
-                Intent intent = new Intent(CompletedTodoListActivity.this, AddOrEditTaskActivity2.class);
+                Intent intent = new Intent(CompletedTodoListActivity.this, AddOrEditTaskActivity.class);
                 intent.putExtra("Adding or editing", "Edit Task");
                 intent.putExtra("Todo", todoTask);
                 startActivity(intent);
@@ -246,7 +247,7 @@ public class CompletedTodoListActivity extends AppCompatActivity {
         } else if (list_limit <= db_cnt) {
             //Limit Check
             Toasty.info(this, getString(R.string.upgrade_master_list), Toast.LENGTH_LONG, true).show();
-            startActivity(new Intent(CompletedTodoListActivity.this, AppUpgradeActivity2.class));
+            startActivity(new Intent(CompletedTodoListActivity.this, AppUpgradeActivity.class));
             return false;
         }
         return true;

@@ -42,6 +42,7 @@ import com.getkeepsafe.taptargetview.TapTargetSequence
 import com.getkeepsafe.taptargetview.TapTarget
 import com.google.android.gms.ads.*
 import com.google.firebase.firestore.Query
+import com.sstechcanada.todo.activities.auth.ProfileActivity
 import com.sstechcanada.todo.databinding.ActivityTodoListBinding
 import kotlinx.android.synthetic.main.act_bar.*
 import kotlinx.android.synthetic.main.activity_todo_list.*
@@ -108,7 +109,7 @@ class TodoListActivity : AppCompatActivity() {
             startActivity(
                 Intent(
                     this@TodoListActivity,
-                    LoginActivity::class.java
+                    ProfileActivity::class.java
                 )
             )
         }
@@ -118,7 +119,7 @@ class TodoListActivity : AppCompatActivity() {
             if (LoginActivity.userAccountDetails[1].toInt() > todoListFirestoreAdapter!!.itemCount) {
                 setValue()
                 if (isLogin) {
-                    val intent = Intent(this@TodoListActivity, AddOrEditTaskActivity2::class.java)
+                    val intent = Intent(this@TodoListActivity, AddOrEditTaskActivity::class.java)
                     intent.putExtra(
                         getString(R.string.intent_adding_or_editing_key),
                         getString(R.string.add_new_task)
@@ -128,7 +129,7 @@ class TodoListActivity : AppCompatActivity() {
             } else {
                 if (isLogin) {
                     if (MasterTodoListActivity.purchaseCode != "2") {
-                        val intent = Intent(this@TodoListActivity, AppUpgradeActivity2::class.java)
+                        val intent = Intent(this@TodoListActivity, AppUpgradeActivity::class.java)
                         //                        intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
                         Toasty.info(
                             applicationContext,
@@ -150,7 +151,7 @@ class TodoListActivity : AppCompatActivity() {
             if (Integer.valueOf(MasterTodoListActivity.purchaseCode) != 0) {
                 startActivity(Intent(this@TodoListActivity, CompletedTodoListActivity::class.java))
             } else {
-                startActivity(Intent(this@TodoListActivity, AppUpgradeActivity2::class.java))
+                startActivity(Intent(this@TodoListActivity, AppUpgradeActivity::class.java))
             }
         }
         rv_todo_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -287,7 +288,7 @@ class TodoListActivity : AppCompatActivity() {
                         task.timestampCompleted
                     )
                 }
-                val intent = Intent(this@TodoListActivity, AddOrEditTaskActivity2::class.java)
+                val intent = Intent(this@TodoListActivity, AddOrEditTaskActivity::class.java)
                 intent.putExtra("Adding or editing", "Edit Task")
                 intent.putExtra("Todo", todoTask)
                 startActivity(intent)

@@ -19,8 +19,7 @@ import com.sstechcanada.todo.activities.auth.LoginActivity
 import android.widget.Toast
 import android.content.Intent
 import android.util.Log
-import com.sstechcanada.todo.activities.AppUpgradeActivity2
-import com.sstechcanada.todo.activities.AddOrEditTaskActivity2
+import com.sstechcanada.todo.activities.AddOrEditTaskActivity
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View
@@ -31,6 +30,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import com.sstechcanada.todo.activities.AppUpgradeActivity
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -159,7 +159,7 @@ class TodoListFirestoreAdapter(
                     "Your subscription expired! Renew subscription to continue using premium features",
                     Toast.LENGTH_SHORT
                 ).show()
-                val intent = Intent(context, AppUpgradeActivity2::class.java)
+                val intent = Intent(context, AppUpgradeActivity::class.java)
                 //                        intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
                 context.startActivity(intent)
             } else {
@@ -176,7 +176,7 @@ class TodoListFirestoreAdapter(
                     model.benefitsString,
                     model.timestampCompleted
                 )
-                val intent = Intent(context, AddOrEditTaskActivity2::class.java)
+                val intent = Intent(context, AddOrEditTaskActivity::class.java)
                 intent.putExtra("Adding or editing", "Edit Task")
                 intent.putExtra("Todo", todoTask)
                 context.startActivity(intent)

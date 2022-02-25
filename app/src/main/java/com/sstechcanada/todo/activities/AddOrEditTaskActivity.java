@@ -42,7 +42,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.sstechcanada.todo.R;
-import com.sstechcanada.todo.activities.auth.LoginActivity;
+import com.sstechcanada.todo.activities.auth.ProfileActivity;
 import com.sstechcanada.todo.adapters.GridViewAdapter;
 import com.sstechcanada.todo.custom_views.GridItemView;
 import com.sstechcanada.todo.databinding.ActivityAddOrEditTaskBinding;
@@ -65,8 +65,8 @@ import es.dmoral.toasty.Toasty;
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.listId;
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.purchaseCode;
 
-public class AddOrEditTaskActivity2 extends AppCompatActivity {
-    private static final String TAG = AddOrEditTaskActivity2.class.getSimpleName();
+public class AddOrEditTaskActivity extends AppCompatActivity {
+    private static final String TAG = AddOrEditTaskActivity.class.getSimpleName();
     private static final String[] numbers = new String[20];
     //To Convert String to Array or Array to String
     public static String strSeparator = ", ";
@@ -130,7 +130,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_add_or_edit_task);
 
         toolbar_profile = findViewById(R.id.profile_toolbar);
-        toolbar_profile.setOnClickListener(view -> startActivity(new Intent(AddOrEditTaskActivity2.this, LoginActivity.class)));
+        toolbar_profile.setOnClickListener(view -> startActivity(new Intent(AddOrEditTaskActivity.this, ProfileActivity.class)));
         toolbarBackIcon = findViewById(R.id.arrow_back);
         loadingProgressBarUpdate = findViewById(R.id.loadingProgressBarUpdate);
         toolbarBackIcon.setVisibility(View.VISIBLE);
@@ -177,7 +177,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                 mBinding.cbTaskCompleted.setOnClickListener(v -> {
 
                     if (!mBinding.cbTaskCompleted.isChecked()) {
-                        new AlertDialog.Builder(AddOrEditTaskActivity2.this)
+                        new AlertDialog.Builder(AddOrEditTaskActivity.this)
                                 .setIcon(android.R.drawable.ic_dialog_alert)
                                 .setTitle("Confirm Incomplete")
                                 .setMessage("Are you sure you want to mark this task as incomplete?")
@@ -188,14 +188,14 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 
                     } else {
 
-                        new AlertDialog.Builder(AddOrEditTaskActivity2.this)
+                        new AlertDialog.Builder(AddOrEditTaskActivity.this)
                                 .setIcon(android.R.drawable.ic_dialog_alert)
                                 .setTitle("Confirm Complete")
                                 .setMessage("Are you sure you want to mark this task as completed?")
                                 .setPositiveButton("Yes", (dialog, which) -> {
                                     if (purchaseCode.equals("0")) {
                                         if (mInterstitialAd != null) {
-                                            mInterstitialAd.show(AddOrEditTaskActivity2.this);
+                                            mInterstitialAd.show(AddOrEditTaskActivity.this);
                                         }
                                     }
                                 })
@@ -289,19 +289,19 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
                 .setPositiveButton("Yes", (dialog, which) -> {
                     if (purchaseCode.equals("0")) {
                         if (mInterstitialAd != null) {
-                            mInterstitialAd.show(AddOrEditTaskActivity2.this);
+                            mInterstitialAd.show(AddOrEditTaskActivity.this);
                             UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
-                            Toasty.error(AddOrEditTaskActivity2.this, "Task Deleted", Toast.LENGTH_SHORT).show();
+                            Toasty.error(AddOrEditTaskActivity.this, "Task Deleted", Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
                             UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
-                            Toasty.error(AddOrEditTaskActivity2.this, "Task Deleted", Toast.LENGTH_SHORT).show();
+                            Toasty.error(AddOrEditTaskActivity.this, "Task Deleted", Toast.LENGTH_SHORT).show();
                             finish();
                         }
 
                     } else {
                         UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
-                        Toasty.error(AddOrEditTaskActivity2.this, "Task Deleted", Toast.LENGTH_SHORT).show();
+                        Toasty.error(AddOrEditTaskActivity.this, "Task Deleted", Toast.LENGTH_SHORT).show();
                         finish();
                     }
 
@@ -415,13 +415,13 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
             UserColRef.document().set(newTaskMap).addOnSuccessListener(aVoid -> {
                 loadingProgressBarUpdate.setVisibility(View.GONE);
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                Toasty.success(AddOrEditTaskActivity2.this, "New list item added successfully", Toasty.LENGTH_SHORT).show();
+                Toasty.success(AddOrEditTaskActivity.this, "New list item added successfully", Toasty.LENGTH_SHORT).show();
                 finish();
                 onBackPressed();
             }).addOnFailureListener(e -> {
                 loadingProgressBarUpdate.setVisibility(View.GONE);
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                Toasty.error(AddOrEditTaskActivity2.this, "Something went wrong", Toasty.LENGTH_SHORT).show();
+                Toasty.error(AddOrEditTaskActivity.this, "Something went wrong", Toasty.LENGTH_SHORT).show();
             });
 
         } else {
@@ -446,13 +446,13 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
             UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).set(updateTaskMap, SetOptions.merge()).addOnSuccessListener(aVoid -> {
                 loadingProgressBarUpdate.setVisibility(View.GONE);
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                Toasty.success(AddOrEditTaskActivity2.this, "List item updated successfully", Toasty.LENGTH_SHORT).show();
+                Toasty.success(AddOrEditTaskActivity.this, "List item updated successfully", Toasty.LENGTH_SHORT).show();
                 finish();
                 onBackPressed();
             }).addOnFailureListener(e -> {
                 loadingProgressBarUpdate.setVisibility(View.GONE);
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                Toasty.error(AddOrEditTaskActivity2.this, "Something went wrong", Toasty.LENGTH_SHORT).show();
+                Toasty.error(AddOrEditTaskActivity.this, "Something went wrong", Toasty.LENGTH_SHORT).show();
             });
         }
     }
@@ -492,7 +492,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
             }
         });
 
-        addMoreCategories.setOnClickListener(view -> startActivity(new Intent(AddOrEditTaskActivity2.this, AddBenefitsActivity.class)));
+        addMoreCategories.setOnClickListener(view -> startActivity(new Intent(AddOrEditTaskActivity.this, AddBenefitsActivity.class)));
 
         if (purchaseCode.equals("0")) {
             bannerAd.loadAd(new AdRequest.Builder().build());
@@ -518,7 +518,7 @@ public class AddOrEditTaskActivity2 extends AppCompatActivity {
 
             //iterating through all the nodes
 
-            adapter = new GridViewAdapter(categories, AddOrEditTaskActivity2.this);
+            adapter = new GridViewAdapter(categories, AddOrEditTaskActivity.this);
             gridView.setAdapter(adapter);
             gridView.setVisibility(View.VISIBLE);
 

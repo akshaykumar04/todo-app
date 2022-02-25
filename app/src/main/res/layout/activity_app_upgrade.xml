@@ -80,7 +80,7 @@
         android:text="Upgrade to premium"
         android:textAllCaps="true"
         android:textColor="@color/textHeadings"
-        android:textSize="20sp"
+        android:textSize="@dimen/_17ssp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/textUpgradeDesc"
         app:layout_constraintEnd_toEndOf="parent"
@@ -99,7 +99,7 @@
         android:paddingVertical="8dp"
         android:text="Upgrade to premium version to access exclusive features"
         android:textAlignment="center"
-        android:textSize="14sp"
+        android:textSize="@dimen/_11ssp"
         app:layout_constraintBottom_toTopOf="@+id/toggle_button_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -111,6 +111,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:gravity="left"
+        android:elevation="@dimen/_8sdp"
         android:orientation="vertical"
         android:paddingHorizontal="30dp"
         app:layout_constraintBottom_toTopOf="@+id/buttonUpgrade"
@@ -131,7 +132,7 @@
             android:text="@string/create_up_to_3_to_do_lists"
             android:textAllCaps="true"
             android:textColor="#000000"
-            android:textSize="14sp" />
+            android:textSize="@dimen/_11ssp" />
 
         <TextView
             android:id="@+id/list2"
@@ -146,7 +147,22 @@
             android:text="UNLOCKS COMPLETED SECTION"
             android:textAllCaps="true"
             android:textColor="#000000"
-            android:textSize="14sp" />
+            android:textSize="@dimen/_11ssp" />
+
+        <TextView
+            android:id="@+id/list7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="4dp"
+            android:drawableLeft="@drawable/ic_check"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/poppins_semibold"
+            android:lineSpacingExtra="1dp"
+            android:paddingHorizontal="8dp"
+            android:text="EACH LIST 50% LONGER"
+            android:textAllCaps="true"
+            android:textColor="#000000"
+            android:textSize="@dimen/_11ssp" />
 
 
         <TextView
@@ -162,7 +178,22 @@
             android:text="REMOVES ADS"
             android:textAllCaps="true"
             android:textColor="#000000"
-            android:textSize="14sp" />
+            android:textSize="@dimen/_11ssp" />
+        
+        <TextView
+            android:id="@+id/list8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="4dp"
+            android:drawableLeft="@drawable/ic_check"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/poppins_semibold"
+            android:lineSpacingExtra="1dp"
+            android:paddingHorizontal="8dp"
+            android:text="FOUNDER (JON) SUBSCRIBES TO THIS TIER"
+            android:textAllCaps="true"
+            android:textColor="#000000"
+            android:textSize="@dimen/_11ssp" />
 
         <TextView
             android:id="@+id/list4"
@@ -174,10 +205,10 @@
             android:fontFamily="@font/poppins_semibold"
             android:lineSpacingExtra="1dp"
             android:paddingHorizontal="8dp"
-            android:text="FIRST 30 DAYS FREE"
+            android:text="FIRST 30 DAYS OF PREMIUM FREE"
             android:textAllCaps="true"
             android:textColor="#000000"
-            android:textSize="14sp" />
+            android:textSize="@dimen/_11ssp" />
 
         <TextView
             android:id="@+id/list5"
@@ -192,7 +223,7 @@
             android:text="CANCEL ANYTIME"
             android:textAllCaps="true"
             android:textColor="#000000"
-            android:textSize="14sp" />
+            android:textSize="@dimen/_11ssp" />
 
     </LinearLayout>
 
@@ -200,8 +231,7 @@
         android:id="@+id/buttonUpgrade"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:padding="20dp"
-
+        android:padding="@dimen/_20sdp"
         app:layout_constraintBottom_toTopOf="@+id/appCompatTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -32,6 +32,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import com.bumptech.glide.Glide
+import com.sstechcanada.todo.activities.auth.ProfileActivity
 import kotlinx.android.synthetic.main.item_grid.*
 
 
@@ -58,7 +59,7 @@ class AddBenefitsActivity : AppCompatActivity(),
         toolbarTitle.text = getString(R.string.add_benefit)
         profile_toolbar.setOnClickListener {
             startActivity(
-                Intent(this@AddBenefitsActivity, LoginActivity::class.java)
+                Intent(this@AddBenefitsActivity, ProfileActivity::class.java)
             )
         }
         Glide.with(this).load(mAuth?.currentUser?.photoUrl).into(profile_toolbar)

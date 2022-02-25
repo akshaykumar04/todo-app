@@ -54,6 +54,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.SetOptions;
 import com.sstechcanada.todo.R;
 import com.sstechcanada.todo.activities.auth.LoginActivity;
+import com.sstechcanada.todo.activities.auth.ProfileActivity;
 import com.sstechcanada.todo.adapters.MasterListFirestoreAdapter;
 import com.sstechcanada.todo.adapters.MasterListGridViewAdapter;
 import com.sstechcanada.todo.custom_views.MasterIconGridItemView;
@@ -176,7 +177,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
 
         toolbar_profile = findViewById(R.id.profile_toolbar);
         Glide.with(this).load(mAuth.getCurrentUser().getPhotoUrl()).into(toolbar_profile);
-        toolbar_profile.setOnClickListener(view -> startActivity(new Intent(MasterTodoListActivity.this, LoginActivity.class)));
+        toolbar_profile.setOnClickListener(view -> startActivity(new Intent(MasterTodoListActivity.this, ProfileActivity.class)));
 
 
         fab.setOnClickListener(view -> {
@@ -191,7 +192,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
                 if (isLogin()) {
                     if (!purchaseCode.equals("2")) {
                         Toasty.info(getApplicationContext(), getString(R.string.upgrade_master_list), Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(MasterTodoListActivity.this, AppUpgradeActivity2.class);
+                        Intent intent = new Intent(MasterTodoListActivity.this, AppUpgradeActivity.class);
 //                        intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
                         startActivity(intent);
                     } else if (purchaseCode.equals("2")) {
