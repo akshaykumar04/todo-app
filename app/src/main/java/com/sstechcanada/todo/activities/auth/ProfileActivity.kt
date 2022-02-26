@@ -24,6 +24,18 @@ import com.sstechcanada.todo.utils.SaveSharedPreference
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_profile.*
 import java.lang.Exception
+import android.view.Gravity
+
+import android.app.Dialog
+import android.graphics.Color
+
+import android.graphics.drawable.ColorDrawable
+
+import android.view.ViewGroup
+import android.view.Window
+
+import android.widget.LinearLayout
+import com.sstechcanada.todo.activities.SplashActivity
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -60,7 +72,7 @@ class ProfileActivity : AppCompatActivity() {
         }
         cardShare.setOnClickListener { shareApp() }
         cardRate.setOnClickListener { openGooglePlayForRating() }
-        cardDelete.setOnClickListener { showDeleteWarning() }
+        cardDelete.setOnClickListener { deleteWarningDialog() }
         cardSignOut.setOnClickListener { showSignOutDialog() }
     }
 
@@ -118,7 +130,7 @@ class ProfileActivity : AppCompatActivity() {
         }
         SaveSharedPreference.setUserLogIn(this, "false")
         finishAffinity()
-        startActivity(Intent(this, LoginActivity::class.java))
+        startActivity(Intent(this, SplashActivity::class.java))
     }
 
     private fun deleteUserAccount() {
@@ -140,9 +152,19 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun openGooglePlayForRating() {
         try {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.sstechcanada.todo")))
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("market://details?id=com.sstechcanada.todo")
+                )
+            )
         } catch (e: ActivityNotFoundException) {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.sstechcanada.todo")))
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://play.google.com/store/apps/details?id=com.sstechcanada.todo")
+                )
+            )
         }
     }
 
@@ -151,7 +173,8 @@ class ProfileActivity : AppCompatActivity() {
             val shareIntent = Intent(Intent.ACTION_SEND)
             shareIntent.type = "text/plain"
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Sorted To-Do List Maker")
-            var shareMessage = "Let me recommend you this application.......\n\nJon Please Help me with this content\n\n"
+            var shareMessage =
+                "Check out this list maker. It automatically sorts your list based on the number of benefits you assign to each item:\n\n"
             shareMessage =
                 """${shareMessage}https://play.google.com/store/apps/details?id=${BuildConfig.APPLICATION_ID}""".trimIndent()
             shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage)
@@ -161,6 +184,39 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
+    private fun deleteWarningDialog() {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.bottomsheet)
+        val editLayout: LinearLayout = dialog.findViewById(R.id.layoutEdit)
+        val shareLayout: LinearLayout = dialog.findViewById(R.id.layoutShare)
+        val uploadLayout: LinearLayout = dialog.findViewById(R.id.layoutUpload)
+        val printLayout: LinearLayout = dialog.findViewById(R.id.layoutPrint)
+        editLayout.setOnClickListener {
+            dialog.dismiss()
+            Toast.makeText(this, "Edit is Clicked", Toast.LENGTH_SHORT).show()
+        }
+        shareLayout.setOnClickListener {
+            dialog.dismiss()
+            Toast.makeText(this, "Share is Clicked", Toast.LENGTH_SHORT).show()
+        }
+        uploadLayout.setOnClickListener {
+            dialog.dismiss()
+            Toast.makeText(this, "Upload is Clicked", Toast.LENGTH_SHORT).show()
+        }
+        printLayout.setOnClickListener {
+            dialog.dismiss()
+            Toast.makeText(this, "Print is Clicked", Toast.LENGTH_SHORT).show()
+        }
+        dialog.show()
+        dialog.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
+        dialog.window?.setGravity(Gravity.BOTTOM)
+    }
 
 
 }

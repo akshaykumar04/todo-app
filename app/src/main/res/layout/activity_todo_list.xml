@@ -141,6 +141,8 @@
             app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
             android:contentDescription="@string/add_new_task"
             android:src="@drawable/ic_fab_add"
+            app:tint="@color/white"
+            app:backgroundTint="@color/todo"
             app:layout_constraintBottom_toTopOf="@+id/adView"
             app:layout_constraintEnd_toEndOf="parent" />
 

@@ -69,19 +69,16 @@ public class SelectCategoriesDailog extends AppCompatActivity {
         });
 
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                int selectedIndex = adapter.selectedPositions.indexOf(position);
-                if (selectedIndex > -1) {
-                    adapter.selectedPositions.remove(selectedIndex);
-                    ((GridItemView) v).display(false);
-                    selectedStrings.remove((String) parent.getItemAtPosition(position));
-                } else {
-                    adapter.selectedPositions.add(position);
-                    ((GridItemView) v).display(true);
-                    selectedStrings.add((String) parent.getItemAtPosition(position));
-                }
+        gridView.setOnItemClickListener((parent, v, position, id) -> {
+            int selectedIndex = adapter.selectedPositions.indexOf(position);
+            if (selectedIndex > -1) {
+                adapter.selectedPositions.remove(selectedIndex);
+                ((GridItemView) v).display(false);
+                selectedStrings.remove((String) parent.getItemAtPosition(position));
+            } else {
+                adapter.selectedPositions.add(position);
+                ((GridItemView) v).display(true);
+                selectedStrings.add((String) parent.getItemAtPosition(position));
             }
         });
 
