@@ -1,11 +1,18 @@
 package com.sstechcanada.todo.activities;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.GridView;
 import android.widget.LinearLayout;
@@ -34,6 +41,7 @@ import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DatabaseReference;
@@ -61,6 +69,7 @@ import java.util.List;
 import java.util.Map;
 
 import es.dmoral.toasty.Toasty;
+import io.github.douglasjunior.androidSimpleTooltip.SimpleTooltip;
 
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.listId;
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.purchaseCode;
@@ -155,6 +164,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         }
 
         long dueDate;
+
 
         tv = findViewById(R.id.tv);
         noOfCat = findViewById(R.id.tv_category_number);
@@ -262,7 +272,8 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         chipGroup = findViewById(R.id.chipGroup);
         addCategories = findViewById(R.id.addCategories);
         addCategories.setOnClickListener(view -> {
-            selectCategoriesAlert();
+//            selectCategoriesAlert();
+            showDialog();
         });
 
         //Grid View End
@@ -473,8 +484,8 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         // this is set the view from XML inside AlertDialog
         alert.setView(alertLayout);
         gridView = alertLayout.findViewById(R.id.grid_view_alert);
-        addMoreCategories = alertLayout.findViewById(R.id.addMoreCategoriesLayout);
-        progressBar = alertLayout.findViewById(R.id.progress_circular);
+//        addMoreCategories = alertLayout.findViewById(R.id.addMoreCategoriesLayout);
+        progressBar = alertLayout.findViewById(R.id.progressBar);
         AdView bannerAd = alertLayout.findViewById(R.id.adView);
         loadCategories();
         // disallow cancel of AlertDialog on click of back button and outside touch
@@ -492,7 +503,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
             }
         });
 
-        addMoreCategories.setOnClickListener(view -> startActivity(new Intent(AddOrEditTaskActivity.this, AddBenefitsActivity.class)));
+        // addMoreCategories.setOnClickListener(view -> startActivity(new Intent(AddOrEditTaskActivity.this, AddBenefitsActivity.class)));
 
         if (purchaseCode.equals("0")) {
             bannerAd.loadAd(new AdRequest.Builder().build());
@@ -535,7 +546,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
             selectedResult = convertArrayToString(selectedStrings);
 
             progressBar.setVisibility(View.INVISIBLE);
-            addMoreCategories.setVisibility(View.VISIBLE);
+//            fab.setVisibility(View.VISIBLE);
 
 
         });
@@ -695,4 +706,54 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
             alertDialog.dismiss();
         }
     }
+
+    private void showDialog() {
+
+        FloatingActionButton fabDone, fabAdd;
+
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.activity_select_categories_dailog);
+
+        gridView = dialog.findViewById(R.id.grid_view_alert);
+        progressBar = dialog.findViewById(R.id.progressBar);
+        AdView bannerAd = dialog.findViewById(R.id.adView);
+        fabDone = dialog.findViewById(R.id.fabDone);
+        fabAdd = dialog.findViewById(R.id.fabMore);
+
+        if (purchaseCode.equals("0")) {
+            bannerAd.loadAd(new AdRequest.Builder().build());
+        } else {
+            bannerAd.setVisibility(View.GONE);
+        }
+
+        loadCategories();
+
+        fabDone.setOnClickListener(view -> {
+            updateSelectedBenefits();
+            dialog.dismiss();
+        });
+
+        fabAdd.setOnClickListener(view -> {
+            startActivity(new Intent(AddOrEditTaskActivity.this, AddBenefitsActivity.class));
+        });
+
+        dialog.show();
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        dialog.getWindow().setGravity(Gravity.BOTTOM);
+
+    }
+
+    private void updateSelectedBenefits() {
+        selectedResult = convertArrayToString(selectedStrings);
+        category_count = selectedStrings.size();
+        record = convertStringToArray(selectedResult);
+        display_categories(record);
+        if (todoTaskToAddOrEdit != null) {
+            todoTaskToAddOrEdit.setBenefitsString(selectedResult);
+        }
+    }
+
 }

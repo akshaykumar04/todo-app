@@ -12,6 +12,8 @@
     <color name="colorUncompletedBackground">#FFFFFF</color>
     <color name="colorNormalWidgetText">#757575</color>
     <color name="colorTab">#446DFF</color>
+    <color name="todo">#495FD8</color>
+    <color name="white">#ffffff</color>
 
     <color name="chip_1">#EC9690</color>
     <color name="chip_2">#ED8EAE</color>
@@ -39,4 +41,6 @@
 
     <color name="toolbar_background">#FFFFFF</color>
     <color name="toggleSelected">#7C446DFF</color>
+    <color name="textRed">#f23123</color>
+    <color name="btnRed">#E44236</color>
 </resources>
