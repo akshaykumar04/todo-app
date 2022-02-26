@@ -27,14 +27,18 @@ import java.lang.Exception
 import android.view.Gravity
 
 import android.app.Dialog
+import android.content.res.ColorStateList
 import android.graphics.Color
 
 import android.graphics.drawable.ColorDrawable
 
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.CheckBox
 
 import android.widget.LinearLayout
+import androidx.appcompat.widget.AppCompatTextView
+import com.google.android.material.button.MaterialButton
 import com.sstechcanada.todo.activities.SplashActivity
 
 class ProfileActivity : AppCompatActivity() {
@@ -134,6 +138,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun deleteUserAccount() {
+        mAuth = FirebaseAuth.getInstance()
         mAuth?.currentUser?.delete()?.addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 Log.d("TAG", "User account deleted.")
@@ -143,7 +148,7 @@ class ProfileActivity : AppCompatActivity() {
                 finishAffinity()
                 startActivity(Intent(this, LoginActivity::class.java))
             } else {
-                Toasty.error(this, "Technical Error", Toast.LENGTH_SHORT).show()
+                Toasty.error(this, "Server Error, Please try login in again", Toast.LENGTH_SHORT).show()
             }
 
         }
@@ -188,26 +193,32 @@ class ProfileActivity : AppCompatActivity() {
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.bottomsheet)
-        val editLayout: LinearLayout = dialog.findViewById(R.id.layoutEdit)
-        val shareLayout: LinearLayout = dialog.findViewById(R.id.layoutShare)
-        val uploadLayout: LinearLayout = dialog.findViewById(R.id.layoutUpload)
-        val printLayout: LinearLayout = dialog.findViewById(R.id.layoutPrint)
-        editLayout.setOnClickListener {
-            dialog.dismiss()
-            Toast.makeText(this, "Edit is Clicked", Toast.LENGTH_SHORT).show()
+        val btnDelete: MaterialButton = dialog.findViewById(R.id.btnDelete)
+        val userText: AppCompatTextView = dialog.findViewById(R.id.tvUser)
+        val tvUserDes: AppCompatTextView = dialog.findViewById(R.id.tvUserDes)
+        val checkBox: CheckBox = dialog.findViewById(R.id.checkDelete)
+
+        userText.text = "Sorry to see you go, ${mAuth?.currentUser?.displayName}"
+        tvUserDes.text = "If you're experiencing any issue, please give us the opportunity to help you by sending us your Feedback.\n\nIf you continue, your account will be deleted immediately and all the associated data with your account will be deleted forever.\n\nPost account deletion, you will be able to create a new account. However, your previous data will be inaccessible."
+
+        checkBox.setOnCheckedChangeListener { _, checked ->
+            if (checked) {
+                btnDelete.isEnabled = true
+                btnDelete.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.btnRed))
+            } else {
+                btnDelete.isEnabled = false
+                btnDelete.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.discp_border))
+            }
         }
-        shareLayout.setOnClickListener {
-            dialog.dismiss()
-            Toast.makeText(this, "Share is Clicked", Toast.LENGTH_SHORT).show()
+
+        btnDelete.setOnClickListener {
+            if (checkBox.isChecked) {
+                deleteUserAccount()
+            } else {
+                Toasty.info(this, "Please check the checkbox to continue", Toast.LENGTH_SHORT).show()
+            }
         }
-        uploadLayout.setOnClickListener {
-            dialog.dismiss()
-            Toast.makeText(this, "Upload is Clicked", Toast.LENGTH_SHORT).show()
-        }
-        printLayout.setOnClickListener {
-            dialog.dismiss()
-            Toast.makeText(this, "Print is Clicked", Toast.LENGTH_SHORT).show()
-        }
+
         dialog.show()
         dialog.window?.setLayout(
             ViewGroup.LayoutParams.MATCH_PARENT,

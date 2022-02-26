@@ -319,7 +319,7 @@
                                 android:fontFamily="@font/raleway_semibold"
                                 android:paddingVertical="@dimen/_8sdp"
                                 android:text="Delete Account"
-                                android:textColor="#f23123"
+                                android:textColor="@color/textRed"
                                 android:textSize="@dimen/_12ssp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintStart_toEndOf="@id/icon4"

@@ -41,4 +41,6 @@
 
     <color name="toolbar_background">#FFFFFF</color>
     <color name="toggleSelected">#7C446DFF</color>
+    <color name="textRed">#f23123</color>
+    <color name="btnRed">#E44236</color>
 </resources>
