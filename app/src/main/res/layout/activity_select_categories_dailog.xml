@@ -6,8 +6,8 @@
     android:layout_height="wrap_content"
     android:background="@drawable/dialog_bg"
     android:clipToPadding="false"
-    android:maxHeight="@dimen/_600sdp"
-    android:minHeight="@dimen/_450sdp"
+    android:maxHeight="@dimen/_500sdp"
+    android:minHeight="@dimen/_350sdp"
     android:paddingHorizontal="@dimen/_16sdp"
     android:paddingTop="@dimen/_16sdp"
     tools:context=".activities.SelectCategoriesDailog">

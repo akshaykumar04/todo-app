@@ -132,7 +132,7 @@ class ProfileActivity : AppCompatActivity() {
         ) {
             SaveSharedPreference.saveLimit(applicationContext, 0)
         }
-        SaveSharedPreference.setUserLogIn(this, "false")
+        SaveSharedPreference.setUserLogIn(this, false)
         finishAffinity()
         startActivity(Intent(this, SplashActivity::class.java))
     }
@@ -144,7 +144,7 @@ class ProfileActivity : AppCompatActivity() {
                 Log.d("TAG", "User account deleted.")
                 Toasty.success(this, "Account Deleted", Toast.LENGTH_SHORT).show()
                 SaveSharedPreference.saveLimit(applicationContext, 0)
-                SaveSharedPreference.setUserLogIn(this, "false")
+                SaveSharedPreference.setUserLogIn(this, false)
                 finishAffinity()
                 startActivity(Intent(this, LoginActivity::class.java))
             } else {
