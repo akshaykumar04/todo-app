@@ -175,27 +175,22 @@ class LoginActivity : AppCompatActivity() {
 
     private fun saveDefaultBenefits(userBenefitsCollectionRef: CollectionReference?) {
         val benefits: MutableMap<String, String> = HashMap()
+        val defaultList = listOf("\uD83C\uDF09 Background", "\uD83C\uDF89 Free",
+            "\uD83C\uDF04 Daily effect", "\uD83C\uDF52 Needs-related", "\uD83C\uDFF9 Interest",
+            "⬇️ $5", "\uD83D\uDC65 Relationship", "\uD83E\uDD2A Fun", "\uD83D\uDCB9 Potential",
+            "\uD83D\uDCB0 Beneficial", "☮️ Values", "\uD83E\uDD47 Prerequisite")
 
-        benefits["category_name"] = "sk"
-        benefits["category_name"] = "ss"
-        benefits["category_name"] = "xx"
-        benefits["category_name"] = "cc"
-
-        repeat(benefits.size) {
-            userBenefitsCollectionRef?.document()?.set(benefits)
-                ?.addOnSuccessListener {
-                    Toasty.success(
-                        applicationContext, "Benefit added", Toast.LENGTH_SHORT
-                    ).show()
-                    Log.d("addedBenefit", "gg")
-                }
-                ?.addOnFailureListener {
-                    Toasty.error(
-                        applicationContext,
-                        "Benefit addition Failed: ",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
+        for (i in defaultList.indices) {
+            benefits["category_name"] = defaultList[i]
+            repeat(benefits.size) {
+                userBenefitsCollectionRef?.document()?.set(benefits)
+                    ?.addOnSuccessListener {
+                        Log.d("addedBenefit", defaultList[i])
+                    }
+                    ?.addOnFailureListener {
+                        Log.d("addedBenefit", "Error")
+                    }
+            }
         }
     }
 
