@@ -45,6 +45,7 @@ import com.google.android.gms.ads.*
 import com.google.firebase.firestore.Query
 import com.sstechcanada.todo.activities.auth.ProfileActivity
 import com.sstechcanada.todo.databinding.ActivityTodoListBinding
+import com.sstechcanada.todo.utils.SaveSharedPreference
 import kotlinx.android.synthetic.main.act_bar.*
 import kotlinx.android.synthetic.main.activity_todo_list.*
 
@@ -94,7 +95,7 @@ class TodoListActivity : AppCompatActivity() {
         }
         setupObservers()
         val adView = mBinding?.adView
-        if (MasterTodoListActivity.purchaseCode == "0") {
+        if (SaveSharedPreference.getAdsEnabled(this)) {
             loadFullScreenAds()
             val adRequest = AdRequest.Builder().build()
             adView?.loadAd(adRequest)
@@ -206,8 +207,8 @@ class TodoListActivity : AppCompatActivity() {
         rv_todo_list.layoutManager = LinearLayoutManager(this)
         val swipeController = SwipeController(this, object : SwipeControllerActions() {
             override fun onRightClicked(position: Int) {
-                Log.i("cluck", "right")
-                if (MasterTodoListActivity.purchaseCode == "0") {
+                Log.i("click", "right")
+                if (SaveSharedPreference.getAdsEnabled(this@TodoListActivity)) {
                     loadFullScreenAds()
                 }
                 AlertDialog.Builder(this@TodoListActivity)
@@ -215,7 +216,7 @@ class TodoListActivity : AppCompatActivity() {
                     .setTitle("Confirm Delete")
                     .setMessage("Are you sure you want to delete this task?")
                     .setPositiveButton("Yes") { dialog: DialogInterface?, which: Int ->
-                        if (MasterTodoListActivity.purchaseCode == "0") {
+                        if (SaveSharedPreference.getAdsEnabled(this@TodoListActivity)) {
                             if (mInterstitialAd != null) {
                                 mInterstitialAd?.show(this@TodoListActivity)
                                 val documentSnapshot =

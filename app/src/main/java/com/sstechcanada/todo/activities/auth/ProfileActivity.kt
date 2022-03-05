@@ -91,7 +91,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun setupAds() {
-        if (MasterTodoListActivity.purchaseCode == "0") {
+        if (SaveSharedPreference.getAdsEnabled(this)) {
             adView.loadAd(AdRequest.Builder().build())
             adView.visibility = View.VISIBLE
         } else {

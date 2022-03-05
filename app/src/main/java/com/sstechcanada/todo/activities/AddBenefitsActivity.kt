@@ -31,6 +31,7 @@ import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetSequence
 import com.sstechcanada.todo.activities.auth.LoginActivity
 import com.sstechcanada.todo.activities.auth.ProfileActivity
+import com.sstechcanada.todo.utils.SaveSharedPreference
 import kotlinx.android.synthetic.main.item_grid.*
 
 
@@ -65,7 +66,7 @@ class AddBenefitsActivity : AppCompatActivity(),
         }
         Glide.with(this).load(mAuth?.currentUser?.photoUrl).into(profile_toolbar)
         buttonAddCategory.setOnClickListener { addCategory() }
-        if (MasterTodoListActivity.purchaseCode == "0") {
+        if (SaveSharedPreference.getAdsEnabled(this)) {
             val adView = findViewById<AdView>(R.id.adView)
             val adRequest = AdRequest.Builder().build()
             adView.loadAd(adRequest)

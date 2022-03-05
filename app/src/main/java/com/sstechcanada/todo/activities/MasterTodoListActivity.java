@@ -61,6 +61,7 @@ import com.sstechcanada.todo.adapters.MasterListGridViewAdapter;
 import com.sstechcanada.todo.custom_views.MasterIconGridItemView;
 import com.sstechcanada.todo.models.List;
 import com.sstechcanada.todo.utils.Constants;
+import com.sstechcanada.todo.utils.SaveSharedPreference;
 import com.sstechcanada.todo.utils.SwipeController;
 import com.sstechcanada.todo.utils.SwipeControllerActions;
 
@@ -316,7 +317,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
             usersColRef.document(userID).collection("Lists").document(documentSnapshotId).update(list).addOnSuccessListener(aVoid -> Toasty.success(MasterTodoListActivity.this, "List Successfully Edited")).addOnFailureListener(e -> Toasty.error(MasterTodoListActivity.this, "Something went wrong"));
         });
 
-        if (purchaseCode.equals("0")) {
+        if (SaveSharedPreference.getAdsEnabled(this)) {
             bannerAd.loadAd(new AdRequest.Builder().build());
         } else {
             bannerAd.setVisibility(View.GONE);

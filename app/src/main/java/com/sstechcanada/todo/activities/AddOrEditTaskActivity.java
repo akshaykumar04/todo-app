@@ -57,6 +57,7 @@ import com.sstechcanada.todo.databinding.ActivityAddOrEditTaskBinding;
 import com.sstechcanada.todo.models.Category;
 import com.sstechcanada.todo.models.TodoTask;
 import com.sstechcanada.todo.models.TodoTaskFirestore;
+import com.sstechcanada.todo.utils.SaveSharedPreference;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -158,7 +159,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         Log.i("ListId", "Add or edit: " + listId);
         Glide.with(this).load(mAuth.getCurrentUser().getPhotoUrl()).into(toolbar_profile);
 
-        if (purchaseCode.equals("0")) {
+        if (SaveSharedPreference.getAdsEnabled(this)) {
             loadBannerAds();
             loadFullScreenAds();
         }
@@ -203,7 +204,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
                                 .setTitle("Confirm Complete")
                                 .setMessage("Are you sure you want to mark this task as completed?")
                                 .setPositiveButton("Yes", (dialog, which) -> {
-                                    if (purchaseCode.equals("0")) {
+                                    if (SaveSharedPreference.getAdsEnabled(this)) {
                                         if (mInterstitialAd != null) {
                                             mInterstitialAd.show(AddOrEditTaskActivity.this);
                                         }
@@ -298,7 +299,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
                 .setTitle("Confirm Delete")
                 .setMessage("Are you sure you want to delete this task?")
                 .setPositiveButton("Yes", (dialog, which) -> {
-                    if (purchaseCode.equals("0")) {
+                    if (SaveSharedPreference.getAdsEnabled(this)) {
                         if (mInterstitialAd != null) {
                             mInterstitialAd.show(AddOrEditTaskActivity.this);
                             UserColRef.document(todoTaskToAddOrEdit.getDocumentID()).delete();
@@ -324,7 +325,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
     private void loadBannerAds() {
 
         AdView adView = findViewById(R.id.adView);
-        if (purchaseCode.equals("0")) {
+        if (SaveSharedPreference.getAdsEnabled(this)) {
             AdRequest adRequest = new AdRequest.Builder().build();
             adView.loadAd(adRequest);
         } else {
@@ -505,7 +506,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
 
         // addMoreCategories.setOnClickListener(view -> startActivity(new Intent(AddOrEditTaskActivity.this, AddBenefitsActivity.class)));
 
-        if (purchaseCode.equals("0")) {
+        if (SaveSharedPreference.getAdsEnabled(this)) {
             bannerAd.loadAd(new AdRequest.Builder().build());
         } else {
             bannerAd.setVisibility(View.GONE);
@@ -721,7 +722,7 @@ public class AddOrEditTaskActivity extends AppCompatActivity {
         fabDone = dialog.findViewById(R.id.fabDone);
         fabAdd = dialog.findViewById(R.id.fabMore);
 
-        if (purchaseCode.equals("0")) {
+        if (SaveSharedPreference.getAdsEnabled(this)) {
             bannerAd.loadAd(new AdRequest.Builder().build());
         } else {
             bannerAd.setVisibility(View.GONE);

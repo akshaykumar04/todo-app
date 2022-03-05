@@ -25,6 +25,7 @@ import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
+import com.sstechcanada.todo.utils.SaveSharedPreference
 import kotlinx.android.synthetic.main.activity_app_upgrade.*
 import java.util.ArrayList
 import java.util.HashMap
@@ -60,7 +61,7 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
 
     private fun setUpOnClicks() {
         fabBack.setOnClickListener { onBackPressed() }
-        if (MasterTodoListActivity.purchaseCode == "0") {
+        if (SaveSharedPreference.getAdsEnabled(this)) {
             loadFullScreenAd()
         }
     }

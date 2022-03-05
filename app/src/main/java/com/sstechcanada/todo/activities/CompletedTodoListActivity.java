@@ -40,6 +40,7 @@ import com.sstechcanada.todo.activities.auth.LoginActivity;
 import com.sstechcanada.todo.activities.auth.ProfileActivity;
 import com.sstechcanada.todo.adapters.TodoListFirestoreAdapter;
 import com.sstechcanada.todo.models.TodoTaskFirestore;
+import com.sstechcanada.todo.utils.SaveSharedPreference;
 import com.sstechcanada.todo.utils.SwipeController;
 import com.sstechcanada.todo.utils.SwipeControllerActions;
 
@@ -95,7 +96,7 @@ public class CompletedTodoListActivity extends AppCompatActivity {
 
         AdView adView = findViewById(R.id.adView);
 
-        if (purchaseCode.equals("0")) {
+        if (SaveSharedPreference.getAdsEnabled(this)) {
             AdRequest adRequest = new AdRequest.Builder().build();
             adView.loadAd(adRequest);
         } else {
