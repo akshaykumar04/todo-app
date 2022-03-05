@@ -166,9 +166,15 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
 
         setValue();
 
+        if (purchaseCode.equals("0")) {
+            SaveSharedPreference.setAdsEnabled(this, true);
+        } else {
+            SaveSharedPreference.setAdsEnabled(this, false);
+        }
+
         AdView adView = findViewById(R.id.adView);
 
-        if (purchaseCode.equals("0")) {
+        if (SaveSharedPreference.getAdsEnabled(this)) {
             loadFullScreenAds();
             AdRequest adRequest = new AdRequest.Builder().build();
             adView.loadAd(adRequest);

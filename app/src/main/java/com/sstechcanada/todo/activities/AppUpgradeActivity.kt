@@ -172,6 +172,7 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
         } else if (product_Id == "tier2") {
             pur_code = "2"
         }
+        SaveSharedPreference.setAdsEnabled(this, false)
         purchaseCodeMap["purchase_code"] = pur_code
         db.collection("Users").document(userID).set(purchaseCodeMap, SetOptions.merge())
             .addOnSuccessListener {
