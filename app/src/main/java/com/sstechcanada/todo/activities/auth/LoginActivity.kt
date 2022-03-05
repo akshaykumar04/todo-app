@@ -4,7 +4,6 @@ import com.google.android.gms.common.SignInButton
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import android.app.ProgressDialog
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.auth.FirebaseUser
@@ -23,8 +22,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.sstechcanada.todo.utils.SaveSharedPreference
 import es.dmoral.toasty.Toasty
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.firestore.QuerySnapshot
-import com.google.firebase.firestore.FieldPath
+import com.google.firebase.firestore.*
 import kotlinx.android.synthetic.main.activity_login.*
 import java.lang.Exception
 import java.util.ArrayList
@@ -138,12 +136,14 @@ class LoginActivity : AppCompatActivity() {
         val documentReferenceCurrentReference = firebaseUser?.uid?.let {
             db.collection("Users").document(it)
         }
+        val userBenefitsCollectionRef = documentReferenceCurrentReference?.collection("Benefits")
         db.collection("Users").whereEqualTo(FieldPath.documentId(), firebaseUser?.uid).get()
             .addOnSuccessListener { queryDocumentSnapshots: QuerySnapshot ->
                 if (queryDocumentSnapshots.size() == 0) {
                     val profile: MutableMap<String, String?> = HashMap()
                     profile["Email"] = firebaseUser?.email
                     profile["purchase_code"] = "0"
+                    saveDefaultBenefits(userBenefitsCollectionRef)
                     documentReferenceCurrentReference?.set(profile)
                         ?.addOnSuccessListener {
                             Log.d("Usercreation", "Usercreation:success")
@@ -171,6 +171,32 @@ class LoginActivity : AppCompatActivity() {
                     startActivity(Intent(this@LoginActivity, MasterTodoListActivity::class.java))
                 }
             }.addOnFailureListener { e: Exception? -> }
+    }
+
+    private fun saveDefaultBenefits(userBenefitsCollectionRef: CollectionReference?) {
+        val benefits: MutableMap<String, String> = HashMap()
+
+        benefits["category_name"] = "sk"
+        benefits["category_name"] = "ss"
+        benefits["category_name"] = "xx"
+        benefits["category_name"] = "cc"
+
+        repeat(benefits.size) {
+            userBenefitsCollectionRef?.document()?.set(benefits)
+                ?.addOnSuccessListener {
+                    Toasty.success(
+                        applicationContext, "Benefit added", Toast.LENGTH_SHORT
+                    ).show()
+                    Log.d("addedBenefit", "gg")
+                }
+                ?.addOnFailureListener {
+                    Toasty.error(
+                        applicationContext,
+                        "Benefit addition Failed: ",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+        }
     }
 
     override fun onBackPressed() {

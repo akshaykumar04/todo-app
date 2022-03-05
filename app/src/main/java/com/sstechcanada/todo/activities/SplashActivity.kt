@@ -36,7 +36,6 @@ class SplashActivity : AppCompatActivity() {
         Handler().postDelayed({
             fetchIntentData()
         }, TIME_OUT)
-        Toasty.success(this, SaveSharedPreference.getAdsEnabled(this).toString(), Toast.LENGTH_SHORT).show()
         clearExistingPrefs()
         textViewVersion.text = "Version: $VERSION_NAME";
     }
