@@ -13,6 +13,7 @@ public class SaveSharedPreference {
     public static final String PREF = "USER DATA";
     public static final String LIST_LIMIT = "LIST_LIMIT";
     static final String PREF_ADS_ENABLED = "isAdsEnabled";
+    static final String PREF_IS_LOGGED_IN = "isLoggedIn";
 
     static SharedPreferences getSharedPreferences(Context ctx) {
         return PreferenceManager.getDefaultSharedPreferences(ctx);
@@ -30,12 +31,12 @@ public class SaveSharedPreference {
 
     public static void setUserLogIn(Context ctx, Boolean isLoggedIn) {
         SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
-        editor.putBoolean(PREF_USER_STATE, isLoggedIn);
+        editor.putBoolean(PREF_IS_LOGGED_IN, isLoggedIn);
         editor.apply();
     }
 
     public static Boolean getUserLogin(Context ctx) {
-        return getSharedPreferences(ctx).getBoolean(PREF_USER_STATE, false);
+        return getSharedPreferences(ctx).getBoolean(PREF_IS_LOGGED_IN, false);
     }
 
     public static void saveLimit(Context context, int limit){

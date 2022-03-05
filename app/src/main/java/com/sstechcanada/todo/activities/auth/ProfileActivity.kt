@@ -38,6 +38,7 @@ import android.widget.CheckBox
 
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.preference.PreferenceManager
 import com.google.android.material.button.MaterialButton
 import com.sstechcanada.todo.activities.SplashActivity
 
@@ -112,27 +113,13 @@ class ProfileActivity : AppCompatActivity() {
         alert.show()
     }
 
-    private fun showDeleteWarning() {
-        val alert = AlertDialog.Builder(this)
-        alert.setTitle(R.string.delete_account)
-        alert.setMessage(R.string.delete_account_desc)
-        alert.setPositiveButton(
-            R.string.yes
-        ) { _: DialogInterface?, _: Int -> deleteUserAccount() }
-        alert.setNegativeButton(
-            R.string.no
-        ) { dialog: DialogInterface, _: Int -> dialog.dismiss() }
-        alert.show()
-    }
-
     private fun signOut() {
         mAuth?.signOut()
         mGoogleSignInClient?.signOut()?.addOnCompleteListener(
             this
         ) {
-            SaveSharedPreference.saveLimit(applicationContext, 0)
+            clearPrefs()
         }
-        SaveSharedPreference.setUserLogIn(this, false)
         finishAffinity()
         startActivity(Intent(this, SplashActivity::class.java))
     }
@@ -143,8 +130,7 @@ class ProfileActivity : AppCompatActivity() {
             if (task.isSuccessful) {
                 Log.d("TAG", "User account deleted.")
                 Toasty.success(this, "Account Deleted", Toast.LENGTH_SHORT).show()
-                SaveSharedPreference.saveLimit(applicationContext, 0)
-                SaveSharedPreference.setUserLogIn(this, false)
+                signOut()
                 finishAffinity()
                 startActivity(Intent(this, LoginActivity::class.java))
             } else {
@@ -229,5 +215,9 @@ class ProfileActivity : AppCompatActivity() {
         dialog.window?.setGravity(Gravity.BOTTOM)
     }
 
+    private fun clearPrefs() {
+        val editor = PreferenceManager.getDefaultSharedPreferences(this)
+            editor.edit().clear().commit()
+    }
 
 }
