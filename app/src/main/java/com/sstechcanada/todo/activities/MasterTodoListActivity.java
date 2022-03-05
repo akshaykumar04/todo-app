@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -601,11 +602,13 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
                 .targets(
                         TapTarget.forView(fab, "Add Button", "Click here to add a new list")
                                 .outerCircleColor(R.color.chip_5)
-                                .outerCircleAlpha(0.96f)
+                                .outerCircleAlpha(0.85f)
                                 .targetCircleColor(R.color.colorUncompletedBackground)
                                 .titleTextSize(22)
                                 .titleTextColor(R.color.colorUncompletedBackground)
-                                .descriptionTextSize(12)
+                                .descriptionTextSize(16)
+                                .titleTypeface(ResourcesCompat.getFont(this, R.font.poppins_semibold))
+                                .textTypeface(ResourcesCompat.getFont(this, R.font.raleway_medium))
                                 .descriptionTextColor(R.color.black)
                                 .textColor(R.color.black)
                                 .dimColor(R.color.black)
@@ -616,11 +619,13 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
                                 .targetRadius(80),
                         TapTarget.forView(buttonTapTargetView, "List", "1: Swipe right and click on the pencil icon to update a list. \n2: Swipe left and click on the garbage can icon to delete a list.")
                                 .outerCircleColor(R.color.chip_5)
-                                .outerCircleAlpha(0.96f)
+                                .outerCircleAlpha(0.85f)
                                 .targetCircleColor(R.color.colorUncompletedBackground)
                                 .titleTextSize(22)
                                 .titleTextColor(R.color.colorUncompletedBackground)
-                                .descriptionTextSize(12)
+                                .descriptionTextSize(16)
+                                .titleTypeface(ResourcesCompat.getFont(this, R.font.poppins_semibold))
+                                .textTypeface(ResourcesCompat.getFont(this, R.font.raleway_medium))
                                 .descriptionTextColor(R.color.black)
                                 .textColor(R.color.black)
                                 .dimColor(R.color.black)

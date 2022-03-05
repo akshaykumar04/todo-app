@@ -143,7 +143,6 @@ class LoginActivity : AppCompatActivity() {
                     val profile: MutableMap<String, String?> = HashMap()
                     profile["Email"] = firebaseUser?.email
                     profile["purchase_code"] = "0"
-                    saveDefaultBenefits(userBenefitsCollectionRef)
                     documentReferenceCurrentReference?.set(profile)
                         ?.addOnSuccessListener {
                             Log.d("Usercreation", "Usercreation:success")
@@ -158,6 +157,7 @@ class LoginActivity : AppCompatActivity() {
                                     MasterTodoListActivity::class.java
                                 )
                             )
+                            saveDefaultBenefits(userBenefitsCollectionRef)
                         }?.addOnFailureListener {
                             Log.d("Usercreation", "Usercreation:success")
                             Toasty.error(
@@ -175,9 +175,9 @@ class LoginActivity : AppCompatActivity() {
 
     private fun saveDefaultBenefits(userBenefitsCollectionRef: CollectionReference?) {
         val benefits: MutableMap<String, String> = HashMap()
-        val defaultList = listOf("\uD83C\uDF09 Background", "\uD83C\uDF89 Free",
+        val defaultList = listOf("\uD83C\uDF09 Background", "\uD83C\uDF89 Free", "⬇️ $5",
             "\uD83C\uDF04 Daily effect", "\uD83C\uDF52 Needs-related", "\uD83C\uDFF9 Interest",
-            "⬇️ $5", "\uD83D\uDC65 Relationship", "\uD83E\uDD2A Fun", "\uD83D\uDCB9 Potential",
+            "\uD83D\uDC65 Relationship", "\uD83E\uDD2A Fun", "\uD83D\uDCB9 Potential",
             "\uD83D\uDCB0 Beneficial", "☮️ Values", "\uD83E\uDD47 Prerequisite")
 
         for (i in defaultList.indices) {

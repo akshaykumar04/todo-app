@@ -36,6 +36,7 @@ import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.res.ResourcesCompat
 import com.bumptech.glide.Glide
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.getkeepsafe.taptargetview.TapTargetSequence
@@ -55,12 +56,9 @@ class TodoListActivity : AppCompatActivity() {
     var fab: FloatingActionButton? = null
     private var list_limit = 15
     private var mBinding: ActivityTodoListBinding? = null
-    private val mSharedPreferences: SharedPreferences? = null
-    private val ll: SharedPreferences? = null
     private var toolbar_profile: AppCompatImageView? = null
     private var mAuth: FirebaseAuth? = null
     private var user: FirebaseUser? = null
-    private val databaseReference: DatabaseReference? = null
     private var todoListFirestoreAdapter: TodoListFirestoreAdapter? = null
     var editor: SharedPreferences.Editor? = null
     private var mInterstitialAd: InterstitialAd? = null
@@ -443,11 +441,13 @@ class TodoListActivity : AppCompatActivity() {
             .targets(
                 TapTarget.forView(fab, "Add Button", "Click here to add a new list item")
                     .outerCircleColor(R.color.chip_5)
-                    .outerCircleAlpha(0.96f)
+                    .outerCircleAlpha(0.85f)
                     .targetCircleColor(R.color.colorUncompletedBackground)
                     .titleTextSize(22)
                     .titleTextColor(R.color.colorUncompletedBackground)
-                    .descriptionTextSize(12)
+                    .descriptionTextSize(16)
+                    .titleTypeface(ResourcesCompat.getFont(this, R.font.poppins_semibold))
+                    .textTypeface(ResourcesCompat.getFont(this, R.font.raleway_medium))
                     .descriptionTextColor(R.color.black)
                     .textColor(R.color.black)
                     .dimColor(R.color.black)
@@ -457,16 +457,20 @@ class TodoListActivity : AppCompatActivity() {
                     .transparentTarget(true)
                     .targetRadius(80),
                 TapTarget.forView(
-                    mBinding!!.buttonTapTargetView,
+                    mBinding?.buttonTapTargetView,
                     "List Items",
-                    "1: Swipe right and click on the pencil icon to edit a list item. \n2: Swipe left and click on the garbage can icon to delete a list item."
+                    "1: Swipe right and click on the pencil icon to edit a list item. " +
+                            "\n\n2: Swipe left and click on the garbage can icon to delete a list item. " +
+                            "\n\n3: This app works better for one-time tasks (e.g. \"buy glasses\") than recurring ones (e.g. \"go to gym every day\")."
                 )
                     .outerCircleColor(R.color.chip_5)
-                    .outerCircleAlpha(0.96f)
+                    .outerCircleAlpha(0.85f)
                     .targetCircleColor(R.color.colorUncompletedBackground)
                     .titleTextSize(22)
                     .titleTextColor(R.color.colorUncompletedBackground)
-                    .descriptionTextSize(12)
+                    .descriptionTextSize(16)
+                    .titleTypeface(ResourcesCompat.getFont(this, R.font.poppins_semibold))
+                    .textTypeface(ResourcesCompat.getFont(this, R.font.raleway_medium))
                     .descriptionTextColor(R.color.black)
                     .textColor(R.color.black)
                     .dimColor(R.color.black)
@@ -485,16 +489,16 @@ class TodoListActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                     //                flagTodoListFirstRun = false;
-                    mBinding!!.buttonTapTargetView.visibility = View.GONE
-                    editor!!.putBoolean("flagTodoListFirstRun", false)
-                    editor!!.apply()
+                    mBinding?.buttonTapTargetView?.visibility = View.GONE
+                    editor?.putBoolean("flagTodoListFirstRun", false)
+                    editor?.apply()
                 }
 
                 override fun onSequenceStep(lastTarget: TapTarget, targetClicked: Boolean) {}
                 override fun onSequenceCanceled(lastTarget: TapTarget) {
-                    editor!!.putBoolean("flagTodoListFirstRun", false)
-                    mBinding!!.buttonTapTargetView.visibility = View.GONE
-                    editor!!.apply()
+                    editor?.putBoolean("flagTodoListFirstRun", false)
+                    mBinding?.buttonTapTargetView?.visibility = View.GONE
+                    editor?.apply()
                 }
             }).start()
     }
