@@ -122,5 +122,6 @@ class SplashActivity : AppCompatActivity() {
             editor.edit().clear().commit()
         }
         Log.d("Prefs", editor.all.keys.toString())
+        Log.d("Prefs", editor.all.values.toString())
     }
 }

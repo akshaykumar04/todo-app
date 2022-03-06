@@ -226,7 +226,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
                 userAccountDetails.add(1, documentSnapshot1.get("todoItemLimit").toString());
 
                 if (!purchaseCode.equals("0")) {
-                    bp = new BillingProcessor(MasterTodoListActivity.this, "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnDatsVXJEFzzwnOEBiE5wSffxr+dEazc3zbf5t5jK1NKYPlfBbeN2M8ZEA38YRt0pQ0WfnXGcJ0mauXH/0xtXdo9Hv6uyzn3W73W6RxTbc5fk2950Tn0fqHkTh6wZoEJBaLn5OnhUy6GE0Yf5VM4oj3HeY5li6ESi8PggUMeYmMcvLzcOsQ8rh4G2KBWqXcYOTMREyfFXp6jJLXHDrJqeeSAEnP/aGLPPyi2NRy5S7dp8qPIkjDYt6yU+FICSBcDAPPWO1jNZrWH43ObcDF4KNdp5CAf/HT5GLcwZv+CUvQGgtuOyiN193NE9wpV5jpA2BgV7FxENqe9T1NIPk8AMwIDAQAB", MasterTodoListActivity.this);
+                    bp = new BillingProcessor(MasterTodoListActivity.this, getString(R.string.license_key), MasterTodoListActivity.this);
                     bp.initialize();
                 } else {
                     hideProgressBar();
@@ -275,7 +275,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
             usersColRef.document(userID).collection("Lists").document().set(newList).addOnSuccessListener(aVoid -> Toasty.success(MasterTodoListActivity.this, "New List Successfully Added")).addOnFailureListener(e -> Toasty.error(MasterTodoListActivity.this, "Something went wrong"));
         });
 
-        if (purchaseCode.equals("0")) {
+        if (SaveSharedPreference.getAdsEnabled(this)) {
             bannerAd.loadAd(new AdRequest.Builder().build());
         } else {
             bannerAd.setVisibility(View.GONE);
@@ -397,7 +397,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
                         .setMessage("Are you sure you want to delete this list?")
                         .setPositiveButton("Yes", (dialog, which) -> {
 
-                            if (purchaseCode.equals("0")) {
+                            if (SaveSharedPreference.getAdsEnabled(getApplicationContext())) {
                                 if (mInterstitialAd != null) {
                                     mInterstitialAd.show(MasterTodoListActivity.this);
                                     DocumentSnapshot documentSnapshot = masterListFirestoreAdapter.getSnapshots().getSnapshot(position);
