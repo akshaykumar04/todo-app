@@ -70,7 +70,7 @@ class TodoListActivity : AppCompatActivity() {
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_todo_list)
         loadingProgressBar = mBinding?.loadingProgressBar
         fab = mBinding?.fab
-        if (Integer.valueOf(MasterTodoListActivity.purchaseCode) != 0) {
+        if (Integer.valueOf(MasterTodoListActivity.purchaseCode) == 1 || Integer.valueOf(MasterTodoListActivity.purchaseCode) == 2) {
             Log.i("purchase code", MasterTodoListActivity.purchaseCode)
             Log.i("purchase code", "purchaseCode")
             mBinding?.completedTab?.setCompoundDrawablesWithIntrinsicBounds(
@@ -147,7 +147,7 @@ class TodoListActivity : AppCompatActivity() {
             }
         }
         mBinding?.completedTab?.setOnClickListener {
-            if (Integer.valueOf(MasterTodoListActivity.purchaseCode) != 0) {
+            if (Integer.valueOf(MasterTodoListActivity.purchaseCode) == 1 || Integer.valueOf(MasterTodoListActivity.purchaseCode) == 2) {
                 startActivity(Intent(this@TodoListActivity, CompletedTodoListActivity::class.java))
             } else {
                 startActivity(Intent(this@TodoListActivity, AppUpgradeActivity::class.java))

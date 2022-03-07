@@ -92,56 +92,91 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
     private fun setupPriceToggle() {
         toggle_button_layout.onToggledListener =
             { _: ToggleButtonLayout?, (id), _: Boolean? ->
-                if (MasterTodoListActivity.purchaseCode == "0") {
-                    when (id) {
-                        R.id.toggle_left -> {
-                            tvListsCount!!.text = getString(R.string.create_up_to_3_to_do_lists)
-                            list8!!.visibility = View.VISIBLE
-                            purchaseProductId = "tier1"
-                            pur_code = "1"
-                            toggleListPointsVisibility(true)
-                        }
-                        R.id.toggle_right -> {
-                            tvListsCount!!.text = getString(R.string.create_up_to_20_to_do_lists)
-                            list8!!.visibility = View.GONE
-                            purchaseProductId = "tier2"
-                            pur_code = "2"
-                            toggleListPointsVisibility(true)
-                        }
-                        R.id.toggle_remove_ads -> {
-                            tvListsCount!!.setText(R.string.removes_ads_completely)
-                            purchaseProductId = "adfree"
-                            pur_code = "3"
-                            toggleListPointsVisibility(false)
+                when (MasterTodoListActivity.purchaseCode) {
+                    "0" -> {
+                        when (id) {
+                            R.id.toggle_left -> {
+                                tvListsCount.text = getString(R.string.create_up_to_3_to_do_lists)
+                                list8.visibility = View.VISIBLE
+                                purchaseProductId = "tier1"
+                                pur_code = "1"
+                                toggleListPointsVisibility(true)
+                            }
+                            R.id.toggle_right -> {
+                                tvListsCount.text = getString(R.string.create_up_to_20_to_do_lists)
+                                list8.visibility = View.GONE
+                                purchaseProductId = "tier2"
+                                pur_code = "2"
+                                toggleListPointsVisibility(true)
+                            }
+                            R.id.toggle_remove_ads -> {
+                                tvListsCount.setText(R.string.removes_ads_completely)
+                                purchaseProductId = "adfree"
+                                pur_code = "3"
+                                toggleListPointsVisibility(false)
+                            }
                         }
                     }
-                } else if (MasterTodoListActivity.purchaseCode == "1") {
-                    when (id) {
-                        R.id.toggle_left -> {
-                            toggle_button_layout.setToggled(R.id.toggle_right, true)
-                            Toasty.success(
-                                applicationContext,
-                                "You are already subscribed to Tier 1",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            tvListsCount!!.text = getString(R.string.create_up_to_20_to_do_lists)
-                            list8!!.visibility = View.GONE
-                            purchaseProductId = "tier2"
-                            pur_code = "2"
-                            toggleListPointsVisibility(true)
+                    "1" -> {
+                        when (id) {
+                            R.id.toggle_left -> {
+                                toggle_button_layout.setToggled(R.id.toggle_right, true)
+                                Toasty.success(
+                                    applicationContext,
+                                    "You are already subscribed to Tier 1",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                tvListsCount.text = getString(R.string.create_up_to_20_to_do_lists)
+                                list8.visibility = View.GONE
+                                purchaseProductId = "tier2"
+                                pur_code = "2"
+                                toggleListPointsVisibility(true)
+                            }
+                            R.id.toggle_right -> {
+                                tvListsCount.text = getString(R.string.create_up_to_20_to_do_lists)
+                                list8.visibility = View.GONE
+                                purchaseProductId = "tier2"
+                                pur_code = "2"
+                                toggleListPointsVisibility(true)
+                            }
+                            R.id.toggle_remove_ads -> {
+                                tvListsCount.setText(R.string.removes_ads_completely)
+                                purchaseProductId = "adfree"
+                                pur_code = "3"
+                                toggleListPointsVisibility(false)
+                            }
                         }
-                        R.id.toggle_right -> {
-                            tvListsCount!!.text = getString(R.string.create_up_to_20_to_do_lists)
-                            list8!!.visibility = View.GONE
-                            purchaseProductId = "tier2"
-                            pur_code = "2"
-                            toggleListPointsVisibility(true)
-                        }
-                        R.id.toggle_remove_ads -> {
-                            tvListsCount!!.setText(R.string.removes_ads_completely)
-                            purchaseProductId = "adfree"
-                            pur_code = "3"
-                            toggleListPointsVisibility(false)
+                    }
+                    "3" -> {
+                        when (id) {
+                            R.id.toggle_left -> {
+                                tvListsCount.text = getString(R.string.create_up_to_3_to_do_lists)
+                                list8.visibility = View.VISIBLE
+                                purchaseProductId = "tier1"
+                                pur_code = "1"
+                                toggleListPointsVisibility(true)
+                            }
+                            R.id.toggle_right -> {
+                                tvListsCount.text = getString(R.string.create_up_to_20_to_do_lists)
+                                list8.visibility = View.GONE
+                                purchaseProductId = "tier2"
+                                pur_code = "2"
+                                toggleListPointsVisibility(true)
+                            }
+                            R.id.toggle_remove_ads -> {
+                                toggle_button_layout.setToggled(R.id.toggle_right, true)
+                                Toasty.success(
+                                    applicationContext,
+                                    "You are already subscribed to Ad free membership",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                tvListsCount.setText(R.string.removes_ads_completely)
+                                purchaseProductId = "tier2"
+                                pur_code = "2"
+                                tvListsCount.text = getString(R.string.create_up_to_20_to_do_lists)
+                                list8.visibility = View.GONE
+                                toggleListPointsVisibility(true)
+                            }
                         }
                     }
                 }
