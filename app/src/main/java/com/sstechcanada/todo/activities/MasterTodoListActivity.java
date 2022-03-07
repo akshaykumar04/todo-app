@@ -94,6 +94,7 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
     private AppCompatImageView toolbar_profile;
     private FirebaseAuth mAuth;
     private FirebaseUser user;
+    private AdView adView;
     private DatabaseReference databaseReference;
     ProgressBar progressBar, loadingProgressBar;
     //    String
@@ -166,22 +167,6 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
 
         setValue();
 
-        if (purchaseCode.equals("0")) {
-            SaveSharedPreference.setAdsEnabled(this, true);
-        } else {
-            SaveSharedPreference.setAdsEnabled(this, false);
-        }
-
-        AdView adView = findViewById(R.id.adView);
-
-        if (SaveSharedPreference.getAdsEnabled(this)) {
-            loadFullScreenAds();
-            AdRequest adRequest = new AdRequest.Builder().build();
-            adView.loadAd(adRequest);
-        } else {
-            adView.setVisibility(View.GONE);
-        }
-
 
         toolbar_profile = findViewById(R.id.profile_toolbar);
         Glide.with(this).load(mAuth.getCurrentUser().getPhotoUrl()).into(toolbar_profile);
@@ -212,6 +197,9 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
             }
         });
 
+        adView = findViewById(R.id.adView);
+
+
     }
 
 
@@ -228,11 +216,19 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
                 if (!purchaseCode.equals("0")) {
                     bp = new BillingProcessor(MasterTodoListActivity.this, getString(R.string.license_key), MasterTodoListActivity.this);
                     bp.initialize();
+                    SaveSharedPreference.setAdsEnabled(this, false);
                 } else {
                     hideProgressBar();
+                    adView.setVisibility(View.VISIBLE);
+                    SaveSharedPreference.setAdsEnabled(this, true);
+                    if (SaveSharedPreference.getAdsEnabled(this)) {
+                        loadFullScreenAds();
+                        AdRequest adRequest = new AdRequest.Builder().build();
+                        adView.loadAd(adRequest);
+                    } else {
+                        adView.setVisibility(View.GONE);
+                    }
                 }
-
-//                        checkSubscriptions();
             });
         }).addOnFailureListener(e -> {
 
@@ -681,8 +677,9 @@ public class MasterTodoListActivity extends AppCompatActivity implements Billing
                     purchaseID = "tier1";
                 } else if (purchaseCode.equals("2")) {
                     purchaseID = "tier2";
+                } else if (purchaseCode.equals("3")) {
+                    purchaseID = "adfree";
                 }
-//            }
                 if (purchaseResult) {
                     TransactionDetails subscriptionTransactionDetails = bp.getSubscriptionTransactionDetails(purchaseID);
                     if (subscriptionTransactionDetails != null) {

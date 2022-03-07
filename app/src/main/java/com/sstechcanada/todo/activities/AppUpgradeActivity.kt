@@ -76,7 +76,7 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
                 purchaseProductId = "tier2"
                 pur_code = "2"
             }
-            "1" -> {
+            "1", "3" -> {
                 toggle_button_layout.setToggled(R.id.toggle_right, true)
                 tvListsCount.text = getString(R.string.create_up_to_20_to_do_lists)
                 list8.visibility = View.GONE
@@ -110,6 +110,8 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
                         }
                         R.id.toggle_remove_ads -> {
                             tvListsCount!!.setText(R.string.removes_ads_completely)
+                            purchaseProductId = "adfree"
+                            pur_code = "3"
                             toggleListPointsVisibility(false)
                         }
                     }
@@ -137,6 +139,8 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
                         }
                         R.id.toggle_remove_ads -> {
                             tvListsCount!!.setText(R.string.removes_ads_completely)
+                            purchaseProductId = "adfree"
+                            pur_code = "3"
                             toggleListPointsVisibility(false)
                         }
                     }
@@ -152,7 +156,6 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
             list5.visibility = View.VISIBLE
             list7.visibility = View.VISIBLE
             list8.visibility = View.VISIBLE
-            buttonUpgrade.visibility = View.VISIBLE
         } else {
             list2.visibility = View.INVISIBLE
             list3.visibility = View.INVISIBLE
@@ -160,17 +163,22 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
             list5.visibility = View.INVISIBLE
             list7.visibility = View.INVISIBLE
             list8.visibility = View.INVISIBLE
-            buttonUpgrade.visibility = View.INVISIBLE
         }
     }
 
     private fun setPurchaseCodeInDatabase(product_Id: String) {
 
         val purchaseCodeMap: MutableMap<String, String> = HashMap()
-        if (product_Id == "tier1") {
-            pur_code = "1"
-        } else if (product_Id == "tier2") {
-            pur_code = "2"
+        when (product_Id) {
+            "tier1" -> {
+                pur_code = "1"
+            }
+            "tier2" -> {
+                pur_code = "2"
+            }
+            "adfree" -> {
+                pur_code = "3"
+            }
         }
         SaveSharedPreference.setAdsEnabled(this, false)
         purchaseCodeMap["purchase_code"] = pur_code
@@ -206,7 +214,7 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
                         )
                         Toasty.success(applicationContext, "Package Upgraded", Toast.LENGTH_SHORT)
                             .show()
-                        loadingProgressBarUpgrade!!.visibility = View.GONE
+                        loadingProgressBarUpgrade?.visibility = View.GONE
                         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         val intent =
                             Intent(this@AppUpgradeActivity, MasterTodoListActivity::class.java)
@@ -236,6 +244,7 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
         val productIdList = ArrayList<String>()
         productIdList.add("tier1")
         productIdList.add("tier2")
+        productIdList.add("adfree")
         purchaseTransactionDetails = bp?.getSubscriptionListingDetails(productIdList)
         buttonUpgrade.setOnClickListener {
             if (bp!!.isSubscriptionUpdateSupported) {
