@@ -70,10 +70,8 @@ import java.util.List;
 import java.util.Map;
 
 import es.dmoral.toasty.Toasty;
-import io.github.douglasjunior.androidSimpleTooltip.SimpleTooltip;
 
 import static com.sstechcanada.todo.activities.MasterTodoListActivity.listId;
-import static com.sstechcanada.todo.activities.MasterTodoListActivity.purchaseCode;
 
 public class AddOrEditTaskActivity extends AppCompatActivity {
     private static final String TAG = AddOrEditTaskActivity.class.getSimpleName();
