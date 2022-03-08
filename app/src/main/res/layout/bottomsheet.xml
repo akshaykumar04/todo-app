@@ -9,8 +9,7 @@
 
     android:minHeight="@dimen/_300sdp"
     android:paddingHorizontal="@dimen/_16sdp"
-    android:paddingTop="@dimen/_16sdp"
-    tools:context=".activities.SelectCategoriesDailog">
+    android:paddingTop="@dimen/_16sdp">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/appCompatTextView2"

@@ -14,9 +14,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
         <activity
-            android:name=".activities.auth.AccountSettingActivity"
-            android:exported="false" />
-        <activity
             android:name=".activities.auth.ProfileActivity"
             android:exported="false" />
         <activity
@@ -29,12 +26,13 @@
             android:name=".activities.AppUpgradeActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".activities.AddOrEditTaskActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".activities.AppUpgradeActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activities.SelectCategoriesDailog">
 
             <!-- android:theme="@style/Theme.MaterialComponents.Light.Dialog" -->
-        </activity>
         <activity
             android:name=".activities.SplashActivity"
             android:exported="true"
@@ -50,14 +48,6 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity android:name=".activities.auth.LoginActivity" />
-        <activity
-            android:name=".activities.AddOrEditTaskActivity"
-            android:parentActivityName=".activities.TodoListActivity"
-            android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.sstechcanada.todo.activities.TodoListActivity" />
-        </activity>
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"

@@ -19,7 +19,6 @@ import com.sstechcanada.todo.activities.auth.LoginActivity
 import android.widget.Toast
 import android.content.Intent
 import android.util.Log
-import com.sstechcanada.todo.activities.AddOrEditTaskActivity
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +29,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import com.sstechcanada.todo.activities.AddOrEditTaskActivity
 import com.sstechcanada.todo.activities.AppUpgradeActivity
 import java.text.DateFormat
 import java.text.SimpleDateFormat

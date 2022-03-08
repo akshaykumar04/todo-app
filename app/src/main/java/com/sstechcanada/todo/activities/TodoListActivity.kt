@@ -515,12 +515,12 @@ class TodoListActivity : AppCompatActivity() {
 
         @JvmStatic
         fun showPlaceHolder() {
-            lottieAnimationView!!.visibility = View.VISIBLE
+            lottieAnimationView?.visibility = View.VISIBLE
         }
 
         @JvmStatic
         fun hidePlaceHolder() {
-            lottieAnimationView!!.visibility = View.INVISIBLE
+            lottieAnimationView?.visibility = View.INVISIBLE
         }
     }
 }
