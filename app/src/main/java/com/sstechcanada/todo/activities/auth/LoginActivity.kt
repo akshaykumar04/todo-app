@@ -4,7 +4,6 @@ import com.google.android.gms.common.SignInButton
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import android.app.ProgressDialog
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.auth.FirebaseUser
@@ -23,8 +22,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.sstechcanada.todo.utils.SaveSharedPreference
 import es.dmoral.toasty.Toasty
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.firestore.QuerySnapshot
-import com.google.firebase.firestore.FieldPath
+import com.google.firebase.firestore.*
 import kotlinx.android.synthetic.main.activity_login.*
 import java.lang.Exception
 import java.util.ArrayList
@@ -111,7 +109,7 @@ class LoginActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential:success")
-                    SaveSharedPreference.setUserLogIn(this@LoginActivity, "true")
+                    SaveSharedPreference.setUserLogIn(this@LoginActivity, true)
                     //                            startActivity(new Intent(LoginActivity.this, TodoListActivity2.class));
                     Toasty.success(applicationContext, "Sign in complete", Toast.LENGTH_SHORT)
                         .show()
@@ -138,6 +136,7 @@ class LoginActivity : AppCompatActivity() {
         val documentReferenceCurrentReference = firebaseUser?.uid?.let {
             db.collection("Users").document(it)
         }
+        val userBenefitsCollectionRef = documentReferenceCurrentReference?.collection("Benefits")
         db.collection("Users").whereEqualTo(FieldPath.documentId(), firebaseUser?.uid).get()
             .addOnSuccessListener { queryDocumentSnapshots: QuerySnapshot ->
                 if (queryDocumentSnapshots.size() == 0) {
@@ -158,6 +157,7 @@ class LoginActivity : AppCompatActivity() {
                                     MasterTodoListActivity::class.java
                                 )
                             )
+                            saveDefaultBenefits(userBenefitsCollectionRef)
                         }?.addOnFailureListener {
                             Log.d("Usercreation", "Usercreation:success")
                             Toasty.error(
@@ -171,6 +171,27 @@ class LoginActivity : AppCompatActivity() {
                     startActivity(Intent(this@LoginActivity, MasterTodoListActivity::class.java))
                 }
             }.addOnFailureListener { e: Exception? -> }
+    }
+
+    private fun saveDefaultBenefits(userBenefitsCollectionRef: CollectionReference?) {
+        val benefits: MutableMap<String, String> = HashMap()
+        val defaultList = listOf("\uD83C\uDF09 Background", "\uD83C\uDF89 Free", "⬇️ $5",
+            "\uD83C\uDF04 Daily effect", "\uD83C\uDF52 Needs-related", "\uD83C\uDFF9 Interest",
+            "\uD83D\uDC65 Relationship", "\uD83E\uDD2A Fun", "\uD83D\uDCB9 Potential",
+            "\uD83D\uDCB0 Beneficial", "☮️ Values", "\uD83E\uDD47 Prerequisite")
+
+        for (i in defaultList.indices) {
+            benefits["category_name"] = defaultList[i]
+            repeat(benefits.size) {
+                userBenefitsCollectionRef?.document()?.set(benefits)
+                    ?.addOnSuccessListener {
+                        Log.d("addedBenefit", defaultList[i])
+                    }
+                    ?.addOnFailureListener {
+                        Log.d("addedBenefit", "Error")
+                    }
+            }
+        }
     }
 
     override fun onBackPressed() {

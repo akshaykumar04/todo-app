@@ -7,7 +7,7 @@ import com.sstechcanada.todo.R
 import android.view.LayoutInflater
 import android.view.View
 
-class GridItemView(context: Context?) : FrameLayout(context!!) {
+class GridItemView(context: Context) : FrameLayout(context) {
     private val textView: TextView
     fun display(text: String?, isSelected: Boolean) {
         textView.text = text

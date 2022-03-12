@@ -44,11 +44,11 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/editTextName"
                 android:layout_marginTop="20dp"
-                android:paddingVertical="@dimen/_9sdp"
-                app:tint="@color/white"
-                app:backgroundTint="@color/todo"
                 android:fontFamily="@font/raleway_semibold"
-                android:text="Add" />
+                android:paddingVertical="@dimen/_9sdp"
+                android:text="Add"
+                app:backgroundTint="@color/todo"
+                app:tint="@color/white" />
 
 
             <TextView
@@ -80,7 +80,6 @@
                 android:layout_marginBottom="16dp"
                 tools:listitem="@layout/layout_artist_list" />
 
-
             <com.google.android.gms.ads.AdView
                 android:id="@+id/adView"
                 android:layout_width="wrap_content"
@@ -95,6 +94,18 @@
 
 
         </RelativeLayout>
+
+        <Button
+            android:id="@+id/buttonTapTargetView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OK"
+            android:textColor="#fff"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ProgressBar
             android:id="@+id/progressCat"

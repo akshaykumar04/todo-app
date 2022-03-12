@@ -25,6 +25,7 @@ import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
+import com.sstechcanada.todo.utils.SaveSharedPreference
 import kotlinx.android.synthetic.main.activity_app_upgrade.*
 import java.util.ArrayList
 import java.util.HashMap
@@ -60,7 +61,7 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
 
     private fun setUpOnClicks() {
         fabBack.setOnClickListener { onBackPressed() }
-        if (MasterTodoListActivity.purchaseCode == "0") {
+        if (SaveSharedPreference.getAdsEnabled(this)) {
             loadFullScreenAd()
         }
     }
@@ -75,7 +76,7 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
                 purchaseProductId = "tier2"
                 pur_code = "2"
             }
-            "1" -> {
+            "1", "3" -> {
                 toggle_button_layout.setToggled(R.id.toggle_right, true)
                 tvListsCount.text = getString(R.string.create_up_to_20_to_do_lists)
                 list8.visibility = View.GONE
@@ -91,52 +92,91 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
     private fun setupPriceToggle() {
         toggle_button_layout.onToggledListener =
             { _: ToggleButtonLayout?, (id), _: Boolean? ->
-                if (MasterTodoListActivity.purchaseCode == "0") {
-                    when (id) {
-                        R.id.toggle_left -> {
-                            tvListsCount!!.text = getString(R.string.create_up_to_3_to_do_lists)
-                            list8!!.visibility = View.VISIBLE
-                            purchaseProductId = "tier1"
-                            pur_code = "1"
-                            toggleListPointsVisibility(true)
-                        }
-                        R.id.toggle_right -> {
-                            tvListsCount!!.text = getString(R.string.create_up_to_20_to_do_lists)
-                            list8!!.visibility = View.GONE
-                            purchaseProductId = "tier2"
-                            pur_code = "2"
-                            toggleListPointsVisibility(true)
-                        }
-                        R.id.toggle_remove_ads -> {
-                            tvListsCount!!.setText(R.string.removes_ads_completely)
-                            toggleListPointsVisibility(false)
+                when (MasterTodoListActivity.purchaseCode) {
+                    "0" -> {
+                        when (id) {
+                            R.id.toggle_left -> {
+                                tvListsCount.text = getString(R.string.create_up_to_3_to_do_lists)
+                                list8.visibility = View.VISIBLE
+                                purchaseProductId = "tier1"
+                                pur_code = "1"
+                                toggleListPointsVisibility(true)
+                            }
+                            R.id.toggle_right -> {
+                                tvListsCount.text = getString(R.string.create_up_to_20_to_do_lists)
+                                list8.visibility = View.GONE
+                                purchaseProductId = "tier2"
+                                pur_code = "2"
+                                toggleListPointsVisibility(true)
+                            }
+                            R.id.toggle_remove_ads -> {
+                                tvListsCount.setText(R.string.removes_ads_completely)
+                                purchaseProductId = "adfree"
+                                pur_code = "3"
+                                toggleListPointsVisibility(false)
+                            }
                         }
                     }
-                } else if (MasterTodoListActivity.purchaseCode == "1") {
-                    when (id) {
-                        R.id.toggle_left -> {
-                            toggle_button_layout.setToggled(R.id.toggle_right, true)
-                            Toasty.success(
-                                applicationContext,
-                                "You are already subscribed to Tier 1",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            tvListsCount!!.text = getString(R.string.create_up_to_20_to_do_lists)
-                            list8!!.visibility = View.GONE
-                            purchaseProductId = "tier2"
-                            pur_code = "2"
-                            toggleListPointsVisibility(true)
+                    "1" -> {
+                        when (id) {
+                            R.id.toggle_left -> {
+                                toggle_button_layout.setToggled(R.id.toggle_right, true)
+                                Toasty.success(
+                                    applicationContext,
+                                    "You are already subscribed to Tier 1",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                tvListsCount.text = getString(R.string.create_up_to_20_to_do_lists)
+                                list8.visibility = View.GONE
+                                purchaseProductId = "tier2"
+                                pur_code = "2"
+                                toggleListPointsVisibility(true)
+                            }
+                            R.id.toggle_right -> {
+                                tvListsCount.text = getString(R.string.create_up_to_20_to_do_lists)
+                                list8.visibility = View.GONE
+                                purchaseProductId = "tier2"
+                                pur_code = "2"
+                                toggleListPointsVisibility(true)
+                            }
+                            R.id.toggle_remove_ads -> {
+                                tvListsCount.setText(R.string.removes_ads_completely)
+                                purchaseProductId = "adfree"
+                                pur_code = "3"
+                                toggleListPointsVisibility(false)
+                            }
                         }
-                        R.id.toggle_right -> {
-                            tvListsCount!!.text = getString(R.string.create_up_to_20_to_do_lists)
-                            list8!!.visibility = View.GONE
-                            purchaseProductId = "tier2"
-                            pur_code = "2"
-                            toggleListPointsVisibility(true)
-                        }
-                        R.id.toggle_remove_ads -> {
-                            tvListsCount!!.setText(R.string.removes_ads_completely)
-                            toggleListPointsVisibility(false)
+                    }
+                    "3" -> {
+                        when (id) {
+                            R.id.toggle_left -> {
+                                tvListsCount.text = getString(R.string.create_up_to_3_to_do_lists)
+                                list8.visibility = View.VISIBLE
+                                purchaseProductId = "tier1"
+                                pur_code = "1"
+                                toggleListPointsVisibility(true)
+                            }
+                            R.id.toggle_right -> {
+                                tvListsCount.text = getString(R.string.create_up_to_20_to_do_lists)
+                                list8.visibility = View.GONE
+                                purchaseProductId = "tier2"
+                                pur_code = "2"
+                                toggleListPointsVisibility(true)
+                            }
+                            R.id.toggle_remove_ads -> {
+                                toggle_button_layout.setToggled(R.id.toggle_right, true)
+                                Toasty.success(
+                                    applicationContext,
+                                    "You are already subscribed to Ad free membership",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                tvListsCount.setText(R.string.removes_ads_completely)
+                                purchaseProductId = "tier2"
+                                pur_code = "2"
+                                tvListsCount.text = getString(R.string.create_up_to_20_to_do_lists)
+                                list8.visibility = View.GONE
+                                toggleListPointsVisibility(true)
+                            }
                         }
                     }
                 }
@@ -151,7 +191,6 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
             list5.visibility = View.VISIBLE
             list7.visibility = View.VISIBLE
             list8.visibility = View.VISIBLE
-            buttonUpgrade.visibility = View.VISIBLE
         } else {
             list2.visibility = View.INVISIBLE
             list3.visibility = View.INVISIBLE
@@ -159,18 +198,24 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
             list5.visibility = View.INVISIBLE
             list7.visibility = View.INVISIBLE
             list8.visibility = View.INVISIBLE
-            buttonUpgrade.visibility = View.INVISIBLE
         }
     }
 
     private fun setPurchaseCodeInDatabase(product_Id: String) {
 
         val purchaseCodeMap: MutableMap<String, String> = HashMap()
-        if (product_Id == "tier1") {
-            pur_code = "1"
-        } else if (product_Id == "tier2") {
-            pur_code = "2"
+        when (product_Id) {
+            "tier1" -> {
+                pur_code = "1"
+            }
+            "tier2" -> {
+                pur_code = "2"
+            }
+            "adfree" -> {
+                pur_code = "3"
+            }
         }
+        SaveSharedPreference.setAdsEnabled(this, false)
         purchaseCodeMap["purchase_code"] = pur_code
         db.collection("Users").document(userID).set(purchaseCodeMap, SetOptions.merge())
             .addOnSuccessListener {
@@ -204,7 +249,7 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
                         )
                         Toasty.success(applicationContext, "Package Upgraded", Toast.LENGTH_SHORT)
                             .show()
-                        loadingProgressBarUpgrade!!.visibility = View.GONE
+                        loadingProgressBarUpgrade?.visibility = View.GONE
                         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         val intent =
                             Intent(this@AppUpgradeActivity, MasterTodoListActivity::class.java)
@@ -234,6 +279,7 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
         val productIdList = ArrayList<String>()
         productIdList.add("tier1")
         productIdList.add("tier2")
+        productIdList.add("adfree")
         purchaseTransactionDetails = bp?.getSubscriptionListingDetails(productIdList)
         buttonUpgrade.setOnClickListener {
             if (bp!!.isSubscriptionUpdateSupported) {
