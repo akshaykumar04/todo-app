@@ -12,16 +12,26 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
+import com.sstechcanada.todo.BuildConfig
 import com.sstechcanada.todo.R
 import kotlinx.android.synthetic.main.activity_about.*
+import kotlinx.android.synthetic.main.activity_about.textViewVersion
+import kotlinx.android.synthetic.main.activity_splash.*
 
 class AboutActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
 
+        textViewVersion.text = "Version: ${BuildConfig.VERSION_NAME}";
+
+        initOnClicks()
         setupPieChart()
         loadPieChartData()
+    }
+
+    private fun initOnClicks() {
+        fabBack.setOnClickListener { onBackPressed() }
     }
 
     private fun setupPieChart() {
@@ -30,6 +40,7 @@ class AboutActivity : AppCompatActivity() {
         pieChart.setEntryLabelTextSize(8F)
         pieChart.setEntryLabelColor(Color.BLACK)
         pieChart.centerText = getString(R.string.revenue_breakdown)
+
         pieChart.setCenterTextSize(12F)
         pieChart.description.isEnabled = false
         val l: Legend = pieChart.legend

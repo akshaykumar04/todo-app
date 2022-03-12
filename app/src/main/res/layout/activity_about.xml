@@ -6,18 +6,71 @@
     android:layout_height="match_parent"
     tools:context=".activities.AboutActivity">
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabBack"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/ic_left_arrow"
+        android:tint="@color/colorTab"
+        app:backgroundTint="#ffffff"
+        app:fabSize="mini"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/todo" />
 
-    <TextView
-        android:id="@+id/textView4"
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvAppName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_20sdp"
-        android:textSize="@dimen/_16ssp"
-        android:fontFamily="@font/raleway_medium"
-        android:text="This page is under construction"
+        android:fontFamily="@font/raleway_semibold"
+        android:text="@string/app_name"
+        android:textColor="@color/textHeadings"
+        android:textSize="@dimen/_18ssp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/fabBack"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvAppDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:fontFamily="@font/raleway_semibold"
+        android:text="@string/items_sorted_by_the_number_of_benefits"
+        android:textSize="@dimen/_12ssp"
+        android:textColor="@color/black4f"
+        app:layout_constraintTop_toBottomOf="@id/tvAppName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textViewVersion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:fontFamily="@font/raleway_semibold"
+        android:textSize="@dimen/_10ssp"
+        android:textColor="@color/black4f"
+        app:layout_constraintTop_toBottomOf="@id/tvAppDesc"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_100sdp"
+        app:layout_constraintBottom_toTopOf="@+id/pieChart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewVersion"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="appicon.json"
+        app:lottie_loop="false" />
+
 
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/pieChart"
@@ -37,8 +90,8 @@
         android:layout_marginBottom="@dimen/_20sdp"
         android:textSize="@dimen/_12ssp"
         android:fontFamily="@font/raleway_medium"
-        android:text="© 2021-22 Jon Bell's Co."
-        android:textColor="@color/black"
+        android:text="@string/_2021_22_jon_bell_s_co"
+        android:textColor="@color/black4f"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />

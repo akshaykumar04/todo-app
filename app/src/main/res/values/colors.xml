@@ -6,6 +6,7 @@
     <color name="colorPrimaryLight">#C8E6C9</color>
     <color name="colorAccent">#9C27B0</color>
     <color name="black">#000000</color>
+    <color name="black4f">#4f4f4f</color>
     <color name="colorOverdue">#E53935</color>
     <color name="colorCompleted">#9E9E9E</color>
     <color name="colorCompletedBackground">#EEEEEE</color>
