@@ -90,10 +90,12 @@ class CompletedTodoListActivity : AppCompatActivity() {
             .log(this.javaClass.simpleName + "listId = " + MasterTodoListActivity.listId)
         FirebaseCrashlytics.getInstance().log(this.javaClass.simpleName + "UserId = " + user?.uid)
         val query = user?.uid?.let {
-            usersColRef?.document(it)?.collection("Lists")?.document(
-                MasterTodoListActivity.listId
-            )?.collection("Todo")?.whereEqualTo("Status", "Completed")
-                ?.orderBy("priority", Query.Direction.DESCENDING)
+            MasterTodoListActivity.listId?.let { it1 ->
+                usersColRef?.document(it)?.collection("Lists")?.document(
+                    it1
+                )?.collection("Todo")?.whereEqualTo("Status", "Completed")
+                    ?.orderBy("priority", Query.Direction.DESCENDING)
+            }
         }
         val options = query?.let {
             FirestoreRecyclerOptions.Builder<TodoTaskFirestore>()
@@ -114,10 +116,12 @@ class CompletedTodoListActivity : AppCompatActivity() {
                             todoListFirestoreAdapter!!.snapshots.getSnapshot(position)
                         val id = documentSnapshot.id
                         user?.uid?.let {
-                            usersColRef?.document(it)?.collection("Lists")
-                                ?.document(MasterTodoListActivity.listId)?.collection("Todo")
-                                ?.document(id)
-                                ?.delete()
+                            MasterTodoListActivity.listId?.let { it1 ->
+                                usersColRef?.document(it)?.collection("Lists")
+                                    ?.document(it1)?.collection("Todo")
+                                    ?.document(id)
+                                    ?.delete()
+                            }
                         }
                     }
                     .setNegativeButton("No", null)

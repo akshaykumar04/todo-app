@@ -52,8 +52,10 @@ class TodoListFirestoreAdapter(
     private val databaseReference: DatabaseReference? = null
     private val usersColRef = db.collection("Users")
     var userID = user!!.uid
-    var UserColRef = db.collection("Users").document(userID).collection("Lists")
-        .document(MasterTodoListActivity.listId).collection("Todo")
+    var UserColRef = MasterTodoListActivity.listId?.let {
+        db.collection("Users").document(userID).collection("Lists")
+        .document(it).collection("Todo")
+    }
 
     override fun onBindViewHolder(
         holder: TodoListFirestoreHolder,
@@ -128,11 +130,11 @@ class TodoListFirestoreAdapter(
                         val timeStr = sdf.format(calendar.time)
                         updateTaskMap["TimestampCompleted"] = "$dateStr $timeStr"
                         updateTaskMap["Status"] = task_status
-                        UserColRef.document(model.documentID)
-                            .set(updateTaskMap, SetOptions.merge()).addOnSuccessListener {
+                        UserColRef?.document(model.documentID)
+                            ?.set(updateTaskMap, SetOptions.merge())?.addOnSuccessListener {
                                 Toasty.success(context, "Todo-task marked as completed")
                                     .show()
-                            }.addOnFailureListener {
+                            }?.addOnFailureListener {
                                 Toasty.error(context, "Something went wrong").show()
                             }
                         //
@@ -161,14 +163,14 @@ class TodoListFirestoreAdapter(
                             val timeStr = sdf.format(calendar.time)
                             updateTaskMap["TimestampCompleted"] = "$dateStr $timeStr"
                             updateTaskMap["Status"] = task_status
-                            UserColRef.document(model.documentID)
-                                .set(updateTaskMap, SetOptions.merge())
-                                .addOnSuccessListener {
+                            UserColRef?.document(model.documentID)
+                                ?.set(updateTaskMap, SetOptions.merge())
+                                ?.addOnSuccessListener {
                                     Toasty.success(
                                         context,
                                         "Todo-task marked as incomplete"
                                     ).show()
-                                }.addOnFailureListener {
+                                }?.addOnFailureListener {
                                     Toasty.error(
                                         context,
                                         "Something went wrong"

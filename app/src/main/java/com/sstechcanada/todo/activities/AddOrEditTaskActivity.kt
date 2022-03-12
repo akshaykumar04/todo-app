@@ -81,8 +81,10 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             .log(this.javaClass.simpleName + "listId = " + MasterTodoListActivity.listId)
         FirebaseCrashlytics.getInstance().log(this.javaClass.simpleName + "UserId = " + userID)
         benefitCollectionRef = db.collection("Users").document(userID!!).collection("Benefits")
-        UserColRef = db.collection("Users").document(userID!!).collection("Lists")
-            .document(MasterTodoListActivity.listId).collection("Todo")
+        UserColRef = MasterTodoListActivity.listId?.let {
+            db.collection("Users").document(userID!!).collection("Lists")
+                .document(it).collection("Todo")
+        }
         Log.i("ListId", "Add or edit: " + MasterTodoListActivity.listId)
         Glide.with(this).load(mAuth!!.currentUser!!.photoUrl).into(profile_toolbar)
         if (SaveSharedPreference.getAdsEnabled(this)) {
