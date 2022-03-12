@@ -1,16 +1,18 @@
 package com.sstechcanada.todo.activities
 
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.Paint
 import android.os.Bundle
-import com.sstechcanada.todo.R
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.Legend
-import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.utils.ColorTemplate
 import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.PercentFormatter
+import com.github.mikephil.charting.utils.ColorTemplate
+import com.sstechcanada.todo.R
 import kotlinx.android.synthetic.main.activity_about.*
 
 class AboutActivity : AppCompatActivity() {
@@ -25,13 +27,13 @@ class AboutActivity : AppCompatActivity() {
     private fun setupPieChart() {
         pieChart.isDrawHoleEnabled = true
         pieChart.setUsePercentValues(true)
-        pieChart.setEntryLabelTextSize(12F)
+        pieChart.setEntryLabelTextSize(8F)
         pieChart.setEntryLabelColor(Color.BLACK)
-        pieChart.centerText = "Revenue Breakdown"
-        pieChart.setCenterTextSize(24F)
+        pieChart.centerText = getString(R.string.revenue_breakdown)
+        pieChart.setCenterTextSize(12F)
         pieChart.description.isEnabled = false
         val l: Legend = pieChart.legend
-        l.verticalAlignment = Legend.LegendVerticalAlignment.TOP
+        l.verticalAlignment = Legend.LegendVerticalAlignment.CENTER
         l.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
         l.orientation = Legend.LegendOrientation.VERTICAL
         l.setDrawInside(false)
@@ -58,8 +60,16 @@ class AboutActivity : AppCompatActivity() {
         data.setValueFormatter(PercentFormatter(pieChart))
         data.setValueTextSize(12f)
         data.setValueTextColor(Color.BLACK)
+        ResourcesCompat.getFont(this, R.font.raleway_medium)?.let {
+            pieChart.setCenterTextTypeface(it)
+            pieChart.setCenterTextTypeface(it)
+            data.setValueTypeface(it)
+            pieChart.setNoDataTextTypeface(it)
+            pieChart.legend.typeface = it
+            pieChart.description.typeface = it
+        }
         pieChart.data = data
         pieChart.invalidate()
-        pieChart.animateY(1400, Easing.EaseInOutQuad)
+        pieChart.animateY(1000, Easing.EaseInOutQuad)
     }
 }
