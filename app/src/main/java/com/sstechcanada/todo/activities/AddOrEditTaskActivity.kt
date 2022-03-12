@@ -348,19 +348,21 @@ class AddOrEditTaskActivity : AppCompatActivity() {
     }
 
     private fun loadCategories() {
-        benefitCollectionRef!!.addSnapshotListener { value: QuerySnapshot?, error: FirebaseFirestoreException? ->
+        benefitCollectionRef?.addSnapshotListener { value: QuerySnapshot?, error: FirebaseFirestoreException? ->
             categories = ArrayList()
             selectedStrings = ArrayList()
             categories?.clear()
-            for (dataSnapshot in value!!) {
-                val category = Category(dataSnapshot.id, dataSnapshot["category_name"] as String?)
-                categories?.add(category)
+            if (value != null) {
+                for (dataSnapshot in value) {
+                    val category = Category(dataSnapshot.id, dataSnapshot["category_name"] as String?)
+                    categories?.add(category)
+                }
             }
 
             //iterating through all the nodes
             adapter = GridViewAdapter(categories, this@AddOrEditTaskActivity)
-            gridView!!.adapter = adapter
-            gridView!!.visibility = View.VISIBLE
+            gridView?.adapter = adapter
+            gridView?.visibility = View.VISIBLE
             record = convertStringToArray(selectedResult)
             for (i in categories?.indices!!) {
                 for (j in record!!.indices) {
@@ -497,11 +499,11 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             bannerAd.visibility = View.GONE
         }
         loadCategories()
-        fabDone.setOnClickListener { view: View? ->
+        fabDone.setOnClickListener {
             updateSelectedBenefits()
             dialog.dismiss()
         }
-        fabAdd.setOnClickListener { view: View? ->
+        fabAdd.setOnClickListener {
             startActivity(
                 Intent(
                     this@AddOrEditTaskActivity,

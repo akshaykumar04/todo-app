@@ -101,12 +101,11 @@
 
         </TextView>
 
-
         <HorizontalScrollView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/_4sdp"
-            android:elevation="@dimen/_10sdp"
+            android:elevation="@dimen/_100sdp"
             android:scrollbars="none"
             android:layout_marginBottom="@dimen/_6sdp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -117,8 +116,7 @@
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chipGroup"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/_12sdp"
-                app:singleSelection="true">
+                android:layout_height="wrap_content">
 
             </com.google.android.material.chip.ChipGroup>
 

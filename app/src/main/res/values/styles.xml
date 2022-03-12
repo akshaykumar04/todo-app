@@ -49,7 +49,7 @@
 
     <style name="ThinnerChip" parent="Widget.MaterialComponents.Chip.Action">
         <item name="chipCornerRadius">@dimen/_12sdp</item>
-        <item name="chipMinHeight">@dimen/_7sdp</item>
+        <item name="chipMinHeight">@dimen/_8sdp</item>
         <item name="android:padding">@dimen/_2sdp</item>
         <item name="android:textAppearance">@style/TextSmall</item>
     </style>

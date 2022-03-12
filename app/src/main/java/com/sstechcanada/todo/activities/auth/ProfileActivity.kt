@@ -132,7 +132,7 @@ class ProfileActivity : AppCompatActivity() {
                 Toasty.success(this, "Account Deleted", Toast.LENGTH_SHORT).show()
                 signOut()
                 finishAffinity()
-                startActivity(Intent(this, LoginActivity::class.java))
+                startActivity(Intent(this, SplashActivity::class.java))
             } else {
                 Toasty.error(this, "Server Error, Please try login in again", Toast.LENGTH_SHORT).show()
             }

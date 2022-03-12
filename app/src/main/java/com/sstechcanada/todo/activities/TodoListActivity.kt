@@ -156,13 +156,13 @@ class TodoListActivity : AppCompatActivity() {
         rv_todo_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy > 12 || dy < 0 && fab!!.isShown) {
-                    fab!!.hide()
+                    fab?.hide()
                 }
                 if (dy < -12 && !fab!!.isShown) {
-                    fab!!.show()
+                    fab?.show()
                 }
                 if (!recyclerView.canScrollVertically(-1)) {
-                    fab!!.show()
+                    fab?.show()
                 }
             }
         })

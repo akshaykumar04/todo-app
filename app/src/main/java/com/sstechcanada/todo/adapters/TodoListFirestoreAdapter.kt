@@ -18,6 +18,7 @@ import es.dmoral.toasty.Toasty
 import com.sstechcanada.todo.activities.auth.LoginActivity
 import android.widget.Toast
 import android.content.Intent
+import android.text.TextUtils
 import android.util.Log
 import android.view.ViewGroup
 import android.view.LayoutInflater
@@ -85,6 +86,7 @@ class TodoListFirestoreAdapter(
                 R.style.ThinnerChip
             )
             chip.setChipDrawable(drawable)
+
             if (i in 0..9) {
                 chip.setChipBackgroundColorResource(colors[i])
             } else if (i >= 10) {
@@ -92,8 +94,8 @@ class TodoListFirestoreAdapter(
             }
             chip.text = model.benefits[i] + ""
             holder.chipGroup.childCount
-            chip.chipStartPadding
-            chip.chipEndPadding
+            chip.maxWidth = 200
+            chip.ellipsize = TextUtils.TruncateAt.END
             chip.setTextAppearanceResource(R.style.SmallerText)
             holder.chipGroup.addView(chip)
         }
@@ -114,28 +116,27 @@ class TodoListFirestoreAdapter(
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .setTitle("Confirm Complete")
                     .setMessage("Are you sure you want to mark this task as completed?")
-                    .setPositiveButton("Yes", object : DialogInterface.OnClickListener {
-                        override fun onClick(dialog: DialogInterface, which: Int) {
-                            val updateTaskMap: MutableMap<String, Any> = HashMap()
-                            val task_status = "Completed"
-                            val calendar = Calendar.getInstance()
-                            val dateStr = DateFormat.getDateInstance(DateFormat.FULL)
-                                .format(calendar.time)
-                            val sdf = SimpleDateFormat("h:mm a")
-                            Log.i("dateTime", "TimestampCompleted$dateStr")
-                            val timeStr = sdf.format(calendar.time)
-                            updateTaskMap["TimestampCompleted"] = "$dateStr $timeStr"
-                            updateTaskMap["Status"] = task_status
-                            UserColRef.document(model.documentID)
-                                .set(updateTaskMap, SetOptions.merge()).addOnSuccessListener {
-                                    Toasty.success(context, "Todo-task marked as completed")
-                                        .show()
-                                }.addOnFailureListener {
-                                    Toasty.error(context, "Something went wrong").show()
-                                }
-                            //
-                        }
-                    })
+                    .setPositiveButton("Yes"
+                    ) { _, _ ->
+                        val updateTaskMap: MutableMap<String, Any> = HashMap()
+                        val task_status = "Completed"
+                        val calendar = Calendar.getInstance()
+                        val dateStr = DateFormat.getDateInstance(DateFormat.FULL)
+                            .format(calendar.time)
+                        val sdf = SimpleDateFormat("h:mm a")
+                        Log.i("dateTime", "TimestampCompleted$dateStr")
+                        val timeStr = sdf.format(calendar.time)
+                        updateTaskMap["TimestampCompleted"] = "$dateStr $timeStr"
+                        updateTaskMap["Status"] = task_status
+                        UserColRef.document(model.documentID)
+                            .set(updateTaskMap, SetOptions.merge()).addOnSuccessListener {
+                                Toasty.success(context, "Todo-task marked as completed")
+                                    .show()
+                            }.addOnFailureListener {
+                                Toasty.error(context, "Something went wrong").show()
+                            }
+                        //
+                    }
                     .setNegativeButton("No", object : DialogInterface.OnClickListener {
                         override fun onClick(dialog: DialogInterface, which: Int) {
                             holder.customCheckbox.isChecked = false
