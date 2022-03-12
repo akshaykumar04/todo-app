@@ -47,6 +47,19 @@
         <item name="android:layout_weight">1</item>
     </style>
 
+    <style name="ThinnerChip" parent="Widget.MaterialComponents.Chip.Action">
+        <item name="chipCornerRadius">@dimen/_12sdp</item>
+        <item name="chipMinHeight">@dimen/_7sdp</item>
+        <item name="android:padding">@dimen/_2sdp</item>
+        <item name="android:textAppearance">@style/TextSmall</item>
+    </style>
+
+    <style name="TextSmall" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textSize">@dimen/_4ssp</item>
+        <item name="fontFamily">@font/raleway_medium</item>
+    </style>
+
+
     <!--Originally I had created a values-land directory and just put the following landscape
         versions of the above styles in styles.xml in that directory, with the same style
         names as the above styles, but I was getting some weird behaviors which made me think

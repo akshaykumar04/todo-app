@@ -168,7 +168,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
 
         //Grid View End
         if (todoTaskToAddOrEdit != null) {
-            record = convertStringToArray(todoTaskToAddOrEdit!!.benefitsString)
+            record = todoTaskToAddOrEdit?.benefitsString?.let { convertStringToArray(it) }
             category_count = record!!.size
             displayBenefits(record)
         }
@@ -428,7 +428,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             })
     }
 
-    fun displayBenefits(record: Array<String>?) {
+    private fun displayBenefits(record: Array<String>?) {
         val colors = intArrayOf(
             R.color.chip_1,
             R.color.chip_2,
