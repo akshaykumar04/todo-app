@@ -367,7 +367,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             for (i in categories?.indices!!) {
                 for (j in record!!.indices) {
                     if (record!![j] == categories?.get(i)?.category_name) {
-                        adapter!!.selectedPositions.add(i)
+                        adapter!!.selectedPositions?.add(i)
                         selectedStrings!!.add(record!![j])
                     }
                 }
@@ -380,11 +380,11 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             OnItemClickListener { parent: AdapterView<*>, v: View, position: Int, id: Long ->
                 val selectedIndex = adapter!!.selectedPositions.indexOf(position)
                 if (selectedIndex > -1) {
-                    adapter!!.selectedPositions.removeAt(selectedIndex)
+                    adapter?.selectedPositions?.removeAt(selectedIndex)
                     (v as GridItemView).display(false)
                     selectedStrings!!.remove(parent.getItemAtPosition(position))
                 } else {
-                    adapter!!.selectedPositions.add(position)
+                    adapter?.selectedPositions?.add(position)
                     (v as GridItemView).display(true)
                     selectedStrings!!.add(parent.getItemAtPosition(position) as String)
                 }

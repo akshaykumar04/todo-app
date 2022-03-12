@@ -3,6 +3,7 @@ package com.sstechcanada.todo.activities
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
+import android.util.DisplayMetrics
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import com.github.mikephil.charting.animation.Easing
@@ -10,13 +11,11 @@ import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.sstechcanada.todo.BuildConfig
 import com.sstechcanada.todo.R
+import com.sstechcanada.todo.utils.PercentFormatter
 import kotlinx.android.synthetic.main.activity_about.*
-import kotlinx.android.synthetic.main.activity_about.textViewVersion
-import kotlinx.android.synthetic.main.activity_splash.*
 
 class AboutActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,9 +39,7 @@ class AboutActivity : AppCompatActivity() {
         pieChart.setEntryLabelTextSize(8F)
         pieChart.setEntryLabelColor(Color.BLACK)
         pieChart.centerText = getString(R.string.revenue_breakdown)
-
         pieChart.setCenterTextSize(12F)
-        pieChart.description.isEnabled = false
         val l: Legend = pieChart.legend
         l.verticalAlignment = Legend.LegendVerticalAlignment.CENTER
         l.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
@@ -53,10 +50,10 @@ class AboutActivity : AppCompatActivity() {
 
     private fun loadPieChartData() {
         val entries: ArrayList<PieEntry> = ArrayList()
-        entries.add(PieEntry(0.2f, "Good Causes"))
-        entries.add(PieEntry(0.2f, "Advertising"))
-        entries.add(PieEntry(0.3f, "sstechcanada"))
-        entries.add(PieEntry(0.3f, "Jon (founder)"))
+        entries.add(PieEntry(2.toFloat(), "Good Causes"))
+        entries.add(PieEntry(2.toFloat(), "Advertising"))
+        entries.add(PieEntry(3.toFloat(), "sstechcanada"))
+        entries.add(PieEntry(3.toFloat(), "Jon (founder)"))
         val colors: ArrayList<Int> = ArrayList()
         for (color in ColorTemplate.MATERIAL_COLORS) {
             colors.add(color)
@@ -64,7 +61,7 @@ class AboutActivity : AppCompatActivity() {
         for (color in ColorTemplate.VORDIPLOM_COLORS) {
             colors.add(color)
         }
-        val dataSet = PieDataSet(entries, "Revenue Breakdown Category")
+        val dataSet = PieDataSet(entries, "After taxes and transaction fees")
         dataSet.colors = colors
         val data = PieData(dataSet)
         data.setDrawValues(true)
@@ -77,10 +74,27 @@ class AboutActivity : AppCompatActivity() {
             data.setValueTypeface(it)
             pieChart.setNoDataTextTypeface(it)
             pieChart.legend.typeface = it
-            pieChart.description.typeface = it
         }
         pieChart.data = data
         pieChart.invalidate()
         pieChart.animateY(1000, Easing.EaseInOutQuad)
+
+        val displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        val height = displayMetrics.heightPixels
+        val width = displayMetrics.widthPixels
+
+        pieChart.description?.let {
+            it.textSize = 15F
+            it.isEnabled = true
+            it.text = getString(R.string.pie_title)
+            it.textColor = resources.getColor(R.color.textHeadings)
+            it.textAlign = Paint.Align.CENTER
+            it.setPosition((width/2).toFloat(), 32f)
+            ResourcesCompat.getFont(this, R.font.raleway_semibold)?.let { tf ->
+                it.typeface = tf
+            }
+        }
+
     }
 }
