@@ -1,10 +1,14 @@
 package com.sstechcanada.todo.activities
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Paint
+import android.net.Uri
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.res.ResourcesCompat
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.Legend
@@ -16,6 +20,7 @@ import com.sstechcanada.todo.BuildConfig
 import com.sstechcanada.todo.R
 import com.sstechcanada.todo.utils.PercentFormatter
 import kotlinx.android.synthetic.main.activity_about.*
+
 
 class AboutActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +36,18 @@ class AboutActivity : AppCompatActivity() {
 
     private fun initOnClicks() {
         fabBack.setOnClickListener { onBackPressed() }
+        ivMenu.setOnClickListener { v ->
+            val menu = v?.let { PopupMenu(this, it) }
+            menu?.menu?.add(Menu.NONE, 1, 1, getString(R.string.ads_cat))
+            menu?.show()
+            menu?.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    1 -> { openWebView() }
+                }
+                true
+            }
+        }
+
     }
 
     private fun setupPieChart() {
@@ -90,11 +107,19 @@ class AboutActivity : AppCompatActivity() {
             it.text = getString(R.string.pie_title)
             it.textColor = resources.getColor(R.color.textHeadings)
             it.textAlign = Paint.Align.CENTER
-            it.setPosition((width/2).toFloat(), 32f)
+            it.setPosition((width / 2).toFloat(), 32f)
             ResourcesCompat.getFont(this, R.font.raleway_semibold)?.let { tf ->
                 it.typeface = tf
             }
         }
 
     }
+
+    private fun openWebView() {
+        val wenIntent = Intent(Intent.ACTION_VIEW)
+        wenIntent.data = Uri.parse("http://www.jonbellsco.com/google-adsense-policy.html")
+        startActivity(wenIntent)
+    }
+
+
 }
