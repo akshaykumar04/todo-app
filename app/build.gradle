@@ -55,7 +55,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.preference:preference-ktx:1.2.0'
     implementation 'com.google.android.gms:play-services-auth:20.1.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.6.10"
     implementation 'com.google.firebase:firebase-firestore:24.0.2'
     implementation 'com.anjlab.android.iab.v3:library:1.0.44'
     implementation 'com.google.firebase:firebase-crashlytics:18.2.9'
