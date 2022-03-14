@@ -39,16 +39,16 @@ public class SaveSharedPreference {
         return getSharedPreferences(ctx).getBoolean(PREF_IS_LOGGED_IN, false);
     }
 
-    public static void saveLimit(Context context, int limit){
+    public static void saveLimit(Context context, int limit) {
         SharedPreferences sharedpreferences = context.getSharedPreferences(PREF, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
         editor.putInt(LIST_LIMIT, limit);
         editor.apply();
     }
 
-    public static int loadLimit(Context context){
+    public static int loadLimit(Context context) {
         SharedPreferences sharedpreferences = context.getSharedPreferences(PREF, Context.MODE_PRIVATE);
-        return sharedpreferences.getInt(LIST_LIMIT,0);
+        return sharedpreferences.getInt(LIST_LIMIT, 0);
     }
 
     public static void setAdsEnabled(Context ctx, Boolean isAdsEnabled) {
