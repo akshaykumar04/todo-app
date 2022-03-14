@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/materialCard"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/_54sdp"
+    android:layout_height="wrap_content"
     android:layout_marginStart="16dp"
     android:layout_marginTop="8dp"
     android:layout_marginEnd="16dp"
     android:layout_marginBottom="8dp"
+    android:minHeight="@dimen/_42sdp"
     android:padding="2dp"
-    app:cardCornerRadius="40dp"
+    app:cardCornerRadius="@dimen/_48sdp"
     app:cardElevation="5dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
@@ -19,36 +19,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <androidx.appcompat.widget.AppCompatCheckBox
-            android:id="@+id/cb_todo_description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="28dp"
-            android:layout_marginRight="28dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.478" />
-
-        <TextView
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginRight="32dp"
-            android:background="@drawable/custom_checkbox"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.488" />
+        android:layout_height="match_parent"
+        android:minHeight="@dimen/_42sdp">
 
         <CheckBox
             android:id="@+id/checkb"
@@ -70,58 +42,33 @@
 
         <TextView
             android:id="@+id/tv_todo_desc"
-            android:layout_width="@dimen/_220sdp"
-            android:layout_height="22dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_13sdp"
             android:ellipsize="end"
             android:fontFamily="@font/raleway_semibold"
             android:maxLines="1"
+            android:paddingEnd="@dimen/_4sdp"
             android:text="Todo Description"
             android:textColor="@color/textHeadings"
             android:textSize="@dimen/_12ssp"
             android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/checkb"
             app:layout_constraintStart_toEndOf="@+id/circle_per_item"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/todo_benefits"
-            android:layout_width="@dimen/_220sdp"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/raleway_semibold"
-            android:maxLines="1"
-            android:textColor="@color/circle1"
-            android:textSize="@dimen/_8ssp"
-            android:textStyle="italic"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="@id/tv_todo_desc"
-            app:layout_constraintTop_toBottomOf="@id/tv_todo_desc"
-            tools:text="benefits">
-
-        </TextView>
-
-        <HorizontalScrollView
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroup"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/_4sdp"
-            android:elevation="@dimen/_100sdp"
-            android:scrollbars="none"
-            android:layout_marginBottom="@dimen/_6sdp"
+            android:layout_marginVertical="@dimen/_6sdp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/checkb"
-            app:layout_constraintStart_toStartOf="@id/tv_todo_desc"
+            app:layout_constraintEnd_toStartOf="@+id/checkb"
+            app:layout_constraintStart_toStartOf="@+id/tv_todo_desc"
             app:layout_constraintTop_toBottomOf="@id/tv_todo_desc">
 
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chipGroup"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content">
-
-            </com.google.android.material.chip.ChipGroup>
-
-
-        </HorizontalScrollView>
+        </com.google.android.material.chip.ChipGroup>
 
 
         <TextView
@@ -129,45 +76,10 @@
             android:layout_width="10dp"
             android:layout_height="10dp"
             android:layout_marginStart="20dp"
-            android:layout_marginLeft="20dp"
             android:background="@drawable/circle_per_item"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-
-        <!--    <TextView-->
-        <!--        android:id="@+id/tv_todo_due_date"-->
-        <!--        android:layout_width="wrap_content"-->
-        <!--        android:layout_height="wrap_content"-->
-        <!--        android:layout_marginStart="80dp"-->
-        <!--        android:layout_marginLeft="80dp"-->
-        <!--        android:visibility="gone"-->
-        <!--        app:layout_constraintStart_toStartOf="parent"-->
-        <!--        tools:layout_editor_absoluteY="41dp"-->
-        <!--        tools:text="@string/no_due_date" />-->
-
-        <!--    <TextView-->
-        <!--        android:id="@+id/tv_todo_priority"-->
-        <!--        android:layout_width="wrap_content"-->
-        <!--        android:layout_height="wrap_content"-->
-        <!--        android:layout_marginEnd="4dp"-->
-        <!--        android:layout_marginRight="4dp"-->
-        <!--        android:visibility="gone"-->
-        <!--        app:layout_constraintEnd_toStartOf="@+id/iv_todo_priority_star"-->
-        <!--        tools:layout_editor_absoluteY="6dp"-->
-        <!--        tools:text="@string/high_priority" />-->
-
-        <com.sstechcanada.todo.custom_views.PriorityStarImageView
-            android:id="@+id/iv_todo_priority_star"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginRight="4dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/tv_todo_priority"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_todo_priority" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
