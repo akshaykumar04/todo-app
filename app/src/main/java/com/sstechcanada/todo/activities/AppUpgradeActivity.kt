@@ -35,7 +35,7 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
 
     var bp: BillingProcessor? = null
     private val mAuth = FirebaseAuth.getInstance()
-    var userID = mAuth.currentUser!!.uid
+    var userID = mAuth.currentUser?.uid
     var db = FirebaseFirestore.getInstance()
     var purchaseProductId = "1"
     private var purchaseTransactionDetails: List<SkuDetails>? = null
@@ -104,10 +104,10 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
                             }
                             R.id.toggle_right -> {
                                 tvListsCount.text = getString(R.string.create_up_to_20_to_do_lists)
-                                list8.visibility = View.GONE
                                 purchaseProductId = "tier2"
                                 pur_code = "2"
                                 toggleListPointsVisibility(true)
+                                list8.visibility = View.GONE
                             }
                             R.id.toggle_remove_ads -> {
                                 tvListsCount.setText(R.string.removes_ads_completely)
@@ -127,10 +127,10 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
                                     Toast.LENGTH_SHORT
                                 ).show()
                                 tvListsCount.text = getString(R.string.create_up_to_20_to_do_lists)
-                                list8.visibility = View.GONE
                                 purchaseProductId = "tier2"
                                 pur_code = "2"
                                 toggleListPointsVisibility(true)
+                                list8.visibility = View.GONE
                             }
                             R.id.toggle_right -> {
                                 tvListsCount.text = getString(R.string.create_up_to_20_to_do_lists)
@@ -138,6 +138,7 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
                                 purchaseProductId = "tier2"
                                 pur_code = "2"
                                 toggleListPointsVisibility(true)
+                                list8.visibility = View.GONE
                             }
                             R.id.toggle_remove_ads -> {
                                 tvListsCount.setText(R.string.removes_ads_completely)
@@ -162,6 +163,7 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
                                 purchaseProductId = "tier2"
                                 pur_code = "2"
                                 toggleListPointsVisibility(true)
+                                list8.visibility = View.GONE
                             }
                             R.id.toggle_remove_ads -> {
                                 toggle_button_layout.setToggled(R.id.toggle_right, true)
@@ -217,47 +219,51 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
         }
         SaveSharedPreference.setAdsEnabled(this, false)
         purchaseCodeMap["purchase_code"] = pur_code
-        db.collection("Users").document(userID).set(purchaseCodeMap, SetOptions.merge())
-            .addOnSuccessListener {
-                MasterTodoListActivity.purchaseCode = pur_code
-                setPurchaseCode()
-            }
+        userID?.let {
+            db.collection("Users").document(it).set(purchaseCodeMap, SetOptions.merge())
+                .addOnSuccessListener {
+                    MasterTodoListActivity.purchaseCode = pur_code
+                    setPurchaseCode()
+                }
+        }
     }
 
     private fun setPurchaseCode() {
 
-        db.collection("Users").document(userID).get()
-            .addOnSuccessListener { documentSnapshot: DocumentSnapshot ->
-                MasterTodoListActivity.purchaseCode = documentSnapshot["purchase_code"].toString()
-                db.collection("UserTiers").document(MasterTodoListActivity.purchaseCode).get()
-                    .addOnSuccessListener { documentSnapshot1: DocumentSnapshot ->
-                        Log.i(
-                            "purchasecode",
-                            "purchase code :" + MasterTodoListActivity.purchaseCode
-                        )
-                        Log.i(
-                            "purchasecode",
-                            "new :" + documentSnapshot1["masterListLimit"].toString()
-                        )
-                        LoginActivity.userAccountDetails.add(
-                            0,
-                            documentSnapshot1["masterListLimit"].toString()
-                        )
-                        LoginActivity.userAccountDetails.add(
-                            1,
-                            documentSnapshot1["todoItemLimit"].toString()
-                        )
-                        Toasty.success(applicationContext, "Package Upgraded", Toast.LENGTH_SHORT)
-                            .show()
-                        loadingProgressBarUpgrade?.visibility = View.GONE
-                        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                        val intent =
-                            Intent(this@AppUpgradeActivity, MasterTodoListActivity::class.java)
-                        startActivity(intent)
-                    }
-            }.addOnFailureListener {
+        userID?.let {
+            db.collection("Users").document(it).get()
+                .addOnSuccessListener { documentSnapshot: DocumentSnapshot ->
+                    MasterTodoListActivity.purchaseCode = documentSnapshot["purchase_code"].toString()
+                    db.collection("UserTiers").document(MasterTodoListActivity.purchaseCode).get()
+                        .addOnSuccessListener { documentSnapshot1: DocumentSnapshot ->
+                            Log.i(
+                                "purchasecode",
+                                "purchase code :" + MasterTodoListActivity.purchaseCode
+                            )
+                            Log.i(
+                                "purchasecode",
+                                "new :" + documentSnapshot1["masterListLimit"].toString()
+                            )
+                            LoginActivity.userAccountDetails.add(
+                                0,
+                                documentSnapshot1["masterListLimit"].toString()
+                            )
+                            LoginActivity.userAccountDetails.add(
+                                1,
+                                documentSnapshot1["todoItemLimit"].toString()
+                            )
+                            Toasty.success(applicationContext, "Package Upgraded", Toast.LENGTH_SHORT)
+                                .show()
+                            loadingProgressBarUpgrade?.visibility = View.GONE
+                            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                            val intent =
+                                Intent(this@AppUpgradeActivity, MasterTodoListActivity::class.java)
+                            startActivity(intent)
+                        }
+                }.addOnFailureListener {
 
-            }
+                }
+        }
     }
 
     override fun onBackPressed() {
