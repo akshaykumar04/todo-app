@@ -93,9 +93,9 @@ class TodoListFirestoreAdapter(
             }
             chip.text = model.benefits[i] + ""
             holder.chipGroup.childCount
-            chip.maxWidth = 180
-            chip.minWidth = 180
-            chip.minHeight = 54
+            chip.maxWidth = context.resources.getDimensionPixelSize(R.dimen._48sdp)
+            chip.minWidth = context.resources.getDimensionPixelSize(R.dimen._48sdp)
+            chip.minHeight = context.resources.getDimensionPixelSize(R.dimen._20sdp)
             chip.ellipsize = TextUtils.TruncateAt.END
             chip.setTextAppearanceResource(R.style.SmallerText)
             holder.chipGroup.addView(chip)
