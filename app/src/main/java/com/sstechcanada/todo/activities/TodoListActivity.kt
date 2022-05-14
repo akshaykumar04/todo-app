@@ -1,51 +1,52 @@
 package com.sstechcanada.todo.activities
 
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import androidx.recyclerview.widget.RecyclerView
-import android.content.SharedPreferences
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DatabaseReference
-import com.sstechcanada.todo.adapters.TodoListFirestoreAdapter
-import com.google.android.gms.ads.interstitial.InterstitialAd
-import android.os.Bundle
-import androidx.databinding.DataBindingUtil
-import com.sstechcanada.todo.R
-import com.sstechcanada.todo.activities.auth.LoginActivity
-import com.airbnb.lottie.LottieAnimationView
-import android.content.Intent
-import es.dmoral.toasty.Toasty
-import android.widget.Toast
-import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.sstechcanada.todo.models.TodoTaskFirestore
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.sstechcanada.todo.utils.SwipeController
-import com.sstechcanada.todo.utils.SwipeControllerActions
 import android.content.DialogInterface
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import android.appwidget.AppWidgetManager
+import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Canvas
+import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.view.WindowManager
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.res.ResourcesCompat
+import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
-import com.getkeepsafe.taptargetview.TapTargetSequence
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.getkeepsafe.taptargetview.TapTarget
-import com.google.android.gms.ads.*
+import com.getkeepsafe.taptargetview.TapTargetSequence
+import com.google.android.gms.ads.AdError
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.sstechcanada.todo.R
+import com.sstechcanada.todo.activities.auth.LoginActivity
 import com.sstechcanada.todo.activities.auth.ProfileActivity
+import com.sstechcanada.todo.adapters.TodoListFirestoreAdapter
 import com.sstechcanada.todo.databinding.ActivityTodoListBinding
+import com.sstechcanada.todo.models.TodoTaskFirestore
 import com.sstechcanada.todo.utils.SaveSharedPreference
+import com.sstechcanada.todo.utils.SwipeController
+import com.sstechcanada.todo.utils.SwipeControllerActions
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.act_bar.*
 import kotlinx.android.synthetic.main.activity_todo_list.*
 
@@ -112,10 +113,10 @@ class TodoListActivity : AppCompatActivity() {
                 )
             )
         }
-        fab!!.setOnClickListener {
-            db_cnt = todoListFirestoreAdapter!!.itemCount
+        fab?.setOnClickListener {
+            db_cnt = todoListFirestoreAdapter?.itemCount ?: 0
             Log.i("ItemCount", "FAB Clicked")
-            if (LoginActivity.userAccountDetails[1].toInt() > todoListFirestoreAdapter!!.itemCount) {
+            if (LoginActivity.userAccountDetails[1].toInt() > (todoListFirestoreAdapter?.itemCount ?: 0)) {
                 setValue()
                 if (isLogin) {
                     val intent = Intent(this@TodoListActivity, AddOrEditTaskActivity::class.java)
@@ -323,39 +324,13 @@ class TodoListActivity : AppCompatActivity() {
         return false
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK) {
-            updateWidget()
-        }
-    }
-
-    private fun updateWidget() {
-        // let the widget know there's been a database or sort order change
-        val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
-        sendBroadcast(intent)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // This is so that if we've edited a task directly from the widget, the widget will still
-        // get updated when we come to this activity after clicking UPDATE TASK in AddOrEditTaskActivity
-        updateWidget()
-        //        showHidePlaceholder();
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        //        mSharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
-    }
-
     //        else if (list_limit <= db_cnt) {
 //            //Limit Check
 //            Toasty.info(this, getString(R.string.upgrade_todo_list), Toast.LENGTH_LONG, true).show();
 //            startActivity(new Intent(TodoListActivity2.this, AppUpgradeActivity2.class));
 //            return false;
 //        }
-    val isLogin: Boolean
+    private val isLogin: Boolean
         get() {
             val user = FirebaseAuth.getInstance().currentUser
             if (user == null) {
@@ -506,8 +481,6 @@ class TodoListActivity : AppCompatActivity() {
 
     companion object {
         private const val ADD_TASK_REQUEST = 1
-        private const val EDIT_TASK_REQUEST = 2
-        private const val ID_TODOLIST_LOADER = 2018
         var db_cnt = 0
 
         @JvmField

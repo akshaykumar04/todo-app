@@ -132,7 +132,7 @@ class TodoListFirestoreAdapter(
                         updateTaskMap["Status"] = taskStatus
                         userColRef?.document(model.documentID)
                             ?.set(updateTaskMap, SetOptions.merge())?.addOnSuccessListener {
-                                Toasty.success(context, "Todo-task marked as completed")
+                                Toasty.success(context, "Item marked as completed")
                                     .show()
                             }?.addOnFailureListener {
                                 Toasty.error(context, "Something went wrong").show()
@@ -183,7 +183,7 @@ class TodoListFirestoreAdapter(
         }
         holder.cardView.setOnClickListener {
             Log.i("onclick", "card")
-            if ((MasterTodoListActivity.purchaseCode == "0") && position + 1 > (LoginActivity.userAccountDetails[1].toInt())
+            if ((MasterTodoListActivity.purchaseCode == "0") && ((position + 1) > (LoginActivity.userAccountDetails[1].toInt()))
             ) {
                 Log.d("subscriptionFeature", "subscription expired!")
                 Toasty.warning(

@@ -1,6 +1,5 @@
 package com.sstechcanada.todo.activities
 
-import android.appwidget.AppWidgetManager
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
@@ -32,9 +31,9 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
 import com.sstechcanada.todo.R
 import com.sstechcanada.todo.activities.auth.LoginActivity
@@ -56,7 +55,7 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
     private val db = FirebaseFirestore.getInstance()
     private val usersColRef = db.collection("Users")
     private val mHandler: Handler = Handler(Looper.getMainLooper())
-    private var list_limit = 15
+    private var listLimit = 15
 
     private var mAuth: FirebaseAuth? = null
     private var user: FirebaseUser? = null
@@ -70,7 +69,7 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
     private var mInterstitialAd: InterstitialAd? = null
     private var gridAdapter: MasterListGridViewAdapter? = null
     private var doubleBackToExitPressedOnce = false
-    var bp: BillingProcessor? = null
+    private var bp: BillingProcessor? = null
     var editor: SharedPreferences.Editor? = null
     private val mRunnable = Runnable { doubleBackToExitPressedOnce = false }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,9 +122,11 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
             )
         }
         fab.setOnClickListener {
-            if (LoginActivity.userAccountDetails[0].toInt() > masterListFirestoreAdapter!!.itemCount) {
+            if (LoginActivity.userAccountDetails[0].toInt() > (masterListFirestoreAdapter?.itemCount ?: 0)
+            ) {
                 Log.i("purchasecode", "masterlist limit :" + LoginActivity.userAccountDetails[0])
-                Log.i("purchasecode", "masterlist items :" + masterListFirestoreAdapter!!.itemCount)
+                Log.i("purchasecode", "masterlist items :" + (masterListFirestoreAdapter?.itemCount
+                    ?: 0))
                 setValue()
                 if (isLogin) {
                     addNewListAlert()
@@ -156,46 +157,48 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
 
     private fun getPurchaseCode() {
         showProgressBar()
-        usersColRef.document(userID!!).get()
-            .addOnSuccessListener { documentSnapshot: DocumentSnapshot ->
-                purchaseCode = documentSnapshot["purchase_code"].toString()
-                db.collection("UserTiers").document(purchaseCode).get()
-                    .addOnSuccessListener { documentSnapshot1: DocumentSnapshot ->
-                        Log.i("purchasecode", "purchase code :" + purchaseCode)
-                        Log.i(
-                            "purchasecode",
-                            "new :" + documentSnapshot1["masterListLimit"].toString()
-                        )
-                        LoginActivity.userAccountDetails.add(
-                            0,
-                            documentSnapshot1["masterListLimit"].toString()
-                        )
-                        LoginActivity.userAccountDetails.add(
-                            1,
-                            documentSnapshot1["todoItemLimit"].toString()
-                        )
-                        if (purchaseCode != "0") {
-                            bp = BillingProcessor(
-                                this@MasterTodoListActivity,
-                                getString(R.string.license_key),
-                                this@MasterTodoListActivity
+        userID?.let {
+            usersColRef.document(it).get()
+                .addOnSuccessListener { documentSnapshot: DocumentSnapshot ->
+                    purchaseCode = documentSnapshot["purchase_code"].toString()
+                    db.collection("UserTiers").document(purchaseCode).get()
+                        .addOnSuccessListener { documentSnapshot1: DocumentSnapshot ->
+                            Log.i("purchaseCode", "purchase code :$purchaseCode")
+                            Log.i(
+                                "purchaseCode",
+                                "new :" + documentSnapshot1["masterListLimit"].toString()
                             )
-                            bp!!.initialize()
-                            SaveSharedPreference.setAdsEnabled(this, false)
-                        } else {
-                            hideProgressBar()
-                            adView!!.visibility = View.VISIBLE
-                            SaveSharedPreference.setAdsEnabled(this, true)
-                            if (SaveSharedPreference.getAdsEnabled(this)) {
-                                loadFullScreenAds()
-                                val adRequest = AdRequest.Builder().build()
-                                adView!!.loadAd(adRequest)
+                            LoginActivity.userAccountDetails.add(
+                                0,
+                                documentSnapshot1["masterListLimit"].toString()
+                            )
+                            LoginActivity.userAccountDetails.add(
+                                1,
+                                documentSnapshot1["todoItemLimit"].toString()
+                            )
+                            if (purchaseCode != "0") {
+                                bp = BillingProcessor(
+                                    this@MasterTodoListActivity,
+                                    getString(R.string.license_key),
+                                    this@MasterTodoListActivity
+                                )
+                                bp?.initialize()
+                                SaveSharedPreference.setAdsEnabled(this, false)
                             } else {
-                                adView!!.visibility = View.GONE
+                                hideProgressBar()
+                                adView?.visibility = View.VISIBLE
+                                SaveSharedPreference.setAdsEnabled(this, true)
+                                if (SaveSharedPreference.getAdsEnabled(this)) {
+                                    loadFullScreenAds()
+                                    val adRequest = AdRequest.Builder().build()
+                                    adView?.loadAd(adRequest)
+                                } else {
+                                    adView?.visibility = View.GONE
+                                }
                             }
                         }
-                    }
-            }.addOnFailureListener { }
+                }.addOnFailureListener { }
+        }
     }
 
     private fun addNewListAlert() {
@@ -212,29 +215,31 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
         loadImages(0)
 
         alert.setCancelable(false)
-        alert.setNegativeButton("Cancel") { dialog: DialogInterface?, which: Int -> }
-        alert.setPositiveButton("Done") { dialog: DialogInterface?, which: Int ->
+        alert.setNegativeButton("Cancel") { _: DialogInterface?, _: Int -> }
+        alert.setPositiveButton("Done") { _: DialogInterface?, _: Int ->
             sdrawable = selectedDrawable
             val name =
                 (alertLayout.findViewById<View>(R.id.editTextListName) as EditText).text.toString()
 
-            usersColRef.document(userID!!).collection("Lists")
+            userID?.let { usersColRef.document(it).collection("Lists") }
             val newList: MutableMap<String, Any> = HashMap()
             newList["ListName"] = name
             newList["positionImage"] = sdrawable
-            usersColRef.document(userID!!).collection("Lists").document().set(newList)
-                .addOnSuccessListener { aVoid: Void? ->
-                    Toasty.success(
-                        this@MasterTodoListActivity,
-                        "New List Successfully Added"
-                    ).show()
-                }
-                .addOnFailureListener { e: Exception? ->
-                    Toasty.error(
-                        this@MasterTodoListActivity,
-                        "Something went wrong"
-                    ).show()
-                }
+            userID?.let {
+                usersColRef.document(it).collection("Lists").document().set(newList)
+                    .addOnSuccessListener {
+                        Toasty.success(
+                            this@MasterTodoListActivity,
+                            "New List Successfully Added"
+                        ).show()
+                    }
+                    .addOnFailureListener {
+                        Toasty.error(
+                            this@MasterTodoListActivity,
+                            "Something went wrong"
+                        ).show()
+                    }
+            }
         }
         if (SaveSharedPreference.getAdsEnabled(this)) {
             bannerAd.loadAd(AdRequest.Builder().build())
@@ -257,25 +262,28 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
 
         loadImages(oldListIconPosition)
         alert.setCancelable(false)
-        alert.setNegativeButton("Cancel") { dialog: DialogInterface?, which: Int -> }
-        alert.setPositiveButton("Done") { dialog: DialogInterface?, which: Int ->
+        alert.setNegativeButton("Cancel") { _: DialogInterface?, _: Int -> }
+        alert.setPositiveButton("Done") { _: DialogInterface?, _: Int ->
             sdrawable = selectedDrawable
-            //            int imageResource = getResources().getIdentifier(sdrawable, null, getPackageName());
             val name =
                 (alertLayout.findViewById<View>(R.id.editTextListName) as EditText).text.toString()
             //            String description = ((EditText) alertLayout.findViewById(R.id.editTextListDescription)).getText().toString();
-            usersColRef.document(userID!!).collection("Lists")
+            userID?.let { usersColRef.document(it).collection("Lists") }
             val list: MutableMap<String, Any> = HashMap()
             list["ListName"] = name
             list["positionImage"] = sdrawable
             //            list.put("ListDescription", description);
-            usersColRef.document(userID!!).collection("Lists").document(documentSnapshotId!!)
-                .update(list).addOnSuccessListener {
-                    Toasty.success(this@MasterTodoListActivity, "List Successfully Edited").show()
+            userID?.let {
+                documentSnapshotId?.let { it1 ->
+                    usersColRef.document(it).collection("Lists").document(it1)
+                        .update(list).addOnSuccessListener {
+                            Toasty.success(this@MasterTodoListActivity, "List Successfully Edited").show()
+                        }
+                        .addOnFailureListener {
+                            Toasty.error(this@MasterTodoListActivity, "Something went wrong").show()
+                        }
                 }
-                .addOnFailureListener {
-                    Toasty.error(this@MasterTodoListActivity, "Something went wrong").show()
-                }
+            }
         }
         if (SaveSharedPreference.getAdsEnabled(this)) {
             bannerAd.loadAd(AdRequest.Builder().build())
@@ -285,7 +293,7 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
         val dialog = alert.create()
         dialog.show()
         val listNameEditText = dialog.findViewById<EditText>(R.id.editTextListName)
-        listNameEditText!!.setText(oldListName)
+        listNameEditText?.setText(oldListName)
     }
 
     private fun loadImages(iconPosition: Int) {
@@ -296,31 +304,33 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
         gridView?.onItemClickListener =
             OnItemClickListener { _: AdapterView<*>?, v: View, position: Int, _: Long ->
                 Log.i("gridView", "on click")
-                val selectedIndex = gridAdapter!!.selectedPosition
+                val selectedIndex = gridAdapter?.selectedPosition
                 if (selectedIndex == position) {
                     (v as MasterIconGridItemView).display(false)
-                    gridAdapter!!.selectedPosition = -1
+                    gridAdapter?.selectedPosition = -1
                     selectedDrawable = iconPosition
                 } else {
                     Log.i("gridView", position.toString())
-                    if (gridAdapter!!.selectedPosition != -1) {
-                        (gridView!!.getChildAt(gridAdapter!!.selectedPosition) as MasterIconGridItemView).display(
+                    if (gridAdapter?.selectedPosition != -1) {
+                        (gridView?.getChildAt(gridAdapter?.selectedPosition ?: 0) as? MasterIconGridItemView)?.display(
                             false
                         )
                     }
                     selectedDrawable = position
                     (v as MasterIconGridItemView).display(true)
-                    gridAdapter!!.selectedPosition = position
+                    gridAdapter?.selectedPosition = position
                 }
             }
-        progressBar!!.visibility = View.INVISIBLE
+        progressBar?.visibility = View.INVISIBLE
     }
 
     private fun setUpFirestoreRecyclerView() {
-        val query: Query = usersColRef.document(userID!!).collection("Lists")
-        val options = FirestoreRecyclerOptions.Builder<com.sstechcanada.todo.models.List>()
-            .setQuery(query, com.sstechcanada.todo.models.List::class.java).build()
-        masterListFirestoreAdapter = MasterListFirestoreAdapter(options, this)
+        val query: CollectionReference? = userID?.let { usersColRef.document(it).collection("Lists") }
+        val options = query?.let {
+            FirestoreRecyclerOptions.Builder<com.sstechcanada.todo.models.List>()
+                .setQuery(it, com.sstechcanada.todo.models.List::class.java).build()
+        }
+        masterListFirestoreAdapter = options?.let { MasterListFirestoreAdapter(it, this) }
         rv_todo_list.setHasFixedSize(true)
         rv_todo_list.layoutManager = LinearLayoutManager(this)
         val swipeController = SwipeController(this, object : SwipeControllerActions() {
@@ -330,30 +340,42 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
                     .setIcon(android.R.drawable.ic_menu_delete)
                     .setTitle("Confirm Delete")
                     .setMessage("Are you sure you want to delete this list?")
-                    .setPositiveButton("Yes") { dialog: DialogInterface?, which: Int ->
+                    .setPositiveButton("Yes") { _: DialogInterface?, _: Int ->
                         if (SaveSharedPreference.getAdsEnabled(
                                 applicationContext
                             )
                         ) {
                             if (mInterstitialAd != null) {
-                                mInterstitialAd!!.show(this@MasterTodoListActivity)
+                                mInterstitialAd?.show(this@MasterTodoListActivity)
                                 val documentSnapshot =
-                                    masterListFirestoreAdapter!!.snapshots.getSnapshot(position)
-                                val id = documentSnapshot.id
-                                usersColRef.document(userID!!).collection("Lists").document(id)
-                                    .delete()
+                                    masterListFirestoreAdapter?.snapshots?.getSnapshot(position)
+                                val id = documentSnapshot?.id
+                                userID?.let {
+                                    if (id != null) {
+                                        usersColRef.document(it).collection("Lists").document(id)
+                                            .delete()
+                                    }
+                                }
                             } else {
                                 val documentSnapshot =
-                                    masterListFirestoreAdapter!!.snapshots.getSnapshot(position)
-                                val id = documentSnapshot.id
-                                usersColRef.document(userID!!).collection("Lists").document(id)
-                                    .delete()
+                                    masterListFirestoreAdapter?.snapshots?.getSnapshot(position)
+                                val id = documentSnapshot?.id
+                                userID?.let {
+                                    if (id != null) {
+                                        usersColRef.document(it).collection("Lists").document(id)
+                                            .delete()
+                                    }
+                                }
                             }
                         } else {
                             val documentSnapshot =
-                                masterListFirestoreAdapter!!.snapshots.getSnapshot(position)
-                            val id = documentSnapshot.id
-                            usersColRef.document(userID!!).collection("Lists").document(id).delete()
+                                masterListFirestoreAdapter?.snapshots?.getSnapshot(position)
+                            val id = documentSnapshot?.id
+                            userID?.let {
+                                if (id != null) {
+                                    usersColRef.document(it).collection("Lists").document(id).delete()
+                                }
+                            }
                             Toasty.error(
                                 this@MasterTodoListActivity,
                                 "List Deleted",
@@ -367,15 +389,17 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
 
             override fun onLeftClicked(position: Int) {
                 Log.i("cluck", "left")
-                val documentSnapshot = masterListFirestoreAdapter!!.snapshots.getSnapshot(position)
-                val list = documentSnapshot.toObject(
+                val documentSnapshot = masterListFirestoreAdapter?.snapshots?.getSnapshot(position)
+                val list = documentSnapshot?.toObject(
                     com.sstechcanada.todo.models.List::class.java
                 )
                 //                List list=masterListFirestoreAdapter.getItem(position);
-                val oldListName = list!!.listName
+                val oldListName = list?.listName
                 //                String oldListDescription = list.getListDescription();
-                val oldListIconPosition = list.positionImage
-                editListAlert(oldListName, oldListIconPosition, documentSnapshot.id)
+                val oldListIconPosition = list?.positionImage
+                if (oldListIconPosition != null) {
+                    editListAlert(oldListName, oldListIconPosition, documentSnapshot.id)
+                }
             }
         })
         val itemTouchhelper = ItemTouchHelper(swipeController)
@@ -386,7 +410,7 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
                 swipeController.onDraw(c)
             }
         })
-        list_cnt = masterListFirestoreAdapter!!.itemCount
+        list_cnt = masterListFirestoreAdapter?.itemCount ?: 0
     }
 
     private fun loadFullScreenAds() {
@@ -399,7 +423,7 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
                     // The mInterstitialAd reference will be null until
                     // an ad is loaded.
                     mInterstitialAd = interstitialAd
-                    mInterstitialAd!!.fullScreenContentCallback =
+                    mInterstitialAd?.fullScreenContentCallback =
                         object : FullScreenContentCallback() {
                             override fun onAdDismissedFullScreenContent() {
                                 // Called when fullscreen content is dismissed.
@@ -435,36 +459,16 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
 
     override fun onStart() {
         super.onStart()
-        masterListFirestoreAdapter!!.startListening()
+        masterListFirestoreAdapter?.startListening()
     }
 
     override fun onStop() {
         super.onStop()
-        masterListFirestoreAdapter!!.stopListening()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK) {
-            updateWidget()
-        }
-    }
-
-    private fun updateWidget() {
-        // let the widget know there's been a database or sort order change
-        val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
-        sendBroadcast(intent)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // This is so that if we've edited a task directly from the widget, the widget will still
-        // get updated when we come to this activity after clicking UPDATE TASK in adOrEditTaskActivity
-        updateWidget()
+        masterListFirestoreAdapter?.stopListening()
     }
 
     //        return true;
-    val isLogin: Boolean
+    private val isLogin: Boolean
         get() {
             val user = FirebaseAuth.getInstance().currentUser
             return if (user == null) {
@@ -479,7 +483,7 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
 
     fun setValue() {
         if (user != null) {
-            list_limit = 15
+            listLimit = 15
         }
     }
 
@@ -564,16 +568,16 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
                         .show()
 
 //                flagMasterListFirstRun = false;
-                    buttonTapTargetView!!.visibility = View.GONE
-                    editor!!.putBoolean("flagMasterListFirstRun", false)
-                    editor!!.apply()
+                    buttonTapTargetView.visibility = View.GONE
+                    editor?.putBoolean("flagMasterListFirstRun", false)
+                    editor?.apply()
                 }
 
                 override fun onSequenceStep(lastTarget: TapTarget, targetClicked: Boolean) {}
                 override fun onSequenceCanceled(lastTarget: TapTarget) {
-                    buttonTapTargetView!!.visibility = View.GONE
-                    editor!!.putBoolean("flagMasterListFirstRun", false)
-                    editor!!.apply()
+                    buttonTapTargetView.visibility = View.GONE
+                    editor?.putBoolean("flagMasterListFirstRun", false)
+                    editor?.apply()
                 }
             }).start()
     }
@@ -586,16 +590,20 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
 //            Toast.makeText(MasterTodoListActivity.this, "Inside billing: "+purchaseResult+ " "+purchaseCode, Toast.LENGTH_SHORT).show();
             var purchaseID = ""
             if (user != null) {
-                if (purchaseCode == "1") {
-                    purchaseID = "tier1"
-                } else if (purchaseCode == "2") {
-                    purchaseID = "tier2"
-                } else if (purchaseCode == "3") {
-                    purchaseID = "adfree"
+                when (purchaseCode) {
+                    "1" -> {
+                        purchaseID = "tier1"
+                    }
+                    "2" -> {
+                        purchaseID = "tier2"
+                    }
+                    "3" -> {
+                        purchaseID = "adfree"
+                    }
                 }
                 if (purchaseResult == true) {
                     val subscriptionTransactionDetails =
-                        bp!!.getSubscriptionTransactionDetails(purchaseID)
+                        bp?.getSubscriptionTransactionDetails(purchaseID)
                     if (subscriptionTransactionDetails != null) {
                         //User is still subscribed
 //                        Toast.makeText(MasterTodoListActivity.this, "Inside billing+ user is still subscribed in", Toast.LENGTH_SHORT).show();
@@ -620,10 +628,12 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
 //        Toast.makeText(this, "set purchase code in db", Toast.LENGTH_SHORT).show();
         val purchaseCode: MutableMap<String, String> = HashMap()
         purchaseCode["purchase_code"] = "0"
-        db.collection("Users").document(userID!!).set(
-            purchaseCode,
-            SetOptions.merge()
-        ).addOnSuccessListener { getPurchaseCode() }
+        userID?.let {
+            db.collection("Users").document(it).set(
+                purchaseCode,
+                SetOptions.merge()
+            ).addOnSuccessListener { getPurchaseCode() }
+        }
     }
 
     private fun openRatingPopup() {
@@ -637,7 +647,7 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
             .setDebug(false) // default false
             .setOnClickButtonListener { which: Int ->
                 Log.d(
-                    MasterTodoListActivity::class.java.name, Integer.toString(which)
+                    MasterTodoListActivity::class.java.name, which.toString()
                 )
             }
             .monitor()
