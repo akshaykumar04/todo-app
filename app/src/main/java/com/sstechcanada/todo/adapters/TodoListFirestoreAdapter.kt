@@ -132,7 +132,7 @@ class TodoListFirestoreAdapter(
                         updateTaskMap["Status"] = taskStatus
                         userColRef?.document(model.documentID)
                             ?.set(updateTaskMap, SetOptions.merge())?.addOnSuccessListener {
-                                Toasty.success(context, "Todo-task marked as completed")
+                                Toasty.success(context, "Item marked as completed")
                                     .show()
                             }?.addOnFailureListener {
                                 Toasty.error(context, "Something went wrong").show()
