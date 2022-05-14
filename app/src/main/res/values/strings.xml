@@ -128,5 +128,6 @@
     <string name="todo">TODO</string>
     <string name="pie_title">Planned Spending Allocations</string>
     <string name="ads_cat">Allowed advertising categories</string>
+    <string name="add_update_task">Add/Update Task</string>
 
 </resources>

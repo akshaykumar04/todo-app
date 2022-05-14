@@ -1,5 +1,6 @@
 package com.sstechcanada.todo.activities
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
@@ -39,19 +40,19 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class AddOrEditTaskActivity : AppCompatActivity() {
-    var categories: MutableList<Category>? = null
-    var userID: String? = null
-    var taskCompleted = "Pending"
+    private var categories: MutableList<Category>? = null
+    private var userID: String? = null
+    private var taskCompleted = "Pending"
     var db = FirebaseFirestore.getInstance()
-    var benefitCollectionRef: CollectionReference? = null
-    var UserColRef: CollectionReference? = null
+    private var benefitCollectionRef: CollectionReference? = null
+    private var userColRef: CollectionReference? = null
     private var mBinding: ActivityAddOrEditTaskBinding? = null
     private var mTaskId: String? = "-1"
     private var mAddOrEdit: String? = null
     private var adapter: GridViewAdapter? = null
     private var selectedStrings: ArrayList<String>? = null
-    private var category_count = 0
-    private var chip_count = 0
+    private var categoryCount = 0
+    private var chipCount = 0
     private var selectedResult = ""
     private var todoTaskToAddOrEdit: TodoTaskFirestore? = null
     private var mAuth: FirebaseAuth? = null
@@ -60,7 +61,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
 
     private var record: Array<String>? = null
     private var description: String? = null
-    var alertDialog: AlertDialog? = null
+    private var alertDialog: AlertDialog? = null
     private var mInterstitialAd: InterstitialAd? = null
 
 
@@ -74,14 +75,14 @@ class AddOrEditTaskActivity : AppCompatActivity() {
         }
         arrow_back.visibility = View.VISIBLE
         arrow_back.setOnClickListener { super.onBackPressed() }
-        toolbarTitle.text = "Add/Update Task"
+        toolbarTitle.text = getString(R.string.add_update_task)
         mAuth = FirebaseAuth.getInstance()
         userID = mAuth?.currentUser?.uid
         FirebaseCrashlytics.getInstance()
             .log(this.javaClass.simpleName + "listId = " + MasterTodoListActivity.listId)
         FirebaseCrashlytics.getInstance().log(this.javaClass.simpleName + "UserId = " + userID)
         benefitCollectionRef = userID?.let { db.collection("Users").document(it).collection("Benefits") }
-        UserColRef = MasterTodoListActivity.listId?.let {
+        userColRef = MasterTodoListActivity.listId?.let {
             userID?.let { it1 ->
                 db.collection("Users").document(it1).collection("Lists")
                     .document(it).collection("Todo")
@@ -112,8 +113,8 @@ class AddOrEditTaskActivity : AppCompatActivity() {
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .setTitle("Confirm Incomplete")
                             .setMessage("Are you sure you want to mark this task as incomplete?")
-                            .setPositiveButton("Yes") { dialog: DialogInterface?, which: Int -> }
-                            .setNegativeButton("No") { dialog: DialogInterface?, which: Int ->
+                            .setPositiveButton("Yes") { _: DialogInterface?, _: Int -> }
+                            .setNegativeButton("No") { _: DialogInterface?, _: Int ->
                                 mBinding?.cbTaskCompleted?.isChecked = true
                             }
                             .show()
@@ -122,14 +123,14 @@ class AddOrEditTaskActivity : AppCompatActivity() {
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .setTitle("Confirm Complete")
                             .setMessage("Are you sure you want to mark this task as completed?")
-                            .setPositiveButton("Yes") { dialog: DialogInterface?, which: Int ->
+                            .setPositiveButton("Yes") { _: DialogInterface?, _: Int ->
                                 if (SaveSharedPreference.getAdsEnabled(this)) {
                                     if (mInterstitialAd != null) {
                                         mInterstitialAd?.show(this@AddOrEditTaskActivity)
                                     }
                                 }
                             }
-                            .setNegativeButton("No") { dialog: DialogInterface?, which: Int ->
+                            .setNegativeButton("No") { _: DialogInterface?, _: Int ->
                                 mBinding?.cbTaskCompleted?.isChecked = false
                             }
                             .show()
@@ -173,7 +174,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
         //Grid View End
         if (todoTaskToAddOrEdit != null) {
             record = todoTaskToAddOrEdit?.benefitsString?.let { convertStringToArray(it) }
-            category_count = record?.size!!
+            categoryCount = record?.size!!
             displayBenefits(record)
         }
         MobileAds.initialize(this) { }
@@ -187,11 +188,11 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             .setIcon(android.R.drawable.ic_menu_delete)
             .setTitle("Confirm Delete")
             .setMessage("Are you sure you want to delete this task?")
-            .setPositiveButton("Yes") { dialog: DialogInterface?, which: Int ->
+            .setPositiveButton("Yes") { _: DialogInterface?, _: Int ->
                 if (SaveSharedPreference.getAdsEnabled(this)) {
                     if (mInterstitialAd != null) {
                         mInterstitialAd?.show(this@AddOrEditTaskActivity)
-                        todoTaskToAddOrEdit?.documentID?.let { UserColRef?.document(it)?.delete() }
+                        todoTaskToAddOrEdit?.documentID?.let { userColRef?.document(it)?.delete() }
                         Toasty.error(
                             this@AddOrEditTaskActivity,
                             "Task Deleted",
@@ -199,7 +200,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
                         ).show()
                         finish()
                     } else {
-                        todoTaskToAddOrEdit?.documentID?.let { UserColRef?.document(it)?.delete() }
+                        todoTaskToAddOrEdit?.documentID?.let { userColRef?.document(it)?.delete() }
                         Toasty.error(
                             this@AddOrEditTaskActivity,
                             "Task Deleted",
@@ -208,7 +209,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
                         finish()
                     }
                 } else {
-                    todoTaskToAddOrEdit?.documentID?.let { UserColRef?.document(it)?.delete() }
+                    todoTaskToAddOrEdit?.documentID?.let { userColRef?.document(it)?.delete() }
                     Toasty.error(this@AddOrEditTaskActivity, "Task Deleted", Toast.LENGTH_SHORT)
                         .show()
                     finish()
@@ -269,6 +270,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun uploadDataToFirestore() {
         val benefitsArrayFirestore: List<String> = if (record != null) {
             listOf(*record!!)
@@ -283,7 +285,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             val taskStatus = "Pending"
             newTaskMap["Status"] = taskStatus
             newTaskMap["TimestampCompleted"] = " "
-            UserColRef?.document()?.set(newTaskMap)?.addOnSuccessListener {
+            userColRef?.document()?.set(newTaskMap)?.addOnSuccessListener {
                 loadingProgressBarUpdate.visibility = View.GONE
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 Toasty.success(
@@ -322,7 +324,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             updateTaskMap["Status"] = taskStatus
             Log.i("task456", todoTaskToAddOrEdit?.documentID + "jjj")
             todoTaskToAddOrEdit?.documentID?.let {
-                UserColRef?.document(it)
+                userColRef?.document(it)
                     ?.set(updateTaskMap, SetOptions.merge())?.addOnSuccessListener {
                         loadingProgressBarUpdate?.visibility = View.GONE
                         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -346,13 +348,8 @@ class AddOrEditTaskActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        //attaching value event listener
-    }
-
     private fun loadCategories() {
-        benefitCollectionRef?.addSnapshotListener { value: QuerySnapshot?, error: FirebaseFirestoreException? ->
+        benefitCollectionRef?.addSnapshotListener { value: QuerySnapshot?, _: FirebaseFirestoreException? ->
             categories = ArrayList()
             selectedStrings = ArrayList()
             categories?.clear()
@@ -378,10 +375,10 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             }
             selectedResult = ""
             selectedResult = convertArrayToString(selectedStrings)
-            progressBar!!.visibility = View.INVISIBLE
+            progressBar?.visibility = View.INVISIBLE
         }
-        gridView!!.onItemClickListener =
-            OnItemClickListener { parent: AdapterView<*>, v: View, position: Int, id: Long ->
+        gridView?.onItemClickListener =
+            OnItemClickListener { parent: AdapterView<*>, v: View, position: Int, _: Long ->
                 val selectedIndex = adapter?.selectedPositions?.indexOf(position)
                 if (selectedIndex != null) {
                     if (selectedIndex > -1) {
@@ -436,6 +433,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             })
     }
 
+    @SuppressLint("SetTextI18n")
     private fun displayBenefits(record: Array<String>?) {
         val colors = intArrayOf(
             R.color.chip_1,
@@ -451,13 +449,13 @@ class AddOrEditTaskActivity : AppCompatActivity() {
         )
         chipGroup?.removeAllViews()
         chipGroup?.visibility = View.VISIBLE
-        chip_count = record?.size!!
+        chipCount = record?.size!!
         tv_add_more?.text = "Click here to add more Benefits"
-        if (chip_count == 0) {
-            tv_category_number?.text = "$chip_count Benefits Selected"
+        if (chipCount == 0) {
+            tv_category_number?.text = "$chipCount Benefits Selected"
             return
         }
-        for (i in 0 until chip_count) {
+        for (i in 0 until chipCount) {
             val chip = Chip(this)
             val drawable = ChipDrawable.createFromAttributes(
                 this,
@@ -477,7 +475,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             chip.chipEndPadding
             chip.setTextAppearanceResource(R.style.SmallerText)
             chipGroup?.addView(chip)
-            tv_category_number?.text = "$chip_count Benefits Selected"
+            tv_category_number?.text = "$chipCount Benefits Selected"
         }
     }
 
@@ -529,7 +527,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
 
     private fun updateSelectedBenefits() {
         selectedResult = convertArrayToString(selectedStrings)
-        category_count = selectedStrings?.size ?: 0
+        categoryCount = selectedStrings?.size ?: 0
         record = convertStringToArray(selectedResult)
         displayBenefits(record)
         todoTaskToAddOrEdit?.let {
@@ -542,7 +540,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
         private val TAG = AddOrEditTaskActivity::class.java.simpleName
 
         //To Convert String to Array or Array to String
-        var strSeparator = ", "
+        private var strSeparator = ", "
         fun convertArrayToString(array: ArrayList<String>?): String {
             var str = ""
             for (i in array!!.indices) {

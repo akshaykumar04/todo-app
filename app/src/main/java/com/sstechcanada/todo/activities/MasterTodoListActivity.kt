@@ -1,6 +1,5 @@
 package com.sstechcanada.todo.activities
 
-import android.appwidget.AppWidgetManager
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
@@ -32,7 +31,10 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.*
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.sstechcanada.todo.R
 import com.sstechcanada.todo.activities.auth.LoginActivity
 import com.sstechcanada.todo.activities.auth.ProfileActivity
@@ -53,7 +55,7 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
     private val db = FirebaseFirestore.getInstance()
     private val usersColRef = db.collection("Users")
     private val mHandler: Handler = Handler(Looper.getMainLooper())
-    private var list_limit = 15
+    private var listLimit = 15
 
     private var mAuth: FirebaseAuth? = null
     private var user: FirebaseUser? = null
@@ -67,7 +69,7 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
     private var mInterstitialAd: InterstitialAd? = null
     private var gridAdapter: MasterListGridViewAdapter? = null
     private var doubleBackToExitPressedOnce = false
-    var bp: BillingProcessor? = null
+    private var bp: BillingProcessor? = null
     var editor: SharedPreferences.Editor? = null
     private val mRunnable = Runnable { doubleBackToExitPressedOnce = false }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -260,10 +262,9 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
 
         loadImages(oldListIconPosition)
         alert.setCancelable(false)
-        alert.setNegativeButton("Cancel") { dialog: DialogInterface?, which: Int -> }
-        alert.setPositiveButton("Done") { dialog: DialogInterface?, which: Int ->
+        alert.setNegativeButton("Cancel") { _: DialogInterface?, _: Int -> }
+        alert.setPositiveButton("Done") { _: DialogInterface?, _: Int ->
             sdrawable = selectedDrawable
-            //            int imageResource = getResources().getIdentifier(sdrawable, null, getPackageName());
             val name =
                 (alertLayout.findViewById<View>(R.id.editTextListName) as EditText).text.toString()
             //            String description = ((EditText) alertLayout.findViewById(R.id.editTextListDescription)).getText().toString();
@@ -339,7 +340,7 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
                     .setIcon(android.R.drawable.ic_menu_delete)
                     .setTitle("Confirm Delete")
                     .setMessage("Are you sure you want to delete this list?")
-                    .setPositiveButton("Yes") { dialog: DialogInterface?, which: Int ->
+                    .setPositiveButton("Yes") { _: DialogInterface?, _: Int ->
                         if (SaveSharedPreference.getAdsEnabled(
                                 applicationContext
                             )
@@ -466,28 +467,8 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
         masterListFirestoreAdapter?.stopListening()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK) {
-            updateWidget()
-        }
-    }
-
-    private fun updateWidget() {
-        // let the widget know there's been a database or sort order change
-        val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
-        sendBroadcast(intent)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // This is so that if we've edited a task directly from the widget, the widget will still
-        // get updated when we come to this activity after clicking UPDATE TASK in adOrEditTaskActivity
-        updateWidget()
-    }
-
     //        return true;
-    val isLogin: Boolean
+    private val isLogin: Boolean
         get() {
             val user = FirebaseAuth.getInstance().currentUser
             return if (user == null) {
@@ -502,7 +483,7 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
 
     fun setValue() {
         if (user != null) {
-            list_limit = 15
+            listLimit = 15
         }
     }
 
@@ -609,12 +590,16 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
 //            Toast.makeText(MasterTodoListActivity.this, "Inside billing: "+purchaseResult+ " "+purchaseCode, Toast.LENGTH_SHORT).show();
             var purchaseID = ""
             if (user != null) {
-                if (purchaseCode == "1") {
-                    purchaseID = "tier1"
-                } else if (purchaseCode == "2") {
-                    purchaseID = "tier2"
-                } else if (purchaseCode == "3") {
-                    purchaseID = "adfree"
+                when (purchaseCode) {
+                    "1" -> {
+                        purchaseID = "tier1"
+                    }
+                    "2" -> {
+                        purchaseID = "tier2"
+                    }
+                    "3" -> {
+                        purchaseID = "adfree"
+                    }
                 }
                 if (purchaseResult == true) {
                     val subscriptionTransactionDetails =
@@ -662,7 +647,7 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
             .setDebug(false) // default false
             .setOnClickButtonListener { which: Int ->
                 Log.d(
-                    MasterTodoListActivity::class.java.name, Integer.toString(which)
+                    MasterTodoListActivity::class.java.name, which.toString()
                 )
             }
             .monitor()
