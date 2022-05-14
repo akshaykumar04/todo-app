@@ -15,24 +15,30 @@
         android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
         <activity
             android:name=".activities.auth.ProfileActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.AboutActivity"
-            android:exported="false" />
-        <activity android:name=".activities.MasterTodoListActivity" />
-        <activity android:name=".activities.CompletedTodoListActivity" />
-        <activity android:name=".activities.TodoListActivity" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.MasterTodoListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.CompletedTodoListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.TodoListActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.AppUpgradeActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.AddOrEditTaskActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".activities.AppUpgradeActivity"
-            android:screenOrientation="portrait" />
 
-            <!-- android:theme="@style/Theme.MaterialComponents.Light.Dialog" -->
+
+        <!-- android:theme="@style/Theme.MaterialComponents.Light.Dialog" -->
         <activity
             android:name=".activities.SplashActivity"
             android:exported="true"

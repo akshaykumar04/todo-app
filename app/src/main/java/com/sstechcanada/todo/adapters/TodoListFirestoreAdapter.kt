@@ -1,44 +1,42 @@
 package com.sstechcanada.todo.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
-import com.sstechcanada.todo.activities.TodoListActivity.Companion.showPlaceHolder
-import com.sstechcanada.todo.activities.TodoListActivity.Companion.hidePlaceHolder
-import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.sstechcanada.todo.models.TodoTaskFirestore
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter
-import com.sstechcanada.todo.adapters.TodoListFirestoreAdapter.TodoListFirestoreHolder
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.database.DatabaseReference
-import com.sstechcanada.todo.activities.MasterTodoListActivity
-import android.graphics.drawable.GradientDrawable
-import android.content.DialogInterface
-import com.google.firebase.firestore.SetOptions
-import es.dmoral.toasty.Toasty
-import com.sstechcanada.todo.activities.auth.LoginActivity
-import android.widget.Toast
 import android.content.Intent
+import android.graphics.drawable.GradientDrawable
 import android.text.TextUtils
 import android.util.Log
-import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.CheckBox
-import com.sstechcanada.todo.R
-import androidx.recyclerview.widget.RecyclerView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
+import com.google.android.material.chip.ChipGroup
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
+import com.sstechcanada.todo.R
 import com.sstechcanada.todo.activities.AddOrEditTaskActivity
 import com.sstechcanada.todo.activities.AppUpgradeActivity
-import kotlinx.android.synthetic.main.activity_add_or_edit_task.*
+import com.sstechcanada.todo.activities.MasterTodoListActivity
+import com.sstechcanada.todo.activities.TodoListActivity.Companion.hidePlaceHolder
+import com.sstechcanada.todo.activities.TodoListActivity.Companion.showPlaceHolder
+import com.sstechcanada.todo.activities.auth.LoginActivity
+import com.sstechcanada.todo.adapters.TodoListFirestoreAdapter.TodoListFirestoreHolder
+import com.sstechcanada.todo.models.TodoTaskFirestore
+import es.dmoral.toasty.Toasty
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
-import com.google.android.material.chip.ChipGroup
 
 
 class TodoListFirestoreAdapter(
@@ -49,14 +47,13 @@ class TodoListFirestoreAdapter(
     private val mAuth = FirebaseAuth.getInstance()
     private val user = mAuth.currentUser
     private val db = FirebaseFirestore.getInstance()
-    private val databaseReference: DatabaseReference? = null
-    private val usersColRef = db.collection("Users")
     var userID = user!!.uid
-    var UserColRef = MasterTodoListActivity.listId?.let {
+    private var userColRef = MasterTodoListActivity.listId?.let {
         db.collection("Users").document(userID).collection("Lists")
-        .document(it).collection("Todo")
+            .document(it).collection("Todo")
     }
 
+    @SuppressLint("SetTextI18n", "SimpleDateFormat")
     override fun onBindViewHolder(
         holder: TodoListFirestoreHolder,
         position: Int,
@@ -96,7 +93,9 @@ class TodoListFirestoreAdapter(
             }
             chip.text = model.benefits[i] + ""
             holder.chipGroup.childCount
-            chip.maxWidth = 200
+            chip.maxWidth = context.resources.getDimensionPixelSize(R.dimen._48sdp)
+            chip.minWidth = context.resources.getDimensionPixelSize(R.dimen._48sdp)
+            chip.minHeight = context.resources.getDimensionPixelSize(R.dimen._20sdp)
             chip.ellipsize = TextUtils.TruncateAt.END
             chip.setTextAppearanceResource(R.style.SmallerText)
             holder.chipGroup.addView(chip)
@@ -118,10 +117,11 @@ class TodoListFirestoreAdapter(
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .setTitle("Confirm Complete")
                     .setMessage("Are you sure you want to mark this task as completed?")
-                    .setPositiveButton("Yes"
+                    .setPositiveButton(
+                        "Yes"
                     ) { _, _ ->
                         val updateTaskMap: MutableMap<String, Any> = HashMap()
-                        val task_status = "Completed"
+                        val taskStatus = "Completed"
                         val calendar = Calendar.getInstance()
                         val dateStr = DateFormat.getDateInstance(DateFormat.FULL)
                             .format(calendar.time)
@@ -129,8 +129,8 @@ class TodoListFirestoreAdapter(
                         Log.i("dateTime", "TimestampCompleted$dateStr")
                         val timeStr = sdf.format(calendar.time)
                         updateTaskMap["TimestampCompleted"] = "$dateStr $timeStr"
-                        updateTaskMap["Status"] = task_status
-                        UserColRef?.document(model.documentID)
+                        updateTaskMap["Status"] = taskStatus
+                        userColRef?.document(model.documentID)
                             ?.set(updateTaskMap, SetOptions.merge())?.addOnSuccessListener {
                                 Toasty.success(context, "Todo-task marked as completed")
                                     .show()
@@ -139,11 +139,8 @@ class TodoListFirestoreAdapter(
                             }
                         //
                     }
-                    .setNegativeButton("No", object : DialogInterface.OnClickListener {
-                        override fun onClick(dialog: DialogInterface, which: Int) {
-                            holder.customCheckbox.isChecked = false
-                        }
-                    })
+                    .setNegativeButton("No"
+                    ) { _, _ -> holder.customCheckbox.isChecked = false }
                     .setCancelable(false)
                     .show()
             } else {
@@ -151,48 +148,42 @@ class TodoListFirestoreAdapter(
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .setTitle("Confirm Incomplete")
                     .setMessage("Are you sure you want to mark this task as incomplete?")
-                    .setPositiveButton("Yes", object : DialogInterface.OnClickListener {
-                        override fun onClick(dialog: DialogInterface, which: Int) {
-                            val updateTaskMap: MutableMap<String, Any> = HashMap()
-                            val task_status = "Pending"
-                            val calendar = Calendar.getInstance()
-                            val dateStr = DateFormat.getDateInstance(DateFormat.FULL)
-                                .format(calendar.time)
-                            val sdf = SimpleDateFormat("h:mm a")
-                            Log.i("dateTime", "TimestampCompleted$dateStr")
-                            val timeStr = sdf.format(calendar.time)
-                            updateTaskMap["TimestampCompleted"] = "$dateStr $timeStr"
-                            updateTaskMap["Status"] = task_status
-                            UserColRef?.document(model.documentID)
-                                ?.set(updateTaskMap, SetOptions.merge())
-                                ?.addOnSuccessListener {
-                                    Toasty.success(
-                                        context,
-                                        "Todo-task marked as incomplete"
-                                    ).show()
-                                }?.addOnFailureListener {
-                                    Toasty.error(
-                                        context,
-                                        "Something went wrong"
-                                    ).show()
-                                }
-                            //
-                        }
-                    })
-                    .setNegativeButton("No", object : DialogInterface.OnClickListener {
-                        override fun onClick(dialog: DialogInterface, which: Int) {
-                            holder.customCheckbox.isChecked = true
-                        }
-                    })
+                    .setPositiveButton("Yes"
+                    ) { _, _ ->
+                        val updateTaskMap: MutableMap<String, Any> = HashMap()
+                        val taskStatus = "Pending"
+                        val calendar = Calendar.getInstance()
+                        val dateStr = DateFormat.getDateInstance(DateFormat.FULL)
+                            .format(calendar.time)
+                        val sdf = SimpleDateFormat("h:mm a")
+                        Log.i("dateTime", "TimestampCompleted$dateStr")
+                        val timeStr = sdf.format(calendar.time)
+                        updateTaskMap["TimestampCompleted"] = "$dateStr $timeStr"
+                        updateTaskMap["Status"] = taskStatus
+                        userColRef?.document(model.documentID)
+                            ?.set(updateTaskMap, SetOptions.merge())
+                            ?.addOnSuccessListener {
+                                Toasty.success(
+                                    context,
+                                    "Todo-task marked as incomplete"
+                                ).show()
+                            }?.addOnFailureListener {
+                                Toasty.error(
+                                    context,
+                                    "Something went wrong"
+                                ).show()
+                            }
+                        //
+                    }
+                    .setNegativeButton("No"
+                    ) { _, _ -> holder.customCheckbox.isChecked = true }
                     .setCancelable(false)
                     .show()
             }
         }
-        holder.cardView.setOnClickListener { v: View ->
+        holder.cardView.setOnClickListener {
             Log.i("onclick", "card")
-            if ((MasterTodoListActivity.purchaseCode == "0") && position + 1 > (LoginActivity.userAccountDetails.get(
-                    1
-                ).toInt())
+            if ((MasterTodoListActivity.purchaseCode == "0") && position + 1 > (LoginActivity.userAccountDetails[1].toInt())
             ) {
                 Log.d("subscriptionFeature", "subscription expired!")
                 Toasty.warning(
@@ -204,7 +195,6 @@ class TodoListFirestoreAdapter(
                 //                        intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
                 context.startActivity(intent)
             } else {
-                val doc_id: String = model.documentID.toString()
                 val todoTask = TodoTaskFirestore(
                     model.description,
                     model.priority,
@@ -259,14 +249,10 @@ class TodoListFirestoreAdapter(
         return ContextCompat.getColor(context, magnitudeColorResourceId)
     }
 
-    private fun displayBenefits(record: Array<String>?) {
-    }
-
     inner class TodoListFirestoreHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var tvTextDesc: TextView = itemView.findViewById(R.id.tv_todo_desc)
         var circleDot: TextView = itemView.findViewById(R.id.circle_per_item)
-        var tvBenefits: TextView = itemView.findViewById(R.id.todo_benefits)
-        var cardView: CardView = itemView.findViewById(R.id.materialCard)
+        var cardView: MaterialCardView = itemView.findViewById(R.id.materialCard)
         var customCheckbox: CheckBox = itemView.findViewById(R.id.checkb)
         var chipGroup: ChipGroup = itemView.findViewById(R.id.chipGroup)
 
