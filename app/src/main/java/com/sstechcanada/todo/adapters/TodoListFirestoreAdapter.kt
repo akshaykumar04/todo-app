@@ -183,7 +183,7 @@ class TodoListFirestoreAdapter(
         }
         holder.cardView.setOnClickListener {
             Log.i("onclick", "card")
-            if ((MasterTodoListActivity.purchaseCode == "0") && position + 1 > (LoginActivity.userAccountDetails[1].toInt())
+            if ((MasterTodoListActivity.purchaseCode == "0") && ((position + 1) > (LoginActivity.userAccountDetails[1].toInt()))
             ) {
                 Log.d("subscriptionFeature", "subscription expired!")
                 Toasty.warning(

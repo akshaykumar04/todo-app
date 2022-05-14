@@ -112,10 +112,10 @@ class TodoListActivity : AppCompatActivity() {
                 )
             )
         }
-        fab!!.setOnClickListener {
-            db_cnt = todoListFirestoreAdapter!!.itemCount
+        fab?.setOnClickListener {
+            db_cnt = todoListFirestoreAdapter?.itemCount ?: 0
             Log.i("ItemCount", "FAB Clicked")
-            if (LoginActivity.userAccountDetails[1].toInt() > todoListFirestoreAdapter!!.itemCount) {
+            if (LoginActivity.userAccountDetails[1].toInt() > (todoListFirestoreAdapter?.itemCount ?: 0)) {
                 setValue()
                 if (isLogin) {
                     val intent = Intent(this@TodoListActivity, AddOrEditTaskActivity::class.java)
