@@ -4,18 +4,21 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.sstechcanada.todo.BuildConfig
+import androidx.preference.PreferenceManager
 import com.sstechcanada.todo.BuildConfig.VERSION_NAME
 import com.sstechcanada.todo.R
 import com.sstechcanada.todo.activities.auth.LoginActivity
 import com.sstechcanada.todo.utils.Constants
 import com.sstechcanada.todo.utils.SaveSharedPreference
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_splash.*
 
 class SplashActivity : AppCompatActivity() {
@@ -33,7 +36,7 @@ class SplashActivity : AppCompatActivity() {
         Handler().postDelayed({
             fetchIntentData()
         }, TIME_OUT)
-
+        clearExistingPrefs()
         textViewVersion.text = "Version: $VERSION_NAME";
     }
 
@@ -53,7 +56,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun checkUserState(value: Any? = null) {
-        if (SaveSharedPreference.getUserLogin(this).equals("true")) {
+        if (SaveSharedPreference.getUserLogin(this) == true) {
             when (value) {
                 Constants.TODO_LISTS_SCREEN -> {
                     startActivity(Intent(this, MasterTodoListActivity::class.java))
@@ -76,7 +79,7 @@ class SplashActivity : AppCompatActivity() {
                     finish()
                 }
                 Constants.UPGRADE_SCREEN -> {
-                    startActivity(Intent(this, AppUpgradeActivity2::class.java))
+                    startActivity(Intent(this, AppUpgradeActivity::class.java))
                 }
                 else -> {
                     startActivity(Intent(this, MasterTodoListActivity::class.java))
@@ -111,5 +114,14 @@ class SplashActivity : AppCompatActivity() {
         } catch (e: ActivityNotFoundException) {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.sstechcanada.todo")))
         }
+    }
+
+    private fun clearExistingPrefs() {
+        val editor = PreferenceManager.getDefaultSharedPreferences(this)
+        if (editor.all.containsKey("user_state")) {
+            editor.edit().clear().commit()
+        }
+        Log.d("Prefs", editor.all.keys.toString())
+        Log.d("Prefs", editor.all.values.toString())
     }
 }

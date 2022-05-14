@@ -8,11 +8,11 @@
 
     <ProgressBar
         android:id="@+id/loadingProgressBarUpgrade"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="match_parent"
         android:layout_height="15dp"
         android:layout_marginTop="-5dp"
         android:indeterminate="true"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:indeterminateTint="@color/colorTab"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,22 +37,21 @@
         android:id="@+id/toggle_button_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:layout_margin="16dp"
         android:layout_marginTop="4dp"
+        app:toggleMode="wrap"
+        app:customLayout="@layout/view_toggle_button"
         android:layout_marginBottom="4dp"
-        android:paddingHorizontal="20dp"
         app:allowDeselection="false"
-        android:textAlignment="center"
         app:dividerColor="@android:color/darker_gray"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textUpgradeDesc"
         app:menu="@menu/toggles"
+        app:cardCornerRadius="@dimen/_16sdp"
         app:multipleSelection="false"
-        app:selectedColor="@color/toggleSelected"
-        />
+        app:selectedColor="@color/toggleSelected" />
 
 
     <com.airbnb.lottie.LottieAnimationView
@@ -81,7 +80,7 @@
         android:text="Upgrade to premium"
         android:textAllCaps="true"
         android:textColor="@color/textHeadings"
-        android:textSize="20sp"
+        android:textSize="@dimen/_17ssp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/textUpgradeDesc"
         app:layout_constraintEnd_toEndOf="parent"
@@ -100,7 +99,7 @@
         android:paddingVertical="8dp"
         android:text="Upgrade to premium version to access exclusive features"
         android:textAlignment="center"
-        android:textSize="14sp"
+        android:textSize="@dimen/_11ssp"
         app:layout_constraintBottom_toTopOf="@+id/toggle_button_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -112,6 +111,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:gravity="left"
+        android:elevation="@dimen/_8sdp"
         android:orientation="vertical"
         android:paddingHorizontal="30dp"
         app:layout_constraintBottom_toTopOf="@+id/buttonUpgrade"
@@ -132,9 +132,10 @@
             android:text="@string/create_up_to_3_to_do_lists"
             android:textAllCaps="true"
             android:textColor="#000000"
-            android:textSize="14sp" />
+            android:textSize="@dimen/_11ssp" />
 
         <TextView
+            android:id="@+id/list2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="4dp"
@@ -146,10 +147,26 @@
             android:text="UNLOCKS COMPLETED SECTION"
             android:textAllCaps="true"
             android:textColor="#000000"
-            android:textSize="14sp" />
+            android:textSize="@dimen/_11ssp" />
+
+        <TextView
+            android:id="@+id/list7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="4dp"
+            android:drawableLeft="@drawable/ic_check"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/poppins_semibold"
+            android:lineSpacingExtra="1dp"
+            android:paddingHorizontal="8dp"
+            android:text="EACH LIST 50% LONGER"
+            android:textAllCaps="true"
+            android:textColor="#000000"
+            android:textSize="@dimen/_11ssp" />
 
 
         <TextView
+            android:id="@+id/list3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="4dp"
@@ -161,9 +178,10 @@
             android:text="REMOVES ADS"
             android:textAllCaps="true"
             android:textColor="#000000"
-            android:textSize="14sp" />
-
+            android:textSize="@dimen/_11ssp" />
+        
         <TextView
+            android:id="@+id/list8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="4dp"
@@ -172,12 +190,28 @@
             android:fontFamily="@font/poppins_semibold"
             android:lineSpacingExtra="1dp"
             android:paddingHorizontal="8dp"
-            android:text="FIRST 30 DAYS FREE"
+            android:text="FOUNDER (JON) SUBSCRIBES TO THIS TIER"
             android:textAllCaps="true"
             android:textColor="#000000"
-            android:textSize="14sp" />
+            android:textSize="@dimen/_11ssp" />
 
         <TextView
+            android:id="@+id/list4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="4dp"
+            android:drawableLeft="@drawable/ic_check"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/poppins_semibold"
+            android:lineSpacingExtra="1dp"
+            android:paddingHorizontal="8dp"
+            android:text="FIRST 30 DAYS OF PREMIUM FREE"
+            android:textAllCaps="true"
+            android:textColor="#000000"
+            android:textSize="@dimen/_11ssp" />
+
+        <TextView
+            android:id="@+id/list5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="4dp"
@@ -189,8 +223,7 @@
             android:text="CANCEL ANYTIME"
             android:textAllCaps="true"
             android:textColor="#000000"
-            android:textSize="14sp" />
-
+            android:textSize="@dimen/_11ssp" />
 
     </LinearLayout>
 
@@ -198,8 +231,7 @@
         android:id="@+id/buttonUpgrade"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:padding="20dp"
-
+        android:padding="@dimen/_20sdp"
         app:layout_constraintBottom_toTopOf="@+id/appCompatTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -212,12 +244,13 @@
         android:id="@+id/appCompatTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="28dp"
         android:fontFamily="@font/poppins_semibold"
         android:paddingHorizontal="32dp"
+        android:elevation="@dimen/_8sdp"
         android:text="@string/text_update_button_bottom"
         android:textAlignment="center"
         android:textSize="11sp"
-        android:layout_marginBottom="28dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

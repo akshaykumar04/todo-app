@@ -64,6 +64,8 @@
     <string name="premium_user">Premium User</string>
     <string name="free_user">Free User</string>
     <string name="sign_out">Sign out?</string>
+    <string name="delete_account">Are you sure to Delete you Account?</string>
+    <string name="delete_account_desc">All the associated data with your account will be deleted forever.</string>
     <string name="delete_benefit">Are you sure to delete benefit?</string>
     <string name="delete_benefit_message">Deleting this benefit will delete this from all To Do items</string>
     <string name="are_you_sure">Are you sure you want to Sign out?</string>
@@ -84,6 +86,7 @@
     <string name="banner_ad_test">ca-app-pub-3111421321050812/4092511181</string>
     <string name="_0_99_month">Tier 1</string>
     <string name="_9_99_month">Tier 2</string>
+    <string name="remove_ads">Remove Ads</string>
     <string name="create_up_to_20_to_do_lists">CREATE UP TO 20 LISTS</string>
     <string name="create_up_to_3_to_do_lists">CREATE UP TO 3 LISTS</string>
     <string name="title_add_benefit">Add Benefits</string>
@@ -117,5 +120,13 @@
     <!-- [END fcm_default_icon_string] -->
     <string name="msg_subscribe_failed">Failed to subscribe to weather topic</string>
     <string name="fcm_message">FCM Message</string>
+    <string name="removes_ads_completely">Completely Removes App Ads for a year</string>
+    <string name="billing_license_key">MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnDatsVXJEFzzwnOEBiE5wSffxr+dEazc3zbf5t5jK1NKYPlfBbeN2M8ZEA38YRt0pQ0WfnXGcJ0mauXH/0xtXdo9Hv6uyzn3W73W6RxTbc5fk2950Tn0fqHkTh6wZoEJBaLn5OnhUy6GE0Yf5VM4oj3HeY5li6ESi8PggUMeYmMcvLzcOsQ8rh4G2KBWqXcYOTMREyfFXp6jJLXHDrJqeeSAEnP/aGLPPyi2NRy5S7dp8qPIkjDYt6yU+FICSBcDAPPWO1jNZrWH43ObcDF4KNdp5CAf/HT5GLcwZv+CUvQGgtuOyiN193NE9wpV5jpA2BgV7FxENqe9T1NIPk8AMwIDAQAB</string>
+    <string name="license_key">MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnDatsVXJEFzzwnOEBiE5wSffxr+dEazc3zbf5t5jK1NKYPlfBbeN2M8ZEA38YRt0pQ0WfnXGcJ0mauXH/0xtXdo9Hv6uyzn3W73W6RxTbc5fk2950Tn0fqHkTh6wZoEJBaLn5OnhUy6GE0Yf5VM4oj3HeY5li6ESi8PggUMeYmMcvLzcOsQ8rh4G2KBWqXcYOTMREyfFXp6jJLXHDrJqeeSAEnP/aGLPPyi2NRy5S7dp8qPIkjDYt6yU+FICSBcDAPPWO1jNZrWH43ObcDF4KNdp5CAf/HT5GLcwZv+CUvQGgtuOyiN193NE9wpV5jpA2BgV7FxENqe9T1NIPk8AMwIDAQAB</string>
+    <string name="revenue_breakdown">Revenue Breakdown</string>
+    <string name="_2021_22_jon_bell_s_co">© 2021-22 Jon Bell\'s Co.</string>
+    <string name="todo">TODO</string>
+    <string name="pie_title">Planned Spending Allocations</string>
+    <string name="ads_cat">Allowed advertising categories</string>
 
 </resources>

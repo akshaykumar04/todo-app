@@ -1,71 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="400dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="20dp"
+    android:background="@drawable/dialog_bg"
     android:clipToPadding="false"
-    tools:context=".activities.SelectCategoriesDailog">
+    android:maxHeight="@dimen/_500sdp"
+    android:minHeight="@dimen/_350sdp"
+    android:paddingHorizontal="@dimen/_16sdp"
+    android:paddingTop="@dimen/_16sdp">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/appCompatTextView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/_4sdp"
+        android:fontFamily="@font/raleway_semibold"
+        android:text="Select Benefits"
+        android:textAlignment="center"
+        android:textColor="@color/textHeadings"
+        android:textSize="@dimen/_14ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <GridView
         android:id="@+id/grid_view_alert"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginVertical="@dimen/_8sdp"
         android:numColumns="3"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/fabDone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appCompatTextView2"
+        tools:listitem="@layout/item_grid" />
 
     <ProgressBar
-        android:id="@+id/progress_circular"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-
-
-
-    <LinearLayout
-        android:id="@+id/addMoreCategoriesLayout"
+        android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="8dp"
-        android:orientation="horizontal"
-        android:padding="4dp"
-        android:visibility="visible">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabDone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_6sdp"
+        android:src="@drawable/check"
+        app:backgroundTint="@color/todo"
+        app:layout_constraintBottom_toTopOf="@+id/adView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@color/white" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabMore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_6sdp"
+        android:src="@drawable/ic_fab_add"
+        app:backgroundTint="@color/todo"
+        app:layout_constraintBottom_toTopOf="@+id/adView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:tint="@color/white">
+
+    </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:fontFamily="@font/raleway_semibold"
-            android:text="Click here to add or edit benefits"
-            android:textAlignment="center"
-            android:textSize="16sp" />
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add More"
+        android:fontFamily="@font/raleway_semibold"
+        android:layout_marginStart="@dimen/_6sdp"
+        android:textSize="@dimen/_13ssp"
+        android:textColor="@color/textHeadings"
+        app:layout_constraintBottom_toBottomOf="@+id/fabMore"
+        app:layout_constraintStart_toEndOf="@+id/fabMore"
+        app:layout_constraintTop_toTopOf="@+id/fabMore" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Done"
+        android:textColor="@color/textHeadings"
+        android:textSize="@dimen/_13ssp"
+        android:fontFamily="@font/raleway_semibold"
+        android:layout_marginEnd="@dimen/_6sdp"
+        app:layout_constraintBottom_toBottomOf="@+id/fabDone"
+        app:layout_constraintEnd_toStartOf="@id/fabDone"
+        app:layout_constraintTop_toTopOf="@+id/fabDone" />
 
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="25dp"
-            android:layout_gravity="center"
-            android:src="@android:drawable/ic_menu_add">
-
-        </ImageView>
-
-
-    </LinearLayout>
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="4dp"
-        android:layout_marginStart="-20dp"
-        android:layout_marginEnd="-20dp"
+        android:paddingHorizontal="-16dp"
         app:adSize="BANNER"
-        app:adUnitId="@string/banner_ad_test" />
+        app:adUnitId="@string/banner_ad_test"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -40,14 +40,6 @@ public class List {
         return ListId;
     }
 
-//    public String getListDescription() {
-//        return ListDescription;
-//    }
-
-//    public void setListDescription(String listDescription) {
-//        ListDescription = listDescription;
-//    }
-
     public void setListId(String listId) {
         ListId = listId;
     }

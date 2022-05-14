@@ -36,12 +36,17 @@ import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.res.ResourcesCompat
+import com.bumptech.glide.Glide
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.getkeepsafe.taptargetview.TapTargetSequence
 import com.getkeepsafe.taptargetview.TapTarget
 import com.google.android.gms.ads.*
 import com.google.firebase.firestore.Query
+import com.sstechcanada.todo.activities.auth.ProfileActivity
 import com.sstechcanada.todo.databinding.ActivityTodoListBinding
+import com.sstechcanada.todo.utils.SaveSharedPreference
+import kotlinx.android.synthetic.main.act_bar.*
 import kotlinx.android.synthetic.main.activity_todo_list.*
 
 class TodoListActivity : AppCompatActivity() {
@@ -52,12 +57,9 @@ class TodoListActivity : AppCompatActivity() {
     var fab: FloatingActionButton? = null
     private var list_limit = 15
     private var mBinding: ActivityTodoListBinding? = null
-    private val mSharedPreferences: SharedPreferences? = null
-    private val ll: SharedPreferences? = null
     private var toolbar_profile: AppCompatImageView? = null
     private var mAuth: FirebaseAuth? = null
     private var user: FirebaseUser? = null
-    private val databaseReference: DatabaseReference? = null
     private var todoListFirestoreAdapter: TodoListFirestoreAdapter? = null
     var editor: SharedPreferences.Editor? = null
     private var mInterstitialAd: InterstitialAd? = null
@@ -68,7 +70,7 @@ class TodoListActivity : AppCompatActivity() {
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_todo_list)
         loadingProgressBar = mBinding?.loadingProgressBar
         fab = mBinding?.fab
-        if (Integer.valueOf(MasterTodoListActivity.purchaseCode) != 0) {
+        if (Integer.valueOf(MasterTodoListActivity.purchaseCode) == 1 || Integer.valueOf(MasterTodoListActivity.purchaseCode) == 2) {
             Log.i("purchase code", MasterTodoListActivity.purchaseCode)
             Log.i("purchase code", "purchaseCode")
             mBinding?.completedTab?.setCompoundDrawablesWithIntrinsicBounds(
@@ -93,7 +95,7 @@ class TodoListActivity : AppCompatActivity() {
         }
         setupObservers()
         val adView = mBinding?.adView
-        if (MasterTodoListActivity.purchaseCode == "0") {
+        if (SaveSharedPreference.getAdsEnabled(this)) {
             loadFullScreenAds()
             val adRequest = AdRequest.Builder().build()
             adView?.loadAd(adRequest)
@@ -101,11 +103,12 @@ class TodoListActivity : AppCompatActivity() {
             adView?.visibility = View.GONE
         }
         toolbar_profile = findViewById(R.id.profile_toolbar)
+        Glide.with(this).load(mAuth?.currentUser?.photoUrl).into(profile_toolbar)
         toolbar_profile?.setOnClickListener {
             startActivity(
                 Intent(
                     this@TodoListActivity,
-                    LoginActivity::class.java
+                    ProfileActivity::class.java
                 )
             )
         }
@@ -115,7 +118,7 @@ class TodoListActivity : AppCompatActivity() {
             if (LoginActivity.userAccountDetails[1].toInt() > todoListFirestoreAdapter!!.itemCount) {
                 setValue()
                 if (isLogin) {
-                    val intent = Intent(this@TodoListActivity, AddOrEditTaskActivity2::class.java)
+                    val intent = Intent(this@TodoListActivity, AddOrEditTaskActivity::class.java)
                     intent.putExtra(
                         getString(R.string.intent_adding_or_editing_key),
                         getString(R.string.add_new_task)
@@ -125,7 +128,7 @@ class TodoListActivity : AppCompatActivity() {
             } else {
                 if (isLogin) {
                     if (MasterTodoListActivity.purchaseCode != "2") {
-                        val intent = Intent(this@TodoListActivity, AppUpgradeActivity2::class.java)
+                        val intent = Intent(this@TodoListActivity, AppUpgradeActivity::class.java)
                         //                        intent.putExtra(getString(R.string.intent_adding_or_editing_key), getString(R.string.add_new_task));
                         Toasty.info(
                             applicationContext,
@@ -144,22 +147,22 @@ class TodoListActivity : AppCompatActivity() {
             }
         }
         mBinding?.completedTab?.setOnClickListener {
-            if (Integer.valueOf(MasterTodoListActivity.purchaseCode) != 0) {
+            if (Integer.valueOf(MasterTodoListActivity.purchaseCode) == 1 || Integer.valueOf(MasterTodoListActivity.purchaseCode) == 2) {
                 startActivity(Intent(this@TodoListActivity, CompletedTodoListActivity::class.java))
             } else {
-                startActivity(Intent(this@TodoListActivity, AppUpgradeActivity2::class.java))
+                startActivity(Intent(this@TodoListActivity, AppUpgradeActivity::class.java))
             }
         }
         rv_todo_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy > 12 || dy < 0 && fab!!.isShown) {
-                    fab!!.hide()
+                    fab?.hide()
                 }
                 if (dy < -12 && !fab!!.isShown) {
-                    fab!!.show()
+                    fab?.show()
                 }
                 if (!recyclerView.canScrollVertically(-1)) {
-                    fab!!.show()
+                    fab?.show()
                 }
             }
         })
@@ -204,8 +207,8 @@ class TodoListActivity : AppCompatActivity() {
         rv_todo_list.layoutManager = LinearLayoutManager(this)
         val swipeController = SwipeController(this, object : SwipeControllerActions() {
             override fun onRightClicked(position: Int) {
-                Log.i("cluck", "right")
-                if (MasterTodoListActivity.purchaseCode == "0") {
+                Log.i("click", "right")
+                if (SaveSharedPreference.getAdsEnabled(this@TodoListActivity)) {
                     loadFullScreenAds()
                 }
                 AlertDialog.Builder(this@TodoListActivity)
@@ -213,7 +216,7 @@ class TodoListActivity : AppCompatActivity() {
                     .setTitle("Confirm Delete")
                     .setMessage("Are you sure you want to delete this task?")
                     .setPositiveButton("Yes") { dialog: DialogInterface?, which: Int ->
-                        if (MasterTodoListActivity.purchaseCode == "0") {
+                        if (SaveSharedPreference.getAdsEnabled(this@TodoListActivity)) {
                             if (mInterstitialAd != null) {
                                 mInterstitialAd?.show(this@TodoListActivity)
                                 val documentSnapshot =
@@ -284,7 +287,7 @@ class TodoListActivity : AppCompatActivity() {
                         task.timestampCompleted
                     )
                 }
-                val intent = Intent(this@TodoListActivity, AddOrEditTaskActivity2::class.java)
+                val intent = Intent(this@TodoListActivity, AddOrEditTaskActivity::class.java)
                 intent.putExtra("Adding or editing", "Edit Task")
                 intent.putExtra("Todo", todoTask)
                 startActivity(intent)
@@ -439,11 +442,13 @@ class TodoListActivity : AppCompatActivity() {
             .targets(
                 TapTarget.forView(fab, "Add Button", "Click here to add a new list item")
                     .outerCircleColor(R.color.chip_5)
-                    .outerCircleAlpha(0.96f)
+                    .outerCircleAlpha(0.85f)
                     .targetCircleColor(R.color.colorUncompletedBackground)
                     .titleTextSize(22)
                     .titleTextColor(R.color.colorUncompletedBackground)
-                    .descriptionTextSize(12)
+                    .descriptionTextSize(16)
+                    .titleTypeface(ResourcesCompat.getFont(this, R.font.poppins_semibold))
+                    .textTypeface(ResourcesCompat.getFont(this, R.font.raleway_medium))
                     .descriptionTextColor(R.color.black)
                     .textColor(R.color.black)
                     .dimColor(R.color.black)
@@ -453,16 +458,20 @@ class TodoListActivity : AppCompatActivity() {
                     .transparentTarget(true)
                     .targetRadius(80),
                 TapTarget.forView(
-                    mBinding!!.buttonTapTargetView,
+                    mBinding?.buttonTapTargetView,
                     "List Items",
-                    "1: Swipe right and click on the pencil icon to edit a list item. \n2: Swipe left and click on the garbage can icon to delete a list item."
+                    "1: Swipe right and click on the pencil icon to edit a list item. " +
+                            "\n\n2: Swipe left and click on the garbage can icon to delete a list item. " +
+                            "\n\n3: This app works better for one-time tasks (e.g. \"buy glasses\") than recurring ones (e.g. \"go to gym every day\")."
                 )
                     .outerCircleColor(R.color.chip_5)
-                    .outerCircleAlpha(0.96f)
+                    .outerCircleAlpha(0.85f)
                     .targetCircleColor(R.color.colorUncompletedBackground)
                     .titleTextSize(22)
                     .titleTextColor(R.color.colorUncompletedBackground)
-                    .descriptionTextSize(12)
+                    .descriptionTextSize(16)
+                    .titleTypeface(ResourcesCompat.getFont(this, R.font.poppins_semibold))
+                    .textTypeface(ResourcesCompat.getFont(this, R.font.raleway_medium))
                     .descriptionTextColor(R.color.black)
                     .textColor(R.color.black)
                     .dimColor(R.color.black)
@@ -481,16 +490,16 @@ class TodoListActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                     //                flagTodoListFirstRun = false;
-                    mBinding!!.buttonTapTargetView.visibility = View.GONE
-                    editor!!.putBoolean("flagTodoListFirstRun", false)
-                    editor!!.apply()
+                    mBinding?.buttonTapTargetView?.visibility = View.GONE
+                    editor?.putBoolean("flagTodoListFirstRun", false)
+                    editor?.apply()
                 }
 
                 override fun onSequenceStep(lastTarget: TapTarget, targetClicked: Boolean) {}
                 override fun onSequenceCanceled(lastTarget: TapTarget) {
-                    editor!!.putBoolean("flagTodoListFirstRun", false)
-                    mBinding!!.buttonTapTargetView.visibility = View.GONE
-                    editor!!.apply()
+                    editor?.putBoolean("flagTodoListFirstRun", false)
+                    mBinding?.buttonTapTargetView?.visibility = View.GONE
+                    editor?.apply()
                 }
             }).start()
     }
@@ -506,12 +515,12 @@ class TodoListActivity : AppCompatActivity() {
 
         @JvmStatic
         fun showPlaceHolder() {
-            lottieAnimationView!!.visibility = View.VISIBLE
+            lottieAnimationView?.visibility = View.VISIBLE
         }
 
         @JvmStatic
         fun hidePlaceHolder() {
-            lottieAnimationView!!.visibility = View.INVISIBLE
+            lottieAnimationView?.visibility = View.INVISIBLE
         }
     }
 }
