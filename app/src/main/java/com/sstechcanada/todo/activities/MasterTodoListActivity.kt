@@ -568,14 +568,14 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
                         .show()
 
 //                flagMasterListFirstRun = false;
-                    buttonTapTargetView?.visibility = View.GONE
+                    buttonTapTargetView.visibility = View.GONE
                     editor?.putBoolean("flagMasterListFirstRun", false)
                     editor?.apply()
                 }
 
                 override fun onSequenceStep(lastTarget: TapTarget, targetClicked: Boolean) {}
                 override fun onSequenceCanceled(lastTarget: TapTarget) {
-                    buttonTapTargetView?.visibility = View.GONE
+                    buttonTapTargetView.visibility = View.GONE
                     editor?.putBoolean("flagMasterListFirstRun", false)
                     editor?.apply()
                 }
