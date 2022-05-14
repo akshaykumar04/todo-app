@@ -76,19 +76,17 @@ class AddOrEditTaskActivity : AppCompatActivity() {
         arrow_back.setOnClickListener { super.onBackPressed() }
         toolbarTitle.text = "Add/Update Task"
         mAuth = FirebaseAuth.getInstance()
-        userID = mAuth?.currentUser?.uid
+        userID = mAuth!!.currentUser!!.uid
         FirebaseCrashlytics.getInstance()
             .log(this.javaClass.simpleName + "listId = " + MasterTodoListActivity.listId)
         FirebaseCrashlytics.getInstance().log(this.javaClass.simpleName + "UserId = " + userID)
-        benefitCollectionRef = userID?.let { db.collection("Users").document(it).collection("Benefits") }
+        benefitCollectionRef = db.collection("Users").document(userID!!).collection("Benefits")
         UserColRef = MasterTodoListActivity.listId?.let {
-            userID?.let { it1 ->
-                db.collection("Users").document(it1).collection("Lists")
-                    .document(it).collection("Todo")
-            }
+            db.collection("Users").document(userID!!).collection("Lists")
+                .document(it).collection("Todo")
         }
         Log.i("ListId", "Add or edit: " + MasterTodoListActivity.listId)
-        Glide.with(this).load(mAuth?.currentUser?.photoUrl).into(profile_toolbar)
+        Glide.with(this).load(mAuth!!.currentUser!!.photoUrl).into(profile_toolbar)
         if (SaveSharedPreference.getAdsEnabled(this)) {
             loadBannerAds()
             loadFullScreenAds()
@@ -99,13 +97,13 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             val bundle = intent.extras
             mAddOrEdit = bundle?.getString(getString(R.string.intent_adding_or_editing_key))
             if (mAddOrEdit == getString(R.string.add_new_task)) {
-                Log.d("AddOrEdit", "Adding New Task")
+
             } else {
                 todoTaskToAddOrEdit = bundle?.getParcelable(getString(R.string.intent_todo_key))
-                selectedResult = todoTaskToAddOrEdit?.benefitsString.toString()
-                mTaskId = todoTaskToAddOrEdit?.documentID
+                selectedResult = todoTaskToAddOrEdit!!.benefitsString
+                mTaskId = todoTaskToAddOrEdit!!.documentID
                 mBinding?.etTaskDescription?.setText(todoTaskToAddOrEdit!!.description)
-                taskCompleted = todoTaskToAddOrEdit?.status.toString()
+                taskCompleted = todoTaskToAddOrEdit!!.status
                 mBinding?.cbTaskCompleted?.setOnClickListener {
                     if (!mBinding?.cbTaskCompleted!!.isChecked) {
                         AlertDialog.Builder(this@AddOrEditTaskActivity)
@@ -137,9 +135,9 @@ class AddOrEditTaskActivity : AppCompatActivity() {
                 }
                 mBinding?.cbTaskCompleted?.isChecked = taskCompleted == "Completed"
                 if (taskCompleted == "Completed") {
-                    mBinding?.timestampCompletedtextView?.text =
-                        todoTaskToAddOrEdit?.timestampCompleted
-                    mBinding?.timestampCompletedtextView?.visibility = View.VISIBLE
+                    mBinding?.timestampCompletedtextView!!.text =
+                        todoTaskToAddOrEdit!!.timestampCompleted
+                    mBinding?.timestampCompletedtextView!!.visibility = View.VISIBLE
                 }
                 dueDate = todoTaskToAddOrEdit?.dueDate!!
                 Log.d(TAG, "Due date in millis $dueDate")
@@ -150,8 +148,8 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             mBinding?.etTaskDescription?.setText(savedInstanceState.getString(getString(R.string.task_description_key)))
             if (taskCompleted == "Completed") {
                 mBinding?.cbTaskCompleted?.isChecked = true
-                mBinding?.timestampCompletedtextView?.text =
-                    todoTaskToAddOrEdit?.timestampCompleted
+                mBinding?.timestampCompletedtextView!!.text =
+                    todoTaskToAddOrEdit!!.timestampCompleted
             } else {
                 mBinding?.cbTaskCompleted?.isChecked = false
             }
@@ -162,10 +160,10 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             mBinding?.btnAddOrUpdateTask?.setText(R.string.add_task)
             mBinding?.tvCompletionLabel?.visibility = View.INVISIBLE
             mBinding?.cbTaskCompleted?.visibility = View.INVISIBLE
-            mBinding?.deleteTodoItem?.visibility = View.INVISIBLE
+            mBinding?.deleteTodoItem!!.visibility = View.INVISIBLE
         } else {
             mBinding?.btnAddOrUpdateTask?.setText(R.string.update_task)
-            mBinding?.deleteTodoItem?.visibility = View.VISIBLE
+            mBinding?.deleteTodoItem!!.visibility = View.VISIBLE
         }
 
         addCategories.setOnClickListener { showBenefitsBottomSheet() }
@@ -173,7 +171,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
         //Grid View End
         if (todoTaskToAddOrEdit != null) {
             record = todoTaskToAddOrEdit?.benefitsString?.let { convertStringToArray(it) }
-            category_count = record?.size!!
+            category_count = record!!.size
             displayBenefits(record)
         }
         MobileAds.initialize(this) { }
@@ -190,8 +188,8 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             .setPositiveButton("Yes") { dialog: DialogInterface?, which: Int ->
                 if (SaveSharedPreference.getAdsEnabled(this)) {
                     if (mInterstitialAd != null) {
-                        mInterstitialAd?.show(this@AddOrEditTaskActivity)
-                        todoTaskToAddOrEdit?.documentID?.let { UserColRef?.document(it)?.delete() }
+                        mInterstitialAd!!.show(this@AddOrEditTaskActivity)
+                        UserColRef!!.document(todoTaskToAddOrEdit!!.documentID).delete()
                         Toasty.error(
                             this@AddOrEditTaskActivity,
                             "Task Deleted",
@@ -199,7 +197,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
                         ).show()
                         finish()
                     } else {
-                        todoTaskToAddOrEdit?.documentID?.let { UserColRef?.document(it)?.delete() }
+                        UserColRef!!.document(todoTaskToAddOrEdit!!.documentID).delete()
                         Toasty.error(
                             this@AddOrEditTaskActivity,
                             "Task Deleted",
@@ -208,7 +206,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
                         finish()
                     }
                 } else {
-                    todoTaskToAddOrEdit?.documentID?.let { UserColRef?.document(it)?.delete() }
+                    UserColRef!!.document(todoTaskToAddOrEdit!!.documentID).delete()
                     Toasty.error(this@AddOrEditTaskActivity, "Task Deleted", Toast.LENGTH_SHORT)
                         .show()
                     finish()
@@ -257,11 +255,11 @@ class AddOrEditTaskActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT,
                 true
             ).show()
-            loadingProgressBarUpdate?.visibility = View.GONE
+            loadingProgressBarUpdate!!.visibility = View.GONE
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         } else {
             //Making First Char Capital
-            description = description?.substring(0, 1)?.uppercase(Locale.getDefault()) + description?.substring(1)
+            description = description?.substring(0, 1)?.toUpperCase() + description?.substring(1)
             uploadDataToFirestore()
 
             val returnIntent = Intent()
@@ -283,8 +281,8 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             val taskStatus = "Pending"
             newTaskMap["Status"] = taskStatus
             newTaskMap["TimestampCompleted"] = " "
-            UserColRef?.document()?.set(newTaskMap)?.addOnSuccessListener {
-                loadingProgressBarUpdate.visibility = View.GONE
+            UserColRef!!.document().set(newTaskMap).addOnSuccessListener {
+                loadingProgressBarUpdate!!.visibility = View.GONE
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 Toasty.success(
                     this@AddOrEditTaskActivity,
@@ -293,8 +291,8 @@ class AddOrEditTaskActivity : AppCompatActivity() {
                 ).show()
                 finish()
                 onBackPressed()
-            }?.addOnFailureListener {
-                loadingProgressBarUpdate.visibility = View.GONE
+            }.addOnFailureListener { e: Exception? ->
+                loadingProgressBarUpdate!!.visibility = View.GONE
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 Toasty.error(
                     this@AddOrEditTaskActivity,
@@ -324,7 +322,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             todoTaskToAddOrEdit?.documentID?.let {
                 UserColRef?.document(it)
                     ?.set(updateTaskMap, SetOptions.merge())?.addOnSuccessListener {
-                        loadingProgressBarUpdate?.visibility = View.GONE
+                        loadingProgressBarUpdate!!.visibility = View.GONE
                         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         Toasty.success(
                             this@AddOrEditTaskActivity,
@@ -334,7 +332,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
                         finish()
                         onBackPressed()
                     }?.addOnFailureListener {
-                        loadingProgressBarUpdate?.visibility = View.GONE
+                        loadingProgressBarUpdate!!.visibility = View.GONE
                         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         Toasty.error(
                             this@AddOrEditTaskActivity,
@@ -368,7 +366,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             gridView?.adapter = adapter
             gridView?.visibility = View.VISIBLE
             record = convertStringToArray(selectedResult)
-            for (i in categories!!.indices) {
+            for (i in categories?.indices!!) {
                 for (j in record!!.indices) {
                     if (record!![j] == categories?.get(i)?.category_name) {
                         adapter!!.selectedPositions?.add(i)
@@ -382,17 +380,15 @@ class AddOrEditTaskActivity : AppCompatActivity() {
         }
         gridView!!.onItemClickListener =
             OnItemClickListener { parent: AdapterView<*>, v: View, position: Int, id: Long ->
-                val selectedIndex = adapter?.selectedPositions?.indexOf(position)
-                if (selectedIndex != null) {
-                    if (selectedIndex > -1) {
-                        adapter?.selectedPositions?.removeAt(selectedIndex)
-                        (v as GridItemView).display(false)
-                        selectedStrings?.remove(parent.getItemAtPosition(position))
-                    } else {
-                        adapter?.selectedPositions?.add(position)
-                        (v as GridItemView).display(true)
-                        selectedStrings?.add(parent.getItemAtPosition(position) as String)
-                    }
+                val selectedIndex = adapter!!.selectedPositions.indexOf(position)
+                if (selectedIndex > -1) {
+                    adapter?.selectedPositions?.removeAt(selectedIndex)
+                    (v as GridItemView).display(false)
+                    selectedStrings!!.remove(parent.getItemAtPosition(position))
+                } else {
+                    adapter?.selectedPositions?.add(position)
+                    (v as GridItemView).display(true)
+                    selectedStrings!!.add(parent.getItemAtPosition(position) as String)
                 }
             }
     }
@@ -407,7 +403,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
                     // The mInterstitialAd reference will be null until
                     // an ad is loaded.
                     mInterstitialAd = interstitialAd
-                    mInterstitialAd?.fullScreenContentCallback =
+                    mInterstitialAd!!.fullScreenContentCallback =
                         object : FullScreenContentCallback() {
                             override fun onAdDismissedFullScreenContent() {
                                 // Called when fullscreen content is dismissed.
@@ -454,7 +450,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
         chip_count = record?.size!!
         tv_add_more?.text = "Click here to add more Benefits"
         if (chip_count == 0) {
-            tv_category_number?.text = "$chip_count Benefits Selected"
+            tv_category_number!!.text = "$chip_count Benefits Selected"
             return
         }
         for (i in 0 until chip_count) {
@@ -529,7 +525,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
 
     private fun updateSelectedBenefits() {
         selectedResult = convertArrayToString(selectedStrings)
-        category_count = selectedStrings?.size ?: 0
+        category_count = selectedStrings!!.size
         record = convertStringToArray(selectedResult)
         displayBenefits(record)
         todoTaskToAddOrEdit?.let {
