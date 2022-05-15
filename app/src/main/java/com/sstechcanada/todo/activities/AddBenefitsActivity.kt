@@ -167,7 +167,7 @@ class AddBenefitsActivity : AppCompatActivity(),
     private fun showBenefitsTutorial() {
         TapTargetSequence(this)
             .targets(
-                TapTarget.forView(buttonAddCategory, "Add Button", "Click here to add a new benefits")
+                TapTarget.forView(buttonAddCategory, "Add Button", "Click here to add a new benefit")
                     .outerCircleColor(R.color.chip_5)
                     .outerCircleAlpha(0.98f)
                     .targetCircleColor(R.color.colorUncompletedBackground)
@@ -185,7 +185,7 @@ class AddBenefitsActivity : AppCompatActivity(),
                     .cancelable(false)
                     .tintTarget(true)
                     .transparentTarget(true)
-                    .targetRadius(80),
+                    .targetRadius(50),
                 TapTarget.forView(
                     buttonTapTargetView,
                     "Benefits",
