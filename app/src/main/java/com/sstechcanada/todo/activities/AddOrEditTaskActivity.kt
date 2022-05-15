@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -13,8 +14,11 @@ import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import com.bumptech.glide.Glide
+import com.getkeepsafe.taptargetview.TapTarget
+import com.getkeepsafe.taptargetview.TapTargetSequence
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
@@ -25,6 +29,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.firestore.*
 import com.sstechcanada.todo.R
+import com.sstechcanada.todo.activities.auth.LoginActivity
 import com.sstechcanada.todo.activities.auth.ProfileActivity
 import com.sstechcanada.todo.adapters.GridViewAdapter
 import com.sstechcanada.todo.custom_views.GridItemView
@@ -35,6 +40,7 @@ import com.sstechcanada.todo.utils.SaveSharedPreference
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.act_bar.*
 import kotlinx.android.synthetic.main.activity_add_or_edit_task.*
+import kotlinx.android.synthetic.main.activity_category.*
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -58,7 +64,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
     private var mAuth: FirebaseAuth? = null
     private var gridView: GridView? = null
     private var progressBar: ProgressBar? = null
-
+    var editor: SharedPreferences.Editor? = null
     private var record: Array<String>? = null
     private var description: String? = null
     private var alertDialog: AlertDialog? = null
@@ -76,6 +82,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
         arrow_back.visibility = View.VISIBLE
         arrow_back.setOnClickListener { super.onBackPressed() }
         toolbarTitle.text = getString(R.string.add_update_task)
+        editor = getSharedPreferences(LoginActivity.SHAREDPREF, MODE_PRIVATE).edit()
         mAuth = FirebaseAuth.getInstance()
         userID = mAuth?.currentUser?.uid
         FirebaseCrashlytics.getInstance()
@@ -180,6 +187,12 @@ class AddOrEditTaskActivity : AppCompatActivity() {
         MobileAds.initialize(this) { }
         mBinding?.deleteTodoItem?.setOnClickListener { deleteTodoItem() }
         mBinding?.btnAddOrUpdateTask?.setOnClickListener { addOrUpdateTask() }
+
+        val prefs = getSharedPreferences(LoginActivity.SHAREDPREF, MODE_PRIVATE)
+        if (prefs.getBoolean("flagTodoBenefitsAddEditTaskFirstRun", true)) {
+            buttonTapTargetView?.visibility = View.INVISIBLE
+            showBenefitsTutorial()
+        }
     }
 
     private fun deleteTodoItem() {
@@ -560,5 +573,45 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             }
             return arr
         }
+    }
+
+    private fun showBenefitsTutorial() {
+        TapTargetSequence(this)
+            .targets(
+                TapTarget.forView(
+                    addCategories,
+                    "Assign Benefits",
+                    "Assign benefits to this list item here. The more benefits assigned, the higher this item will appear on the main list."
+                )
+                    .outerCircleColor(R.color.chip_5)
+                    .outerCircleAlpha(0.98f)
+                    .targetCircleColor(R.color.colorUncompletedBackground)
+                    .titleTextSize(22)
+                    .titleTextColor(R.color.colorUncompletedBackground)
+                    .descriptionTextSize(16)
+                    .titleTypeface(ResourcesCompat.getFont(this, R.font.poppins_semibold))
+                    .textTypeface(ResourcesCompat.getFont(this, R.font.raleway_medium))
+                    .descriptionTextColor(R.color.black)
+                    .textColor(R.color.black)
+                    .dimColor(R.color.black)
+                    .drawShadow(true)
+                    .cancelable(false)
+                    .tintTarget(true)
+                    .transparentTarget(true)
+                    .targetRadius(60)
+            ).listener(object : TapTargetSequence.Listener {
+                override fun onSequenceFinish() {
+                    editor?.putBoolean("flagTodoBenefitsAddEditTaskFirstRun", false)
+                    editor?.apply()
+                }
+
+                override fun onSequenceStep(lastTarget: TapTarget, targetClicked: Boolean) {
+
+                }
+                override fun onSequenceCanceled(lastTarget: TapTarget) {
+                    editor?.putBoolean("flagTodoBenefitsAddEditTaskFirstRun", false)
+                    editor?.apply()
+                }
+            }).start()
     }
 }
