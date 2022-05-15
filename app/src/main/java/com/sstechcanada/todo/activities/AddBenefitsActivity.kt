@@ -167,9 +167,9 @@ class AddBenefitsActivity : AppCompatActivity(),
     private fun showBenefitsTutorial() {
         TapTargetSequence(this)
             .targets(
-                TapTarget.forView(buttonAddCategory, "Add Button", "Click here to add a new benefits")
+                TapTarget.forView(buttonAddCategory, "Add Button", "Click here to add a new benefit")
                     .outerCircleColor(R.color.chip_5)
-                    .outerCircleAlpha(0.85f)
+                    .outerCircleAlpha(0.98f)
                     .targetCircleColor(R.color.colorUncompletedBackground)
                     .titleTextSize(22)
                     .titleTextColor(R.color.colorUncompletedBackground)
@@ -185,14 +185,14 @@ class AddBenefitsActivity : AppCompatActivity(),
                     .cancelable(false)
                     .tintTarget(true)
                     .transparentTarget(true)
-                    .targetRadius(80),
+                    .targetRadius(50),
                 TapTarget.forView(
                     buttonTapTargetView,
                     "Benefits",
-                    "1: Click on the pencil icon to edit a benefit. \n2: Click on the garbage can icon to delete a benefit."
+                    "Add benefits that are important to you. You can then assign any benefit to any task."
                 )
                     .outerCircleColor(R.color.chip_5)
-                    .outerCircleAlpha(0.85f)
+                    .outerCircleAlpha(0.98f)
                     .targetCircleColor(R.color.colorUncompletedBackground)
                     .titleTextSize(22)
                     .titleTextColor(R.color.colorUncompletedBackground)

@@ -163,7 +163,7 @@ class ProfileActivity : AppCompatActivity() {
         try {
             val shareIntent = Intent(Intent.ACTION_SEND)
             shareIntent.type = "text/plain"
-            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Sorted To-Do List Maker")
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Organize: Tasks & Priorities")
             var shareMessage =
                 "Check out this list maker. It automatically sorts your list based on the number of benefits you assign to each item:\n\n"
             shareMessage =

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Sorted To Do List Maker</string>
+    <string name="app_name" translatable="false">Organize: Tasks &amp; Priorities</string>
 
     <string name="action_settings">Settings</string>
     <string name="action_delete_test" translatable="false">Deletion test</string>
