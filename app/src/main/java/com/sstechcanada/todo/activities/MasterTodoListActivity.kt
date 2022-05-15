@@ -524,7 +524,7 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
             .targets(
                 TapTarget.forView(fab, "Add Button", "Click here to add a new list")
                     .outerCircleColor(R.color.chip_5)
-                    .outerCircleAlpha(0.85f)
+                    .outerCircleAlpha(0.98f)
                     .targetCircleColor(R.color.colorUncompletedBackground)
                     .titleTextSize(22)
                     .titleTextColor(R.color.colorUncompletedBackground)
@@ -545,7 +545,7 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
                     "1: Swipe right and click on the pencil icon to update a list. \n2: Swipe left and click on the garbage can icon to delete a list."
                 )
                     .outerCircleColor(R.color.chip_5)
-                    .outerCircleAlpha(0.85f)
+                    .outerCircleAlpha(0.98f)
                     .targetCircleColor(R.color.colorUncompletedBackground)
                     .titleTextSize(22)
                     .titleTextColor(R.color.colorUncompletedBackground)

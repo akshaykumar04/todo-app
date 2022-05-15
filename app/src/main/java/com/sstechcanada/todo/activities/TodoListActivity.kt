@@ -417,7 +417,7 @@ class TodoListActivity : AppCompatActivity() {
             .targets(
                 TapTarget.forView(fab, "Add Button", "Click here to add a new list item")
                     .outerCircleColor(R.color.chip_5)
-                    .outerCircleAlpha(0.85f)
+                    .outerCircleAlpha(0.98f)
                     .targetCircleColor(R.color.colorUncompletedBackground)
                     .titleTextSize(22)
                     .titleTextColor(R.color.colorUncompletedBackground)
@@ -440,7 +440,7 @@ class TodoListActivity : AppCompatActivity() {
                             "\n\n3: This app works better for one-time tasks (e.g. \"buy glasses\") than recurring ones (e.g. \"go to gym every day\")."
                 )
                     .outerCircleColor(R.color.chip_5)
-                    .outerCircleAlpha(0.85f)
+                    .outerCircleAlpha(0.98f)
                     .targetCircleColor(R.color.colorUncompletedBackground)
                     .titleTextSize(22)
                     .titleTextColor(R.color.colorUncompletedBackground)
