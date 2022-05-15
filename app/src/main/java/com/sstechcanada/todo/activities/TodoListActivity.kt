@@ -435,9 +435,9 @@ class TodoListActivity : AppCompatActivity() {
                 TapTarget.forView(
                     mBinding?.buttonTapTargetView,
                     "List Items",
-                    "1: Swipe right and click on the pencil icon to edit a list item. " +
-                            "\n\n2: Swipe left and click on the garbage can icon to delete a list item. " +
-                            "\n\n3: This app works better for one-time tasks (e.g. \"buy glasses\") than recurring ones (e.g. \"go to gym every day\")."
+                    "Swipe right and click on the pencil icon to edit a list item. " +
+                            "\n\nSwipe left and click on the garbage can icon to delete a list item. " +
+                            "\n\nThis app works better for one-time tasks (e.g. \"buy glasses\") than recurring ones (e.g. \"go to gym every day\")."
                 )
                     .outerCircleColor(R.color.chip_5)
                     .outerCircleAlpha(0.98f)

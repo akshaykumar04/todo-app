@@ -542,7 +542,7 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
                 TapTarget.forView(
                     buttonTapTargetView,
                     "List",
-                    "1: Swipe right and click on the pencil icon to update a list. \n2: Swipe left and click on the garbage can icon to delete a list."
+                    "Swipe right and click on the pencil icon to update a list. \nSwipe left and click on the garbage can icon to delete a list."
                 )
                     .outerCircleColor(R.color.chip_5)
                     .outerCircleAlpha(0.98f)
