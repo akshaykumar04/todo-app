@@ -78,7 +78,7 @@ class AboutActivity : AppCompatActivity() {
         for (color in ColorTemplate.VORDIPLOM_COLORS) {
             colors.add(color)
         }
-        val dataSet = PieDataSet(entries, "After taxes and transaction fees")
+        val dataSet = PieDataSet(entries, " ")
         dataSet.colors = colors
         val data = PieData(dataSet)
         data.setDrawValues(true)
@@ -104,7 +104,7 @@ class AboutActivity : AppCompatActivity() {
         pieChart.description?.let {
             it.textSize = 15F
             it.isEnabled = true
-            it.text = getString(R.string.pie_title)
+            it.text = " "
             it.textColor = resources.getColor(R.color.textHeadings)
             it.textAlign = Paint.Align.CENTER
             it.setPosition((width / 2).toFloat(), 32f)
