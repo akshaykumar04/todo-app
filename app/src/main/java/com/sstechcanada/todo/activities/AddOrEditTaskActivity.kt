@@ -132,9 +132,9 @@ class AddOrEditTaskActivity : AppCompatActivity() {
                             .setMessage("Are you sure you want to mark this task as completed?")
                             .setPositiveButton("Yes") { _: DialogInterface?, _: Int ->
                                 if (SaveSharedPreference.getAdsEnabled(this)) {
-                                    if (mInterstitialAd != null) {
-                                        mInterstitialAd?.show(this@AddOrEditTaskActivity)
-                                    }
+//                                    if (mInterstitialAd != null) {
+//                                        mInterstitialAd?.show(this@AddOrEditTaskActivity)
+//                                    }
                                 }
                             }
                             .setNegativeButton("No") { _: DialogInterface?, _: Int ->
