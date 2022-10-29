@@ -1,50 +1,51 @@
 package com.sstechcanada.todo.activities.auth
 
+import android.app.Dialog
 import android.content.ActivityNotFoundException
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
+import android.view.Window
+import android.widget.CheckBox
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.preference.PreferenceManager
 import com.bumptech.glide.Glide
-import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.*
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.sstechcanada.todo.BuildConfig
 import com.sstechcanada.todo.R
 import com.sstechcanada.todo.activities.AboutActivity
 import com.sstechcanada.todo.activities.MasterTodoListActivity
+import com.sstechcanada.todo.activities.SplashActivity
 import com.sstechcanada.todo.utils.SaveSharedPreference
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_profile.*
-import java.lang.Exception
-import android.view.Gravity
-
-import android.app.Dialog
-import android.content.res.ColorStateList
-import android.graphics.Color
-
-import android.graphics.drawable.ColorDrawable
-
-import android.view.ViewGroup
-import android.view.Window
-import android.widget.CheckBox
-
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.preference.PreferenceManager
-import com.google.android.material.button.MaterialButton
-import com.sstechcanada.todo.activities.SplashActivity
 
 class ProfileActivity : AppCompatActivity() {
 
     private var mAuth: FirebaseAuth? = null
     private var mGoogleSignInClient: GoogleSignInClient? = null
+    private var mRewardedAd: RewardedAd? = null
+    private val TAG = "ProfileActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,6 +81,7 @@ class ProfileActivity : AppCompatActivity() {
         cardRate.setOnClickListener { openGooglePlayForRating() }
         cardDelete.setOnClickListener { deleteWarningDialog() }
         cardSignOut.setOnClickListener { showSignOutDialog() }
+        cardRemoveAds.setOnClickListener { showRewardedVideo() }
     }
 
     private fun setupFirebaseLogin() {
@@ -94,9 +96,12 @@ class ProfileActivity : AppCompatActivity() {
     private fun setupAds() {
         if (SaveSharedPreference.getAdsEnabled(this)) {
             adView.loadAd(AdRequest.Builder().build())
+            loadRewardedAd()
             adView.visibility = View.VISIBLE
+            cardRemoveAds.visibility = View.VISIBLE
         } else {
             adView.visibility = View.GONE
+            cardRemoveAds.visibility = View.GONE
         }
 
     }
@@ -216,9 +221,77 @@ class ProfileActivity : AppCompatActivity() {
         dialog.window?.setGravity(Gravity.BOTTOM)
     }
 
+    private fun loadRewardedAd() {
+        val adRequest = AdRequest.Builder().build()
+        RewardedAd.load(
+            this,
+            "ca-app-pub-3940256099942544/5224354917",
+            adRequest,
+            object : RewardedAdLoadCallback() {
+                override fun onAdFailedToLoad(adError: LoadAdError) {
+                    Log.d(TAG, adError.toString())
+                    mRewardedAd = null
+                }
+
+                override fun onAdLoaded(rewardedAd: RewardedAd) {
+                    Log.d(TAG, "Ad was loaded.")
+                    mRewardedAd = rewardedAd
+                }
+            })
+    }
+
+    private fun showRewardedVideo() {
+        if (mRewardedAd != null) {
+            mRewardedAd?.fullScreenContentCallback =
+                object : FullScreenContentCallback() {
+                    override fun onAdDismissedFullScreenContent() {
+                        Log.d(TAG, "Ad was dismissed.")
+                        mRewardedAd = null
+                        loadRewardedAd()
+                    }
+
+                    override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                        Log.d(TAG, "Ad failed to show.")
+                        mRewardedAd = null
+                    }
+
+                    override fun onAdShowedFullScreenContent() {
+                        Log.d(TAG, "Ad showed fullscreen content.")
+                    }
+                }
+
+            mRewardedAd?.show(this) {
+                val data: MutableMap<String, String?> = HashMap()
+                data["adsPausedTimestamp"] = getTimeStampOfNextWeek()
+                data["purchase_code"] = "3"
+                mAuth?.currentUser?.uid?.let {
+                    FirebaseFirestore.getInstance().collection("Users").document(it).set(
+                        data,
+                        SetOptions.merge()
+                    ).addOnSuccessListener {
+                        Toasty.success(
+                            this,
+                            "Ads are paused for a week",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+                Log.d("TAG", "User earned the reward.")
+            }
+        } else {
+            Toasty.info(this, "No Ads available, try again later.", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun getTimeStampOfNextWeek(): String {
+        val now = System.currentTimeMillis() / 1000
+        val afterAWeek = now + 604800
+        return afterAWeek.toString()
+    }
+
     private fun clearPrefs() {
         val editor = PreferenceManager.getDefaultSharedPreferences(this)
-            editor.edit().clear().commit()
+        editor.edit().clear().apply()
     }
 
 }

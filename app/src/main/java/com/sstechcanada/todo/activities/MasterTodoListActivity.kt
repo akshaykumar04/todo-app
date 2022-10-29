@@ -104,7 +104,9 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
         if (user != null) {
             userID = user?.uid
         }
-        getPurchaseCode()
+
+        checkIfAdsArePausedForAWeek()
+//        getPurchaseCode()
 
         setUpFirestoreRecyclerView()
         if (prefs.getBoolean("flagMasterListFirstRun", true)) {
@@ -184,6 +186,7 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
                                 )
                                 bp?.initialize()
                                 SaveSharedPreference.setAdsEnabled(this, false)
+                                hideProgressBar()
                             } else {
                                 hideProgressBar()
                                 adView?.visibility = View.VISIBLE
@@ -609,7 +612,17 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
 //                        Toast.makeText(MasterTodoListActivity.this, "Inside billing+ user is still subscribed in", Toast.LENGTH_SHORT).show();
                     } else {
                         //Not subscribed
-                        refreshPurchaseCodeInDatabase()
+                        userID?.let {
+                            usersColRef.document(it).get()
+                                .addOnSuccessListener { documentSnapshot: DocumentSnapshot ->
+                                    documentSnapshot["adsPausedTimestamp"]?.toString()?.let { time ->
+                                        if (getCurrentTimeStamp().toInt() > time.toInt()) {
+                                            refreshPurchaseCodeInDatabase()
+                                        }
+                                    } ?: refreshPurchaseCodeInDatabase()
+
+                                }.addOnFailureListener { }
+                        }
                         //                        Toast.makeText(MasterTodoListActivity.this, "Inside billing+ user is not subscribed", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -668,6 +681,27 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
     override fun onBillingError(errorCode: Int, error: Throwable?) {}
     override fun onBillingInitialized() {
         isUserSubscribed(purchaseCode)
+    }
+
+    private fun checkIfAdsArePausedForAWeek() {
+        userID?.let {
+            usersColRef.document(it).get()
+                .addOnSuccessListener { documentSnapshot: DocumentSnapshot ->
+                    documentSnapshot["adsPausedTimestamp"]?.toString()?.let { time ->
+                        if (getCurrentTimeStamp().toInt() > time.toInt()) {
+                            refreshPurchaseCodeInDatabase()
+                        } else {
+                            getPurchaseCode()
+                        }
+                    } ?: getPurchaseCode()
+
+                }.addOnFailureListener { }
+        }
+    }
+
+    private fun getCurrentTimeStamp(): String {
+        val tsLong = System.currentTimeMillis() / 1000
+        return tsLong.toString()
     }
 
     companion object {
