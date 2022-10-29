@@ -248,6 +248,9 @@ class ProfileActivity : AppCompatActivity() {
                         Log.d(TAG, "Ad was dismissed.")
                         mRewardedAd = null
                         loadRewardedAd()
+                        val moveToMasterTodoListActivity = Intent(this@ProfileActivity, MasterTodoListActivity::class.java)
+                        startActivity(moveToMasterTodoListActivity)
+                        finish()
                     }
 
                     override fun onAdFailedToShowFullScreenContent(adError: AdError) {

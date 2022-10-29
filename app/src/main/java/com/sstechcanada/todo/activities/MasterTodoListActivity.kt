@@ -187,6 +187,7 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
                                 bp?.initialize()
                                 SaveSharedPreference.setAdsEnabled(this, false)
                                 hideProgressBar()
+                                adView?.visibility = View.GONE
                             } else {
                                 hideProgressBar()
                                 adView?.visibility = View.VISIBLE
@@ -702,6 +703,11 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
     private fun getCurrentTimeStamp(): String {
         val tsLong = System.currentTimeMillis() / 1000
         return tsLong.toString()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkIfAdsArePausedForAWeek()
     }
 
     companion object {
