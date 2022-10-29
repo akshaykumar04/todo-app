@@ -225,7 +225,7 @@ class ProfileActivity : AppCompatActivity() {
         val adRequest = AdRequest.Builder().build()
         RewardedAd.load(
             this,
-            "ca-app-pub-3940256099942544/5224354917",
+            getString(R.string.rewarded_ad_unit_id),
             adRequest,
             object : RewardedAdLoadCallback() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
@@ -282,7 +282,7 @@ class ProfileActivity : AppCompatActivity() {
                 Log.d("TAG", "User earned the reward.")
             }
         } else {
-            Toasty.info(this, "No Ads available, try again later.", Toast.LENGTH_LONG).show()
+            Toasty.info(this, "No Ads available, try again later.", Toast.LENGTH_SHORT).show()
         }
     }
 
