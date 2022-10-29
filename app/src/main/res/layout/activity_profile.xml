@@ -9,7 +9,7 @@
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:paddingBottom="@dimen/_14sdp"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -137,6 +137,67 @@
                     app:layout_constraintTop_toBottomOf="@id/userEmail">
 
 
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardRemoveAds"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:elevation="@dimen/_2sdp"
+                        app:cardCornerRadius="@dimen/_4sdp">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingVertical="@dimen/_4sdp">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/icon6"
+                                android:layout_width="@dimen/_26sdp"
+                                android:layout_height="@dimen/_26sdp"
+                                android:layout_marginStart="@dimen/_8sdp"
+                                android:padding="@dimen/_4sdp"
+                                android:src="@drawable/remove_ads"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/appCompatTextView3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_12sdp"
+                                android:fontFamily="@font/raleway_semibold"
+                                android:paddingTop="@dimen/_4sdp"
+                                android:text="Remove Ads"
+                                android:textSize="@dimen/_12ssp"
+                                app:layout_constraintStart_toEndOf="@id/icon6"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/raleway"
+                                android:paddingTop="@dimen/_2sdp"
+                                android:paddingBottom="@dimen/_4sdp"
+                                android:text="Pause ads for a week by watching a video ad."
+                                android:textSize="@dimen/_9ssp"
+                                app:layout_constraintStart_toStartOf="@+id/appCompatTextView3"
+                                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView3" />
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="@dimen/_8sdp"
+                                android:backgroundTint="@color/textHeadings"
+                                android:padding="@dimen/_4sdp"
+                                android:src="@drawable/ic_baseline_navigate_next_24"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cardAbout"
                         android:layout_width="match_parent"

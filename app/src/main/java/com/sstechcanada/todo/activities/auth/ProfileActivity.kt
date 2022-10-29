@@ -36,7 +36,6 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.CheckBox
 
-import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.preference.PreferenceManager
 import com.google.android.material.button.MaterialButton
@@ -65,8 +64,10 @@ class ProfileActivity : AppCompatActivity() {
         Glide.with(this).load(mAuth?.currentUser?.photoUrl).into(roundedImage)
         if (MasterTodoListActivity.purchaseCode == "0") {
             userType?.setText(R.string.free_user)
+            cardRemoveAds?.visibility = View.VISIBLE
         } else {
             userType?.setText(R.string.premium_user)
+            cardRemoveAds?.visibility = View.GONE
         }
     }
 
