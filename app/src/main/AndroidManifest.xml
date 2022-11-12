@@ -36,6 +36,9 @@
         <activity
             android:name=".activities.AddOrEditTaskActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.RemoveAdsActivity"
+            android:screenOrientation="portrait" />
 
 
         <!-- android:theme="@style/Theme.MaterialComponents.Light.Dialog" -->

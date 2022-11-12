@@ -18,7 +18,11 @@ out/
 
 # Gradle files
 .gradle/
+.idea/
 build/
+.DS_Store
+app/.DS_Store
+
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -82,3 +86,7 @@ lint/outputs/
 lint/tmp/
 # lint/reports/
 app/release/output-metadata.json
+app/.DS_Store
+.DS_Store
+.DS_Store
+app/.DS_Store
