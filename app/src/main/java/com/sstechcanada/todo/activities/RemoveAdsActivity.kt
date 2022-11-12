@@ -3,6 +3,7 @@ package com.sstechcanada.todo.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -17,23 +18,36 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.sstechcanada.todo.R
+import com.sstechcanada.todo.databinding.ActivityRemoveAdsBinding
 import com.sstechcanada.todo.utils.RemoveAdsUtils
 import com.sstechcanada.todo.utils.SaveSharedPreference
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_profile.*
+import java.util.concurrent.TimeUnit
 
 class RemoveAdsActivity : AppCompatActivity() {
 
     private var mRewardedAd: RewardedAd? = null
     private var mAuth: FirebaseAuth? = null
     private val TAG = "RemoveAdsActivity"
+    private lateinit var binding: ActivityRemoveAdsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_remove_ads)
+        binding = ActivityRemoveAdsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
+        initViews()
+        startTimer()
         setupAds()
     }
+
+    private fun initViews() {
+        binding.maxDays =  30
+        binding.maxHours = 24
+        binding.maxMinutes = 60
+    }
+
 
     private fun setupAds() {
         if (SaveSharedPreference.getAdsEnabled(this)) {
@@ -58,6 +72,40 @@ class RemoveAdsActivity : AppCompatActivity() {
                     mRewardedAd = rewardedAd
                 }
             })
+    }
+
+    private fun startTimer() {
+        val timeLeft: Long = 100000//432000000 + 61200000 + 2100000
+        try {
+            val timer = object: CountDownTimer(
+                (timeLeft ?: 0L),1_000L){
+                override fun onTick(millisUntilFinished: Long) {
+                    refreshTimeLeft(timeLeft = millisUntilFinished)
+                }
+
+                override fun onFinish() {
+                    refreshTimeLeft(timeLeft = 0L)
+                    Toasty.info(this@RemoveAdsActivity,"Time Up", Toast.LENGTH_LONG).show()
+                    finish()
+                }
+            }
+            timer.start()
+        }catch (e: Exception){
+            refreshTimeLeft(timeLeft = timeLeft ?: 0L)
+            Log.v("PreContestActivity","Message: ${e.message}")
+        }
+    }
+
+    private fun refreshTimeLeft(timeLeft: Long) {
+        val days = TimeUnit.MILLISECONDS.toDays(timeLeft)
+        val hourDiff = timeLeft - (days * 1000 * 60 * 60 * 24)
+        val hours = TimeUnit.MILLISECONDS.toHours(hourDiff)
+        val minuteDiff = hourDiff - (hours * 1000 * 60 * 60)
+        val minutes = TimeUnit.MILLISECONDS.toMinutes(minuteDiff)
+
+        binding.days = days.toInt()
+        binding.hours = hours.toInt()
+        binding.minutes = minutes.toInt() + 1
     }
 
     private fun showRewardedVideo() {
