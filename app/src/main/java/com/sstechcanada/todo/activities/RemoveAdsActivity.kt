@@ -1,19 +1,17 @@
 package com.sstechcanada.todo.activities
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
-import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -22,8 +20,8 @@ import com.sstechcanada.todo.databinding.ActivityRemoveAdsBinding
 import com.sstechcanada.todo.utils.RemoveAdsUtils
 import com.sstechcanada.todo.utils.SaveSharedPreference
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.activity_profile.*
 import java.util.concurrent.TimeUnit
+
 
 class RemoveAdsActivity : AppCompatActivity() {
 
@@ -75,7 +73,7 @@ class RemoveAdsActivity : AppCompatActivity() {
     }
 
     private fun startTimer() {
-        val timeLeft: Long = 100000//432000000 + 61200000 + 2100000
+        val timeLeft: Long = 1668329327000 - System.currentTimeMillis() //- 604740000//432000000 + 61200000 + 2100000
         try {
             val timer = object: CountDownTimer(
                 (timeLeft ?: 0L),1_000L){
@@ -85,8 +83,7 @@ class RemoveAdsActivity : AppCompatActivity() {
 
                 override fun onFinish() {
                     refreshTimeLeft(timeLeft = 0L)
-                    Toasty.info(this@RemoveAdsActivity,"Time Up", Toast.LENGTH_LONG).show()
-                    finish()
+                    Toasty.info(this@RemoveAdsActivity,"Ad Free Membership Expired", Toast.LENGTH_LONG).show()
                 }
             }
             timer.start()
@@ -102,10 +99,11 @@ class RemoveAdsActivity : AppCompatActivity() {
         val hours = TimeUnit.MILLISECONDS.toHours(hourDiff)
         val minuteDiff = hourDiff - (hours * 1000 * 60 * 60)
         val minutes = TimeUnit.MILLISECONDS.toMinutes(minuteDiff)
+//        val seconds = TimeUnit.MILLISECONDS.toSeconds(minuteDiff - (minutes * 1000* 60))
 
         binding.days = days.toInt()
         binding.hours = hours.toInt()
-        binding.minutes = minutes.toInt() + 1
+        binding.minutes = minutes.toInt()
     }
 
     private fun showRewardedVideo() {
