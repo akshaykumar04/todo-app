@@ -36,8 +36,15 @@ class RemoveAdsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         initViews()
+        setOnClicks()
         startTimer()
         setupAds()
+    }
+
+    private fun setOnClicks() {
+        binding.fabBack2.setOnClickListener {
+            onBackPressed()
+        }
     }
 
     private fun initViews() {
@@ -73,7 +80,7 @@ class RemoveAdsActivity : AppCompatActivity() {
     }
 
     private fun startTimer() {
-        val timeLeft: Long = 1668329327000 - System.currentTimeMillis() //- 604740000//432000000 + 61200000 + 2100000
+        val timeLeft: Long = RemoveAdsUtils.getServerTime()  //- 604740000//432000000 + 61200000 + 2100000
         try {
             val timer = object: CountDownTimer(
                 (timeLeft ?: 0L),1_000L){

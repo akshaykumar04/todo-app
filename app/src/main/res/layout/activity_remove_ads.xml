@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
@@ -28,133 +29,191 @@
         android:padding="@dimen/_12sdp"
         android:layout_height="match_parent">
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabBack2"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:contentDescription="@string/todo"
+            android:src="@drawable/ic_left_arrow"
+            android:tint="@color/colorTab"
+            app:backgroundTint="#ffffff"
+            app:fabSize="mini"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/checkMark"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_120sdp"
+            android:layout_marginBottom="@dimen/_8sdp"
+            app:layout_constraintTop_toBottomOf="@id/fabBack2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="check.json"
+            app:lottie_loop="false" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_6sdp"
+            android:layout_marginEnd="@dimen/_6sdp"
+            android:fontFamily="@font/poppins_semibold"
+            android:paddingHorizontal="@dimen/_30sdp"
+            android:text="Ads have been temporary removed!"
+            android:textAlignment="center"
+            android:layout_marginTop="-12dp"
+            android:textColor="@color/textHeadings"
+            android:textSize="@dimen/_15ssp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/checkMark" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:fontFamily="@font/poppins_semibold"
+            android:text="Ads will show again in"
+            android:textSize="@dimen/_11ssp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/progressBarLayout"
             android:layout_width="match_parent"
-            app:layout_constraintTop_toTopOf="parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_5sdp">
+            android:layout_marginTop="@dimen/_12sdp"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView4"
+            tools:layout_editor_absoluteX="16dp">
 
             <ProgressBar
                 android:id="@+id/dayProgressBar"
+                style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="@dimen/_50sdp"
                 android:layout_height="@dimen/_50sdp"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:background="@drawable/progress_bar_circle_background"
+                android:indeterminate="false"
                 android:max="@{maxDays}"
                 android:progress="@{maxDays - days}"
-                android:indeterminate="false"
-                android:layout_marginEnd="@dimen/_20sdp"
                 android:progressDrawable="@drawable/circular_progress_bar_properties"
-                android:background="@drawable/progress_bar_circle_background"
-                style="?android:attr/progressBarStyleHorizontal"
-                app:layout_constraintTop_toTopOf="@+id/hourProgressBar"
-                app:layout_constraintEnd_toStartOf="@id/hourProgressBar" />
+                app:layout_constraintEnd_toStartOf="@id/hourProgressBar"
+                app:layout_constraintTop_toTopOf="@+id/hourProgressBar" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/daysTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/_14ssp"
+                android:fontFamily="@font/poppins_semibold"
                 android:text="@{Integer.toString(days) ?? `0`}"
                 android:textColor="@color/progressBarColor"
-                android:fontFamily="@font/poppins_semibold"
-                app:layout_constraintTop_toTopOf="@id/dayProgressBar"
-                app:layout_constraintStart_toStartOf="@id/dayProgressBar"
+                android:textSize="@dimen/_14ssp"
+                app:layout_constraintBottom_toBottomOf="@id/dayProgressBar"
                 app:layout_constraintEnd_toEndOf="@id/dayProgressBar"
-                app:layout_constraintBottom_toBottomOf="@id/dayProgressBar" />
+                app:layout_constraintStart_toStartOf="@id/dayProgressBar"
+                app:layout_constraintTop_toTopOf="@id/dayProgressBar" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Days"
                 android:layout_marginTop="@dimen/_4sdp"
-                android:textSize="@dimen/_9ssp"
-                android:textColor="@color/black"
                 android:fontFamily="@font/poppins_semibold"
-                app:layout_constraintTop_toBottomOf="@id/dayProgressBar"
+                android:text="Days"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_9ssp"
+                app:layout_constraintEnd_toEndOf="@id/dayProgressBar"
                 app:layout_constraintStart_toStartOf="@id/dayProgressBar"
-                app:layout_constraintEnd_toEndOf="@id/dayProgressBar" />
+                app:layout_constraintTop_toBottomOf="@id/dayProgressBar" />
 
             <ProgressBar
                 android:id="@+id/hourProgressBar"
+                style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="@dimen/_50sdp"
                 android:layout_height="@dimen/_50sdp"
+                android:background="@drawable/progress_bar_circle_background"
+                android:indeterminate="false"
                 android:max="@{maxHours}"
                 android:progress="@{maxHours - hours}"
-                android:indeterminate="false"
                 android:progressDrawable="@drawable/circular_progress_bar_properties"
-                android:background="@drawable/progress_bar_circle_background"
-                style="?android:attr/progressBarStyleHorizontal"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/hourTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/_14ssp"
+                android:fontFamily="@font/poppins_semibold"
                 android:text="@{Integer.toString(hours) ?? `0`}"
                 android:textColor="@color/progressBarColor"
-                android:fontFamily="@font/poppins_semibold"
-                app:layout_constraintTop_toTopOf="@id/hourProgressBar"
-                app:layout_constraintStart_toStartOf="@id/hourProgressBar"
+                android:textSize="@dimen/_14ssp"
+                app:layout_constraintBottom_toBottomOf="@id/hourProgressBar"
                 app:layout_constraintEnd_toEndOf="@id/hourProgressBar"
-                app:layout_constraintBottom_toBottomOf="@id/hourProgressBar" />
+                app:layout_constraintStart_toStartOf="@id/hourProgressBar"
+                app:layout_constraintTop_toTopOf="@id/hourProgressBar" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Hours"
                 android:layout_marginTop="@dimen/_4sdp"
-                android:textSize="@dimen/_9ssp"
-                android:textColor="@color/black"
                 android:fontFamily="@font/poppins_semibold"
-                app:layout_constraintTop_toBottomOf="@id/hourProgressBar"
+                android:text="Hours"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_9ssp"
+                app:layout_constraintEnd_toEndOf="@id/hourProgressBar"
                 app:layout_constraintStart_toStartOf="@id/hourProgressBar"
-                app:layout_constraintEnd_toEndOf="@id/hourProgressBar" />
+                app:layout_constraintTop_toBottomOf="@id/hourProgressBar" />
 
             <ProgressBar
                 android:id="@+id/minuteProgressBar"
+                style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="@dimen/_50sdp"
                 android:layout_height="@dimen/_50sdp"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:background="@drawable/progress_bar_circle_background"
+                android:indeterminate="false"
                 android:max="@{maxMinutes}"
                 android:progress="@{maxMinutes - minutes}"
-                android:indeterminate="false"
-                android:layout_marginStart="@dimen/_20sdp"
                 android:progressDrawable="@drawable/circular_progress_bar_properties"
-                android:background="@drawable/progress_bar_circle_background"
-                style="?android:attr/progressBarStyleHorizontal"
-                app:layout_constraintTop_toTopOf="@+id/hourProgressBar"
-                app:layout_constraintStart_toEndOf="@+id/hourProgressBar" />
+                app:layout_constraintStart_toEndOf="@+id/hourProgressBar"
+                app:layout_constraintTop_toTopOf="@+id/hourProgressBar" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/minuteTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/_14ssp"
+                android:fontFamily="@font/poppins_semibold"
                 android:text="@{Integer.toString(minutes) ?? `0`}"
                 android:textColor="@color/progressBarColor"
-                android:fontFamily="@font/poppins_semibold"
-                app:layout_constraintTop_toTopOf="@id/minuteProgressBar"
-                app:layout_constraintStart_toStartOf="@id/minuteProgressBar"
+                android:textSize="@dimen/_14ssp"
+                app:layout_constraintBottom_toBottomOf="@id/minuteProgressBar"
                 app:layout_constraintEnd_toEndOf="@id/minuteProgressBar"
-                app:layout_constraintBottom_toBottomOf="@id/minuteProgressBar" />
+                app:layout_constraintStart_toStartOf="@id/minuteProgressBar"
+                app:layout_constraintTop_toTopOf="@id/minuteProgressBar" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Minutes"
                 android:layout_marginTop="@dimen/_4sdp"
-                android:textSize="@dimen/_9ssp"
-                android:textColor="@color/black"
                 android:fontFamily="@font/poppins_semibold"
-                app:layout_constraintTop_toBottomOf="@id/minuteProgressBar"
+                android:text="Minutes"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_9ssp"
+                app:layout_constraintEnd_toEndOf="@id/minuteProgressBar"
                 app:layout_constraintStart_toStartOf="@id/minuteProgressBar"
-                app:layout_constraintEnd_toEndOf="@id/minuteProgressBar" />
+                app:layout_constraintTop_toBottomOf="@id/minuteProgressBar" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieAnimationView"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/_160sdp"
             android:layout_marginBottom="@dimen/_8sdp"
@@ -170,15 +229,30 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="24dp"
+            android:layout_marginBottom="@dimen/_8sdp"
             android:fontFamily="@font/raleway_semibold"
             android:paddingVertical="@dimen/_12sdp"
             android:text="Watch Video"
             android:textColor="@android:color/white"
             app:backgroundTint="@color/todo"
-            app:layout_constraintBottom_toBottomOf="parent"
+           app:layout_constraintBottom_toTopOf="@id/appCompatTextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:tint="@color/white" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_8sdp"
+            android:fontFamily="@font/poppins_semibold"
+            android:paddingHorizontal="@dimen/_8sdp"
+            android:text="Each video ad you watch removes ads for 7 more days."
+            android:textAlignment="center"
+            android:textSize="@dimen/_9ssp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
