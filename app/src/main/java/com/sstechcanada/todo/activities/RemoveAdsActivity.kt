@@ -1,6 +1,7 @@
 package com.sstechcanada.todo.activities
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
@@ -21,6 +22,7 @@ import com.sstechcanada.todo.utils.RemoveAdsUtils
 import com.sstechcanada.todo.utils.SaveSharedPreference
 import es.dmoral.toasty.Toasty
 import java.util.concurrent.TimeUnit
+import kotlin.math.min
 
 
 class RemoveAdsActivity : AppCompatActivity() {
@@ -35,15 +37,23 @@ class RemoveAdsActivity : AppCompatActivity() {
         binding = ActivityRemoveAdsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupAds()
         initViews()
         setOnClicks()
         startTimer()
-        setupAds()
     }
 
     private fun setOnClicks() {
         binding.fabBack2.setOnClickListener {
             onBackPressed()
+        }
+
+        binding.btnWatchAds.setOnClickListener {
+            if (mRewardedAd != null) {
+                showRewardedVideo()
+            } else {
+                Toasty.warning(this,"No Ads Available to watch, try again later.", Toast.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -51,6 +61,7 @@ class RemoveAdsActivity : AppCompatActivity() {
         binding.maxDays =  30
         binding.maxHours = 24
         binding.maxMinutes = 60
+        binding.maxSeconds = 60
     }
 
 
@@ -70,17 +81,21 @@ class RemoveAdsActivity : AppCompatActivity() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     Log.d(TAG, adError.toString())
                     mRewardedAd = null
+                    binding.btnWatchAds.isEnabled = false
+                    binding.btnWatchAds.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.discp_border))
                 }
 
                 override fun onAdLoaded(rewardedAd: RewardedAd) {
                     Log.d(TAG, "Ad was loaded.")
                     mRewardedAd = rewardedAd
+                    binding.btnWatchAds.isEnabled = true
+                    binding.btnWatchAds.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.todo))
                 }
             })
     }
 
     private fun startTimer() {
-        val timeLeft: Long = RemoveAdsUtils.getServerTime()  //- 604740000//432000000 + 61200000 + 2100000
+        val timeLeft: Long = 1668927143000 - RemoveAdsUtils.getServerTime()  //- 604740000//432000000 + 61200000 + 2100000
         try {
             val timer = object: CountDownTimer(
                 (timeLeft ?: 0L),1_000L){
@@ -106,11 +121,12 @@ class RemoveAdsActivity : AppCompatActivity() {
         val hours = TimeUnit.MILLISECONDS.toHours(hourDiff)
         val minuteDiff = hourDiff - (hours * 1000 * 60 * 60)
         val minutes = TimeUnit.MILLISECONDS.toMinutes(minuteDiff)
-//        val seconds = TimeUnit.MILLISECONDS.toSeconds(minuteDiff - (minutes * 1000* 60))
+        val seconds = TimeUnit.MILLISECONDS.toSeconds(minuteDiff - (minutes * 1000* 60))
 
         binding.days = days.toInt()
         binding.hours = hours.toInt()
         binding.minutes = minutes.toInt()
+        binding.seconds = seconds.toInt()
     }
 
     private fun showRewardedVideo() {
