@@ -9,10 +9,14 @@ import java.util.*
 
 object RemoveAdsUtils {
 
-    fun getTimeStampOfNextWeek(): String {
-        val now = System.currentTimeMillis() / 1000
-        val afterAWeek = now + 60//604740
-        return afterAWeek.toString()
+    fun getTimeStampOfNextWeek(previousTimeStamp: String?= null): String {
+        return if (previousTimeStamp == null){
+            (getServerTime() + 604800000).toString()
+//            (getServerTime() + 100000).toString()
+        } else {
+            (previousTimeStamp.toLong() + 604800000).toString()
+//            (previousTimeStamp.toLong() + 100000).toString()
+        }
     }
 
     fun getServerTime(): Long {

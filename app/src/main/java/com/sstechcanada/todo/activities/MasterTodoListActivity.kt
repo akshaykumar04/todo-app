@@ -41,10 +41,7 @@ import com.sstechcanada.todo.activities.auth.ProfileActivity
 import com.sstechcanada.todo.adapters.MasterListFirestoreAdapter
 import com.sstechcanada.todo.adapters.MasterListGridViewAdapter
 import com.sstechcanada.todo.custom_views.MasterIconGridItemView
-import com.sstechcanada.todo.utils.Constants
-import com.sstechcanada.todo.utils.SaveSharedPreference
-import com.sstechcanada.todo.utils.SwipeController
-import com.sstechcanada.todo.utils.SwipeControllerActions
+import com.sstechcanada.todo.utils.*
 import es.dmoral.toasty.Toasty
 import hotchemi.android.rate.AppRate
 import kotlinx.android.synthetic.main.act_bar.*
@@ -638,6 +635,7 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
     }
 
     private fun refreshPurchaseCodeInDatabase() {
+        SaveSharedPreference.setIsRemoveAdsTimestampNull(this, true)
 
 //        Toast.makeText(this, "set purchase code in db", Toast.LENGTH_SHORT).show();
         val purchaseCode: MutableMap<String, String> = HashMap()
@@ -689,15 +687,21 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
             usersColRef.document(it).get()
                 .addOnSuccessListener { documentSnapshot: DocumentSnapshot ->
                     documentSnapshot["adsPausedTimestamp"]?.toString()?.let { time ->
-                        if (getCurrentTimeStamp().toInt() > time.toInt()) {
+                        if (RemoveAdsUtils.getServerTime() > time.toLong()) {
                             refreshPurchaseCodeInDatabase()
                         } else {
+                            SaveSharedPreference.setIsRemoveAdsTimestampNull(this, false)
                             getPurchaseCode()
                         }
-                    } ?: getPurchaseCode()
+                    } ?: setRemoveAdsTimeStampNull()
 
                 }.addOnFailureListener { }
         }
+    }
+
+    private fun setRemoveAdsTimeStampNull() {
+        SaveSharedPreference.setIsRemoveAdsTimestampNull(this, true)
+        getPurchaseCode()
     }
 
     private fun getCurrentTimeStamp(): String {

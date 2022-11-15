@@ -1,6 +1,5 @@
 package com.sstechcanada.todo.activities
 
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -14,6 +13,7 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.sstechcanada.todo.R
@@ -22,7 +22,6 @@ import com.sstechcanada.todo.utils.RemoveAdsUtils
 import com.sstechcanada.todo.utils.SaveSharedPreference
 import es.dmoral.toasty.Toasty
 import java.util.concurrent.TimeUnit
-import kotlin.math.min
 
 
 class RemoveAdsActivity : AppCompatActivity() {
@@ -31,16 +30,19 @@ class RemoveAdsActivity : AppCompatActivity() {
     private var mAuth: FirebaseAuth? = null
     private val TAG = "RemoveAdsActivity"
     private lateinit var binding: ActivityRemoveAdsBinding
+    private var storedTimeStamp: String = "0"
+    lateinit var timer: CountDownTimer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRemoveAdsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        mAuth = FirebaseAuth.getInstance()
+        fetchStoredTimeStamp()
         setupAds()
         initViews()
         setOnClicks()
-        startTimer()
     }
 
     private fun setOnClicks() {
@@ -66,9 +68,7 @@ class RemoveAdsActivity : AppCompatActivity() {
 
 
     private fun setupAds() {
-        if (SaveSharedPreference.getAdsEnabled(this)) {
-            loadRewardedAd()
-        }
+        loadRewardedAd()
     }
 
     private fun loadRewardedAd() {
@@ -89,23 +89,31 @@ class RemoveAdsActivity : AppCompatActivity() {
                     Log.d(TAG, "Ad was loaded.")
                     mRewardedAd = rewardedAd
                     binding.btnWatchAds.isEnabled = true
-                    binding.btnWatchAds.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.todo))
+                    binding.btnWatchAds.backgroundTintList =
+                        ColorStateList.valueOf(resources.getColor(R.color.todo))
                 }
             })
     }
 
-    private fun startTimer() {
-        val timeLeft: Long = 1668927143000 - RemoveAdsUtils.getServerTime()  //- 604740000//432000000 + 61200000 + 2100000
+    private fun startTimer(storedTimeStamp: Long) {
+        val timeLeft: Long =
+            storedTimeStamp - RemoveAdsUtils.getServerTime()  //- 604740000//432000000 + 61200000 + 2100000
         try {
-            val timer = object: CountDownTimer(
-                (timeLeft ?: 0L),1_000L){
+            timer = object : CountDownTimer(
+                (timeLeft ?: 0L), 1_000L
+            ) {
                 override fun onTick(millisUntilFinished: Long) {
                     refreshTimeLeft(timeLeft = millisUntilFinished)
                 }
 
                 override fun onFinish() {
                     refreshTimeLeft(timeLeft = 0L)
-                    Toasty.info(this@RemoveAdsActivity,"Ad Free Membership Expired", Toast.LENGTH_LONG).show()
+                    Toasty.info(
+                        this@RemoveAdsActivity,
+                        "Ad Free Membership Expired",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    SaveSharedPreference.setAdsEnabled(this@RemoveAdsActivity, true)
                 }
             }
             timer.start()
@@ -137,9 +145,6 @@ class RemoveAdsActivity : AppCompatActivity() {
                         Log.d(TAG, "Ad was dismissed.")
                         mRewardedAd = null
                         loadRewardedAd()
-                        val moveToMasterTodoListActivity = Intent(this@RemoveAdsActivity, MasterTodoListActivity::class.java)
-                        startActivity(moveToMasterTodoListActivity)
-                        finish()
                     }
 
                     override fun onAdFailedToShowFullScreenContent(adError: AdError) {
@@ -154,8 +159,9 @@ class RemoveAdsActivity : AppCompatActivity() {
 
             mRewardedAd?.show(this) {
                 val data: MutableMap<String, String?> = HashMap()
-                data["adsPausedTimestamp"] = RemoveAdsUtils.getTimeStampOfNextWeek()
+                data["adsPausedTimestamp"] = RemoveAdsUtils.getTimeStampOfNextWeek(storedTimeStamp)
                 data["purchase_code"] = "3"
+                SaveSharedPreference.setIsRemoveAdsTimestampNull(this, false)
                 mAuth?.currentUser?.uid?.let {
                     FirebaseFirestore.getInstance().collection("Users").document(it).set(
                         data,
@@ -169,9 +175,25 @@ class RemoveAdsActivity : AppCompatActivity() {
                     }
                 }
                 Log.d("TAG", "User earned the reward.")
+                SaveSharedPreference.setAdsEnabled(this, false)
+                timer.cancel()
+                fetchStoredTimeStamp()
             }
         } else {
             Toasty.info(this, "No Ads available, try again later.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun fetchStoredTimeStamp() {
+        mAuth?.currentUser?.uid?.let {
+            FirebaseFirestore.getInstance().collection("Users").document(it).get()
+                .addOnSuccessListener { documentSnapshot: DocumentSnapshot ->
+                    documentSnapshot["adsPausedTimestamp"]?.toString()?.let { time ->
+                        storedTimeStamp = time
+                        startTimer(time.toLong())
+                    }
+
+                }.addOnFailureListener { }
         }
     }
 }
