@@ -2,11 +2,15 @@
 <shape
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="ring"
-    android:innerRadiusRatio="2.5"
-    android:thickness="@dimen/_2sdp"
+    android:innerRadiusRatio="2.7"
+    android:thickness="@dimen/_3sdp"
     android:useLevel="false">
 
-    <solid android:color="#EBEBEB" />
+    <gradient
+        android:angle="0"
+        android:endColor="#2C66E3"
+        android:startColor="#2CB7E3"
+        android:useLevel="false" />
 
     <padding
         android:top="@dimen/_2sdp"
