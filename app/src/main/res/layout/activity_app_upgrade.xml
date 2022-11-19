@@ -240,6 +240,22 @@
         app:lottie_fileName="go-premium.json"
         app:lottie_loop="true" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnRemoveAds"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_28sdp"
+        android:textSize="@dimen/_9ssp"
+        android:fontFamily="@font/poppins_semibold"
+        android:paddingVertical="@dimen/_8sdp"
+        android:visibility="gone"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:text="Watch Video to Remove ads for a week"
+        android:textColor="@color/todo"
+        app:layout_constraintBottom_toTopOf="@id/buttonUpgrade"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/appCompatTextView"
         android:layout_width="wrap_content"

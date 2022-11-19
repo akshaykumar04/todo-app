@@ -164,7 +164,7 @@ class RemoveAdsActivity : AppCompatActivity() {
                 fetchStoredTimeStamp()
             }
         } else {
-            Toasty.info(this, "No Ads available, try again later.", Toast.LENGTH_SHORT).show()
+            Toasty.info(this, "No ads available, try again later.", Toast.LENGTH_SHORT).show()
         }
     }
 
