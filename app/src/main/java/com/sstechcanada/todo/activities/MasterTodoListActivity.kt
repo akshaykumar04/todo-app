@@ -614,7 +614,7 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
                             usersColRef.document(it).get()
                                 .addOnSuccessListener { documentSnapshot: DocumentSnapshot ->
                                     documentSnapshot["adsPausedTimestamp"]?.toString()?.let { time ->
-                                        if (getCurrentTimeStamp().toInt() > time.toInt()) {
+                                        if (RemoveAdsUtils.getServerTime() > time.toLong()) {
                                             refreshPurchaseCodeInDatabase()
                                         }
                                     } ?: refreshPurchaseCodeInDatabase()
