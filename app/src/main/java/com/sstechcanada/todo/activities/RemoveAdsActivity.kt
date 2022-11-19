@@ -17,6 +17,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.sstechcanada.todo.R
+import com.sstechcanada.todo.activities.auth.LoginActivity
 import com.sstechcanada.todo.databinding.ActivityRemoveAdsBinding
 import com.sstechcanada.todo.utils.RemoveAdsUtils
 import com.sstechcanada.todo.utils.SaveSharedPreference
@@ -158,24 +159,7 @@ class RemoveAdsActivity : AppCompatActivity() {
                 }
 
             mRewardedAd?.show(this) {
-                val data: MutableMap<String, String?> = HashMap()
-                data["adsPausedTimestamp"] = RemoveAdsUtils.getTimeStampOfNextWeek(storedTimeStamp)
-                data["purchase_code"] = "3"
-                SaveSharedPreference.setIsRemoveAdsTimestampNull(this, false)
-                mAuth?.currentUser?.uid?.let {
-                    FirebaseFirestore.getInstance().collection("Users").document(it).set(
-                        data,
-                        SetOptions.merge()
-                    ).addOnSuccessListener {
-                        Toasty.success(
-                            this,
-                            "Ads are paused for a week",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
-                Log.d("TAG", "User earned the reward.")
-                SaveSharedPreference.setAdsEnabled(this, false)
+                grantReward()
                 timer.cancel()
                 fetchStoredTimeStamp()
             }
@@ -194,6 +178,53 @@ class RemoveAdsActivity : AppCompatActivity() {
                     }
 
                 }.addOnFailureListener { }
+        }
+    }
+
+    private fun grantReward() {
+        val data: MutableMap<String, String> = HashMap()
+        data["purchase_code"] = "3"
+        data["adsPausedTimestamp"] = RemoveAdsUtils.getTimeStampOfNextWeek(storedTimeStamp)
+        SaveSharedPreference.setAdsEnabled(this, false)
+        SaveSharedPreference.setIsRemoveAdsTimestampNull(this, false)
+        mAuth?.currentUser?.uid?.let {
+            FirebaseFirestore.getInstance().collection("Users").document(it).set(
+                data,
+                SetOptions.merge()
+            ).addOnSuccessListener {
+                MasterTodoListActivity.purchaseCode = "3"
+                Toasty.success(
+                    this,
+                    "Ads are paused for a week",
+                    Toast.LENGTH_LONG
+                ).show()
+                setPurchaseCode()
+            }
+        }
+        Log.d("TAG", "User earned the reward.")
+    }
+
+    private fun setPurchaseCode() {
+        mAuth?.currentUser?.uid?.let {
+            FirebaseFirestore.getInstance().collection("Users").document(it).get()
+                .addOnSuccessListener { documentSnapshot: DocumentSnapshot ->
+                    MasterTodoListActivity.purchaseCode =
+                        documentSnapshot["purchase_code"].toString()
+                    FirebaseFirestore.getInstance().collection("UserTiers")
+                        .document(MasterTodoListActivity.purchaseCode).get()
+                        .addOnSuccessListener { documentSnapshot1: DocumentSnapshot ->
+                            LoginActivity.userAccountDetails.add(
+                                0,
+                                documentSnapshot1["masterListLimit"].toString()
+                            )
+                            LoginActivity.userAccountDetails.add(
+                                1,
+                                documentSnapshot1["todoItemLimit"].toString()
+                            )
+                        }
+                }.addOnFailureListener {
+                    //no-op
+                }
         }
     }
 }

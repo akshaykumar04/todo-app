@@ -29,6 +29,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.sstechcanada.todo.BuildConfig
@@ -150,26 +151,7 @@ class ProfileActivity : AppCompatActivity() {
                 }
 
             mRewardedAd?.show(this) {
-                val data: MutableMap<String, String?> = HashMap()
-                data["adsPausedTimestamp"] = RemoveAdsUtils.getTimeStampOfNextWeek()
-                data["purchase_code"] = "3"
-                SaveSharedPreference.setIsRemoveAdsTimestampNull(this, false)
-                mAuth?.currentUser?.uid?.let {
-                    FirebaseFirestore.getInstance().collection("Users").document(it).set(
-                        data,
-                        SetOptions.merge()
-                    ).addOnSuccessListener {
-                        Toasty.success(
-                            this,
-                            "Ads are paused for a week",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
-                Log.d("TAG", "User earned the reward.")
-                SaveSharedPreference.setAdsEnabled(this, false)
-                val moveToRemoveAdsActivity = Intent(this@ProfileActivity, RemoveAdsActivity::class.java)
-                startActivity(moveToRemoveAdsActivity)
+                grantReward()
             }
         } else {
             Toasty.info(this, "No Ads available, try again later.", Toast.LENGTH_SHORT).show()
@@ -300,6 +282,56 @@ class ProfileActivity : AppCompatActivity() {
     private fun clearPrefs() {
         val editor = PreferenceManager.getDefaultSharedPreferences(this)
         editor.edit().clear().apply()
+    }
+
+    private fun grantReward() {
+        val data: MutableMap<String, String> = HashMap()
+        data["purchase_code"] = "3"
+        data["adsPausedTimestamp"] = RemoveAdsUtils.getTimeStampOfNextWeek()
+        SaveSharedPreference.setAdsEnabled(this, false)
+        SaveSharedPreference.setIsRemoveAdsTimestampNull(this, false)
+        mAuth?.currentUser?.uid?.let {
+            FirebaseFirestore.getInstance().collection("Users").document(it).set(
+                data,
+                SetOptions.merge()
+            ).addOnSuccessListener {
+                MasterTodoListActivity.purchaseCode = "3"
+                Toasty.success(
+                    this,
+                    "Ads are paused for a week",
+                    Toast.LENGTH_LONG
+                ).show()
+                setPurchaseCode()
+
+            }
+        }
+        Log.d("TAG", "User earned the reward.")
+    }
+
+    private fun setPurchaseCode() {
+        mAuth?.currentUser?.uid?.let {
+            FirebaseFirestore.getInstance().collection("Users").document(it).get()
+                .addOnSuccessListener { documentSnapshot: DocumentSnapshot ->
+                    MasterTodoListActivity.purchaseCode =
+                        documentSnapshot["purchase_code"].toString()
+                    FirebaseFirestore.getInstance().collection("UserTiers")
+                        .document(MasterTodoListActivity.purchaseCode).get()
+                        .addOnSuccessListener { documentSnapshot1: DocumentSnapshot ->
+                            LoginActivity.userAccountDetails.add(
+                                0,
+                                documentSnapshot1["masterListLimit"].toString()
+                            )
+                            LoginActivity.userAccountDetails.add(
+                                1,
+                                documentSnapshot1["todoItemLimit"].toString()
+                            )
+                            val moveToRemoveAdsActivity = Intent(this@ProfileActivity, RemoveAdsActivity::class.java)
+                            startActivity(moveToRemoveAdsActivity)
+                        }
+                }.addOnFailureListener {
+                    //no-op
+                }
+        }
     }
 
 }
