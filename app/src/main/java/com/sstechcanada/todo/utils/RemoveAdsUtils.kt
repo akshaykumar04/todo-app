@@ -6,7 +6,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.util.*
 
-
 object RemoveAdsUtils {
 
     fun getTimeStampOfNextWeek(previousTimeStamp: String?= null): String {

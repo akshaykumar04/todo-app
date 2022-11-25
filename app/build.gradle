@@ -11,7 +11,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 32
         versionCode 21
-        versionName "1.1.1"
+        versionName "1.1.1-dev-T2"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled true
@@ -79,7 +79,7 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.github.GrenderG:Toasty:1.5.2'
     implementation 'com.google.android.gms:play-services-ads:21.3.0'
-    implementation 'com.airbnb.android:lottie:4.2.2'
+    implementation 'com.airbnb.android:lottie:5.2.0'
     implementation 'com.firebaseui:firebase-ui-firestore:7.1.1'
     implementation 'com.github.savvyapps:ToggleButtonLayout:1.3.0'
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.0'
@@ -88,12 +88,12 @@ dependencies {
     implementation 'com.github.hotchemi:android-rate:1.0.1'
 
     //sdp/ssp
-    implementation 'com.intuit.sdp:sdp-android:1.0.6'
-    implementation 'com.intuit.ssp:ssp-android:1.0.6'
+    implementation 'com.intuit.sdp:sdp-android:1.1.0'
+    implementation 'com.intuit.ssp:ssp-android:1.1.0'
 
     //glide
-    implementation 'com.github.bumptech.glide:glide:4.13.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'
+    implementation 'com.github.bumptech.glide:glide:4.14.2'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
 
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 

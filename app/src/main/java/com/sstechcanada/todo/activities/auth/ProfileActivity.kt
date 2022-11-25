@@ -154,7 +154,7 @@ class ProfileActivity : AppCompatActivity() {
                 grantReward()
             }
         } else {
-            Toasty.info(this, "No ads available, try again later.", Toast.LENGTH_SHORT).show()
+            Toasty.info(this, "No ads available, try again later", Toast.LENGTH_SHORT).show()
         }
     }
 
