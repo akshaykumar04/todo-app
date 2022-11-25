@@ -5,13 +5,13 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.firebase.crashlytics'
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
     defaultConfig {
         applicationId "com.sstechcanada.todo"
         minSdkVersion 24
-        targetSdkVersion 32
-        versionCode 21
-        versionName "1.1.1-dev-T2"
+        targetSdkVersion 33
+        versionCode 22
+        versionName "1.1.1"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled true
