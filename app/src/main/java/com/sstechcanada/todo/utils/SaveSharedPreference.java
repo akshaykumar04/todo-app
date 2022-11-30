@@ -13,6 +13,8 @@ public class SaveSharedPreference {
     public static final String PREF = "USER DATA";
     public static final String LIST_LIMIT = "LIST_LIMIT";
     static final String PREF_ADS_ENABLED = "isAdsEnabled";
+
+    static final String PREF_REMOVE_ADS_TIMESTAMP_NULL = "isRemoveAdsTimeStampNull";
     static final String PREF_IS_LOGGED_IN = "isLoggedIn";
 
     static SharedPreferences getSharedPreferences(Context ctx) {
@@ -59,6 +61,16 @@ public class SaveSharedPreference {
 
     public static Boolean getAdsEnabled(Context ctx) {
         return getSharedPreferences(ctx).getBoolean(PREF_ADS_ENABLED, true);
+    }
+
+    public static void setIsRemoveAdsTimestampNull(Context ctx, Boolean isRemoveAdsTimeStampNull) {
+        SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
+        editor.putBoolean(PREF_REMOVE_ADS_TIMESTAMP_NULL, isRemoveAdsTimeStampNull);
+        editor.apply();
+    }
+
+    public static Boolean getIsRemoveAdsTimestampNull(Context ctx) {
+        return getSharedPreferences(ctx).getBoolean(PREF_REMOVE_ADS_TIMESTAMP_NULL, true);
     }
 
 }

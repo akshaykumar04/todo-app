@@ -4,7 +4,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.content.SharedPreferences
+
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -119,7 +119,7 @@ class SplashActivity : AppCompatActivity() {
     private fun clearExistingPrefs() {
         val editor = PreferenceManager.getDefaultSharedPreferences(this)
         if (editor.all.containsKey("user_state")) {
-            editor.edit().clear().commit()
+            editor.edit().clear().apply()
         }
         Log.d("Prefs", editor.all.keys.toString())
         Log.d("Prefs", editor.all.values.toString())

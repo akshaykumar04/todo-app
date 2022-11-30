@@ -41,10 +41,7 @@ import com.sstechcanada.todo.activities.auth.ProfileActivity
 import com.sstechcanada.todo.adapters.MasterListFirestoreAdapter
 import com.sstechcanada.todo.adapters.MasterListGridViewAdapter
 import com.sstechcanada.todo.custom_views.MasterIconGridItemView
-import com.sstechcanada.todo.utils.Constants
-import com.sstechcanada.todo.utils.SaveSharedPreference
-import com.sstechcanada.todo.utils.SwipeController
-import com.sstechcanada.todo.utils.SwipeControllerActions
+import com.sstechcanada.todo.utils.*
 import es.dmoral.toasty.Toasty
 import hotchemi.android.rate.AppRate
 import kotlinx.android.synthetic.main.act_bar.*
@@ -104,7 +101,9 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
         if (user != null) {
             userID = user?.uid
         }
-        getPurchaseCode()
+
+        checkIfAdsArePausedForAWeek()
+//        getPurchaseCode()
 
         setUpFirestoreRecyclerView()
         if (prefs.getBoolean("flagMasterListFirstRun", true)) {
@@ -184,6 +183,8 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
                                 )
                                 bp?.initialize()
                                 SaveSharedPreference.setAdsEnabled(this, false)
+                                hideProgressBar()
+                                adView?.visibility = View.GONE
                             } else {
                                 hideProgressBar()
                                 adView?.visibility = View.VISIBLE
@@ -609,7 +610,17 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
 //                        Toast.makeText(MasterTodoListActivity.this, "Inside billing+ user is still subscribed in", Toast.LENGTH_SHORT).show();
                     } else {
                         //Not subscribed
-                        refreshPurchaseCodeInDatabase()
+                        userID?.let {
+                            usersColRef.document(it).get()
+                                .addOnSuccessListener { documentSnapshot: DocumentSnapshot ->
+                                    documentSnapshot["adsPausedTimestamp"]?.toString()?.let { time ->
+                                        if (RemoveAdsUtils.getServerTime() > time.toLong()) {
+                                            refreshPurchaseCodeInDatabase()
+                                        }
+                                    } ?: refreshPurchaseCodeInDatabase()
+
+                                }.addOnFailureListener { }
+                        }
                         //                        Toast.makeText(MasterTodoListActivity.this, "Inside billing+ user is not subscribed", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -624,6 +635,7 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
     }
 
     private fun refreshPurchaseCodeInDatabase() {
+        SaveSharedPreference.setIsRemoveAdsTimestampNull(this, true)
 
 //        Toast.makeText(this, "set purchase code in db", Toast.LENGTH_SHORT).show();
         val purchaseCode: MutableMap<String, String> = HashMap()
@@ -668,6 +680,38 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
     override fun onBillingError(errorCode: Int, error: Throwable?) {}
     override fun onBillingInitialized() {
         isUserSubscribed(purchaseCode)
+    }
+
+    private fun checkIfAdsArePausedForAWeek() {
+        userID?.let {
+            usersColRef.document(it).get()
+                .addOnSuccessListener { documentSnapshot: DocumentSnapshot ->
+                    documentSnapshot["adsPausedTimestamp"]?.toString()?.let { time ->
+                        if (RemoveAdsUtils.getServerTime() > time.toLong()) {
+                            refreshPurchaseCodeInDatabase()
+                        } else {
+                            SaveSharedPreference.setIsRemoveAdsTimestampNull(this, false)
+                            getPurchaseCode()
+                        }
+                    } ?: setRemoveAdsTimeStampNull()
+
+                }.addOnFailureListener { }
+        }
+    }
+
+    private fun setRemoveAdsTimeStampNull() {
+        SaveSharedPreference.setIsRemoveAdsTimestampNull(this, true)
+        getPurchaseCode()
+    }
+
+    private fun getCurrentTimeStamp(): String {
+        val tsLong = System.currentTimeMillis() / 1000
+        return tsLong.toString()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkIfAdsArePausedForAWeek()
     }
 
     companion object {
