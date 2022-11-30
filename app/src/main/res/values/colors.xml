@@ -44,4 +44,5 @@
     <color name="toggleSelected">#7C446DFF</color>
     <color name="textRed">#f23123</color>
     <color name="btnRed">#E44236</color>
+    <color name="progressBarColor">#2D78E4</color>
 </resources>

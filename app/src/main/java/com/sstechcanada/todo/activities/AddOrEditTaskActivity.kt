@@ -132,9 +132,9 @@ class AddOrEditTaskActivity : AppCompatActivity() {
                             .setMessage("Are you sure you want to mark this task as completed?")
                             .setPositiveButton("Yes") { _: DialogInterface?, _: Int ->
                                 if (SaveSharedPreference.getAdsEnabled(this)) {
-                                    if (mInterstitialAd != null) {
-                                        mInterstitialAd?.show(this@AddOrEditTaskActivity)
-                                    }
+//                                    if (mInterstitialAd != null) {
+//                                        mInterstitialAd?.show(this@AddOrEditTaskActivity)
+//                                    }
                                 }
                             }
                             .setNegativeButton("No") { _: DialogInterface?, _: Int ->
@@ -196,37 +196,20 @@ class AddOrEditTaskActivity : AppCompatActivity() {
     }
 
     private fun deleteTodoItem() {
-        loadFullScreenAds()
         AlertDialog.Builder(this)
             .setIcon(android.R.drawable.ic_menu_delete)
             .setTitle("Confirm Delete")
             .setMessage("Are you sure you want to delete this task?")
             .setPositiveButton("Yes") { _: DialogInterface?, _: Int ->
-                if (SaveSharedPreference.getAdsEnabled(this)) {
-                    if (mInterstitialAd != null) {
-                        mInterstitialAd?.show(this@AddOrEditTaskActivity)
-                        todoTaskToAddOrEdit?.documentID?.let { userColRef?.document(it)?.delete() }
-                        Toasty.error(
-                            this@AddOrEditTaskActivity,
-                            "Task Deleted",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        finish()
-                    } else {
-                        todoTaskToAddOrEdit?.documentID?.let { userColRef?.document(it)?.delete() }
-                        Toasty.error(
-                            this@AddOrEditTaskActivity,
-                            "Task Deleted",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        finish()
-                    }
-                } else {
-                    todoTaskToAddOrEdit?.documentID?.let { userColRef?.document(it)?.delete() }
-                    Toasty.error(this@AddOrEditTaskActivity, "Task Deleted", Toast.LENGTH_SHORT)
-                        .show()
-                    finish()
+                todoTaskToAddOrEdit?.documentID?.let {
+                    userColRef?.document(it)?.delete()
                 }
+                Toasty.error(
+                    this@AddOrEditTaskActivity,
+                    "Task Deleted",
+                    Toast.LENGTH_SHORT
+                ).show()
+                finish()
             }
             .setNegativeButton("No", null)
             .show()

@@ -1,46 +1,49 @@
 package com.sstechcanada.todo.activities
 
-import com.anjlab.android.iab.v3.BillingProcessor.IBillingHandler
-import com.savvyapps.togglebuttonlayout.ToggleButtonLayout
-import com.anjlab.android.iab.v3.BillingProcessor
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.android.gms.ads.interstitial.InterstitialAd
-import android.os.Bundle
-import com.sstechcanada.todo.R
-import es.dmoral.toasty.Toasty
-import android.widget.Toast
-import com.google.firebase.firestore.SetOptions
-import com.google.firebase.firestore.DocumentSnapshot
-import com.sstechcanada.todo.activities.auth.LoginActivity
-import android.view.WindowManager
 import android.content.Intent
+import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.anjlab.android.iab.v3.BillingProcessor
+import com.anjlab.android.iab.v3.BillingProcessor.IBillingHandler
 import com.anjlab.android.iab.v3.SkuDetails
 import com.anjlab.android.iab.v3.TransactionDetails
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
-import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
+import com.savvyapps.togglebuttonlayout.ToggleButtonLayout
+import com.sstechcanada.todo.R
+import com.sstechcanada.todo.activities.auth.LoginActivity
+import com.sstechcanada.todo.utils.RemoveAdsUtils
 import com.sstechcanada.todo.utils.SaveSharedPreference
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_app_upgrade.*
-import java.util.ArrayList
-import java.util.HashMap
 
 class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
     private val activityTag = "AppUpgradeActivity"
 
     var bp: BillingProcessor? = null
     private val mAuth = FirebaseAuth.getInstance()
+    private var mRewardedAd: RewardedAd? = null
     var userID = mAuth.currentUser?.uid
     var db = FirebaseFirestore.getInstance()
     var purchaseProductId = "1"
     private var purchaseTransactionDetails: List<SkuDetails>? = null
     var pur_code: String = MasterTodoListActivity.purchaseCode
     private var mInterstitialAd: InterstitialAd? = null
+    private val TAG = "AppUpgradeScreen"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +51,11 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
         setupPriceToggle()
         setUpOnClicks()
         setupBilling()
+        if (SaveSharedPreference.getAdsEnabled(this)) {
+            loadRewardedAd()
+        }
     }
+
 
     private fun setupBilling() {
         bp = BillingProcessor(
@@ -61,6 +68,13 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
 
     private fun setUpOnClicks() {
         fabBack.setOnClickListener { onBackPressed() }
+        btnRemoveAds.setOnClickListener {
+            if (SaveSharedPreference.getIsRemoveAdsTimestampNull(this)) {
+                showRewardedVideo()
+            } else {
+                startActivity(Intent(this, RemoveAdsActivity::class.java))
+            }
+        }
         if (SaveSharedPreference.getAdsEnabled(this)) {
             loadFullScreenAd()
         }
@@ -193,6 +207,7 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
             list5.visibility = View.VISIBLE
             list7.visibility = View.VISIBLE
             list8.visibility = View.VISIBLE
+            btnRemoveAds.visibility = View.GONE
         } else {
             list2.visibility = View.INVISIBLE
             list3.visibility = View.INVISIBLE
@@ -200,6 +215,7 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
             list5.visibility = View.INVISIBLE
             list7.visibility = View.INVISIBLE
             list8.visibility = View.INVISIBLE
+            btnRemoveAds.visibility = View.VISIBLE
         }
     }
 
@@ -349,5 +365,101 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
                     mInterstitialAd = null
                 }
             })
+    }
+
+    private fun showRewardedVideo() {
+        if (mRewardedAd != null) {
+            mRewardedAd?.fullScreenContentCallback =
+                object : FullScreenContentCallback() {
+                    override fun onAdDismissedFullScreenContent() {
+                        Log.d(TAG, "Ad was dismissed.")
+                        mRewardedAd = null
+                        loadRewardedAd()
+                    }
+
+                    override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                        Log.d(TAG, "Ad failed to show.")
+                        mRewardedAd = null
+                    }
+
+                    override fun onAdShowedFullScreenContent() {
+                        Log.d(TAG, "Ad showed fullscreen content.")
+                    }
+                }
+
+            mRewardedAd?.show(this) {
+                grantReward()
+            }
+        } else {
+            Toasty.info(this, "No ads available, try again later", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun loadRewardedAd() {
+        val adRequest = AdRequest.Builder().build()
+        RewardedAd.load(
+            this,
+            getString(R.string.rewarded_ad_unit_id),
+            adRequest,
+            object : RewardedAdLoadCallback() {
+                override fun onAdFailedToLoad(adError: LoadAdError) {
+                    Log.d(TAG, adError.toString())
+                    mRewardedAd = null
+                }
+
+                override fun onAdLoaded(rewardedAd: RewardedAd) {
+                    Log.d(TAG, "Ad was loaded.")
+                    mRewardedAd = rewardedAd
+                }
+            })
+    }
+
+
+    private fun grantReward() {
+        val data: MutableMap<String, String> = HashMap()
+        data["purchase_code"] = "3"
+        data["adsPausedTimestamp"] = RemoveAdsUtils.getTimeStampOfNextWeek()
+        SaveSharedPreference.setAdsEnabled(this, false)
+        SaveSharedPreference.setIsRemoveAdsTimestampNull(this, false)
+        mAuth.currentUser?.uid?.let {
+            FirebaseFirestore.getInstance().collection("Users").document(it).set(
+                data,
+                SetOptions.merge()
+            ).addOnSuccessListener {
+                MasterTodoListActivity.purchaseCode = "3"
+                Toasty.success(
+                    this,
+                    "Ads are paused for a week",
+                    Toast.LENGTH_LONG
+                ).show()
+                mAuth.currentUser?.uid?.let {
+                    FirebaseFirestore.getInstance().collection("Users").document(it).get()
+                        .addOnSuccessListener { documentSnapshot: DocumentSnapshot ->
+                            MasterTodoListActivity.purchaseCode =
+                                documentSnapshot["purchase_code"].toString()
+                            FirebaseFirestore.getInstance().collection("UserTiers")
+                                .document(MasterTodoListActivity.purchaseCode).get()
+                                .addOnSuccessListener { documentSnapshot1: DocumentSnapshot ->
+                                    LoginActivity.userAccountDetails.add(
+                                        0,
+                                        documentSnapshot1["masterListLimit"].toString()
+                                    )
+                                    LoginActivity.userAccountDetails.add(
+                                        1,
+                                        documentSnapshot1["todoItemLimit"].toString()
+                                    )
+                                    val moveToRemoveAdsActivity =
+                                        Intent(this, RemoveAdsActivity::class.java)
+                                    startActivity(moveToRemoveAdsActivity)
+                                    finish()
+                                }
+                        }.addOnFailureListener {
+                            //no-op
+                        }
+                }
+
+            }
+        }
+        Log.d("TAG", "User earned the reward.")
     }
 }

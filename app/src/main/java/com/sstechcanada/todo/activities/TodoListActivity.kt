@@ -71,7 +71,10 @@ class TodoListActivity : AppCompatActivity() {
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_todo_list)
         loadingProgressBar = mBinding?.loadingProgressBar
         fab = mBinding?.fab
-        if (Integer.valueOf(MasterTodoListActivity.purchaseCode) == 1 || Integer.valueOf(MasterTodoListActivity.purchaseCode) == 2) {
+        if (Integer.valueOf(MasterTodoListActivity.purchaseCode) == 1 || Integer.valueOf(
+                MasterTodoListActivity.purchaseCode
+            ) == 2
+        ) {
             Log.i("purchase code", MasterTodoListActivity.purchaseCode)
             Log.i("purchase code", "purchaseCode")
             mBinding?.completedTab?.setCompoundDrawablesWithIntrinsicBounds(
@@ -116,7 +119,9 @@ class TodoListActivity : AppCompatActivity() {
         fab?.setOnClickListener {
             db_cnt = todoListFirestoreAdapter?.itemCount ?: 0
             Log.i("ItemCount", "FAB Clicked")
-            if (LoginActivity.userAccountDetails[1].toInt() > (todoListFirestoreAdapter?.itemCount ?: 0)) {
+            if (LoginActivity.userAccountDetails[1].toInt() > (todoListFirestoreAdapter?.itemCount
+                    ?: 0)
+            ) {
                 setValue()
                 if (isLogin) {
                     val intent = Intent(this@TodoListActivity, AddOrEditTaskActivity::class.java)
@@ -148,7 +153,10 @@ class TodoListActivity : AppCompatActivity() {
             }
         }
         mBinding?.completedTab?.setOnClickListener {
-            if (Integer.valueOf(MasterTodoListActivity.purchaseCode) == 1 || Integer.valueOf(MasterTodoListActivity.purchaseCode) == 2) {
+            if (Integer.valueOf(MasterTodoListActivity.purchaseCode) == 1 || Integer.valueOf(
+                    MasterTodoListActivity.purchaseCode
+                ) == 2
+            ) {
                 startActivity(Intent(this@TodoListActivity, CompletedTodoListActivity::class.java))
             } else {
                 startActivity(Intent(this@TodoListActivity, AppUpgradeActivity::class.java))
@@ -209,59 +217,22 @@ class TodoListActivity : AppCompatActivity() {
         val swipeController = SwipeController(this, object : SwipeControllerActions() {
             override fun onRightClicked(position: Int) {
                 Log.i("click", "right")
-                if (SaveSharedPreference.getAdsEnabled(this@TodoListActivity)) {
-                    loadFullScreenAds()
-                }
                 AlertDialog.Builder(this@TodoListActivity)
                     .setIcon(android.R.drawable.ic_menu_delete)
                     .setTitle("Confirm Delete")
                     .setMessage("Are you sure you want to delete this task?")
                     .setPositiveButton("Yes") { dialog: DialogInterface?, which: Int ->
-                        if (SaveSharedPreference.getAdsEnabled(this@TodoListActivity)) {
-                            if (mInterstitialAd != null) {
-                                mInterstitialAd?.show(this@TodoListActivity)
-                                val documentSnapshot =
-                                    todoListFirestoreAdapter?.snapshots?.getSnapshot(position)
-                                val id = documentSnapshot?.id
-                                userID?.let {
-                                    listId?.let { it1 ->
-                                        id?.let { it2 ->
-                                            usersColRef.document(it).collection("Lists")
-                                                .document(it1).collection("Todo").document(it2)
-                                                .delete()
-                                        }
-                                    }
-                                }
-                                Toasty.error(
-                                    this@TodoListActivity,
-                                    "Task Deleted",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            } else {
-                                val documentSnapshot =
-                                    todoListFirestoreAdapter!!.snapshots.getSnapshot(position)
-                                val id = documentSnapshot.id
-                                usersColRef.document(userID!!).collection("Lists")
-                                    .document(listId!!).collection("Todo").document(id).delete()
-                                Toasty.error(
-                                    this@TodoListActivity,
-                                    "Task Deleted",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                        val documentSnapshot =
+                            todoListFirestoreAdapter?.snapshots?.getSnapshot(position)
+                        val id = documentSnapshot?.id
+                        if (id != null) {
+                            userID?.let {
+                                usersColRef.document(it).collection("Lists").document(listId!!)
+                                    .collection("Todo").document(id).delete()
                             }
-                        } else {
-                            val documentSnapshot =
-                                todoListFirestoreAdapter?.snapshots?.getSnapshot(position)
-                            val id = documentSnapshot?.id
-                            if (id != null) {
-                                userID?.let {
-                                    usersColRef.document(it).collection("Lists").document(listId!!)
-                                        .collection("Todo").document(id).delete()
-                                }
-                            }
-                            Toasty.error(this@TodoListActivity, "Task Deleted", Toast.LENGTH_SHORT)
-                                .show()
                         }
+                        Toasty.error(this@TodoListActivity, "Task Deleted", Toast.LENGTH_SHORT)
+                            .show()
                     }
                     .setNegativeButton("No", null)
                     .show()
