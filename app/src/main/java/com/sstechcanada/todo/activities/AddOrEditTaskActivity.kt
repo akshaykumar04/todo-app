@@ -101,6 +101,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             loadBannerAds()
             loadFullScreenAds()
         }
+        loadCategories()
 
         val dueDate: Long
         if (savedInstanceState == null) {
@@ -241,12 +242,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
 
     private fun addOrUpdateTask() {
         loadingProgressBarUpdate?.visibility = View.VISIBLE
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-        )
         description = mBinding?.etTaskDescription?.text.toString().trim { it <= ' ' }
-        Log.d(TAG, "Here")
         if (description == "") {
             Toasty.warning(
                 this,
@@ -282,23 +278,9 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             newTaskMap["Status"] = taskStatus
             newTaskMap["TimestampCompleted"] = " "
             userColRef?.document()?.set(newTaskMap)?.addOnSuccessListener {
-                loadingProgressBarUpdate.visibility = View.GONE
-                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                Toasty.success(
-                    this@AddOrEditTaskActivity,
-                    "New list item added successfully",
-                    Toasty.LENGTH_SHORT
-                ).show()
-                finish()
-                onBackPressed()
+                //no-op
             }?.addOnFailureListener {
-                loadingProgressBarUpdate.visibility = View.GONE
-                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                Toasty.error(
-                    this@AddOrEditTaskActivity,
-                    "Something went wrong",
-                    Toasty.LENGTH_SHORT
-                ).show()
+                //no-op
             }
         } else {
             val updateTaskMap: MutableMap<String, Any?> = HashMap()
@@ -322,26 +304,17 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             todoTaskToAddOrEdit?.documentID?.let {
                 userColRef?.document(it)
                     ?.set(updateTaskMap, SetOptions.merge())?.addOnSuccessListener {
-                        loadingProgressBarUpdate?.visibility = View.GONE
-                        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                        Toasty.success(
-                            this@AddOrEditTaskActivity,
-                            "List item updated successfully",
-                            Toasty.LENGTH_SHORT
-                        ).show()
-                        finish()
-                        onBackPressed()
-                    }?.addOnFailureListener {
-                        loadingProgressBarUpdate?.visibility = View.GONE
-                        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                        Toasty.error(
-                            this@AddOrEditTaskActivity,
-                            "Something went wrong",
-                            Toasty.LENGTH_SHORT
-                        ).show()
-                    }
+                    }?.addOnFailureListener {}
             }
         }
+        loadingProgressBarUpdate.visibility = View.GONE
+        Toasty.success(
+            this@AddOrEditTaskActivity,
+            "New list item added successfully",
+            Toasty.LENGTH_SHORT
+        ).show()
+        finish()
+        onBackPressed()
     }
 
     private fun loadCategories() {
@@ -556,6 +529,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             }
             return arr
         }
+        
     }
 
     private fun showBenefitsTutorial() {
