@@ -107,7 +107,9 @@ class TodoListActivity : AppCompatActivity() {
             adView?.visibility = View.GONE
         }
         toolbar_profile = findViewById(R.id.profile_toolbar)
-        Glide.with(this).load(mAuth?.currentUser?.photoUrl).into(profile_toolbar)
+        mAuth?.currentUser?.photoUrl?.let {
+            Glide.with(this).load(it).into(profile_toolbar)
+        }
         toolbar_profile?.setOnClickListener {
             startActivity(
                 Intent(

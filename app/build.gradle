@@ -67,14 +67,14 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
 
     // Import the BoM for the Firebase platform
-    implementation platform('com.google.firebase:firebase-bom:26.5.0')
+    implementation platform('com.google.firebase:firebase-bom:31.1.0')
 
     //in-app billing
     implementation("com.android.billingclient:billing:5.1.0")
 
     // Declare the dependency for the Firebase Authentication library
     // When using the BoM, you don't specify versions in Firebase library dependencies
-    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.github.GrenderG:Toasty:1.5.2'

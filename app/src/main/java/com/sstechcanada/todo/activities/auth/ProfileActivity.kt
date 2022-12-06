@@ -64,8 +64,14 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun initViews() {
         userEmail.text = mAuth?.currentUser?.email
-        userName.text = mAuth?.currentUser?.displayName
-        Glide.with(this).load(mAuth?.currentUser?.photoUrl).into(roundedImage)
+
+        if (mAuth?.currentUser?.displayName?.isEmpty() == false) {
+            userName.text = mAuth?.currentUser?.displayName
+        }
+
+        mAuth?.currentUser?.photoUrl?.let {
+            Glide.with(this).load(it).into(roundedImage)
+        }
         if (MasterTodoListActivity.purchaseCode == "0") {
             userType?.setText(R.string.free_user)
         } else {

@@ -96,7 +96,9 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             }
         }
         Log.i("ListId", "Add or edit: " + MasterTodoListActivity.listId)
-        Glide.with(this).load(mAuth?.currentUser?.photoUrl).into(profile_toolbar)
+        mAuth?.currentUser?.photoUrl?.let {
+            Glide.with(this).load(it).into(profile_toolbar)
+        }
         if (SaveSharedPreference.getAdsEnabled(this)) {
             loadBannerAds()
             loadFullScreenAds()

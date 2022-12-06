@@ -22,7 +22,9 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.sstechcanada.todo.utils.SaveSharedPreference
 import es.dmoral.toasty.Toasty
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.*
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_login.*
 import java.lang.Exception
 import java.util.ArrayList
@@ -53,10 +55,34 @@ class LoginActivity : AppCompatActivity() {
             .requestEmail()
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(this@LoginActivity, gso)
-        mAuth = FirebaseAuth.getInstance()
+        mAuth = Firebase.auth
         user = mAuth?.currentUser
         sign_in_button.setSize(SignInButton.SIZE_WIDE)
         sign_in_button.setOnClickListener { signIn() }
+        btnGuestLogin.setOnClickListener { signUpAnonymously() }
+    }
+
+    private fun signUpAnonymously() {
+        mAuth?.signInAnonymously()
+            ?.addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d(TAG, "signInAnonymously:success")
+                    Log.d(TAG, "signInWithCredential:success")
+                    SaveSharedPreference.setUserLogIn(this@LoginActivity, true)
+                    //                            startActivity(new Intent(LoginActivity.this, TodoListActivity2.class));
+                    hideProgressDialog()
+                    updateUserPackage()
+                    Toasty.success(applicationContext, "Welcome, Guest!", Toast.LENGTH_SHORT)
+                        .show()
+                    val user = mAuth?.currentUser
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w(TAG, "signInAnonymously:failure", task.exception)
+                    Toast.makeText(baseContext, "Authentication failed.",
+                        Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 
 

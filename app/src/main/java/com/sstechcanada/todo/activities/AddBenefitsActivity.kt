@@ -64,7 +64,9 @@ class AddBenefitsActivity : AppCompatActivity(),
                 Intent(this@AddBenefitsActivity, ProfileActivity::class.java)
             )
         }
-        Glide.with(this).load(mAuth?.currentUser?.photoUrl).into(profile_toolbar)
+        mAuth?.currentUser?.photoUrl?.let {
+            Glide.with(this).load(it).into(profile_toolbar)
+        }
         buttonAddCategory.setOnClickListener { addCategory() }
         if (SaveSharedPreference.getAdsEnabled(this)) {
             val adView = findViewById<AdView>(R.id.adView)

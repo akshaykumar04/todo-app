@@ -60,7 +60,9 @@ class CompletedTodoListActivity : AppCompatActivity() {
         } else {
             adView.visibility = View.GONE
         }
-        Glide.with(this).load(user?.photoUrl).into(profile_toolbar)
+        user?.photoUrl?.let {
+            Glide.with(this).load(it).into(profile_toolbar)
+        }
 
         profile_toolbar.setOnClickListener {
             startActivity(
