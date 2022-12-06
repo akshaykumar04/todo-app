@@ -186,6 +186,7 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
                                     "You are already subscribed to Ad free membership",
                                     Toast.LENGTH_SHORT
                                 ).show()
+                                startActivity(Intent(this, RemoveAdsActivity::class.java))
                                 tvListsCount.setText(R.string.removes_ads_completely)
                                 purchaseProductId = "tier2"
                                 pur_code = "2"

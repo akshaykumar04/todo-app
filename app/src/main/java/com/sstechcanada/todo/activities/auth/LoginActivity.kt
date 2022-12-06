@@ -63,6 +63,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun signUpAnonymously() {
+        displayProgressDialog()
         mAuth?.signInAnonymously()
             ?.addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
@@ -70,7 +71,6 @@ class LoginActivity : AppCompatActivity() {
                     Log.d(TAG, "signInAnonymously:success")
                     Log.d(TAG, "signInWithCredential:success")
                     SaveSharedPreference.setUserLogIn(this@LoginActivity, true)
-                    //                            startActivity(new Intent(LoginActivity.this, TodoListActivity2.class));
                     hideProgressDialog()
                     updateUserPackage()
                     Toasty.success(applicationContext, "Welcome, Guest!", Toast.LENGTH_SHORT)
@@ -81,6 +81,7 @@ class LoginActivity : AppCompatActivity() {
                     Log.w(TAG, "signInAnonymously:failure", task.exception)
                     Toast.makeText(baseContext, "Authentication failed.",
                         Toast.LENGTH_SHORT).show()
+                    hideProgressDialog()
                 }
             }
     }
