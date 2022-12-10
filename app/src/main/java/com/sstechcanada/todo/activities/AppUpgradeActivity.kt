@@ -1,12 +1,17 @@
 package com.sstechcanada.todo.activities
 
+import android.app.Dialog
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.view.WindowManager
+import android.view.*
+import android.widget.CheckBox
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatTextView
 import com.anjlab.android.iab.v3.BillingProcessor
 import com.anjlab.android.iab.v3.BillingProcessor.IBillingHandler
 import com.anjlab.android.iab.v3.SkuDetails
@@ -19,17 +24,21 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import com.google.android.gms.common.SignInButton
+import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.savvyapps.togglebuttonlayout.ToggleButtonLayout
+import com.shobhitpuri.custombuttons.GoogleSignInButton
 import com.sstechcanada.todo.R
 import com.sstechcanada.todo.activities.auth.LoginActivity
 import com.sstechcanada.todo.utils.RemoveAdsUtils
 import com.sstechcanada.todo.utils.SaveSharedPreference
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_app_upgrade.*
+import kotlinx.android.synthetic.main.item_grid.view.*
 
 class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
     private val activityTag = "AppUpgradeActivity"
@@ -305,10 +314,14 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
         productIdList.add("adfree")
         purchaseTransactionDetails = bp?.getSubscriptionListingDetails(productIdList)
         buttonUpgrade.setOnClickListener {
-            if (bp!!.isSubscriptionUpdateSupported) {
-                bp?.subscribe(this@AppUpgradeActivity, purchaseProductId)
+            if (mAuth.currentUser?.isAnonymous == true) {
+                googleSignInDialog()
             } else {
-                Log.d("MainActivity", "onBillingInitialized: Subscription updated is not supported")
+                if (bp!!.isSubscriptionUpdateSupported) {
+                    bp?.subscribe(this@AppUpgradeActivity, purchaseProductId)
+                } else {
+                    Log.d("MainActivity", "onBillingInitialized: Subscription updated is not supported")
+                }
             }
         }
     }
@@ -463,4 +476,32 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
         }
         Log.d("TAG", "User earned the reward.")
     }
+
+    private fun googleSignInDialog() {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.mandatory_signin_bottomsheet)
+        val signInButton: GoogleSignInButton = dialog.findViewById(R.id.sign_in_button)
+        val tvUserDes: AppCompatTextView = dialog.findViewById(R.id.tvUserDes)
+
+        tvUserDes.text = getString(R.string.sign_in_req_for_purchase)
+
+        signInButton.setOnClickListener {
+
+        }
+
+        dialog.show()
+        dialog.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
+        dialog.window?.setGravity(Gravity.BOTTOM)
+    }
+
+    private fun linkUserDataToGoogleAccount() {
+        
+    }
+
 }

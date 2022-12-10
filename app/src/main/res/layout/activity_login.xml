@@ -52,12 +52,15 @@
         app:lottie_fileName="task-list.json"
         app:lottie_loop="true" />
 
-    <com.google.android.gms.common.SignInButton
+    <com.shobhitpuri.custombuttons.GoogleSignInButton
         android:id="@+id/sign_in_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/_12sdp"
-        android:gravity="center_vertical"
+        app:isDarkTheme="true"
+        android:letterSpacing="0.06"
+        android:fontFamily="@font/raleway_semibold"
+        android:paddingVertical="@dimen/_10sdp"
         android:layout_marginBottom="@dimen/_6sdp"
         app:layout_constraintBottom_toTopOf="@+id/btnGuestLogin"
         app:layout_constraintEnd_toEndOf="parent"

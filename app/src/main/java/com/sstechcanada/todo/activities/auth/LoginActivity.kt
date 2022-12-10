@@ -57,7 +57,6 @@ class LoginActivity : AppCompatActivity() {
         mGoogleSignInClient = GoogleSignIn.getClient(this@LoginActivity, gso)
         mAuth = Firebase.auth
         user = mAuth?.currentUser
-        sign_in_button.setSize(SignInButton.SIZE_WIDE)
         sign_in_button.setOnClickListener { signIn() }
         btnGuestLogin.setOnClickListener { signUpAnonymously() }
     }
