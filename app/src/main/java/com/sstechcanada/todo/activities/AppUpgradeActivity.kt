@@ -1,14 +1,13 @@
 package com.sstechcanada.todo.activities
 
+import android.accounts.Account
 import android.app.Dialog
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.CheckBox
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
@@ -24,9 +23,13 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
-import com.google.android.gms.common.SignInButton
-import com.google.android.material.button.MaterialButton
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -38,7 +41,6 @@ import com.sstechcanada.todo.utils.RemoveAdsUtils
 import com.sstechcanada.todo.utils.SaveSharedPreference
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_app_upgrade.*
-import kotlinx.android.synthetic.main.item_grid.view.*
 
 class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
     private val activityTag = "AppUpgradeActivity"
@@ -259,7 +261,8 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
         userID?.let {
             db.collection("Users").document(it).get()
                 .addOnSuccessListener { documentSnapshot: DocumentSnapshot ->
-                    MasterTodoListActivity.purchaseCode = documentSnapshot["purchase_code"].toString()
+                    MasterTodoListActivity.purchaseCode =
+                        documentSnapshot["purchase_code"].toString()
                     db.collection("UserTiers").document(MasterTodoListActivity.purchaseCode).get()
                         .addOnSuccessListener { documentSnapshot1: DocumentSnapshot ->
                             Log.i(
@@ -278,7 +281,11 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
                                 1,
                                 documentSnapshot1["todoItemLimit"].toString()
                             )
-                            Toasty.success(applicationContext, "Package Upgraded", Toast.LENGTH_SHORT)
+                            Toasty.success(
+                                applicationContext,
+                                "Package Upgraded",
+                                Toast.LENGTH_SHORT
+                            )
                                 .show()
                             loadingProgressBarUpgrade?.visibility = View.GONE
                             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -320,7 +327,10 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
                 if (bp!!.isSubscriptionUpdateSupported) {
                     bp?.subscribe(this@AppUpgradeActivity, purchaseProductId)
                 } else {
-                    Log.d("MainActivity", "onBillingInitialized: Subscription updated is not supported")
+                    Log.d(
+                        "MainActivity",
+                        "onBillingInitialized: Subscription updated is not supported"
+                    )
                 }
             }
         }
@@ -487,7 +497,7 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
         tvUserDes.text = getString(R.string.sign_in_req_for_purchase)
 
         signInButton.setOnClickListener {
-
+            signOutAndSignIn()
         }
 
         dialog.show()
@@ -500,8 +510,11 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
         dialog.window?.setGravity(Gravity.BOTTOM)
     }
 
-    private fun linkUserDataToGoogleAccount() {
-        
+    private fun signOutAndSignIn() {
+        mAuth.signOut()
+        val signInIntent = Intent(this, LoginActivity::class.java)
+        signInIntent.putExtra("googleSignIn", true)
+        startActivity(signInIntent)
+        finish()
     }
-
 }
