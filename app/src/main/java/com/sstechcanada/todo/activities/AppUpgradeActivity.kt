@@ -30,9 +30,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.*
 import com.savvyapps.togglebuttonlayout.ToggleButtonLayout
 import com.shobhitpuri.custombuttons.GoogleSignInButton
 import com.sstechcanada.todo.R
@@ -55,6 +53,8 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
     var pur_code: String = MasterTodoListActivity.purchaseCode
     private var mInterstitialAd: InterstitialAd? = null
     private val TAG = "AppUpgradeScreen"
+    private var mGoogleSignInClient: GoogleSignInClient? = null
+    lateinit var dialog: Dialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +62,7 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
         setupPriceToggle()
         setUpOnClicks()
         setupBilling()
+        setupGoogleSignInClient()
         if (SaveSharedPreference.getAdsEnabled(this)) {
             loadRewardedAd()
         }
@@ -358,6 +359,18 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
         if (!bp!!.handleActivityResult(requestCode, resultCode, data)) {
             super.onActivityResult(requestCode, resultCode, data)
         }
+        if (requestCode == 9001) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                val account = task.getResult(ApiException::class.java)
+                linkUserDataToGoogleAccount(account)
+            } catch (e: ApiException) {
+                // Google Sign In failed, update UI appropriately
+                Log.w(TAG, "Google sign in failed", e)
+                // ...
+            }
+        }
     }
 
     private fun loadFullScreenAd() {
@@ -488,7 +501,7 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
     }
 
     private fun googleSignInDialog() {
-        val dialog = Dialog(this)
+        dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.mandatory_signin_bottomsheet)
         val signInButton: GoogleSignInButton = dialog.findViewById(R.id.sign_in_button)
@@ -497,7 +510,7 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
         tvUserDes.text = getString(R.string.sign_in_req_for_purchase)
 
         signInButton.setOnClickListener {
-            signOutAndSignIn()
+            signIn()
         }
 
         dialog.show()
@@ -517,4 +530,114 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
         startActivity(signInIntent)
         finish()
     }
+
+    private fun setupGoogleSignInClient(){
+        // Configure Google Sign In
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
+    }
+
+    private fun signIn() {
+        val signInIntent = mGoogleSignInClient?.signInIntent
+        startActivityForResult(signInIntent, 9001)
+    }
+
+
+    private fun linkUserDataToGoogleAccount(account: GoogleSignInAccount) {
+        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+        // [START link_credential]
+        mAuth.signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    Log.d(TAG, "linkWithCredential:success")
+                    dialog.dismiss()
+                    updateUserPackage()
+                } else {
+                    mGoogleSignInClient?.signOut()
+                    Log.w(TAG, "linkWithCredential:failure", task.exception)
+                    Toast.makeText(
+                        baseContext, "Something went wrong",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+    }
+
+    private fun updateUserPackage() {
+        val firebaseUser = mAuth?.currentUser
+        val documentReferenceCurrentReference = firebaseUser?.uid?.let {
+            db.collection("Users").document(it)
+        }
+        val userBenefitsCollectionRef = documentReferenceCurrentReference?.collection("Benefits")
+        db.collection("Users").whereEqualTo(FieldPath.documentId(), firebaseUser?.uid).get()
+            .addOnSuccessListener { queryDocumentSnapshots: QuerySnapshot ->
+                if (queryDocumentSnapshots.size() == 0) {
+                    val profile: MutableMap<String, String?> = HashMap()
+//                    profile["Name"] = firebaseUser?.displayName
+                    profile["Email"] = firebaseUser?.email
+                    profile["purchase_code"] = "0"
+                    documentReferenceCurrentReference?.set(profile)
+                        ?.addOnSuccessListener {
+                            Log.d("Usercreation", "Usercreation:success")
+                            Toasty.success(
+                                applicationContext,
+                                "Profile creation complete",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            startActivity(
+                                Intent(
+                                    this,
+                                    MasterTodoListActivity::class.java
+                                )
+                            )
+                            saveDefaultBenefits(userBenefitsCollectionRef)
+                        }?.addOnFailureListener {
+                            Log.d("Usercreation", "Usercreation:success")
+                            Toasty.error(
+                                applicationContext,
+                                "Error in profile creation",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                } else {
+                    Log.d("Usercreation", "Usercreation:already complete")
+                    Toasty.success(this, "Login Success!", Toast.LENGTH_SHORT).show()
+                    if (bp!!.isSubscriptionUpdateSupported) {
+                        bp?.subscribe(this@AppUpgradeActivity, purchaseProductId)
+                    } else {
+                        Log.d(
+                            "MainActivity",
+                            "onBillingInitialized: Subscription updated is not supported"
+                        )
+                    }
+                }
+            }.addOnFailureListener { e: Exception? -> }
+    }
+
+    private fun saveDefaultBenefits(userBenefitsCollectionRef: CollectionReference?) {
+        val benefits: MutableMap<String, String> = HashMap()
+        val defaultList = listOf(
+            "\uD83C\uDF09 Background", "\uD83C\uDF89 Free", "⬇️ $5",
+            "\uD83C\uDF04 Daily effect", "\uD83C\uDF52 Needs-related", "\uD83C\uDFF9 Interest",
+            "\uD83D\uDC65 Relationship", "\uD83E\uDD2A Fun", "\uD83D\uDCB9 Potential",
+            "\uD83D\uDCB0 Beneficial", "☮️ Values", "\uD83E\uDD47 Prerequisite"
+        )
+
+        for (i in defaultList.indices) {
+            benefits["category_name"] = defaultList[i]
+            repeat(benefits.size) {
+                userBenefitsCollectionRef?.document()?.set(benefits)
+                    ?.addOnSuccessListener {
+                        Log.d("addedBenefit", defaultList[i])
+                    }
+                    ?.addOnFailureListener {
+                        Log.d("addedBenefit", "Error")
+                    }
+            }
+        }
+    }
+
 }
