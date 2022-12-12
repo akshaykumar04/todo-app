@@ -251,7 +251,7 @@ class ProfileActivity : AppCompatActivity() {
         val checkBox: CheckBox = dialog.findViewById(R.id.checkDelete)
 
         userText.text = "Sorry to see you go, ${mAuth?.currentUser?.displayName ?: "Guest"}"
-        tvUserDes.text = "If you're experiencing any issue, please give us the opportunity to help you by sending us your Feedback.\n\nIf you continue, your account will be deleted immediately and all the associated data with your account will be deleted forever.\n\nPost account deletion, you will be able to create a new account. However, your previous data will be inaccessible."
+        tvUserDes.text = "If you're experiencing any issues, please give us the opportunity to help you by sending us your Feedback.\n\nIf you continue, your account will be deleted immediately and all the associated data with your account will be deleted forever.\n\nPost account deletion, you will be able to create a new account. However, your previous data will be inaccessible."
 
         checkBox.setOnCheckedChangeListener { _, checked ->
             if (checked) {
