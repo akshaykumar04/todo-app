@@ -89,19 +89,20 @@
                app:layout_constraintStart_toStartOf="parent"
                app:layout_constraintTop_toTopOf="parent" />
 
-           <Button
+           <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                android:id="@+id/btn_add_or_update_task"
-               android:layout_width="match_parent"
+               android:layout_width="0dp"
                android:layout_height="wrap_content"
                android:layout_margin="8dp"
-               app:tint="@color/white"
+               app:iconTint="@color/white"
+               app:iconGravity="textStart"
+               android:textAlignment="center"
+               app:icon="@drawable/ic_outline_add_task_24"
                app:backgroundTint="@color/todo"
-               android:paddingVertical="@dimen/_12sdp"
                android:fontFamily="@font/raleway_semibold"
                android:textColor="@android:color/white"
                android:onClick="addOrUpdateTask"
                android:text="@string/add_task"
-               android:elevation="24dp"
                app:layout_constraintBottom_toTopOf="@+id/adView"
                app:layout_constraintEnd_toEndOf="parent"
                app:layout_constraintStart_toStartOf="parent" />
@@ -238,7 +239,7 @@
                 app:iconTint="@color/white"
                 android:fontFamily="@font/raleway_semibold"
                 android:textColor="@android:color/white"
-                android:layout_marginBottom="@dimen/_6sdp"
+                android:layout_marginBottom="@dimen/_8sdp"
                 app:icon="@drawable/ic_outline_delete_forever_24"
                 app:layout_constraintBottom_toTopOf="@+id/btn_add_or_update_task"
                 app:layout_constraintEnd_toStartOf="@+id/guideline2"
@@ -254,7 +255,7 @@
                 app:iconTint="@color/white"
                 app:icon="@drawable/ic_baseline_done_all_24"
                 android:backgroundTint="#4BB543"
-                android:layout_marginBottom="@dimen/_6sdp"
+                android:layout_marginBottom="@dimen/_8sdp"
                 android:layout_marginStart="@dimen/_4sdp"
                 app:layout_constraintBottom_toTopOf="@+id/btn_add_or_update_task"
                 app:layout_constraintEnd_toEndOf="@+id/btn_add_or_update_task"
