@@ -57,12 +57,12 @@ class AboutActivity : AppCompatActivity() {
         pieChart.setEntryLabelColor(Color.BLACK)
         pieChart.centerText = getString(R.string.revenue_breakdown)
         pieChart.setCenterTextSize(12F)
-        val l: Legend = pieChart.legend
-        l.verticalAlignment = Legend.LegendVerticalAlignment.CENTER
-        l.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
-        l.orientation = Legend.LegendOrientation.VERTICAL
-        l.setDrawInside(false)
-        l.isEnabled = true
+        val legend: Legend = pieChart.legend
+        legend.verticalAlignment = Legend.LegendVerticalAlignment.CENTER
+        legend.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
+        legend.orientation = Legend.LegendOrientation.VERTICAL
+        legend.setDrawInside(false)
+        legend.isEnabled = false
     }
 
     private fun loadPieChartData() {

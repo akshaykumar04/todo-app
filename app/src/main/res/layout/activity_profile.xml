@@ -156,7 +156,8 @@
                                 android:layout_height="@dimen/_26sdp"
                                 android:layout_marginStart="@dimen/_8sdp"
                                 android:padding="@dimen/_4sdp"
-                                android:src="@drawable/remove_ads"
+                                android:src="@drawable/tv_off"
+                                android:tint="@color/textHeadings"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
