@@ -80,7 +80,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             )
         }
         arrow_back.visibility = View.VISIBLE
-        arrow_back.setOnClickListener { super.onBackPressed() }
+        arrow_back.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
         toolbarTitle.text = getString(R.string.add_update_task)
         editor = getSharedPreferences(LoginActivity.SHAREDPREF, MODE_PRIVATE).edit()
         mAuth = FirebaseAuth.getInstance()
@@ -114,36 +114,24 @@ class AddOrEditTaskActivity : AppCompatActivity() {
                 mTaskId = todoTaskToAddOrEdit?.documentID
                 mBinding?.etTaskDescription?.setText(todoTaskToAddOrEdit!!.description)
                 taskCompleted = todoTaskToAddOrEdit?.status.toString()
-                mBinding?.cbTaskCompleted?.setOnClickListener {
-                    if (!mBinding?.cbTaskCompleted!!.isChecked) {
-                        AlertDialog.Builder(this@AddOrEditTaskActivity)
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setTitle("Confirm Incomplete")
-                            .setMessage("Are you sure you want to mark this task as incomplete?")
-                            .setPositiveButton("Yes") { _: DialogInterface?, _: Int -> }
-                            .setNegativeButton("No") { _: DialogInterface?, _: Int ->
-                                mBinding?.cbTaskCompleted?.isChecked = true
-                            }
-                            .show()
-                    } else {
-                        AlertDialog.Builder(this@AddOrEditTaskActivity)
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setTitle("Confirm Complete")
-                            .setMessage("Are you sure you want to mark this task as completed?")
-                            .setPositiveButton("Yes") { _: DialogInterface?, _: Int ->
-                                if (SaveSharedPreference.getAdsEnabled(this)) {
-//                                    if (mInterstitialAd != null) {
-//                                        mInterstitialAd?.show(this@AddOrEditTaskActivity)
-//                                    }
-                                }
-                            }
-                            .setNegativeButton("No") { _: DialogInterface?, _: Int ->
-                                mBinding?.cbTaskCompleted?.isChecked = false
-                            }
-                            .show()
-                    }
+                mBinding?.fabCompleted?.setOnClickListener {
+                    AlertDialog.Builder(this@AddOrEditTaskActivity)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle("Confirm Complete")
+                        .setMessage("Are you sure you want to mark this task as completed?")
+                        .setPositiveButton("Yes") { _: DialogInterface?, _: Int ->
+//                            if (SaveSharedPreference.getAdsEnabled(this)) {
+////                                    if (mInterstitialAd != null) {
+////                                        mInterstitialAd?.show(this@AddOrEditTaskActivity)
+////                                    }
+//                            }
+                            addOrUpdateTask(isCompleted = true)
+                        }
+                        .setNegativeButton("No") { _: DialogInterface?, _: Int ->
+                        }
+                        .show()
                 }
-                mBinding?.cbTaskCompleted?.isChecked = taskCompleted == "Completed"
+//                mBinding?.cbTaskCompleted?.isChecked = taskCompleted == "Completed"
                 if (taskCompleted == "Completed") {
                     mBinding?.timestampCompletedtextView?.text =
                         todoTaskToAddOrEdit?.timestampCompleted
@@ -157,23 +145,24 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             mTaskId = savedInstanceState.getString(getString(R.string.id_key))
             mBinding?.etTaskDescription?.setText(savedInstanceState.getString(getString(R.string.task_description_key)))
             if (taskCompleted == "Completed") {
-                mBinding?.cbTaskCompleted?.isChecked = true
+//                mBinding?.cbTaskCompleted?.isChecked = true
                 mBinding?.timestampCompletedtextView?.text =
                     todoTaskToAddOrEdit?.timestampCompleted
             } else {
-                mBinding?.cbTaskCompleted?.isChecked = false
+//                mBinding?.cbTaskCompleted?.isChecked = false
             }
         }
         title = mAddOrEdit
         if (mAddOrEdit == getString(R.string.add_new_task)) {
 //            ADDING NEW TASK
             mBinding?.btnAddOrUpdateTask?.setText(R.string.add_task)
-            mBinding?.tvCompletionLabel?.visibility = View.INVISIBLE
-            mBinding?.cbTaskCompleted?.visibility = View.INVISIBLE
-            mBinding?.deleteTodoItem?.visibility = View.INVISIBLE
+            mBinding?.fabCompleted?.visibility = View.GONE
+            mBinding?.fabDeleteItem?.visibility = View.GONE
+            mBinding?.timestampCompletedtextView?.visibility = View.GONE
         } else {
             mBinding?.btnAddOrUpdateTask?.setText(R.string.update_task)
-            mBinding?.deleteTodoItem?.visibility = View.VISIBLE
+            mBinding?.fabDeleteItem?.visibility = View.VISIBLE
+            mBinding?.fabCompleted?.visibility = View.VISIBLE
         }
 
         addCategories.setOnClickListener { showBenefitsBottomSheet() }
@@ -185,7 +174,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             displayBenefits(record)
         }
         MobileAds.initialize(this) { }
-        mBinding?.deleteTodoItem?.setOnClickListener { deleteTodoItem() }
+        mBinding?.fabDeleteItem?.setOnClickListener { deleteTodoItem() }
         mBinding?.btnAddOrUpdateTask?.setOnClickListener { addOrUpdateTask() }
 
         val prefs = getSharedPreferences(LoginActivity.SHAREDPREF, MODE_PRIVATE)
@@ -231,15 +220,13 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             getString(R.string.task_description_key),
             mBinding?.etTaskDescription?.text.toString()
         )
-
-        outState.putBoolean(getString(R.string.completed_key), mBinding?.cbTaskCompleted?.isChecked!!)
         outState.putString(getString(R.string.add_or_edit_key), mAddOrEdit)
         outState.putString(getString(R.string.id_key), mTaskId)
         //        outState.putString("category", selectedResult);
         super.onSaveInstanceState(outState)
     }
 
-    private fun addOrUpdateTask() {
+    private fun addOrUpdateTask(isCompleted: Boolean?= false) {
         loadingProgressBarUpdate?.visibility = View.VISIBLE
         window.setFlags(
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
@@ -259,7 +246,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
         } else {
             //Making First Char Capital
             description = description?.substring(0, 1)?.uppercase(Locale.getDefault()) + description?.substring(1)
-            uploadDataToFirestore()
+            uploadDataToFirestore(isCompleted = isCompleted)
 
             val returnIntent = Intent()
             setResult(RESULT_OK, returnIntent)
@@ -267,7 +254,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
     }
 
     @SuppressLint("SimpleDateFormat")
-    private fun uploadDataToFirestore() {
+    private fun uploadDataToFirestore(isCompleted: Boolean?= false) {
         val benefitsArrayFirestore: List<String> = if (record != null) {
             listOf(*record!!)
         } else {
@@ -290,7 +277,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
                     Toasty.LENGTH_SHORT
                 ).show()
                 finish()
-                onBackPressed()
+                onBackPressedDispatcher.onBackPressed()
             }?.addOnFailureListener {
                 loadingProgressBarUpdate.visibility = View.GONE
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -306,7 +293,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             updateTaskMap["priority"] = benefitsArrayFirestore.size
             updateTaskMap["Benefits"] = benefitsArrayFirestore
             val taskStatus: String
-            if (mBinding?.cbTaskCompleted?.isChecked == true) {
+            if (isCompleted == true) {
                 taskStatus = "Completed"
                 val calendar = Calendar.getInstance()
                 val dateStr = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.time)
@@ -330,7 +317,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
                             Toasty.LENGTH_SHORT
                         ).show()
                         finish()
-                        onBackPressed()
+                       onBackPressedDispatcher.onBackPressed()
                     }?.addOnFailureListener {
                         loadingProgressBarUpdate?.visibility = View.GONE
                         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
