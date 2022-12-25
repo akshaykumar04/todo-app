@@ -38,7 +38,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_todo_desc"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_10sdp"
             android:layout_marginTop="@dimen/_13sdp"
@@ -50,7 +50,7 @@
             android:textColor="@color/textHeadings"
             android:textSize="@dimen/_12ssp"
             android:visibility="visible"
-            app:layout_constraintEnd_toStartOf="@+id/checkb"
+            android:maxWidth="@dimen/_200sdp"
             app:layout_constraintStart_toEndOf="@+id/circle_per_item"
             app:layout_constraintTop_toTopOf="parent" />
 
