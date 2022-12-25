@@ -67,6 +67,9 @@ class CompletedTodoListActivity : AppCompatActivity() {
                 Intent(this@CompletedTodoListActivity, ProfileActivity::class.java)
             )
         }
+        fabPauseAds.setOnClickListener {
+            startActivity(Intent(this, RemoveAdsActivity::class.java))
+        }
         val fab = findViewById<FloatingActionButton>(R.id.fab)
         fab.setOnClickListener {
             db_cnt = todoListFirestoreAdapter!!.itemCount

@@ -74,14 +74,16 @@ class AddOrEditTaskActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_add_or_edit_task)
-        profile_toolbar.setOnClickListener {
+        mBinding?.includeToolBar?.profileToolbar?.setOnClickListener {
             startActivity(
                 Intent(this@AddOrEditTaskActivity, ProfileActivity::class.java)
             )
         }
+        mBinding?.includeToolBar?.fabPauseAds?.setOnClickListener {
+            startActivity(Intent(this, RemoveAdsActivity::class.java))
+        }
         arrow_back.visibility = View.VISIBLE
         arrow_back.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
-        toolbarTitle.text = getString(R.string.add_update_task)
         editor = getSharedPreferences(LoginActivity.SHAREDPREF, MODE_PRIVATE).edit()
         mAuth = FirebaseAuth.getInstance()
         userID = mAuth?.currentUser?.uid
@@ -155,11 +157,13 @@ class AddOrEditTaskActivity : AppCompatActivity() {
         title = mAddOrEdit
         if (mAddOrEdit == getString(R.string.add_new_task)) {
 //            ADDING NEW TASK
+            mBinding?.includeToolBar?.toolbarTitle?.text = getString(R.string.add_task)
             mBinding?.btnAddOrUpdateTask?.setText(R.string.add_task)
             mBinding?.fabCompleted?.visibility = View.GONE
             mBinding?.fabDeleteItem?.visibility = View.GONE
             mBinding?.timestampCompletedtextView?.visibility = View.GONE
         } else {
+            mBinding?.includeToolBar?.toolbarTitle?.text = getString(R.string.update_task)
             mBinding?.btnAddOrUpdateTask?.setText(R.string.update_task)
             mBinding?.fabDeleteItem?.visibility = View.VISIBLE
             mBinding?.fabCompleted?.visibility = View.VISIBLE

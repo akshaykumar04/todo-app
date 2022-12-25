@@ -116,6 +116,9 @@ class TodoListActivity : AppCompatActivity() {
                 )
             )
         }
+        mBinding?.include?.fabPauseAds?.setOnClickListener {
+            startActivity(Intent(this, RemoveAdsActivity::class.java))
+        }
         fab?.setOnClickListener {
             db_cnt = todoListFirestoreAdapter?.itemCount ?: 0
             Log.i("ItemCount", "FAB Clicked")

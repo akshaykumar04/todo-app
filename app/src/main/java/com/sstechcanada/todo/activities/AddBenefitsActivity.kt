@@ -64,6 +64,9 @@ class AddBenefitsActivity : AppCompatActivity(),
                 Intent(this@AddBenefitsActivity, ProfileActivity::class.java)
             )
         }
+        fabPauseAds.setOnClickListener {
+            startActivity(Intent(this, RemoveAdsActivity::class.java))
+        }
         Glide.with(this).load(mAuth?.currentUser?.photoUrl).into(profile_toolbar)
         buttonAddCategory.setOnClickListener { addCategory() }
         if (SaveSharedPreference.getAdsEnabled(this)) {

@@ -120,6 +120,9 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
                 Intent(this@MasterTodoListActivity, ProfileActivity::class.java)
             )
         }
+        fabPauseAds.setOnClickListener {
+            startActivity(Intent(this, RemoveAdsActivity::class.java))
+        }
         fab.setOnClickListener {
             if (LoginActivity.userAccountDetails[0].toInt() > (masterListFirestoreAdapter?.itemCount ?: 0)
             ) {
