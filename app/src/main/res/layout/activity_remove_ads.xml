@@ -290,7 +290,7 @@
             android:fontFamily="@font/raleway_semibold"
             android:paddingVertical="@dimen/_12sdp"
             android:text="Watch Video"
-            android:enabled="false"
+            android:backgroundTint="@color/discp_border"
             android:textColor="@android:color/white"
             app:layout_constraintBottom_toTopOf="@id/appCompatTextView"
             app:layout_constraintEnd_toEndOf="parent"
