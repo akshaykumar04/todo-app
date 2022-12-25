@@ -22,25 +22,21 @@
         android:layout_height="match_parent"
         android:minHeight="@dimen/_42sdp">
 
-        <CheckBox
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/checkb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
             android:button="@drawable/custom_checkbox"
             android:checked="false"
             android:enabled="true"
-            android:padding="10dp"
-            android:scaleX="1.1"
-            android:scaleY="1.1"
+            android:scaleX="1.5"
+            android:layout_marginEnd="-20dp"
+            android:scaleY="1.5"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.478" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_todo_desc"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -71,10 +67,10 @@
         </com.google.android.material.chip.ChipGroup>
 
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/circle_per_item"
-            android:layout_width="10dp"
-            android:layout_height="10dp"
+            android:layout_width="@dimen/_8sdp"
+            android:layout_height="@dimen/_8sdp"
             android:layout_marginStart="20dp"
             android:background="@drawable/circle_per_item"
             app:layout_constraintBottom_toBottomOf="parent"
