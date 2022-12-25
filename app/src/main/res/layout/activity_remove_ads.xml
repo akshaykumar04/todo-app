@@ -69,7 +69,7 @@
             android:layout_marginEnd="@dimen/_6sdp"
             android:fontFamily="@font/poppins_semibold"
             android:paddingHorizontal="@dimen/_30sdp"
-            android:text="Ads have been temporary removed!"
+            android:text="Ads have been temporarily removed!"
             android:textAlignment="center"
             android:layout_marginTop="-12dp"
             android:textColor="@color/textHeadings"

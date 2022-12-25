@@ -98,11 +98,14 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             }
         }
         Log.i("ListId", "Add or edit: " + MasterTodoListActivity.listId)
-        Glide.with(this).load(mAuth?.currentUser?.photoUrl).into(profile_toolbar)
+        mAuth?.currentUser?.photoUrl?.let {
+            Glide.with(this).load(it).into(profile_toolbar)
+        }
         if (SaveSharedPreference.getAdsEnabled(this)) {
             loadBannerAds()
             loadFullScreenAds()
         }
+        loadCategories()
 
         val dueDate: Long
         if (savedInstanceState == null) {
@@ -232,12 +235,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
 
     private fun addOrUpdateTask(isCompleted: Boolean?= false) {
         loadingProgressBarUpdate?.visibility = View.VISIBLE
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-        )
         description = mBinding?.etTaskDescription?.text.toString().trim { it <= ' ' }
-        Log.d(TAG, "Here")
         if (description == "") {
             Toasty.warning(
                 this,

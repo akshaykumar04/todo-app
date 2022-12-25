@@ -64,6 +64,9 @@ class AddBenefitsActivity : AppCompatActivity(),
                 Intent(this@AddBenefitsActivity, ProfileActivity::class.java)
             )
         }
+        mAuth?.currentUser?.photoUrl?.let {
+            Glide.with(this).load(it).into(profile_toolbar)
+        }
         fabPauseAds.setOnClickListener {
             startActivity(Intent(this, RemoveAdsActivity::class.java))
         }
