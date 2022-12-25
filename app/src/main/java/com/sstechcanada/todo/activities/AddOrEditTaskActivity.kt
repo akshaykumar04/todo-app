@@ -271,23 +271,9 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             newTaskMap["Status"] = taskStatus
             newTaskMap["TimestampCompleted"] = " "
             userColRef?.document()?.set(newTaskMap)?.addOnSuccessListener {
-                loadingProgressBarUpdate.visibility = View.GONE
-                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                Toasty.success(
-                    this@AddOrEditTaskActivity,
-                    "New list item added successfully",
-                    Toasty.LENGTH_SHORT
-                ).show()
-                finish()
-                onBackPressedDispatcher.onBackPressed()
+                //no-op
             }?.addOnFailureListener {
-                loadingProgressBarUpdate.visibility = View.GONE
-                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                Toasty.error(
-                    this@AddOrEditTaskActivity,
-                    "Something went wrong",
-                    Toasty.LENGTH_SHORT
-                ).show()
+                //no-op
             }
         } else {
             val updateTaskMap: MutableMap<String, Any?> = HashMap()
@@ -311,26 +297,17 @@ class AddOrEditTaskActivity : AppCompatActivity() {
             todoTaskToAddOrEdit?.documentID?.let {
                 userColRef?.document(it)
                     ?.set(updateTaskMap, SetOptions.merge())?.addOnSuccessListener {
-                        loadingProgressBarUpdate?.visibility = View.GONE
-                        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                        Toasty.success(
-                            this@AddOrEditTaskActivity,
-                            "List item updated successfully",
-                            Toasty.LENGTH_SHORT
-                        ).show()
-                        finish()
-                       onBackPressedDispatcher.onBackPressed()
-                    }?.addOnFailureListener {
-                        loadingProgressBarUpdate?.visibility = View.GONE
-                        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                        Toasty.error(
-                            this@AddOrEditTaskActivity,
-                            "Something went wrong",
-                            Toasty.LENGTH_SHORT
-                        ).show()
-                    }
+                    }?.addOnFailureListener {}
             }
         }
+        loadingProgressBarUpdate.visibility = View.GONE
+        Toasty.success(
+            this@AddOrEditTaskActivity,
+            "New list item added successfully",
+            Toasty.LENGTH_SHORT
+        ).show()
+        finish()
+        onBackPressed()
     }
 
     private fun loadCategories() {
