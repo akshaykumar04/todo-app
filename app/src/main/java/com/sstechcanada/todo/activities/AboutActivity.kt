@@ -72,9 +72,6 @@ class AboutActivity : AppCompatActivity() {
         entries.add(PieEntry(3.toFloat(), "sstechcanada"))
         entries.add(PieEntry(3.toFloat(), "Jon (founder)"))
         val colors: ArrayList<Int> = ArrayList()
-        for (color in ColorTemplate.MATERIAL_COLORS) {
-            colors.add(color)
-        }
         for (color in ColorTemplate.VORDIPLOM_COLORS) {
             colors.add(color)
         }

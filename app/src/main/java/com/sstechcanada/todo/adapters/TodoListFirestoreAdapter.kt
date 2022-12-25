@@ -3,6 +3,7 @@ package com.sstechcanada.todo.adapters
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.text.TextUtils
 import android.util.Log
@@ -234,17 +235,17 @@ class TodoListFirestoreAdapter(
 
     private fun getMagnitudeColor(pos: Int): Int {
         val magnitudeColorResourceId: Int = when (pos) {
-            0 -> R.color.circle8
+            0 -> R.color.circle7
             1 -> R.color.circle1
             2 -> R.color.circle2
             3 -> R.color.circle3
             4 -> R.color.circle4
-            5 -> R.color.circle5
+            5 -> R.color.circle8
             6 -> R.color.circle6
             7 -> R.color.circle7
             8 -> R.color.circle8
             9 -> R.color.circle9
-            else -> R.color.circle1
+            else -> R.color.circle5
         }
         return ContextCompat.getColor(context, magnitudeColorResourceId)
     }
