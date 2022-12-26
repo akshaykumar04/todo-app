@@ -83,7 +83,7 @@ class TodoListFirestoreAdapter(
                 context,
                 null,
                 0,
-                R.style.ThinnerChip
+                R.style.Widget_MaterialComponents_Chip_Choice
             )
             chip.setChipDrawable(drawable)
 
@@ -94,9 +94,11 @@ class TodoListFirestoreAdapter(
             }
             chip.text = model.benefits[i] + ""
             holder.chipGroup.childCount
-            chip.maxWidth = context.resources.getDimensionPixelSize(R.dimen._48sdp)
-            chip.minWidth = context.resources.getDimensionPixelSize(R.dimen._48sdp)
-            chip.minHeight = context.resources.getDimensionPixelSize(R.dimen._20sdp)
+            if (model.benefits.size > 2) {
+                chip.maxWidth = context.resources.getDimensionPixelSize(R.dimen._48sdp)
+                chip.minWidth = context.resources.getDimensionPixelSize(R.dimen._48sdp)
+                chip.minHeight = context.resources.getDimensionPixelSize(R.dimen._20sdp)
+            }
             chip.ellipsize = TextUtils.TruncateAt.END
             chip.setTextAppearanceResource(R.style.SmallerText)
             holder.chipGroup.addView(chip)
