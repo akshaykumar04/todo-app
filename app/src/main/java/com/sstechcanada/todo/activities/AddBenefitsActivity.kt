@@ -32,6 +32,8 @@ import com.getkeepsafe.taptargetview.TapTargetSequence
 import com.sstechcanada.todo.activities.auth.LoginActivity
 import com.sstechcanada.todo.activities.auth.ProfileActivity
 import com.sstechcanada.todo.utils.SaveSharedPreference
+import kotlinx.android.synthetic.main.activity_add_or_edit_task.*
+import kotlinx.android.synthetic.main.activity_category.adView
 import kotlinx.android.synthetic.main.item_grid.*
 
 
@@ -76,6 +78,9 @@ class AddBenefitsActivity : AppCompatActivity(),
             val adView = findViewById<AdView>(R.id.adView)
             val adRequest = AdRequest.Builder().build()
             adView.loadAd(adRequest)
+            adView.visibility = View.VISIBLE
+        } else {
+            adView.visibility = View.GONE
         }
 
         toolbarTitle.setOnLongClickListener {
