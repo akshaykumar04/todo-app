@@ -216,6 +216,7 @@ class AddOrEditTaskActivity : AppCompatActivity() {
         if (SaveSharedPreference.getAdsEnabled(this)) {
             val adRequest = AdRequest.Builder().build()
             adView.loadAd(adRequest)
+            adView.visibility = View.VISIBLE
         } else {
             adView.visibility = View.GONE
         }
