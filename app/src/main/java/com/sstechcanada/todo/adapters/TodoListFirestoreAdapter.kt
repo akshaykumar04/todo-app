@@ -75,6 +75,7 @@ class TodoListFirestoreAdapter(
             R.color.chip_10
         )
         holder.chipGroup.removeAllViews()
+        holder.chipGroup.chipSpacingVertical = -30
         holder.chipGroup.visibility = View.VISIBLE
 
         (0 until model.benefits.size).forEach { i ->

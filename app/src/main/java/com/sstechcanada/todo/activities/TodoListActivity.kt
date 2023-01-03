@@ -408,27 +408,27 @@ class TodoListActivity : AppCompatActivity() {
                     .tintTarget(true)
                     .transparentTarget(true)
                     .targetRadius(80),
-                TapTarget.forView(
-                    mBinding?.buttonTapTargetView,
-                    "List Items",
-                    "This app works better for one-time tasks (e.g. \"buy glasses\") than recurring ones (e.g. \"go to gym every day\")."
-                )
-                    .outerCircleColor(R.color.chip_5)
-                    .outerCircleAlpha(0.98f)
-                    .targetCircleColor(R.color.colorUncompletedBackground)
-                    .titleTextSize(22)
-                    .titleTextColor(R.color.colorUncompletedBackground)
-                    .descriptionTextSize(16)
-                    .titleTypeface(ResourcesCompat.getFont(this, R.font.poppins_semibold))
-                    .textTypeface(ResourcesCompat.getFont(this, R.font.raleway_medium))
-                    .descriptionTextColor(R.color.black)
-                    .textColor(R.color.black)
-                    .dimColor(R.color.black)
-                    .drawShadow(true)
-                    .cancelable(false)
-                    .tintTarget(true)
-                    .transparentTarget(true)
-                    .targetRadius(60)
+//                TapTarget.forView(
+//                    mBinding?.buttonTapTargetView,
+//                    "List Items",
+//                    "This app works better for one-time tasks (e.g. \"buy glasses\") than recurring ones (e.g. \"go to gym every day\")."
+//                )
+//                    .outerCircleColor(R.color.chip_5)
+//                    .outerCircleAlpha(0.98f)
+//                    .targetCircleColor(R.color.colorUncompletedBackground)
+//                    .titleTextSize(22)
+//                    .titleTextColor(R.color.colorUncompletedBackground)
+//                    .descriptionTextSize(16)
+//                    .titleTypeface(ResourcesCompat.getFont(this, R.font.poppins_semibold))
+//                    .textTypeface(ResourcesCompat.getFont(this, R.font.raleway_medium))
+//                    .descriptionTextColor(R.color.black)
+//                    .textColor(R.color.black)
+//                    .dimColor(R.color.black)
+//                    .drawShadow(true)
+//                    .cancelable(false)
+//                    .tintTarget(true)
+//                    .transparentTarget(true)
+//                    .targetRadius(60)
             ).listener(object : TapTargetSequence.Listener {
                 override fun onSequenceFinish() {
 

@@ -214,7 +214,6 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
 
     private fun toggleListPointsVisibility(visibility: Boolean) {
         if (visibility) {
-            list2.visibility = View.VISIBLE
             list3.visibility = View.VISIBLE
             list4.visibility = View.VISIBLE
             list5.visibility = View.VISIBLE
@@ -222,7 +221,6 @@ class AppUpgradeActivity : AppCompatActivity(), IBillingHandler {
             list8.visibility = View.VISIBLE
             btnRemoveAds.visibility = View.GONE
         } else {
-            list2.visibility = View.INVISIBLE
             list3.visibility = View.INVISIBLE
             list4.visibility = View.INVISIBLE
             list5.visibility = View.INVISIBLE

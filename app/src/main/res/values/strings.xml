@@ -68,7 +68,7 @@
     <string name="delete_account_desc">All the associated data with your account will be deleted forever.</string>
     <string name="delete_benefit">Are you sure to delete benefit?</string>
     <string name="delete_benefit_message">Deleting this benefit will delete this from all To Do items</string>
-    <string name="are_you_sure">Are you sure you want to Sign out?</string>
+    <string name="are_you_sure">Are you sure you want to sign out?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="task_updated">Task Updated</string>
