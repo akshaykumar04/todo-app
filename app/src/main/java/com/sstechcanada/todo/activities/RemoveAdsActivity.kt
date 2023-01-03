@@ -55,7 +55,7 @@ class RemoveAdsActivity : AppCompatActivity() {
             if (mRewardedAd != null) {
                 showRewardedVideo()
             } else {
-                Toasty.warning(this,"No Ads Available right now to watch, try again later. Button will turn dark blue when an ad is available", Toast.LENGTH_LONG).show()
+                Toasty.warning(this,"No ads available - please try again soon! An ad may become available in the next few seconds. The button turns dark blue when an ad is ready.", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -162,7 +162,7 @@ class RemoveAdsActivity : AppCompatActivity() {
                 fetchStoredTimeStamp()
             }
         } else {
-            Toasty.info(this, "No ads available, try again later", Toast.LENGTH_SHORT).show()
+            Toasty.info(this, "No ads available - please try again soon! An ad may become available in the next few seconds. The button turns dark blue when an ad is ready.", Toast.LENGTH_SHORT).show()
         }
     }
 
