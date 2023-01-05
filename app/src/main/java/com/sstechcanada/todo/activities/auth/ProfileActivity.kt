@@ -64,8 +64,16 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun initViews() {
         userEmail.text = mAuth?.currentUser?.email
-        userName.text = mAuth?.currentUser?.displayName
-        Glide.with(this).load(mAuth?.currentUser?.photoUrl).into(roundedImage)
+
+        if (mAuth?.currentUser?.isAnonymous == true) {
+            userName.text = "Guest"
+        } else {
+            userName.text = mAuth?.currentUser?.displayName
+        }
+
+        mAuth?.currentUser?.photoUrl?.let {
+            Glide.with(this).load(it).into(roundedImage)
+        }
         if (MasterTodoListActivity.purchaseCode == "0") {
             userType?.setText(R.string.free_user)
         } else {
@@ -242,8 +250,12 @@ class ProfileActivity : AppCompatActivity() {
         val tvUserDes: AppCompatTextView = dialog.findViewById(R.id.tvUserDes)
         val checkBox: CheckBox = dialog.findViewById(R.id.checkDelete)
 
-        userText.text = "Sorry to see you go, ${mAuth?.currentUser?.displayName}"
-        tvUserDes.text = "If you're experiencing any issue, please give us the opportunity to help you by sending us your Feedback.\n\nIf you continue, your account will be deleted immediately and all the associated data with your account will be deleted forever.\n\nPost account deletion, you will be able to create a new account. However, your previous data will be inaccessible."
+        if (mAuth?.currentUser?.isAnonymous == true) {
+            userText.text = "Sorry to see you go, guest"
+        } else {
+            userText.text = "Sorry to see you go, " + mAuth?.currentUser?.displayName
+        }
+        tvUserDes.text = "If you're experiencing any issues, please give us the opportunity to help you by sending us your Feedback.\n\nIf you continue, your account will be deleted immediately and all the associated data with your account will be deleted forever.\n\nPost account deletion, you will be able to create a new account. However, your previous data will be inaccessible."
 
         checkBox.setOnCheckedChangeListener { _, checked ->
             if (checked) {

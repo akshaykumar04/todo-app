@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_bg"
+    android:clipToPadding="false"
+
+    android:minHeight="@dimen/_220sdp"
+    android:paddingHorizontal="@dimen/_16sdp"
+    android:paddingTop="@dimen/_12sdp">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/appCompatImageView"
+        android:layout_width="@dimen/_42sdp"
+        android:layout_height="@dimen/_64sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/info"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/appCompatTextView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/_4sdp"
+        android:fontFamily="@font/raleway_semibold"
+        android:text="Google Account Required"
+        android:textAlignment="center"
+        android:layout_marginTop="@dimen/_14sdp"
+        android:textColor="@color/textHeadings"
+        android:textSize="@dimen/_14ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appCompatImageView" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvUserDes"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginBottom="@dimen/_12sdp"
+        android:fontFamily="@font/raleway_medium"
+        android:lineSpacingMultiplier="1.2"
+        android:paddingHorizontal="@dimen/_4sdp"
+        android:layout_marginHorizontal="@dimen/_4sdp"
+        android:textSize="@dimen/_11ssp"
+        app:layout_constraintBottom_toTopOf="@+id/sign_in_button"
+        app:layout_constraintEnd_toEndOf="@+id/sign_in_button"
+        app:layout_constraintStart_toStartOf="@+id/sign_in_button"
+        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView2"
+        tools:text="Sorry to see you go, Akshay" />
+
+
+
+    <com.shobhitpuri.custombuttons.GoogleSignInButton
+        android:id="@+id/sign_in_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_8sdp"
+        android:layout_marginBottom="@dimen/_12sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:isDarkTheme="true"
+        android:textAlignment="center"
+        android:letterSpacing="0.06"
+        android:fontFamily="@font/raleway_semibold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

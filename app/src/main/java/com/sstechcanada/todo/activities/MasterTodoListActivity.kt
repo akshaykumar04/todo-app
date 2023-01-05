@@ -114,11 +114,16 @@ class MasterTodoListActivity : AppCompatActivity(), IBillingHandler {
 
         //Limit Set
         setValue()
-        Glide.with(this).load(mAuth?.currentUser?.photoUrl).into(profile_toolbar)
+        mAuth?.currentUser?.photoUrl?.let {
+            Glide.with(this).load(it).into(profile_toolbar)
+        }
         profile_toolbar.setOnClickListener {
             startActivity(
                 Intent(this@MasterTodoListActivity, ProfileActivity::class.java)
             )
+        }
+        fabPauseAds.setOnClickListener {
+            startActivity(Intent(this, RemoveAdsActivity::class.java))
         }
         fab.setOnClickListener {
             if (LoginActivity.userAccountDetails[0].toInt() > (masterListFirestoreAdapter?.itemCount ?: 0)

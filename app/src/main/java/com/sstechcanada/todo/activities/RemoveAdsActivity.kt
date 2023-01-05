@@ -55,7 +55,7 @@ class RemoveAdsActivity : AppCompatActivity() {
             if (mRewardedAd != null) {
                 showRewardedVideo()
             } else {
-                Toasty.warning(this,"No Ads Available to watch, try again later.", Toast.LENGTH_LONG).show()
+                Toasty.warning(this,"No ads available - please try again soon! An ad may become available in the next few seconds. The button turns dark blue when an ad is ready.", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -82,14 +82,12 @@ class RemoveAdsActivity : AppCompatActivity() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     Log.d(TAG, adError.toString())
                     mRewardedAd = null
-                    binding.btnWatchAds.isEnabled = false
                     binding.btnWatchAds.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.discp_border))
                 }
 
                 override fun onAdLoaded(rewardedAd: RewardedAd) {
                     Log.d(TAG, "Ad was loaded.")
                     mRewardedAd = rewardedAd
-                    binding.btnWatchAds.isEnabled = true
                     binding.btnWatchAds.backgroundTintList =
                         ColorStateList.valueOf(resources.getColor(R.color.todo))
                 }
@@ -164,7 +162,7 @@ class RemoveAdsActivity : AppCompatActivity() {
                 fetchStoredTimeStamp()
             }
         } else {
-            Toasty.info(this, "No ads available, try again later", Toast.LENGTH_SHORT).show()
+            Toasty.info(this, "No ads available - please try again soon! An ad may become available in the next few seconds. The button turns dark blue when an ad is ready.", Toast.LENGTH_SHORT).show()
         }
     }
 
