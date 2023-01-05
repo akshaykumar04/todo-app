@@ -10,8 +10,8 @@ android {
         applicationId "com.sstechcanada.todo"
         minSdkVersion 24
         targetSdkVersion 33
-        versionCode 23
-        versionName "1.1.1-dev-T7"
+        versionCode 24
+        versionName "1.1.2"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled true
