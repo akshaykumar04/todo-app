@@ -3,6 +3,7 @@ package com.sstechcanada.todo.adapters
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.text.TextUtils
 import android.util.Log
@@ -74,6 +75,7 @@ class TodoListFirestoreAdapter(
             R.color.chip_10
         )
         holder.chipGroup.removeAllViews()
+        holder.chipGroup.chipSpacingVertical = -8
         holder.chipGroup.visibility = View.VISIBLE
 
         (0 until model.benefits.size).forEach { i ->
@@ -82,7 +84,7 @@ class TodoListFirestoreAdapter(
                 context,
                 null,
                 0,
-                R.style.ThinnerChip
+                R.style.Widget_MaterialComponents_Chip_Choice
             )
             chip.setChipDrawable(drawable)
 
@@ -93,9 +95,11 @@ class TodoListFirestoreAdapter(
             }
             chip.text = model.benefits[i] + ""
             holder.chipGroup.childCount
-            chip.maxWidth = context.resources.getDimensionPixelSize(R.dimen._48sdp)
-            chip.minWidth = context.resources.getDimensionPixelSize(R.dimen._48sdp)
-            chip.minHeight = context.resources.getDimensionPixelSize(R.dimen._20sdp)
+            if (model.benefits.size > 2) {
+                chip.maxWidth = context.resources.getDimensionPixelSize(R.dimen._48sdp)
+                chip.minWidth = context.resources.getDimensionPixelSize(R.dimen._48sdp)
+                chip.minHeight = context.resources.getDimensionPixelSize(R.dimen._20sdp)
+            }
             chip.ellipsize = TextUtils.TruncateAt.END
             chip.setTextAppearanceResource(R.style.SmallerText)
             holder.chipGroup.addView(chip)
@@ -234,17 +238,17 @@ class TodoListFirestoreAdapter(
 
     private fun getMagnitudeColor(pos: Int): Int {
         val magnitudeColorResourceId: Int = when (pos) {
-            0 -> R.color.circle8
+            0 -> R.color.circle7
             1 -> R.color.circle1
             2 -> R.color.circle2
             3 -> R.color.circle3
             4 -> R.color.circle4
-            5 -> R.color.circle5
+            5 -> R.color.circle8
             6 -> R.color.circle6
             7 -> R.color.circle7
             8 -> R.color.circle8
             9 -> R.color.circle9
-            else -> R.color.circle1
+            else -> R.color.circle5
         }
         return ContextCompat.getColor(context, magnitudeColorResourceId)
     }

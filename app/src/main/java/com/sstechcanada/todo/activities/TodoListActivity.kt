@@ -107,7 +107,9 @@ class TodoListActivity : AppCompatActivity() {
             adView?.visibility = View.GONE
         }
         toolbar_profile = findViewById(R.id.profile_toolbar)
-        Glide.with(this).load(mAuth?.currentUser?.photoUrl).into(profile_toolbar)
+        mAuth?.currentUser?.photoUrl?.let {
+            Glide.with(this).load(it).into(profile_toolbar)
+        }
         toolbar_profile?.setOnClickListener {
             startActivity(
                 Intent(
@@ -115,6 +117,9 @@ class TodoListActivity : AppCompatActivity() {
                     ProfileActivity::class.java
                 )
             )
+        }
+        mBinding?.include?.fabPauseAds?.setOnClickListener {
+            startActivity(Intent(this, RemoveAdsActivity::class.java))
         }
         fab?.setOnClickListener {
             db_cnt = todoListFirestoreAdapter?.itemCount ?: 0
@@ -403,29 +408,27 @@ class TodoListActivity : AppCompatActivity() {
                     .tintTarget(true)
                     .transparentTarget(true)
                     .targetRadius(80),
-                TapTarget.forView(
-                    mBinding?.buttonTapTargetView,
-                    "List Items",
-                    "Swipe right and click on the pencil icon to edit a list item. " +
-                            "\n\nSwipe left and click on the garbage can icon to delete a list item. " +
-                            "\n\nThis app works better for one-time tasks (e.g. \"buy glasses\") than recurring ones (e.g. \"go to gym every day\")."
-                )
-                    .outerCircleColor(R.color.chip_5)
-                    .outerCircleAlpha(0.98f)
-                    .targetCircleColor(R.color.colorUncompletedBackground)
-                    .titleTextSize(22)
-                    .titleTextColor(R.color.colorUncompletedBackground)
-                    .descriptionTextSize(16)
-                    .titleTypeface(ResourcesCompat.getFont(this, R.font.poppins_semibold))
-                    .textTypeface(ResourcesCompat.getFont(this, R.font.raleway_medium))
-                    .descriptionTextColor(R.color.black)
-                    .textColor(R.color.black)
-                    .dimColor(R.color.black)
-                    .drawShadow(true)
-                    .cancelable(false)
-                    .tintTarget(true)
-                    .transparentTarget(true)
-                    .targetRadius(60)
+//                TapTarget.forView(
+//                    mBinding?.buttonTapTargetView,
+//                    "List Items",
+//                    "This app works better for one-time tasks (e.g. \"buy glasses\") than recurring ones (e.g. \"go to gym every day\")."
+//                )
+//                    .outerCircleColor(R.color.chip_5)
+//                    .outerCircleAlpha(0.98f)
+//                    .targetCircleColor(R.color.colorUncompletedBackground)
+//                    .titleTextSize(22)
+//                    .titleTextColor(R.color.colorUncompletedBackground)
+//                    .descriptionTextSize(16)
+//                    .titleTypeface(ResourcesCompat.getFont(this, R.font.poppins_semibold))
+//                    .textTypeface(ResourcesCompat.getFont(this, R.font.raleway_medium))
+//                    .descriptionTextColor(R.color.black)
+//                    .textColor(R.color.black)
+//                    .dimColor(R.color.black)
+//                    .drawShadow(true)
+//                    .cancelable(false)
+//                    .tintTarget(true)
+//                    .transparentTarget(true)
+//                    .targetRadius(60)
             ).listener(object : TapTargetSequence.Listener {
                 override fun onSequenceFinish() {
 

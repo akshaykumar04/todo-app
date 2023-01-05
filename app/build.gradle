@@ -10,8 +10,8 @@ android {
         applicationId "com.sstechcanada.todo"
         minSdkVersion 24
         targetSdkVersion 33
-        versionCode 23
-        versionName "1.1.1"
+        versionCode 24
+        versionName "1.1.2"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled true
@@ -51,7 +51,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.google.android.material:material:1.6.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.preference:preference-ktx:1.2.0'
     implementation 'com.google.android.gms:play-services-auth:20.4.0'
@@ -67,14 +67,14 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
 
     // Import the BoM for the Firebase platform
-    implementation platform('com.google.firebase:firebase-bom:26.5.0')
+    implementation platform('com.google.firebase:firebase-bom:31.1.0')
 
     //in-app billing
     implementation("com.android.billingclient:billing:5.1.0")
 
     // Declare the dependency for the Firebase Authentication library
     // When using the BoM, you don't specify versions in Firebase library dependencies
-    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.github.GrenderG:Toasty:1.5.2'
@@ -96,5 +96,6 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
 
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation 'com.shobhitpuri.custombuttons:google-signin:1.1.0'
 
 }

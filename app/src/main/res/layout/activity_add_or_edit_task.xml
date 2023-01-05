@@ -9,16 +9,12 @@
         android:clipToPadding="false"
         android:background="@color/toolbar_background">
 
-
-
         <include
-            android:id="@+id/include"
+            android:id="@+id/includeToolBar"
             layout="@layout/act_bar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -91,83 +87,40 @@
                app:layout_constraintStart_toStartOf="parent"
                app:layout_constraintTop_toTopOf="parent" />
 
-
-           <Button
-               android:id="@+id/btn_add_or_update_task"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_margin="8dp"
-               app:tint="@color/white"
-               app:backgroundTint="@color/todo"
-               android:paddingVertical="@dimen/_12sdp"
-               android:fontFamily="@font/raleway_semibold"
-               android:onClick="addOrUpdateTask"
-               android:text="@string/add_task"
-               android:elevation="24dp"
-               android:textColor="@android:color/white"
-               app:layout_constraintBottom_toTopOf="@+id/adView"
-               app:layout_constraintEnd_toEndOf="parent"
-               app:layout_constraintStart_toStartOf="parent" />
-
-           <TextView
-               android:id="@+id/tv_completion_label"
-               style="@style/AddEditTaskRadioButtonLabels"
-               android:layout_marginTop="@dimen/_20sdp"
-               android:textSize="17sp"
-               android:text="@string/completion"
-               android:fontFamily="@font/raleway_semibold"
-               android:textColor="@color/textHeadings"
-               app:layout_constraintStart_toStartOf="@+id/addCategories"
-               app:layout_constraintTop_toBottomOf="@+id/addCategories" />
-
-            <CheckBox
-                android:id="@+id/cb_task_completed"
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:id="@+id/btn_add_or_update_task"
                 android:layout_width="0dp"
-                android:layout_marginStart="3dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:button="@drawable/custom_checkbox"
-                android:fontFamily="@font/raleway"
-                android:paddingLeft="12dp"
-                android:text="Task completed"
-                android:textSize="16sp"
-                app:layout_constraintStart_toStartOf="@+id/tv_completion_label"
-                app:layout_constraintTop_toBottomOf="@+id/tv_completion_label" />
+                android:layout_margin="8dp"
+                android:fontFamily="@font/raleway_semibold"
+                android:onClick="addOrUpdateTask"
+                android:text="@string/add_task"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                app:backgroundTint="@color/todo"
+                app:icon="@drawable/ic_outline_add_task_24"
+                app:iconGravity="textStart"
+                app:iconTint="@color/white"
+                app:layout_constraintBottom_toTopOf="@+id/adView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addCategories"
+                app:layout_constraintVertical_bias="1.0" />
+
 
             <TextView
                 android:id="@+id/timestampCompletedtextView"
                 style="@style/AddEditTaskRadioButtonLabels"
                 android:layout_width="wrap_content"
                 android:layout_height="16dp"
-                android:layout_marginStart="27dp"
-                android:layout_marginTop="4dp"
                 android:fontFamily="@font/raleway"
                 android:text="12, May,1999 14:04:0"
                 android:textColor="@color/colorNormalWidgetText"
                 android:textSize="13sp"
+                android:layout_marginTop="@dimen/_12sdp"
                 android:visibility="gone"
-                app:layout_constraintStart_toStartOf="@+id/cb_task_completed"
-                app:layout_constraintTop_toBottomOf="@+id/cb_task_completed" />
-
-            <TextView
-                android:id="@+id/deleteTodoItem"
-                style="@style/AddEditTaskRadioButtonLabels"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="36dp"
-                android:drawableStart="@drawable/ic_outline_delete_forever_24"
-                android:drawablePadding="7dp"
-                android:gravity="center_vertical"
-                android:drawableTint="@color/colorOverdue"
-                android:fontFamily="@font/raleway"
-                android:includeFontPadding="true"
-                android:text="Delete Item"
-                android:textColor="@color/colorOverdue"
-                android:textSize="14sp"
-                android:visibility="gone"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cb_task_completed" />
-
+                app:layout_constraintStart_toStartOf="@+id/addCategories"
+                app:layout_constraintTop_toBottomOf="@+id/addCategories" />
 
             <com.google.android.material.chip.ChipGroup
                android:id="@+id/chipGroup"
@@ -271,12 +224,50 @@
                 android:layout_marginLeft="-16dp"
                 android:layout_marginRight="-16dp"
                 app:adSize="SMART_BANNER"
+                android:visibility="gone"
                 app:adUnitId="@string/banner_ad_test"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"></com.google.android.gms.ads.AdView>
 
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:id="@+id/fabDeleteItem"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_4sdp"
+                android:text="Delete Item"
+                android:backgroundTint="@color/btnRed"
+                app:iconTint="@color/white"
+                android:fontFamily="@font/raleway_semibold"
+                android:textColor="@android:color/white"
+                android:layout_marginBottom="@dimen/_8sdp"
+                app:icon="@drawable/ic_outline_delete_forever_24"
+                app:layout_constraintBottom_toTopOf="@+id/btn_add_or_update_task"
+                app:layout_constraintEnd_toStartOf="@+id/guideline2"
+                app:layout_constraintStart_toStartOf="@+id/btn_add_or_update_task" />
 
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:id="@+id/fabCompleted"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Completed"
+                android:fontFamily="@font/raleway_semibold"
+                android:textColor="@android:color/white"
+                app:iconTint="@color/white"
+                app:icon="@drawable/ic_baseline_done_all_24"
+                android:backgroundTint="#4BB543"
+                android:layout_marginBottom="@dimen/_8sdp"
+                android:layout_marginStart="@dimen/_4sdp"
+                app:layout_constraintBottom_toTopOf="@+id/btn_add_or_update_task"
+                app:layout_constraintEnd_toEndOf="@+id/btn_add_or_update_task"
+                app:layout_constraintStart_toEndOf="@+id/guideline2" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
